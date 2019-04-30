@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+	<groupId>com.bcs</groupId>
+	<artifactId>com.bcs.project</artifactId>
+	<version>0.0.1.RELEASE</version>
+  </parent>
+  <artifactId>com.bcs.web</artifactId>
+  
+	<dependencies>
+		<dependency>
+			<groupId>com.bcs</groupId>
+			<artifactId>com.bcs.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bcs</groupId>
+			<artifactId>com.bcs.core.bot</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bcs</groupId>
+			<artifactId>com.bcs.core.web</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bcs</groupId>
+			<artifactId>com.bcs.core.richart</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+  
+  <packaging>war</packaging>
+	<build>
+		<finalName>bcs</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
+					<!-- web.xml is not mandatory since JavaEE 5 -->
+					<failOnMissingWebXml>true</failOnMissingWebXml>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
