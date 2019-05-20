@@ -87,7 +87,7 @@ public class MobileTracingController extends BCSBaseController {
 			logger.info("sessionMID:" + sessionMID);
 			
 			ContentLinkTracing contentLinkTracing = contentLinkTracingService.findOne(tracingId);
-			
+			logger.info("After contentLinkTracing findOne tracingId:" + tracingId );
 			if(contentLinkTracing == null){
 				throw new Exception("TracingId Error:" + tracingId);
 			}
@@ -108,18 +108,21 @@ public class MobileTracingController extends BCSBaseController {
 			}
 			
 			ContentLink contentLink = contentLinkService.findOne(linkId);
+			logger.info("After contentLinkService findOne linkId:"  + linkId);
 			
 			if(contentLink == null){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkId:" + linkId);
 			}
 			
 			ContentLink contentLinkBinded = contentLinkService.findOne(linkIdBinded);
+			logger.info("After contentLinkService findOne linkIdBinded:" + linkIdBinded);
 			
 			if(contentLinkBinded == null){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkIdBinded:" + linkIdBinded);
 			}
 			
 			ContentLink contentLinkUnMobile = contentLinkService.findOne(linkIdUnMobile);
+			logger.info("After contentLinkService findOne linkIdUnMobile:"  + linkIdUnMobile);
 			
 			if(contentLinkUnMobile == null){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkIdUnMobile:" + linkIdUnMobile);
@@ -134,6 +137,7 @@ public class MobileTracingController extends BCSBaseController {
 			
 			if (StringUtils.isNotBlank(sessionMID) && isGetFromSession){
 				boolean isbinded = userValidateService.isBinding(sessionMID);
+				logger.info("After userValidateService  isBinding sessionMID:"  + sessionMID + " isbinded:" + isbinded);
 				if(isbinded){
 					lineoauthLink = UriHelper.getLinkUriCode(linkIdBinded, code, event);
 					bcsTargetLink = UriHelper.getLinkUriCode(linkIdBinded, code, event);
@@ -190,8 +194,9 @@ public class MobileTracingController extends BCSBaseController {
 			else{
 				model.addAttribute("bcsTargetLink", bcsTargetLink);
 			}
-
+			logger.info("before visitPageLog MID:"  + sessionMID);
 			mobilePageService.visitPageLog(sessionMID, MobilePageEnum.UserTracingStartPage.getName(), "tracing");
+			logger.info("After visitPageLog tracingId:"  + tracingId);
 			return MobilePageEnum.UserTracingStartPage.toString();
 
 		} catch (Exception e) {
