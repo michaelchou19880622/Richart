@@ -311,14 +311,6 @@
 			<version>3.14</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.linecorp.bot/line-bot-model -->
-		<dependency>
-			<groupId>com.linecorp.bot</groupId>
-			<artifactId>line-bot-model</artifactId>
-			<version>1.5.0</version>
-			<scope>system</scope>
-			<systemPath>C:/xtreme/TaiShin-LineBC/com.bcs.project/com.bcs.web/src/main/webapp/WEB-INF/lib/line-bot-model-1.5.0.jar</systemPath>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.linecorp.bot/line-bot-api-client -->
 		<dependency>
 			<groupId>com.linecorp.bot</groupId>
