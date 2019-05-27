@@ -6,7 +6,7 @@
 	<version>0.0.1.RELEASE</version>
   </parent>
   <artifactId>com.bcs.core</artifactId>
-  <dependencies>
+    <dependencies>
   		<!-- custom library -->
 		<dependency>
 			<groupId>com.linecorp.bot</groupId>
