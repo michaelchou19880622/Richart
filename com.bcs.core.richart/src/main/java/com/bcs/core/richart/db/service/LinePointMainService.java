@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bcs.core.db.entity.AdminUser;
 import com.bcs.core.richart.db.entity.LinePointMain;
 import com.bcs.core.richart.db.repository.LinePointMainRepository;
 
@@ -27,19 +28,24 @@ public class LinePointMainService {
     @PersistenceContext
     EntityManager entityManager;
     
-	public void delete(Long msgId){
-		LinePointMain main = linePointMainRepository.findOne(msgId);
-		main.setModifyTime(new Date());
-		main.setStatus(LinePointMain.MESSAGE_STATUS_DELETE);
-		this.save(main);
+	public void delete(LinePointMain linePointMain){
+		linePointMainRepository.delete(linePointMain);
+//		LinePointMain main = linePointMainRepository.findOne(msgId);
+//		main.setModifyTime(new Date());
+//		main.setStatus(LinePointMain.MESSAGE_STATUS_DELETE);
+//		this.save(main);
 	}
     
-	public void save(LinePointMain linePoint){
-		linePointMainRepository.save(linePoint);
+	public void save(LinePointMain linePointMain){
+		linePointMainRepository.save(linePointMain);
 	}
     
 	public LinePointMain findOne(Long msgId){
 		return linePointMainRepository.findOne(msgId);
+	}
+	
+	public List<LinePointMain> findAll(){
+		return linePointMainRepository.findAll();
 	}
     
 	public LinePointMain findBySerialId(String serialId){
