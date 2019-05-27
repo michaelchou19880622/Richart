@@ -331,7 +331,7 @@ $(function(){
 	 * @param queryFieldSelect [欄位]下拉選單
 	 */
 	var setGroupQueryComponent = function(queryFieldSelect){		
-		if (!sendGroupCondition) {
+		if (!sendGroupCondition) {c
 			return;
 		}
 		
@@ -423,11 +423,13 @@ $(function(){
     		var form_data = new FormData();
     		
     		form_data.append("filePart",input.files[0]);
-
-    		$('.LyMain').block($.BCS.blockMsgUpload);
+    		
+    		
+    		//遮蓋效果UI
+    		$('.LyMain').block($.BCS.blockMsgUpload); 
     		$.ajax({
                 type: 'POST',
-                url: bcs.bcsContextPath + '/market/uploadMidSendGroup',
+                url: bcs.bcsContextPath + '/market/uploadMidSendGroup?event=sendGroup',
                 cache: false,
                 contentType: false,
                 processData: false,

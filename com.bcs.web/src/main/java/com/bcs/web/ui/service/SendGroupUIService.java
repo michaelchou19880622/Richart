@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,9 +117,16 @@ public class SendGroupUIService {
 	private void createSystemLog(String action, Object content, String modifyUser, Date modifyTime, String referenceId) {
 		SystemLogUtil.saveLogDebug("SendGroup", action, modifyUser, content, referenceId);
 	}
-
+  
+	/**
+	 * @param filePart
+	 * @param modifyUser
+	 * @param modifyTime
+	 * @return
+	 * @throws Exception
+	 */
 	@Transactional(rollbackFor=Exception.class)
-	public Map<String, Object> uploadMidSendGroup(MultipartFile filePart, String modifyUser, Date modifyTime) throws Exception{
+	public Map<String, Object> uploadMidSendGroup(String event ,MultipartFile filePart, String modifyUser, Date modifyTime) throws Exception{
 
 		String fileName = filePart.getOriginalFilename();
 		logger.info("getOriginalFilename:" + fileName);
@@ -165,11 +174,19 @@ public class SendGroupUIService {
 				logger.debug("existMids:" + existMids);
 				
 				String referenceId = UUID.randomUUID().toString().toLowerCase();
+			   
+				String target;
+			    if( event.equals("linePointSend")  ){
+			    	target = EVENT_TARGET_ACTION_TYPE.EVENT_LINE_POINT_SEND.toString() ;			    	
+			    }else {
+			    	target = EVENT_TARGET_ACTION_TYPE.EVENT_SEND_GROUP.toString() ;			    	
+			    }
 				
 				for(String mid : existMids){
 					UserEventSet userEventSet = new UserEventSet();
 
-					userEventSet.setTarget(EVENT_TARGET_ACTION_TYPE.EVENT_SEND_GROUP.toString());
+					userEventSet.setTarget(target);
+					
 					userEventSet.setAction(EVENT_TARGET_ACTION_TYPE.ACTION_UPLOAD_MID.toString());
 
 					userEventSet.setReferenceId(referenceId);

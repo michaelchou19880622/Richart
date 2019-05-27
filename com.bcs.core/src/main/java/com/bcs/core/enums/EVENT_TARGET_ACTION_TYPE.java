@@ -10,6 +10,8 @@ public enum EVENT_TARGET_ACTION_TYPE {
 
 	EVENT_SERIAL_SETTING("SerialSetting"),
 		ACTION_UPLOAD_MID_SERIAL("UploadMidSerial"),
+		
+	EVENT_LINE_POINT_SEND("LinePointSend"),
 	;
 
     private final String str;

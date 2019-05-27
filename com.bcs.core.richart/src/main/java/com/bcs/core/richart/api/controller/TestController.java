@@ -1,4 +1,4 @@
-package com.bcs.web.api.controller;
+package com.bcs.core.richart.api.controller;
 
 import java.io.BufferedReader;
 import java.util.Date;

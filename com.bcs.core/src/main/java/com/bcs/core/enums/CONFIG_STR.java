@@ -1,8 +1,19 @@
 package com.bcs.core.enums;
 
 public enum CONFIG_STR {
+
+	// need setting
+	LINE_POINT_API_CLIENT_ID("line.point.api.client.id"),
+	LINE_POINT_MESSAGE_PUSH_URL("line.point.push.url"),
+
+	HASH_PREFIX1(""),
+	
+	//--------------- 新增常數--------------------------
+
+	
 	SYSTEM_START_DATE("system.start.date"),
 	SYSTEM_TYPE("bcs.system.type"),
+	
 	
 	SYSTEM_ID("system.id"),
 	SYSTEM_TYPE_IS_API("system.is.api"),
@@ -57,6 +68,7 @@ public enum CONFIG_STR {
 	LINE_SWITCH_API_SWITCHER_NOTICE("line.switcher.notice"),
 	
 	ChannelToken("ChannelToken"),
+	LINE_POINT_ChannelToken("LinePoint.ChannelToken"),
 	ChannelServiceCode("ChannelServiceCode"),
 	ChannelRefresh("ChannelRefresh"),
 	
@@ -139,7 +151,7 @@ public enum CONFIG_STR {
 	ADD_LINE_FRIEND_LINK("add.line.friend.link"),
 	;
 
-    private final String str;
+   private final String str;
     
     CONFIG_STR(String str) {
         this.str = str;

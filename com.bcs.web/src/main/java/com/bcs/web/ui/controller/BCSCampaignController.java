@@ -42,6 +42,12 @@ public class BCSCampaignController extends BCSBaseController {
 	/** Logger */
 	private static Logger logger = Logger.getLogger(BCSCampaignController.class);
 
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception	 * 
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/campaignCreatePage")
 	public String campaignCreatePage(
 			HttpServletRequest request, 
@@ -51,12 +57,23 @@ public class BCSCampaignController extends BCSBaseController {
 		return BcsPageEnum.CampaignCreatePage.toString();
 	}
 
+    /**
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/admin/campaignListPage")
     public String campaignListPage(HttpServletRequest request, HttpServletResponse response) {
         logger.info("campaignListPage");
         return BcsPageEnum.CampaignListPage.toString();
     }
 	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/getCampaignList")
     @ResponseBody
     public ResponseEntity<?> getCampaignList(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -70,6 +87,13 @@ public class BCSCampaignController extends BCSBaseController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 	
+	/**
+	 * @param customUser
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteCampaign")
     @ResponseBody
     public ResponseEntity<?> deleteCampaign(
@@ -102,6 +126,12 @@ public class BCSCampaignController extends BCSBaseController {
         }
     }
 	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/getCampaign")
     @ResponseBody
     public ResponseEntity<?> getCampaign(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -132,6 +162,14 @@ public class BCSCampaignController extends BCSBaseController {
         }
     }
 	
+	/**
+	 * @param campaign
+	 * @param customUser
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/createCampaign", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> createCampaign(@RequestBody Campaign campaign,
@@ -169,6 +207,7 @@ public class BCSCampaignController extends BCSBaseController {
         }
     }
 	
+	//未開放功能
 	@RequestMapping(method = RequestMethod.DELETE, value ="/admin/redesignCampaign")
     @ResponseBody
     public ResponseEntity<?> redesignCampaign(
@@ -202,4 +241,6 @@ public class BCSCampaignController extends BCSBaseController {
             }
         }
     }
+	
+
 }

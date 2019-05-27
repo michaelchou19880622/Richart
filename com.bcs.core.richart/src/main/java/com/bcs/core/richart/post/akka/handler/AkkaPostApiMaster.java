@@ -1,4 +1,4 @@
-package com.bcs.croe.richart.post.akka.handler;
+package com.bcs.core.richart.post.akka.handler;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +33,6 @@ public class AkkaPostApiMaster extends UntypedActor{
 		if (message instanceof LogApiModel) {
 			LogApiModel logApiModel =(LogApiModel) message;
 			
-			logger.info("LogApiService.excute"+logApiModel);
 			Date start = new Date();
 			try {
 				String apiKey = CoreConfigReader.getString(CONFIG_STR.RICHART_LOG_API_KEY.toString(), true);

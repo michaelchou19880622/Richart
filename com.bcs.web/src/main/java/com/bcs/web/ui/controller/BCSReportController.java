@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.service.PushMessageRecordService;
+import com.bcs.core.richart.db.service.LinePointPushMessageRecordService;
 import com.bcs.core.db.entity.PushReport;
 import com.bcs.core.db.service.ContentReportService;
 import com.bcs.core.db.service.PushReportService;
@@ -52,6 +53,8 @@ public class BCSReportController extends BCSBaseController {
 	private UserTraceLogService userTraceLogService;
 	@Autowired
 	private PushMessageRecordService pushMessageRecordService;
+	@Autowired
+	private LinePointPushMessageRecordService pushLinePointMessageRecordService;
 	
 	/** Logger */
 	private static Logger logger = Logger.getLogger(BCSReportController.class);
@@ -361,6 +364,28 @@ public class BCSReportController extends BCSBaseController {
 				}
 		 }
 		 throw new Exception("資料產生錯誤");
+	}
+	
+	// LinePoint Report
+	@ControllerLog(description="getLinePointPushMessageEffects")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/getLinePointPushMessageEffects")
+	@ResponseBody
+	public ResponseEntity<?> getLinePointPushMessageEffects(
+			HttpServletRequest request, 
+			HttpServletResponse response, 
+			@RequestParam(value = "startDate", required = true) String startDate, 
+			@RequestParam(value = "endDate", required = true) String endDate) {
+		logger.info("-------------------- getPushApiEffects --------------------");
+		logger.info("[getPushApiEffects] startDate: " + startDate);
+		logger.info("[getPushApiEffects] endDate: " + endDate);
+		
+		try {
+			return new ResponseEntity<>(pushLinePointMessageRecordService.getLinePointPushMessageEffects(startDate, endDate), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+			
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@ControllerLog(description="getPushApiEffects")

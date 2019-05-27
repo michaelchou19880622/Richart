@@ -488,17 +488,19 @@ public class BCSSendGroupController extends BCSBaseController {
 			HttpServletRequest request, 
 			HttpServletResponse response,
 			@CurrentUser CustomUser customUser,
-			@RequestPart MultipartFile filePart
+			@RequestPart MultipartFile filePart,
+			@RequestParam String event
 			) throws IOException {
 		logger.info("uploadMidSendGroup");
 
 		try{
+					    
 			if(filePart != null){
 				
 				String modifyUser = customUser.getAccount();
 				logger.info("modifyUser:" + modifyUser);
 				
-				Map<String, Object> result = sendGroupUIService.uploadMidSendGroup(filePart, modifyUser, new Date());
+				Map<String, Object> result = sendGroupUIService.uploadMidSendGroup(event ,filePart, modifyUser, new Date());
 				
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			}

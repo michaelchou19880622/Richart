@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head
+	th:replace="/BCS/Views/Common/Head :: head ('Line Point Create Page','/BCS/JS/PageLPC.base.js')">
+</head>
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('LinePointCreatePage')"></div>
+
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+			<form id="formCampaignGroupAdd">
+				<section>
+					<header class="ContentHead">
+						<h3 class="CHTtl">建立LINE POINT活動</h3>
+						
+					</header>
+					<div class="mainFrame">
+						<table border="1">
+							<colgroup>
+								<col width="190">
+								<col>
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>活動標題<font size="3" color="red">*</font></th>
+									<td>
+									<input type="text" id="campaignTitle" name="campaignTitle" value="" maxlength="50"  required="required">
+									</td>
+								</tr>
+								<tr>
+									<th>活動代碼<font size="3" color="red">*</font></th>
+									<td>
+									<input type="text" id="campaignCode" name="campaignCode" value="" maxlength="50"  required="required">
+									</td>
+								</tr>
+								<tr >
+									<th>點數/人<font size="3" color="red">*</font></th>
+									<td><input type="text" id="points" name="points"value="" maxlength="50"  required="required">
+									</td>
+								</tr>
+									<tr >
+									<th>活動人數<font size="3" color="red">*</font></th>
+									<td><input type="text" id="campaignPersonNum" name="campaignPersonNum" value="" maxlength="50"  required="required">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</section>
+				<div class="BtnSet">
+					<div>
+							<input class="btn_save" style="cursor: pointer;" type="button"	value="建立"  >  
+					</div>
+				
+				</div>
+			</form>
+		</div>
+	</div>
+
+</body>
+
+</html>

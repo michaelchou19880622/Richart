@@ -1,0 +1,89 @@
+package com.bcs.core.richart.db.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bcs.core.richart.db.entity.LinePointMain;
+import com.bcs.core.richart.db.repository.LinePointMainRepository;
+
+@Service
+public class LinePointMainService {
+	/** Logger */
+	private static Logger logger = Logger.getLogger(LinePointMainService.class);
+	@Autowired
+	private LinePointMainRepository linePointMainRepository;
+
+    @PersistenceContext
+    EntityManager entityManager;
+    
+	public void delete(Long msgId){
+		LinePointMain main = linePointMainRepository.findOne(msgId);
+		main.setModifyTime(new Date());
+		main.setStatus(LinePointMain.MESSAGE_STATUS_DELETE);
+		this.save(main);
+	}
+    
+	public void save(LinePointMain linePoint){
+		linePointMainRepository.save(linePoint);
+	}
+    
+	public LinePointMain findOne(Long msgId){
+		return linePointMainRepository.findOne(msgId);
+	}
+    
+	public LinePointMain findBySerialId(String serialId){
+		return linePointMainRepository.findBySerialId(serialId);
+	}
+	
+	
+	public List<LinePointMain> findByStatus(String status){
+		return linePointMainRepository.findByStatus(status);
+	}
+	
+	
+//	@SuppressWarnings("unchecked")
+//	public Map<LinePointSendMain, List<LinePointSend>> queryGetLinePointSendMainAll(){
+//		Query query = entityManager.createNamedQuery("queryLinePointSendMainDetailAll");
+//		List<Object[]> list = query.getResultList();
+//		
+//		Map<LinePointSendMain, List<LinePointSend>> map = parseListToMap(list);
+//    	logger.debug(map);
+//		
+//		return map;
+//	}
+//	
+//	private Map<LinePointSendMain, List<LinePointSend>> parseListToMap(List<Object[]> list){
+//
+//		Map<LinePointSendMain, List<LinePointSend>> map = new LinkedHashMap<LinePointSendMain, List<LinePointSend>>();
+//
+//	    for(Object[] o : list){
+//	    	logger.debug("length:" + o.length);
+//	    	logger.debug(o[0]);
+//	    	if(o[0] !=null){
+//	    		List<LinePointSend> details = map.get(o[0]);
+//	    		if(details == null){
+//	    			map.put((LinePointSendMain) o[0], new ArrayList<LinePointSend>());
+//	    		}
+//	    	}
+//	    	logger.debug(o[1]);
+//	    	if(o[1] != null){
+//	    		List<LinePointSend> details = map.get(o[0]);
+//	    		details.add((LinePointSend) o[1]);
+//	    	}
+//	    }
+//	    
+//	    return map;
+//	}	
+	
+}

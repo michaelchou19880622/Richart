@@ -55,11 +55,6 @@
 		</headers>
 	</http>
 
-	<authentication-manager>
-		<authentication-provider user-service-ref="customUserDetailsService">
-			<password-encoder ref="bcryptEncoder" />
-		</authentication-provider>
-	</authentication-manager>
 
 	<beans:bean id="customUserDetailsService"
 		class="com.bcs.web.security.service.CustomUserDetailsService" />
@@ -69,5 +64,10 @@
 	
 	<beans:bean id="customAccessDeniedHandler"
 		class="com.bcs.web.security.CustomAccessDeniedHandler" />
+	<authentication-manager>
+		<authentication-provider user-service-ref="customUserDetailsService">
+			<password-encoder ref="bcryptEncoder" />
+		</authentication-provider>
+	</authentication-manager>
 
 </beans:beans>

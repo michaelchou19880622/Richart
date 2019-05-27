@@ -1,11 +1,15 @@
 package com.bcs.core.richart.api.controller;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,13 +19,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bcs.core.api.service.model.PushApiModel;
+
 import com.bcs.core.bot.akka.service.PNPService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richart.api.validator.PushApiRequestValidator;
 import com.bcs.core.utils.CryptUtil;
+import com.bcs.core.web.security.CurrentUser;
+import com.bcs.core.web.security.CustomUser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping("/api")
@@ -30,7 +39,7 @@ public class PushApiController {
 	
 	@Autowired
 	private PNPService PNPService;
-	
+
 	@RequestMapping(method = RequestMethod.POST, value = "/message/push", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> pushMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
 		try {

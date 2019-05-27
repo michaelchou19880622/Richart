@@ -38,6 +38,7 @@
 				<value>com.bcs.core.db.entity</value>
 				<value>com.bcs.core.bc.db.entity</value>
 				<value>com.bcs.core.bot.db.entity</value>
+				<value>com.bcs.core.richart.db.entity</value>
 			</array>
      	</property>
 		<property name="jpaVendorAdapter">
@@ -51,9 +52,9 @@
             	<!-- <prop key="hibernate.dialect">org.hibernate.dialect.DB2400Dialect</prop> -->
             	<prop key="hibernate.dialect">org.hibernate.dialect.SQLServer2008Dialect</prop>
             	<!-- <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop> -->
-            	<prop key="hibernate.show_sql">true</prop>
-            	<prop key="hibernate.format_sql">true</prop>
-            	<prop key="hibernate.hbm2ddl.auto">update</prop>
+            	<prop key="hibernate.show_sql">false</prop>
+            	<prop key="hibernate.format_sql">false</prop>
+            	<prop key="hibernate.hbm2ddl.auto">none</prop> <!-- none/update -->
             	<prop key="hibernate.jdbc.batch_size">50</prop>
             	<prop key="hibernate.order_inserts">true</prop>
 				<prop key="hibernate.order_updates">true</prop>
@@ -83,11 +84,6 @@
 				<prop key="serverName">13.78.19.109</prop>
 				<prop key="databaseName">Richart Customer Connect</prop>
 				<prop key="portNumber">1433</prop>
-<!-- 				<prop key="user">bcsAdmin</prop>
-				<prop key="password">dj/4ej03</prop>
-				<prop key="serverName">61.218.5.103</prop>
-				<prop key="databaseName">Richart Customer Connect</prop>
-				<prop key="portNumber">2819</prop> -->
 			</props>
 		</property>
 	</bean>

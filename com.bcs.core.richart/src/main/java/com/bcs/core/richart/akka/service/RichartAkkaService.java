@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bcs.core.richart.api.model.LogApiModel;
 import com.bcs.core.utils.AkkaSystemFactory;
-import com.bcs.croe.richart.post.akka.handler.AkkaPostApiMaster;
+import com.bcs.core.richart.post.akka.handler.AkkaPostApiMaster;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;

@@ -14,6 +14,13 @@ public enum BcsPageEnum {
 
 	SendGroupCreatePage("/BCS/Views/Page1"),
 	SendGroupListPage("/BCS/Views/Page2"),
+	
+	// Line Point
+	LinePointCreatePage("/BCS/Views/PageLPC"),
+	LinePointListPage("/BCS/Views/PageLPL"),
+	LinePointPushPage("/BCS/Views/PageLPP"),
+	LinePointReportPage("/BCS/Views/PageLPR"),
+
 
 	MsgCreatePage("/BCS/Views/Page3"),
 	MsgListDraftPage("/BCS/Views/Page4-1"),
