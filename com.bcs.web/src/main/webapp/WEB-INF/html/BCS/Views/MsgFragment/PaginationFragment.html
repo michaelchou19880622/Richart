@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/security/tags">
+<body>
+	<!-- 分頁&查詢 -->
+    <div th:fragment="pagination (queryTargetName, inputLength, isQueryOpen, isSortOpen)" class="CHBtnSet"> 
+        <div class="CHRight">
+	        <div style="float:left;" id="pagination-container" class="pagination"></div>
+			<div th:if="${isSortOpen == 'true'}">
+			     <span>時間排序：</span>
+			     <input type="radio" id="asc" value="asc" name="sortOption">
+			     <label for="asc">升序</label>
+			     &nbsp;
+			     <input type="radio" id="desc" value="desc" name="sortOption" checked="checked">
+                 <label for="desc">降序</label>
+			</div>
+			<br/>
+			<div th:if="${isQueryOpen == 'true'}">
+				<span>查詢<span th:text="${queryTargetName}"></span>：</span>
+				<div class="option date"  style="width:330px;">
+					<input type="text" id="flagInput"  style="width:300px;" th:maxlength="${inputLength}"/>
+				</div>
+				<input id="queryByFlag" class="btn_save" type="button" value="查詢"  style="cursor: pointer;">
+            </div>
+        </div>   
+    </div>
+</body>
+</html>

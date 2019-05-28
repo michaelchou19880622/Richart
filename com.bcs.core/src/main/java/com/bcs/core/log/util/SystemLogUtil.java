@@ -28,6 +28,14 @@ public class SystemLogUtil {
 		timeCheck(target.toString(), action.toString(), start, status, limitTime, log, referenceId);
 	}
 	
+	// Rich Menu
+	public static void timeCheck(LOG_TARGET_ACTION_TYPE target, LOG_TARGET_ACTION_TYPE action, Date start, int status, String log, String referenceId, boolean saveLog){
+		timeCheck(target, action, start, status, 15000, log, referenceId, saveLog);
+	}
+	public static void timeCheck(LOG_TARGET_ACTION_TYPE target, LOG_TARGET_ACTION_TYPE action, Date start, int status, int limitTime, String log, String referenceId, boolean saveLog){
+		timeCheck(target.toString(), action.toString(), start, status, limitTime, log, referenceId);
+	}
+	
 	public static void timeCheck(String target, String action, Date start, int status, int limitTime, String log, String referenceId){
 		Long diff = new Date().getTime() - start.getTime() ;
 		logger.info(target + "-" + action + " Response Status:" + status + "-t-" + diff + "--" + referenceId);

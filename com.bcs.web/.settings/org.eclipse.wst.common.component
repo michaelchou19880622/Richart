@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+                            
+    
+    
+    
+    
+    
+    <wb-module deploy-name="bcs">
+        <wb-resource deploy-path="/WEB-INF/web.xml" source-path="/src/main/webapp/WEB-INF/web.xml"/>
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="com.bcs.core-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core/com.bcs.core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="com.bcs.core.bot-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.bot/com.bcs.core.bot">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="com.bcs.core.web-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.web/com.bcs.core.web">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="com.bcs.core.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richart/com.bcs.core.richart">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="com.bcs.core.richmenu-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richmenu/com.bcs.core.richmenu">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+                                                        
+        
+        
+        
+        
+        
+        <property name="context-root" value="bcs"/>
+                                                        
+        
+        
+        
+        
+        
+        <property name="java-output-path" value="/com.bcs.web/target/classes"/>
+        <property name="component.exclusion.patterns" value="%regex[WEB-INF/lib/(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]"/>
+                                                    
+    
+    
+    
+    
+    
+    </wb-module>
+                        
+
+
+
+
+
+</project-modules>

@@ -37,6 +37,20 @@ public class UriHelper {
 
 	static String staticSrcUrl = CoreConfigReader.getString("bcs.base.url.static.src");
 
+	// Rich Menu
+	static String msgTracingUrl = CoreConfigReader.getString("rest.api.path.tracing.msg.link");
+	static String mlOauthUrl = CoreConfigReader.getString("rest.api.path.msg.link.oauth");
+	
+	public static String getMsgTracingUrl(Long tracingId){
+
+		return baseUrl_Https + msgTracingUrl + tracingId;
+	}
+	
+	public static String getMlOauthUrl(){
+
+		return baseUrl_Https + mlOauthUrl;
+	}
+	
     /**
      * Link Page Pattern Create
      * @param id

@@ -38,7 +38,8 @@
 				<value>com.bcs.core.db.entity</value>
 				<value>com.bcs.core.bc.db.entity</value>
 				<value>com.bcs.core.bot.db.entity</value>
-				<value>com.bcs.core.richart.db.entity</value>				
+				<value>com.bcs.core.richart.db.entity</value>
+				<value>com.bcs.core.richmenu.core.db.entity</value>				
 			</array>
      	</property>
 		<property name="jpaVendorAdapter">

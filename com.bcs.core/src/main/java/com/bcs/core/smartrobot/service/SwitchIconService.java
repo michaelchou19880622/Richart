@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.resource.CoreConfigReader;
-import com.linecorp.bot.model.message.Sender;
 
 @Service
 public class SwitchIconService {
@@ -24,11 +23,5 @@ public class SwitchIconService {
 		senderObject.put("iconUrl",iconUrl);
 		senderObject.put("name", name);
 		return senderObject;
-	}
-	
-	public Sender generateSenderModel(String channelId) {
-		String name = CoreConfigReader.getString(channelId, CONFIG_STR.ChannelSwitchIconName.toString(), true);
-		String iconUrl = CoreConfigReader.getString(channelId, CONFIG_STR.ChannelSwitchIconUrl.toString(), true);
-		return new Sender(name, iconUrl);
 	}
 }

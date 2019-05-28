@@ -149,6 +149,19 @@ public enum CONFIG_STR {
 	MGM_SHARE_IMG_CDN_URL("mgm.share.img.cdn.url"),
 	MGM_DESCRIPTION_IMG_CDN_URL("mgm.description.img.cdn.url"),
 	ADD_LINE_FRIEND_LINK("add.line.friend.link"),
+	
+	//Rich Menu
+	NUMBER_OF_ITEM_IN_LISTPAGE("number.of.item.in.listPage"),
+	
+	LINE_RICH_MENU_CREATE_API("line.rich.menu.create.api"),
+	LINE_RICH_MENU_UPLOAD_IMAGE_API("line.rich.menu.upload.image.api"),
+	LINE_RICH_MENU_LINK_API("line.rich.menu.link.api"),
+	LINE_RICH_MENU_UNLINK_API("line.rich.menu.unlink.api"),
+	LINE_RICH_MENU_DELETE_API("line.rich.menu.delete.api"),
+	LINE_RICH_MENU_GET_INFO_API("line.rich.menu.get.info.api"),
+	LINE_RICH_MENU_GET_INFO_LIST_API("line.rich.menu.get.info.list.api"),
+	LINE_RICH_MENU_GET_LINK_ID_OF_USER_API("line.rich.menu.get.link.id.of.user.api"),
+	LINE_RICH_MENU_DOWNLOAD_IMAGE_API("line.rich.menu.download.image.api"),
 	;
 
    private final String str;

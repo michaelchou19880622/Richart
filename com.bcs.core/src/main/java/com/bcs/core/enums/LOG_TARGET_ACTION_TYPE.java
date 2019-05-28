@@ -158,7 +158,29 @@ public enum LOG_TARGET_ACTION_TYPE {
 			
 			
 	 TARGET_ShareUserRecord("ShareUserRecord"),
-        ACTION_DoMgmSharing("DoMgmSharing"),
+	 		ACTION_DoMgmSharing("DoMgmSharing"),
+	 		
+     // Rich Menu
+     TARGET_RichMenuApi("RichMenuApi"),
+    		ACTION_CreateRichMenu("CreateRichMenu"),
+    		ACTION_ActiveRichMenu("ActiveRichMenu"),
+    		ACTION_CreateRichMenu_Error("CreateRichMenu_Error"),
+    		ACTION_UploadImageToRichMenu("UploadImageToRichMenu"),
+    		ACTION_UploadImageToRichMenu_Error("UploadImageToRichMenu_Error"),
+    		ACTION_LinkRichMenuToUser("LinkRichMenuToUser"),
+    		ACTION_LinkRichMenuToUser_Error("LinkRichMenuToUser_Error"),
+    		ACTION_UnlinkRichMenuToUser("UnlinkRichMenuToUser"),
+    		ACTION_UnlinkRichMenuToUser_Error("UnlinkRichMenuToUser_Error"),
+    		ACTION_DeleteRichMenu("DeleteRichMenu"),
+    		ACTION_DeleteRichMenu_Error("DeleteRichMenu_Error"),
+    		ACTION_GetRichMenuInfo("GetRichMenuInfo"),
+    		ACTION_GetRichMenuInfo_Error("GetRichMenuInfo_Error"),
+    		ACTION_GetRichMenuInfoList("GetRichMenuInfoList"),
+    		ACTION_GetRichMenuInfoList_Error("GetRichMenuInfoList_Error"),
+    		ACTION_GetRichMenuIdOfUser("GetRichMenuIdOfUser"),
+    		ACTION_GetRichMenuIdOfUser_Error("GetRichMenuIdOfUser_Error"),
+    		ACTION_DownloadRichMenuImage("DownloadRichMenuImage"),
+    		ACTION_DownloadRichMenuImage_Error("DownloadRichMenuImage_Error"),
 	;
 
     private final String str;

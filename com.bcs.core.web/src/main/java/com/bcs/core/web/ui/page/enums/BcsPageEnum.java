@@ -21,6 +21,10 @@ public enum BcsPageEnum {
 	LinePointPushPage("/BCS/Views/PageLPP"),
 	LinePointReportPage("/BCS/Views/PageLPR"),
 
+	//RichMenu Page
+	RichMenuCreatePage("/BCS/Views/PageRM1"),
+	RichMenuListPage("/BCS/Views/PageRM2"),
+	RichMenuListDeletePage("/BCS/Views/PageRM3"),
 
 	MsgCreatePage("/BCS/Views/Page3"),
 	MsgListDraftPage("/BCS/Views/Page4-1"),

@@ -28,7 +28,6 @@ import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.message.Message;
-import com.linecorp.bot.model.message.Sender;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.message.template.ButtonsTemplate;
@@ -44,8 +43,6 @@ public class MessageProcessService {
 			
 	@Autowired
 	private BotReplyRecordService botReplyRecordService;
-	@Autowired
-	private SwitchIconService switchIconService;
 	
 	public boolean isAttentionKeyword(JSONObject responseMsg) {
 		if(responseMsg.has("attentionKeywords"))
@@ -148,9 +145,7 @@ public class MessageProcessService {
 			actions.add(new PostbackAction(label, data));
 		}
 		
-		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
-		
-		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions), sender);
+		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions));
 		
 		return message;
 	}
@@ -167,9 +162,7 @@ public class MessageProcessService {
 			text = LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.CUSTOMER_SERVICE_STILL_BUSY.toString());
 		}
 		
-		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
-		
-		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions), sender);
+		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions));
 		
 		return message;
 	}
@@ -180,9 +173,7 @@ public class MessageProcessService {
 		
 		actions.add(new URIAction(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.CUSTOMER_SATISFACTION_DEGREE_BUTTON.toString()), surveyUrl));
 		
-		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
-		
-		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions), sender);
+		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions));
 		
 		return message;
 	}
@@ -194,9 +185,7 @@ public class MessageProcessService {
 		
 		text += "「" + message + "」\n" + LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LEAVE_MESSAGE_CHOOSE.toString());
 		
-		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
-
-		Message confirmMessage = new TemplateMessage(text, new ConfirmTemplate(text, leftButtonAction, rightButtonAction), sender);
+		Message confirmMessage = new TemplateMessage(text, new ConfirmTemplate(text, leftButtonAction, rightButtonAction));
 		
 		return confirmMessage;
 	}
@@ -207,9 +196,7 @@ public class MessageProcessService {
 		
 		actions.add(new PostbackAction(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LEAVE_MESSAGE_BUTTON.toString()), "action=LeaveMessage"));
 		
-		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString()); 
-		
-		Message confirmMessage = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions), sender);
+		Message confirmMessage = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions));
 		
 		return confirmMessage;
 	}
@@ -217,10 +204,9 @@ public class MessageProcessService {
 	public void replyTextMessage(String channelId, String channelName, List<String> textList, String replyToken) throws Exception {
 		List<Message> sendMsgList = new ArrayList<Message>();
 		Message message = null;
-		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString()); 
-		
+
 		for(String text : textList) {
-			message = new TextMessage(text, sender);
+			message = new TextMessage(text);
 			
 			sendMsgList.add(message);
 		}
@@ -245,9 +231,7 @@ public class MessageProcessService {
 		sendMsgDetail.setText(text);
 		sendMsgDetail.setMsgType(MsgGenerator.MSG_TYPE_TEXT);
 		
-		Sender sender = switchIconService.generateSenderModel(channelName); 
-		
-		TextMessage textMesage = new TextMessage(text, sender);
+		TextMessage textMesage = new TextMessage(text);
 		PushMessage pushMessage = new PushMessage(UID, textMesage);
 
 		SendToBotModel sendToBotModel = new SendToBotModel();
