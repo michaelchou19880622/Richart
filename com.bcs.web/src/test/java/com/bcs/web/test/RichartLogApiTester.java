@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:spring/spring-base.xml", "classpath*:spring/spring-security.xml"})
 public class RichartLogApiTester extends TestCase {
-	private static Logger logger = Logger.getLogger(RichartLogApiTester.class);
+	private static Logger logger = Logger.getLogger(LinePointPushApiTester.class);
 	
 	@Autowired
 	private RichartAkkaService richartAkkaSerive;

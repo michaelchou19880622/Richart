@@ -42,6 +42,7 @@ public class LinePointPushMessageActor extends UntypedActor {
 			LinePointMainRepository linePointMainRepository = ApplicationContextProvider.getApplicationContext().getBean(LinePointMainRepository.class);
 			LinePointDetailService linePointDetailService = ApplicationContextProvider.getApplicationContext().getBean(LinePointDetailService.class);
 			
+			
 			// get push data
 			LinePointPushModel pushApiModel = (LinePointPushModel) object;
 			Long eventId = pushApiModel.getEventId();
