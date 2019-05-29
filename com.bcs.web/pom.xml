@@ -65,7 +65,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>taishinoa</id> <!-- Richart正式機 API -->
+			<id>oaapi</id> <!-- Richart正式機 API -->
 			<properties>
 				<package.environment>oaapi</package.environment>
 				<rp.build.warname>oaapi</rp.build.warname>
