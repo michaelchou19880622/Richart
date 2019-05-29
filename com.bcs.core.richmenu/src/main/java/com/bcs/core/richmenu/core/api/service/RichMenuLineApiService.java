@@ -78,8 +78,7 @@ public class RichMenuLineApiService {
 			requestPost.releaseConnection();
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_CreateRichMenu, start, status, richMenu.toString(), status + "", true);
 			return new PostLineResponse(status, result);
-		}
-		catch(Exception e){
+		}catch(Exception e){
 			String error = ErrorRecord.recordError(e, false);
 			logger.error(error);
 			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_CreateRichMenu_Error, error, e.getMessage());
@@ -87,8 +86,7 @@ public class RichMenuLineApiService {
 			
 			if(retryCount < 5){
 				return this.callCreateRichMenuAPI(channelId, richMenu, retryCount + 1);
-			}
-			else{
+			}else{
 				throw e;
 			}
 		}
@@ -188,7 +186,6 @@ public class RichMenuLineApiService {
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
-				
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
 			logger.debug("clientResponse result : " + result);
@@ -196,19 +193,64 @@ public class RichMenuLineApiService {
 			requestPost.releaseConnection();
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_LinkRichMenuToUser, start, status, map.toString(), status + "");
 			return new PostLineResponse(status, result);
-		}
-		catch(Exception e){
+		}catch(Exception e){
 			String error = ErrorRecord.recordError(e, false);
 			logger.error(error);
 			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_LinkRichMenuToUser, error, e.getMessage());
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_LinkRichMenuToUser_Error, start, status, map.toString(), status + "");
 			
-			if(retryCount < 5){
+			if(retryCount < 5)
 				return this.callLinkRichMenuToUserAPI(channelId, richMenuId, uid, retryCount + 1);
-			}
-			else{
+			else
 				throw e;
+		}
+	}
+	
+	// Set Default Rich Menu
+	public PostLineResponse callLinkRichMenuToAllUserAPI(String richMenuId, int retryCount) throws Exception {
+		logger.debug("callLinkRichMenuToAllUserAPI");
+
+		// error log
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("richMenuId", richMenuId);
+		Date start = new Date();
+		int status = 0;
+		
+		try{
+			String apiUrl = CoreConfigReader.getString(CONFIG_STR.LINE_RICH_MENU_LINK_ALL_API);
+			apiUrl = apiUrl.replace("{richMenuId}", richMenuId);
+			String channelAccessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
+			HttpClient httpclient = HttpClientUtil.generateClient();
+		    
+			// Initialize Request
+			HttpPost requestPost = new HttpPost(apiUrl);
+			logger.debug("URI : " + requestPost.getURI());
+			requestPost.addHeader("Authorization", "Bearer " + channelAccessToken);
+	
+			// Execute Call
+			HttpResponse clientResponse = httpclient.execute(requestPost);
+			
+			status = clientResponse.getStatusLine().getStatusCode();
+			logger.debug("clientResponse StatusCode : " + status);
+	
+			String result = "";
+			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
+				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
+			logger.debug("clientResponse result : " + result);
+			
+			requestPost.releaseConnection();
+			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_LinkRichMenuToUser, start, status, map.toString(), status + "");
+			return new PostLineResponse(status, result);
+		}catch(Exception e){
+			String error = ErrorRecord.recordError(e, false);
+			logger.error(error);
+			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_LinkRichMenuToUser, error, e.getMessage());
+			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_LinkRichMenuToUser_Error, start, status, map.toString(), status + "");
+			if(retryCount < 5)
+				return this.callLinkRichMenuToAllUserAPI(richMenuId, retryCount + 1);
+			else
+				throw e;
 		}
 	}
 	

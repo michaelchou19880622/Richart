@@ -46,7 +46,6 @@ import com.bcs.core.richmenu.core.db.service.RichMenuMsgContentLinkTracingServic
 public class RichMenuContentUIService {
 
 	private static Logger logger = Logger.getLogger(RichMenuContentUIService.class);
-	
 	@Autowired
 	private RichMenuContentService contentRichMenuService;
 	@Autowired
@@ -71,11 +70,11 @@ public class RichMenuContentUIService {
 		logger.info(" ContentRichMenuUIService callCreateRichMenuAPI By richId");
 		
 		try{
-			RichMenuContent contentRichMenu = contentRichMenuService.getSelectedContentRichMenu(richId);
-			List<RichMenuContentDetail> contentRichMenuDetails = contentRichMenuDetailRepository.findByRichId(richId);
-			List<RichMenuContentLink> contentLinks = contentLinkService.findContentLinkByRichId(richId);
+			RichMenuContent richMenuContent = contentRichMenuService.getSelectedContentRichMenu(richId);
+			List<RichMenuContentDetail> richMenuContentDetails = contentRichMenuDetailRepository.findByRichId(richId);
+			List<RichMenuContentLink> richMenuContentLink = contentLinkService.findContentLinkByRichId(richId);
 			
-			return callCreateRichMenuAPI(channelId, contentRichMenu, contentRichMenuDetails, contentLinks, 0);
+			return callCreateRichMenuAPI(channelId, richMenuContent, richMenuContentDetails, richMenuContentLink, 0);
 		}catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
 			throw new BcsNoticeException(e.getMessage());
@@ -94,7 +93,6 @@ public class RichMenuContentUIService {
 	 */
 	public String callCreateRichMenuAPI(String channelId, RichMenuContent contentRichMenu, List<RichMenuContentDetail> contentRichMenuDetails, List<RichMenuContentLink> contentLinks, int retryCount) throws BcsNoticeException  {
 		logger.info(" ContentRichMenuUIService callCreateRichMenuAPI");
-		
 		try{
 			Boolean selected = false;
 			if(RichMenuContent.STATUS_OPEN.equals(contentRichMenu.getRichMenuShowStatus())){
@@ -116,28 +114,21 @@ public class RichMenuContentUIService {
 			
 			PostLineResponse result = lineRichMenuApiService.callCreateRichMenuAPI(channelId, richMenu, 0);
 			if(result.getStatus() != 200){
-				
 				if(result.getStatus() == 401){
 					if(retryCount < 5){
 						ObjectNode callRefreshingResult = LineAccessApiService.callVerifyAPIAndIssueToken(channelId, true);
 						logger.info("callRefreshingResult:" + callRefreshingResult);
-						
 						return this.callCreateRichMenuAPI(channelId, contentRichMenu, contentRichMenuDetails, contentLinks, retryCount + 1);
-					}
-					else{
+					}else{
 						throw new Exception("Create Rich Menu Error Times > 5");
 					}
-					
 				}else{
 					throw new Exception(result.getResponseStr());
 				}
-				
 			}
 			logger.debug("callCreateRichMenuAPI result:" + result);
-			
 			JsonNode resultNode = new ObjectMapper().readTree(result.getResponseStr());
 			return resultNode.get("richMenuId").asText();
-			
 		}catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
 			throw new BcsNoticeException(e.getMessage());
@@ -208,21 +199,17 @@ public class RichMenuContentUIService {
 	 */
 	public void callUploadImageAPI(String channelId, String richMenuId, String resourceId) throws BcsNoticeException  {
 		logger.info(" ContentRichMenuUIService callUploadImageAPI");
-		
 		try{
 			ContentResource contentResource = contentResourceService.findOne(resourceId);
-			
 			PostLineResponse result = lineRichMenuApiService.callUploadImageAPI(channelId, richMenuId, contentResource.getContentType(), resourceId, 0);
 			if(result.getStatus() != 200){
 				throw new Exception(result.getResponseStr());
 			}
 			logger.debug("callUploadImageAPI result:" + result);			
-			
 		}catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
 			throw new BcsNoticeException(e.getMessage());
 		}
-		
 	}
 	
 	/**
@@ -234,19 +221,30 @@ public class RichMenuContentUIService {
 	 */
 	public void callDeleteRichMenuAPI(String channelId, String richMenuId) throws BcsNoticeException  {
 		logger.info(" ContentRichMenuUIService callDeleteRichMenuAPI");
-		
 		try{			
 			PostLineResponse result = lineRichMenuApiService.callDeleteRichMenuAPI(channelId, richMenuId, 0);
 			if(result.getStatus() != 200){
 				throw new Exception(result.getResponseStr());
 			}
 			logger.debug("callDeleteRichMenuAPI result:" + result);			
-			
 		}catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
 			throw new BcsNoticeException(e.getMessage());
 		}
-		
 	}
-	
+
+	// 設定預設圖文選單API
+	public void callLinkRichMenuToAllUserAPI(String richMenuId) throws BcsNoticeException  {
+		logger.info(" ContentRichMenuUIService callLinkRichMenuToAllUserAPI");
+		try{			
+			PostLineResponse result = lineRichMenuApiService.callLinkRichMenuToAllUserAPI(richMenuId, 0);
+			if(result.getStatus() != 200){
+				throw new Exception(result.getResponseStr());
+			}
+			logger.debug("callLinkRichMenuToAllUserAPI result:" + result);			
+		}catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));
+			throw new BcsNoticeException(e.getMessage());
+		}
+	}
 }

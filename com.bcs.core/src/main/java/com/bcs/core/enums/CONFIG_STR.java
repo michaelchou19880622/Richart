@@ -155,6 +155,7 @@ public enum CONFIG_STR {
 	
 	LINE_RICH_MENU_CREATE_API("line.rich.menu.create.api"),
 	LINE_RICH_MENU_UPLOAD_IMAGE_API("line.rich.menu.upload.image.api"),
+	LINE_RICH_MENU_LINK_ALL_API("line.rich.menu.link.all.api"),
 	LINE_RICH_MENU_LINK_API("line.rich.menu.link.api"),
 	LINE_RICH_MENU_UNLINK_API("line.rich.menu.unlink.api"),
 	LINE_RICH_MENU_DELETE_API("line.rich.menu.delete.api"),

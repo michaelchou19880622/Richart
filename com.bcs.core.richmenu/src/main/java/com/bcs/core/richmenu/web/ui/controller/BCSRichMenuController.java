@@ -58,103 +58,112 @@ import com.bcs.core.richmenu.web.ui.service.RichMenuContentUIService;
 @RequestMapping("/bcs")
 public class BCSRichMenuController extends BCSBaseController {
 	
-	@Autowired
-	RichMenuContentService contentRichMenuService;
-	@Autowired
-	RichMenuContentFlagService contentFlagService;
-	@Autowired
-	RichMenuContentUIService contentRichMenuUIService;
-	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSRichMenuController.class);
-	
-	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuListPage")
-	public String richMsgListPage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("richMenuListPage");
-		return BcsPageEnum.RichMenuListPage.toString();
-	}
-	
-	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuListDeletePage")
-	public String richMsgListDeletePage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("richMenuListDeletePage");
-		return BcsPageEnum.RichMenuListDeletePage.toString();
-	}
+	private static Logger logger = Logger.getLogger(BCSRichMenuController.class);	
+	@Autowired
+	RichMenuContentService richMenuContentService;
+	@Autowired
+	RichMenuContentFlagService richMenuContentFlagService;
+	@Autowired
+	RichMenuContentUIService richMenuContentUIService;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuCreatePage")
 	public String richMsgCreatePage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("richMenuCreatePage");
 		return BcsPageEnum.RichMenuCreatePage.toString();
 	}
-	
-	/**
-	 * 取得圖文訊息
-	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuListPage")
+	public String richMsgListPage(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("richMenuListPage");
+		return BcsPageEnum.RichMenuListPage.toString();
+	}
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuListDeletePage")
+	public String richMsgListDeletePage(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("richMenuListDeletePage");
+		return BcsPageEnum.RichMenuListDeletePage.toString();
+	}
+
+	// 取得圖文訊息
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getRichMenu/{richId}")
 	@ResponseBody
 	public ResponseEntity<?> getRichMenu(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable String richId) throws IOException {
 		logger.info("getRichMenu");
-
 		try{
-			Map<String, List<String>> result = contentRichMenuService.getContentRichMenu(richId);
-
+			Map<String, List<String>> result = richMenuContentService.getContentRichMenu(richId);
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		}
-		catch(Exception e){
+		} catch(Exception e) {
 			logger.error(ErrorRecord.recordError(e));
-			
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	/**
-	 * 取得圖文訊息列表
-	 */
+	// 取得圖文訊息列表
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getRichMenuList")
 	@ResponseBody
 	public ResponseEntity<?> getRichMenuList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getRichMenuList");
-
 		try{
 		    String queryFlag = request.getParameter("queryFlag");
             String pageStr = request.getParameter("page");
             String status = request.getParameter("status");
-		    
             boolean isAsc = Boolean.parseBoolean(request.getParameter("isAsc"));
             
 			Map<String, List<String>> result = null;
-
 			if(StringUtils.isBlank(queryFlag) && StringUtils.isBlank(pageStr)) {
-			    result = contentRichMenuService.getAllContentRichMenuByStatus(status);
-			    
-			}
-			else {
+			    result = richMenuContentService.getAllContentRichMenuByStatus(status);
+			}else{
 			    int size = CoreConfigReader.getInteger(CONFIG_STR.NUMBER_OF_ITEM_IN_LISTPAGE, true);
-                if(size < 0) {
-                    size = 20;
-                }
-                
+                if(size < 0) size = 20;
                 int page = Integer.parseInt(pageStr);
-                
-                result = contentRichMenuService.getAllContentRichMenu(queryFlag, page, size, isAsc, status);
+                result = richMenuContentService.getAllContentRichMenu(queryFlag, page, size, isAsc, status);
 			}
-			
 			return new ResponseEntity<>(result, HttpStatus.OK);
-		}
-		catch(Exception e){
+		}catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
-			
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	/**
-	 * 新增、編輯圖文選單
-	 */
+	// 取得RichMenu總分頁數
+    @RequestMapping(method = RequestMethod.GET, value = "/edit/getRichMenuPageTotal")
+    @ResponseBody
+    public ResponseEntity<?> getRichMenuPageTotal(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser) throws IOException {
+        logger.info("getRichMenuPageTotal");
+        Long result = null;
+        try{
+            String queryFlag = request.getParameter("queryFlag");
+            
+            if(StringUtils.isBlank(queryFlag)){
+                result = richMenuContentService.countTotal();
+            }
+            else{
+
+                result = richMenuContentService.countTotalByLikeTitle("%" + queryFlag + "%");
+            }
+            
+            int size = CoreConfigReader.getInteger(CONFIG_STR.NUMBER_OF_ITEM_IN_LISTPAGE, true);
+            if(size < 0) {
+                size = 20;
+            }
+            
+            Long pageTotal = result/size;
+            if(result%size == 0) {
+                pageTotal -= 1;
+            }
+            
+            return new ResponseEntity<>(pageTotal, HttpStatus.OK);
+        }catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));	
+			if(e instanceof BcsNoticeException)
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			else
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+	// 新增、編輯圖文選單
 	@RequestMapping(method = RequestMethod.POST, value = "/edit/createRichMenu", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> createRichMenu(HttpServletRequest request, HttpServletResponse response,
-			@CurrentUser CustomUser customUser,  
+	public ResponseEntity<?> createRichMenu(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser,  
 			@RequestBody CreateRichMenuModel createRichMenuModel, @RequestParam String actionType, @RequestParam String richId) throws IOException {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -169,19 +178,19 @@ public class BCSRichMenuController extends BCSBaseController {
 			
 			List<Map<String, String>> richMenuDetailIdAndLinkIds = new ArrayList<>();
 			if (actionType.equals("Edit")) { //變更
-				contentRichMenu = contentRichMenuService.getSelectedContentRichMenu(richId);
+				contentRichMenu = richMenuContentService.getSelectedContentRichMenu(richId);
 				
 				// 檢查啟用中的RichMenu使用期間
 				if(RichMenuContent.STATUS_ACTIVE.equals(contentRichMenu.getStatus())){
 					Date newStartUsingTime = sdf.parse(createRichMenuModel.getRichMenuStartUsingTime());
 					Date newEndUsingTime = sdf.parse(createRichMenuModel.getRichMenuEndUsingTime());
-					List<RichMenuContent> richMenu = contentRichMenuService.findByStatusAndConditionAndUsingTime(RichMenuContent.STATUS_ACTIVE, contentRichMenu.getCondition(), newStartUsingTime, newEndUsingTime);
+					List<RichMenuContent> richMenu = richMenuContentService.findByStatusAndConditionAndUsingTime(RichMenuContent.STATUS_ACTIVE, contentRichMenu.getCondition(), newStartUsingTime, newEndUsingTime);
 					if(richMenu != null && richMenu.size() > 0){
 						throw new BcsNoticeException("請確認切換條件、使用期間，最多啟用一種圖文選單!");
 					}
 				}
 				
-				contentRichMenuService.getPreDetailIdAndLinkId(richId); //取得原先圖文訊息的DetailId與LinkId
+				richMenuContentService.getPreDetailIdAndLinkId(richId); //取得原先圖文訊息的DetailId與LinkId
 			} else { //新增與複製
 				richId = checkDuplicateUUID("1");
 				contentRichMenu.setRichId(richId);
@@ -232,17 +241,15 @@ public class BCSRichMenuController extends BCSBaseController {
 				
 				if(RichMenuAction.ACTION_TYPE_SEND_MESSAGE.equals(url.getActionType())){
 					contentRichMenuDetail.setLinkId(url.getLinkUrl());
-				}
-				else if(RichMenuAction.ACTION_TYPE_POSTBACK.equals(url.getActionType())){
+				}else if(RichMenuAction.ACTION_TYPE_POSTBACK.equals(url.getActionType())){
 					contentRichMenuDetail.setLinkId(url.getLinkUrl());
-				}
-				else if(RichMenuAction.ACTION_TYPE_WEB.equals(url.getActionType())){
+				}else if(RichMenuAction.ACTION_TYPE_WEB.equals(url.getActionType())){
 
 					contentRichMenuDetail.setLinkId(linkId);
 					
 					RichMenuContentLink contentLink = new RichMenuContentLink();
 					contentLink.setLinkId(linkId);
-					contentLink.setLinkTag(contentFlagService.concat(url.getLinkTagList(), 50));
+					contentLink.setLinkTag(richMenuContentFlagService.concat(url.getLinkTagList(), 50));
 					contentLink.setLinkTitle(url.getLinkTitle());
 					contentLink.setLinkUrl(url.getLinkUrl());
 					contentLink.setModifyTime(new Date());
@@ -258,34 +265,118 @@ public class BCSRichMenuController extends BCSBaseController {
 			if(RichMenuContent.STATUS_ACTIVE.equals(contentRichMenu.getStatus())){
 				String oldRichMenuId = contentRichMenu.getRichMenuId();
 				
-				String newRichMenuId = contentRichMenuUIService.callCreateRichMenuAPI(CONFIG_STR.Default.toString(), contentRichMenu, contentRichMenuDetails, contentLinks, 0);
+				String newRichMenuId = richMenuContentUIService.callCreateRichMenuAPI(CONFIG_STR.Default.toString(), contentRichMenu, contentRichMenuDetails, contentLinks, 0);
 				contentRichMenu.setRichMenuId(newRichMenuId);
 
 				SystemLogUtil.saveLogDebug(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi.toString(), LOG_TARGET_ACTION_TYPE.ACTION_ActiveRichMenu.toString(), "SYSTEM", newRichMenuId, contentRichMenu.getRichId());
 				
-				contentRichMenuUIService.callUploadImageAPI(CONFIG_STR.Default.toString(), newRichMenuId, contentRichMenu.getRichImageId());
+				richMenuContentUIService.callUploadImageAPI(CONFIG_STR.Default.toString(), newRichMenuId, contentRichMenu.getRichImageId());
 				
-				contentRichMenuUIService.callDeleteRichMenuAPI(CONFIG_STR.Default.toString(), oldRichMenuId);
+				richMenuContentUIService.callDeleteRichMenuAPI(CONFIG_STR.Default.toString(), oldRichMenuId);
 			}			
 			
-			contentRichMenuService.createRichMsg(contentRichMenu, contentRichMenuDetails, contentLinks, contentFlagMap);
+			richMenuContentService.createRichMsg(contentRichMenu, contentRichMenuDetails, contentLinks, contentFlagMap);
 			
 			return new ResponseEntity<>("save success", HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error(ErrorRecord.recordError(e));
-
-			if(e instanceof BcsNoticeException){
+			logger.error(ErrorRecord.recordError(e));	
+			if(e instanceof BcsNoticeException)
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			else
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}	
+		}
+	}
+	// 刪除圖文選單
+	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteRichMenu/{richId}")
+	@ResponseBody
+	public ResponseEntity<?> deleteRichMenu(HttpServletRequest request, HttpServletResponse response,
+			@CurrentUser CustomUser customUser, @PathVariable String richId) {
+		logger.info("deleteRichMenu");
+		try {
+			// Check Delete Right
+			boolean isAdmin = customUser.isAdmin();
+			if(isAdmin) {
+				richMenuContentService.deleteRichMenu(richId, customUser.getAccount());
+				richMenuContentService.getPreDetailIdAndLinkId(richId);
+				return new ResponseEntity<>("Delete Success", HttpStatus.OK);
+			} else {
+				throw new BcsNoticeException("此帳號沒有刪除權限");
+			}
+		} catch(Exception e) {
+			logger.error(ErrorRecord.recordError(e));	
+			if(e instanceof BcsNoticeException)
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			else
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	// 啟用圖文選單
+	@RequestMapping(method = RequestMethod.DELETE, value ="/edit/activeRichMenuStatus")
+	@ResponseBody
+	public ResponseEntity<?> activeRichMenuStatus(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser) throws IOException {
+		logger.info("activeRichMenuStatus");
+		try{
+			String richId = request.getParameter("richId");
+			if(StringUtils.isNotBlank(richId)){
+				RichMenuContent richMenuContent = richMenuContentService.getSelectedContentRichMenu(richId);
+				List<RichMenuContent> richMenu = richMenuContentService.findByStatusAndConditionAndUsingTime(RichMenuContent.STATUS_ACTIVE, richMenuContent.getCondition(), richMenuContent.getRichMenuStartUsingTime(), richMenuContent.getRichMenuEndUsingTime());
+				if(richMenu != null && richMenu.size() > 0){
+					throw new BcsNoticeException("請確認切換條件、使用期間，最多啟用一種圖文選單!");
+				}
+				String richMenuId = richMenuContentUIService.callCreateRichMenuAPI(CONFIG_STR.Default.toString(), richId);
+				SystemLogUtil.saveLogDebug(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi.toString(), LOG_TARGET_ACTION_TYPE.ACTION_ActiveRichMenu.toString(), "SYSTEM", richMenuId, richMenuContent.getRichId());
+				richMenuContentUIService.callUploadImageAPI(CONFIG_STR.Default.toString(), richMenuId, richMenuContent.getRichImageId());
+				richMenuContentService.activeRichMenu(richId, richMenuId, customUser.getAccount());
+				
+				// CallLinkRichMenuToAllUserAPI
+				richMenuContentUIService.callLinkRichMenuToAllUserAPI(richMenuId);
+				return new ResponseEntity<>("Change Success", HttpStatus.OK);
+			}else{
+				logger.error("iMsgId Null");
+				throw new BcsNoticeException("請選擇正確的訊息");
+			}
+		}catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));	
+			if(e instanceof BcsNoticeException)
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			else
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	// 停用圖文選單
+	// 停用圖文選單
+	@RequestMapping(method = RequestMethod.DELETE, value = "/edit/stopRichMenu/{richId}")
+	@ResponseBody
+	public ResponseEntity<?> stopRichMenu(HttpServletRequest request,  HttpServletResponse response,
+			@CurrentUser CustomUser customUser, @PathVariable String richId) {
+		logger.info("deleteRichMenu");
+		String richMenuId = request.getParameter("richMenuId");
+		try {
+			// Check Delete Right
+			boolean isAdmin = customUser.isAdmin();
+			if(isAdmin) {
+				if(StringUtils.isNotBlank(richMenuId)){
+					// call RichMenu API
+					richMenuContentUIService.callDeleteRichMenuAPI(CONFIG_STR.Default.toString(), richMenuId);
+				}
+				richMenuContentService.disableRichMenu(richId, customUser.getAccount());
+				return new ResponseEntity<>("Delete Success", HttpStatus.OK);
+			} else {
+				throw new BcsNoticeException("此帳號沒有刪除權限");
+			}
+		} catch(Exception e) {
+			logger.error(ErrorRecord.recordError(e));	
+			if(e instanceof BcsNoticeException)
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			else
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	/** 
-	 * 檢查必填欄位不可為空
-	 */
+
+	// 檢查必填欄位不可為空
 	public Boolean validateData(CreateRichMenuModel createRichMenuModel) {
 		if (StringUtils.isBlank(createRichMenuModel.getRichType())
 				|| StringUtils.isBlank(createRichMenuModel.getRichMenuName())
@@ -299,193 +390,15 @@ public class BCSRichMenuController extends BCSBaseController {
 		}
 		return true;
 	}
-	
-	/** 
-	 * 回傳一個沒有重覆的uuid
-	 */
+	// 回傳一個沒有重覆的uuid
 	public String checkDuplicateUUID(String queryType) {
 		String uuid = UUID.randomUUID().toString().toLowerCase();
-		Boolean duplicateUUID = contentRichMenuService.checkDuplicateUUID(queryType, uuid);
+		Boolean duplicateUUID = richMenuContentService.checkDuplicateUUID(queryType, uuid);
 		while (duplicateUUID) {
 			uuid = UUID.randomUUID().toString().toLowerCase();
-			duplicateUUID = contentRichMenuService.checkDuplicateUUID(queryType, uuid);
+			duplicateUUID = richMenuContentService.checkDuplicateUUID(queryType, uuid);
 		}
-		
 		return uuid;
 	}
-	
-	/** 
-	 * 停用圖文選單
-	 */
-	@RequestMapping(method = RequestMethod.DELETE, value = "/edit/stopRichMenu/{richId}")
-	@ResponseBody
-	public ResponseEntity<?> stopRichMenu(
-			@CurrentUser CustomUser customUser,  
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@PathVariable String richId) {
-		logger.info("deleteRichMenu");
 
-		String richMenuId = request.getParameter("richMenuId");
-		try {
-			// Check Delete Right
-			boolean isAdmin = customUser.isAdmin();
-			if(isAdmin) {
-				if(StringUtils.isNotBlank(richMenuId)){
-					// call RichMenu API
-					contentRichMenuUIService.callDeleteRichMenuAPI(CONFIG_STR.Default.toString(), richMenuId);
-				}
-				contentRichMenuService.disableRichMenu(richId, customUser.getAccount());
-								
-				return new ResponseEntity<>("Delete Success", HttpStatus.OK);
-			} else {
-				throw new BcsNoticeException("此帳號沒有刪除權限");
-			}
-		} catch(Exception e) {
-			logger.error(ErrorRecord.recordError(e));
-
-			if(e instanceof BcsNoticeException){
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}	
-		}
-	}
-	
-	/** 
-	 * 刪除圖文選單
-	 */
-	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteRichMenu/{richId}")
-	@ResponseBody
-	public ResponseEntity<?> deleteRichMenu(
-			@CurrentUser CustomUser customUser,  
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@PathVariable String richId) {
-		logger.info("deleteRichMenu");
-		
-		try {
-			// Check Delete Right
-			boolean isAdmin = customUser.isAdmin();
-			if(isAdmin) {
-				
-				contentRichMenuService.deleteRichMenu(richId, customUser.getAccount());
-				contentRichMenuService.getPreDetailIdAndLinkId(richId);
-								
-				return new ResponseEntity<>("Delete Success", HttpStatus.OK);
-			} else {
-				throw new BcsNoticeException("此帳號沒有刪除權限");
-			}
-		} catch(Exception e) {
-			logger.error(ErrorRecord.recordError(e));
-
-			if(e instanceof BcsNoticeException){
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}	
-		}
-	}
-	
-	/**
-     * 取得RichMenu總分頁數
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/edit/getRichMenuPageTotal")
-    @ResponseBody
-    public ResponseEntity<?> getRichMenuPageTotal(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser) throws IOException {
-        logger.info("getRichMenuPageTotal");
-        
-        Long result = null;
-        
-        try{
-            String queryFlag = request.getParameter("queryFlag");
-            
-            if(StringUtils.isBlank(queryFlag)){
-                result = contentRichMenuService.countTotal();
-            }
-            else{
-
-                result = contentRichMenuService.countTotalByLikeTitle("%" + queryFlag + "%");
-            }
-            
-            int size = CoreConfigReader.getInteger(CONFIG_STR.NUMBER_OF_ITEM_IN_LISTPAGE, true);
-            if(size < 0) {
-                size = 20;
-            }
-            
-            Long pageTotal = result/size;
-            if(result%size == 0) {
-                pageTotal -= 1;
-            }
-            
-            return new ResponseEntity<>(pageTotal, HttpStatus.OK);
-        }
-        catch(Exception e){
-            logger.error(ErrorRecord.recordError(e));
-
-            if(e instanceof BcsNoticeException){
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-            }
-            else{
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-            }
-        }
-    }
-    
-    /**
-	 * 啟用圖文選單
-	 * 
-	 * @param customUser
-	 * @param request
-	 * @param response
-	 * @return String
-	 * @throws IOException
-	 */
-	@RequestMapping(method = RequestMethod.DELETE, value ="/edit/activeRichMenuStatus")
-	@ResponseBody
-	public ResponseEntity<?> activeRichMenuStatus(
-			@CurrentUser CustomUser customUser, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws IOException {
-		logger.info("activeRichMenuStatus");
-		
-		try{
-			String richId = request.getParameter("richId");
-			if(StringUtils.isNotBlank(richId)){
-				RichMenuContent contentRichMenu = contentRichMenuService.getSelectedContentRichMenu(richId);
-
-				List<RichMenuContent> richMenu = contentRichMenuService.findByStatusAndConditionAndUsingTime(RichMenuContent.STATUS_ACTIVE, contentRichMenu.getCondition(), contentRichMenu.getRichMenuStartUsingTime(), contentRichMenu.getRichMenuEndUsingTime());
-				if(richMenu != null && richMenu.size() > 0){
-					throw new BcsNoticeException("請確認切換條件、使用期間，最多啟用一種圖文選單!");
-				}
-				
-				String richMenuId = contentRichMenuUIService.callCreateRichMenuAPI(CONFIG_STR.Default.toString(), richId);
-
-				SystemLogUtil.saveLogDebug(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi.toString(), LOG_TARGET_ACTION_TYPE.ACTION_ActiveRichMenu.toString(), "SYSTEM", richMenuId, contentRichMenu.getRichId());
-				
-				contentRichMenuUIService.callUploadImageAPI(CONFIG_STR.Default.toString(), richMenuId, contentRichMenu.getRichImageId());
-				
-				contentRichMenuService.activeRichMenu(richId, richMenuId, customUser.getAccount());
-				
-				return new ResponseEntity<>("Change Success", HttpStatus.OK);
-			}
-			else{
-				logger.error("iMsgId Null");
-				throw new BcsNoticeException("請選擇正確的訊息");
-			}
-		}
-		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
-			
-			if(e instanceof BcsNoticeException){
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
-	}
-	
 }

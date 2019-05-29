@@ -516,16 +516,13 @@ public class RichMenuContentService {
     
     @Transactional(rollbackFor=Exception.class, timeout = 30)
 	public void activeRichMenu(String richId, String richMenuId,String adminUserAccount) throws BcsNoticeException{
-    	
-    	RichMenuContent contentRichMenu = contentRichMenuRepository.findOne(richId);
+    	RichMenuContent richMenuContent = contentRichMenuRepository.findOne(richId);
+    	richMenuContent.setRichMenuId(richMenuId);
+    	richMenuContent.setStatus(RichMenuContent.STATUS_ACTIVE);
+    	richMenuContent.setModifyTime(new Date());
+    	richMenuContent.setModifyUser(adminUserAccount);
+		contentRichMenuRepository.save(richMenuContent);
 		
-    	contentRichMenu.setRichMenuId(richMenuId);
-    	contentRichMenu.setStatus(RichMenuContent.STATUS_ACTIVE);		
-		contentRichMenu.setModifyTime(new Date());
-		contentRichMenu.setModifyUser(adminUserAccount);
-		
-		contentRichMenuRepository.save(contentRichMenu);
-		
-		dataCache.invalidate(contentRichMenu.getRichId());
+		dataCache.invalidate(richMenuContent.getRichId());
 	}
 }
