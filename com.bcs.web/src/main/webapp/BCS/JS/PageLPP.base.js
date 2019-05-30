@@ -246,7 +246,7 @@ $(function(){
         	if (allTextLines[i].trim().length > 0) {
 	        	var option = document.createElement("option");        	
 	        	option.text = allTextLines[i];
-	        	x.append(option);
+	        	x.appendChild(option);
 	        	num++;
         	} else 
         		removeList.push(i);

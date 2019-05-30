@@ -58,7 +58,6 @@ public class MsgBotReceiveParser {
 						obj.putPOJO("events", list);
 						return obj;
 					}
-					
 					i++;
 				}
 			}

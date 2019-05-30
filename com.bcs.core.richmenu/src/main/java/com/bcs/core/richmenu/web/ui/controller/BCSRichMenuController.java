@@ -166,17 +166,19 @@ public class BCSRichMenuController extends BCSBaseController {
 	public ResponseEntity<?> createRichMenu(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser,  
 			@RequestBody CreateRichMenuModel createRichMenuModel, @RequestParam String actionType, @RequestParam String richId) throws IOException {
 		try {
+			logger.info("CRMM1:"+ createRichMenuModel.toString());
+			logger.info("AT1:"+ actionType); // Create
+			logger.info("RID1:"+ richId);    // null
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			
 			if (!validateData(createRichMenuModel)) {
 				throw new BcsNoticeException("必填欄位不可為空！");
 			}
-			
 			String adminUserAccount = customUser.getAccount(); //取得登入者的帳號
 			
-			RichMenuContent contentRichMenu = new RichMenuContent();
 			
+			RichMenuContent contentRichMenu = new RichMenuContent();
 			List<Map<String, String>> richMenuDetailIdAndLinkIds = new ArrayList<>();
+			
 			if (actionType.equals("Edit")) { //變更
 				contentRichMenu = richMenuContentService.getSelectedContentRichMenu(richId);
 				
@@ -345,7 +347,6 @@ public class BCSRichMenuController extends BCSBaseController {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	// 停用圖文選單
 	// 停用圖文選單
 	@RequestMapping(method = RequestMethod.DELETE, value = "/edit/stopRichMenu/{richId}")
 	@ResponseBody

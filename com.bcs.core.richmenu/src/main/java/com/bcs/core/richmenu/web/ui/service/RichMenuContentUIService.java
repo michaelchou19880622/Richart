@@ -162,17 +162,19 @@ public class RichMenuContentUIService {
 		if(RichMenuAction.ACTION_TYPE_SEND_MESSAGE.equals(actionType)){
 			return new RichMenuArea(new RichMenuBounds(startX, startY, width, height),
                     new MessageAction(actionType, contentRichMenuDetail.getLinkId()));
-		}
-		else if(RichMenuAction.ACTION_TYPE_WEB.equals(actionType)){
+		}else if(RichMenuAction.ACTION_TYPE_WEB.equals(actionType)){
 			String contentLinkId = contentRichMenuDetail.getLinkId();
 			RichMenuContentLink contentLink = linksMap.get(contentLinkId);
 			
-			String url = ApplicationContextProvider.getApplicationContext().getBean(RichMenuMsgContentLinkTracingService.class).generateMsgTracingLink(contentLink);
+			logger.info("CL1:"+contentLink.toString());
+			// IKEA's original
+			//String url = ApplicationContextProvider.getApplicationContext().getBean(RichMenuMsgContentLinkTracingService.class).generateMsgTracingLink(contentLink);
+			String url = contentLink.getLinkUrl();
+			logger.info("url1:"+url);
 			
 			return new RichMenuArea(new RichMenuBounds(startX, startY, width, height),
                     new URIAction(actionType, url));
-		}
-		else if(RichMenuAction.ACTION_TYPE_POSTBACK.equals(actionType)){
+		}else if(RichMenuAction.ACTION_TYPE_POSTBACK.equals(actionType)){
 			return new RichMenuArea(new RichMenuBounds(startX, startY, width, height),
                     new PostbackAction(actionType, contentRichMenuDetail.getLinkId()));
 		}
