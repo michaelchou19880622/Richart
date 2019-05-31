@@ -228,7 +228,7 @@ $(function(){
 		
 		
 		var actionImgUrl = $('#actionImgUrl').val(); 
-		var shareImgUrl = $('#shareImgUrl').val(); 
+		//var shareImgUrl = $('#shareImgUrl').val(); 
 		var descriptionImgUrl = $('#descriptionImgUrl').val();
 		
 		var mainList = document.getElementById("mainList");
@@ -265,7 +265,7 @@ $(function(){
 				judgement : judgement,
 				autoSendPoint : autoSendPoint,
 				actionImgUrl : actionImgUrl,
-				shareImgUrl : shareImgUrl,
+				//shareImgUrl : shareImgUrl,
 				descriptionImgUrl : descriptionImgUrl,
 				linePointSerialId : linePointSerialId,
 				shareMsg : campaignShareMsg
@@ -379,7 +379,7 @@ $(function(){
 				}
 
 				// 分享圖片連結
-				$('#shareImgUrl').val(response.shareImgUrl);
+				//$('#shareImgUrl').val(response.shareImgUrl);
 				
 				// 說明圖片
 				$('#descriptionImgId').val(response.descriptionImgReferenceId);
