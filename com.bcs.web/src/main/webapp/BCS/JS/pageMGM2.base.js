@@ -104,6 +104,18 @@ $(function(){
 				queryBody.find('.btn_redeisgn').attr('campaignId', o.campaignId);
 				queryBody.find('.btn_redeisgn').click(redesignFunc);
 				
+				queryBody.find('.judgement').html(o.judgement);
+				
+				if(o.autoSendPoint)
+					queryBody.find('.autoSendPoint').html('是');
+				else
+					queryBody.find('.autoSendPoint').html('否');
+				
+				queryBody.find('.actionImgUrl').html(o.actionImgUrl);
+				queryBody.find('.shareImgUrl').html(o.shareImgUrl);
+				queryBody.find('.descriptionImgUrl').html(o.descriptionImgUrl);
+				queryBody.find('.linePointSerialId').html(o.linePointSerialId);
+				
 				queryBody.find('.btn_copy')
 					.attr('campaignId', o.campaignId)
 					.click(btn_copyFunc);

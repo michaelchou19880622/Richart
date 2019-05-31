@@ -7,7 +7,7 @@ $(function(){
 			
 			$.ajax({
 				type : "GET",
-				url : bcs.bcsContextPath + '/market/getLinePointMainList'
+				url : bcs.bcsContextPath + '/market/getAllLinePointMainList'
 			}).success(function(response){
 				
 				console.log(response);
@@ -17,7 +17,7 @@ $(function(){
 				$.each(response, function(i, o){
 					var groupData = templateBody.clone(true); //增加一行
 					console.info(groupData);
-//	 				groupData.find('.campaignCode a').attr('href', bcs.bcsContextPath + '/getLinePointMainList?campaignCode=' + o.campaignCode);
+//	 				groupData.find('.campaignCode a').attr('href', bcs.bcsContextPath + '/getAllLinePointMainList?campaignCode=' + o.campaignCode);
 					groupData.find('.serialId').html(o.serialId);
 					groupData.find('.title').html(o.title);
 					if(o.modifyTime){
@@ -30,6 +30,7 @@ $(function(){
 					groupData.find('.totalCount').html(o.totalCount);
 				 	groupData.find('.successfulCount').html(o.successfulCount);
 				 	groupData.find('.failedCount').html(o.failedCount);
+				 	groupData.find('.sendType').html(o.sendType);
 				 	groupData.find('.modifyUser').html(o.modifyUser);
 				 	
 					

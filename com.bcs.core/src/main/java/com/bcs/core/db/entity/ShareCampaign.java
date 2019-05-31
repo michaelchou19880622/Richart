@@ -22,6 +22,10 @@ public class ShareCampaign extends AbstractBcsEntity{
 	public static final String STATUS_DELETE = "DELETE";
     public static final String STATUS_ACTIVE = "ACTIVE";
     public static final String STATUS_DISABLE = "DISABLE";
+    
+    public static final String JUDGEMENT_DISABLE = "DISABLE";
+    public static final String JUDGEMENT_FOLLOW = "FOLLOW";
+    public static final String JUDGEMENT_BINDED = "BINDED";
 
 	@Id
     @Column(name = "CAMPAIGN_ID", columnDefinition="nvarchar(50)")
@@ -62,6 +66,25 @@ public class ShareCampaign extends AbstractBcsEntity{
     @Column(name = "SHARE_TIMES")
     private Integer shareTimes;
     
+    
+    @Column(name = "JUDGEMENT", columnDefinition="varchar(20)")
+    private String judgement;
+    
+    @Column(name = "AUTO_SEND_POINT")
+    private Boolean autoSendPoint;
+    
+    @Column(name = "ACTION_IMG_URL", columnDefinition="nvarchar(2000)")
+    private String actionImgUrl;
+    
+    @Column(name = "SHARE_IMG_URL", columnDefinition="nvarchar(2000)")
+    private String shareImgUrl;        
+
+    @Column(name = "DESCRIPTION_IMG_URL", columnDefinition="nvarchar(2000)")
+    private String descriptionImgUrl;  
+    
+	@Column(name = "LINE_POINT_SERIAL_ID", columnDefinition="nvarchar(50)")
+	private String linePointSerialId;
+	
     public ShareCampaign() {
         
     }
@@ -162,4 +185,51 @@ public class ShareCampaign extends AbstractBcsEntity{
         this.shareTimes = shareTimes;
     }
 
+	public String getJudgement() {
+		return judgement;
+	}
+
+	public void setJudgement(String judgement) {
+		this.judgement = judgement;
+	}
+
+	public Boolean getAutoSendPoint() {
+		return autoSendPoint;
+	}
+
+	public void setAutoSendPoint(Boolean autoSendPoint) {
+		this.autoSendPoint = autoSendPoint;
+	}
+
+	public String getActionImgUrl() {
+		return actionImgUrl;
+	}
+
+	public void setActionImgUrl(String actionImgUrl) {
+		this.actionImgUrl = actionImgUrl;
+	}
+
+	public String getShareImgUrl() {
+		return shareImgUrl;
+	}
+
+	public void setShareImgUrl(String shareImgUrl) {
+		this.shareImgUrl = shareImgUrl;
+	}
+
+	public String getDescriptionImgUrl() {
+		return descriptionImgUrl;
+	}
+
+	public void setDescriptionImgUrl(String descriptionImgUrl) {
+		this.descriptionImgUrl = descriptionImgUrl;
+	}
+
+	public String getLinePointSerialId() {
+		return linePointSerialId;
+	}
+
+	public void setLinePointSerialId(String linePointSerialId) {
+		this.linePointSerialId = linePointSerialId;
+	}
 }

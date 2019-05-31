@@ -136,6 +136,36 @@ public class RichMenuContentUIService {
 		
 	}
 	
+	// 設定指定UID的圖文選單API
+	public void callLinkRichMenuToUserAPI(String richMenuId, String uid) throws BcsNoticeException  {
+		logger.info(" ContentRichMenuUIService callLinkRichMenuToAllUserAPI");
+		try{			
+			PostLineResponse result = lineRichMenuApiService.callLinkRichMenuToUserAPI(richMenuId, uid, 0);
+			if(result.getStatus() != 200){
+				throw new Exception(result.getResponseStr());
+			}
+			logger.debug("callLinkRichMenuToAllUserAPI result:" + result);			
+		}catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));
+			throw new BcsNoticeException(e.getMessage());
+		}
+	}
+	
+	// 設定預設圖文選單API
+	public void callLinkRichMenuToAllUserAPI(String richMenuId) throws BcsNoticeException  {
+		logger.info(" ContentRichMenuUIService callLinkRichMenuToAllUserAPI");
+		try{			
+			PostLineResponse result = lineRichMenuApiService.callLinkRichMenuToAllUserAPI(richMenuId, 0);
+			if(result.getStatus() != 200){
+				throw new Exception(result.getResponseStr());
+			}
+			logger.debug("callLinkRichMenuToAllUserAPI result:" + result);			
+		}catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));
+			throw new BcsNoticeException(e.getMessage());
+		}
+	}
+	
 	private List<RichMenuArea> createRichMenuObject(List<RichMenuContentDetail> contentRichMenuDetails, List<RichMenuContentLink> contentLinks) throws Exception{
 		List<RichMenuArea> areas = new ArrayList<RichMenuArea>();
 		
@@ -235,18 +265,4 @@ public class RichMenuContentUIService {
 		}
 	}
 
-	// 設定預設圖文選單API
-	public void callLinkRichMenuToAllUserAPI(String richMenuId) throws BcsNoticeException  {
-		logger.info(" ContentRichMenuUIService callLinkRichMenuToAllUserAPI");
-		try{			
-			PostLineResponse result = lineRichMenuApiService.callLinkRichMenuToAllUserAPI(richMenuId, 0);
-			if(result.getStatus() != 200){
-				throw new Exception(result.getResponseStr());
-			}
-			logger.debug("callLinkRichMenuToAllUserAPI result:" + result);			
-		}catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
-			throw new BcsNoticeException(e.getMessage());
-		}
-	}
 }

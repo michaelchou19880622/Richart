@@ -99,11 +99,11 @@ public class BCSLinePointController extends BCSBaseController {
 	}
 	
 	@ControllerLog(description = "Get All Line Point Main")
-	@RequestMapping(method = RequestMethod.GET, value = "/market/getLinePointMainList")
+	@RequestMapping(method = RequestMethod.GET, value = "/market/getAllLinePointMainList")
 	@ResponseBody
-	public ResponseEntity<?> getLinePointMainList(HttpServletRequest request, HttpServletResponse response,
+	public ResponseEntity<?> getAllLinePointMainList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser ) throws IOException {
-		logger.info("getLinePointMainList");
+		logger.info("getAllLinePointMainList");
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindAll();
 		result.addAll(list);
@@ -111,6 +111,32 @@ public class BCSLinePointController extends BCSBaseController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
+	@ControllerLog(description = "Get Manual Line Point Main")
+	@RequestMapping(method = RequestMethod.GET, value = "/market/getManualLinePointMainList")
+	@ResponseBody
+	public ResponseEntity<?> getManualLinePointMainList(HttpServletRequest request, HttpServletResponse response,
+			@CurrentUser CustomUser customUser ) throws IOException {
+		logger.info("getManualLinePointMainList");
+		List<LinePointMain> result = new ArrayList();
+		List<LinePointMain> list = linePointUIService.linePointMainFindManual();
+		result.addAll(list);
+		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@ControllerLog(description = "Get Auto Line Point Main")
+	@RequestMapping(method = RequestMethod.GET, value = "/market/getAutoLinePointMainList")
+	@ResponseBody
+	public ResponseEntity<?> getAutoLinePointMainList(HttpServletRequest request, HttpServletResponse response,
+			@CurrentUser CustomUser customUser ) throws IOException {
+		logger.info("getAutoLinePointMainList");
+		List<LinePointMain> result = new ArrayList();
+		List<LinePointMain> list = linePointUIService.linePointMainFindAuto();
+		result.addAll(list);
+		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
 	@ControllerLog(description="Delete Line Point Main")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteLinePointMain")
 	@ResponseBody

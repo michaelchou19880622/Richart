@@ -26,7 +26,13 @@ public class LinePointUIService {
 	public List<LinePointMain> linePointMainFindAll(){
 		return linePointMainService.findAll();
 	}
+	public List<LinePointMain> linePointMainFindManual(){
+		return linePointMainService.findManual();
+	}
 
+	public List<LinePointMain> linePointMainFindAuto(){
+		return linePointMainService.findAuto();
+	}
 	
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public LinePointMain saveLinePointMainFromUI(LinePointMain linePointMain, String adminUserAccount) throws BcsNoticeException{

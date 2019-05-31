@@ -35,6 +35,9 @@ public class LinePointMain extends AbstractBcsEntity {
 	public static final String MESSAGE_STATUS_SCHEDULED = "SCHEDULED";
 	public static final String MESSAGE_STATUS_FAIL = "FAIL";
 	
+	public static final String SEND_TYPE_MANUAL = "MANUAL"; // BY BCS 
+	public static final String SEND_TYPE_AUTO = "AUTO"; // BY MGM
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "ID")
@@ -54,6 +57,9 @@ public class LinePointMain extends AbstractBcsEntity {
 	
 	@Column(name = "TOTAL_COUNT")
 	private Long totalCount;
+	
+	@Column(name = "SEND_TYPE", columnDefinition="varchar(50)")
+	private String sendType;
 	
 	@Column(name = "SUCCESSFUL_COUNT")
 	private Long successfulCount;
@@ -142,5 +148,13 @@ public class LinePointMain extends AbstractBcsEntity {
 
 	public Long getId() {
 		return id;
+	}
+
+	public String getSendType() {
+		return sendType;
+	}
+
+	public void setSendType(String sendType) {
+		this.sendType = sendType;
 	}
 }

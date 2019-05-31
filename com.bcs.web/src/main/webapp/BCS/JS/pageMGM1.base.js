@@ -145,6 +145,21 @@ $(function(){
 		$(this).closest('.option').find('.optionLabel').html(selectValue);
 	};
 	
+	//----------選擇autoSendPoint類型-----------
+	$(".autoSendPoint").click(function(e){
+		var selectedAutoSendPoint = e.currentTarget.value;
+		
+		//var curfewView = $("#curfewView");
+		switch(selectedAutoSendPoint){
+			case 'OFF' :
+				$("#LinePointView").hide();
+				break;
+			case 'ON' :
+				$("#LinePointView").show();
+				break;
+		}
+	});
+	
 	$('.optionSelect').change(optionSelectChange_func);
 
 	// 日期元件
@@ -209,6 +224,35 @@ $(function(){
 		// 分享訊息
 		var campaignShareMsg = $('#campaignShareMsg').val();
 
+		// -----
+		
+		
+		var actionImgUrl = $('#actionImgUrl').val(); 
+		var shareImgUrl = $('#shareImgUrl').val(); 
+		var descriptionImgUrl = $('#descriptionImgUrl').val();
+		
+		var mainList = document.getElementById("mainList");
+		var linePointSerialId = mainList.options[mainList.selectedIndex].text;
+		console.info("linePointSerialId", linePointSerialId);
+		
+		var judgements = $('.judgement');
+		var judgement = "";
+		if(judgements[0].checked){
+			judgement = "DISABLE";
+		}else if(judgements[1].checked){
+			judgement = "FOLLOW";
+		}else if(judgements[2].checked){
+			judgement = "BINDED";
+		}
+		
+		var autoSendPoints = $('.autoSendPoint');
+		//console.info("a0:", autoSendPoints[0].checked);
+		//console.info("a1:", autoSendPoints[1].checked);
+		var autoSendPoint = autoSendPoints[0].checked;
+		
+		console.info("judgement", judgement);
+		console.info("autoSendPoint", autoSendPoint);
+		
 		var shareCampaign = {
 				campaignId : campaignId,
 				campaignName : campaignTitle,
@@ -218,6 +262,12 @@ $(function(){
 				descriptionImgReferenceId : descriptionImgId,
 				startTime : momentCampaignStartTime.format(dateFormat),
 				endTime : momentCampaignEndTime.format(dateFormat),
+				judgement : judgement,
+				autoSendPoint : autoSendPoint,
+				actionImgUrl : actionImgUrl,
+				shareImgUrl : shareImgUrl,
+				descriptionImgUrl : descriptionImgUrl,
+				linePointSerialId : linePointSerialId,
 				shareMsg : campaignShareMsg
 			};
 		return shareCampaign;
@@ -277,14 +327,16 @@ $(function(){
 	});
 	
 	var loadDataFunc = function(){
-
+		var linePointSerialId = "";
+		var linePointShow = true;
+		
 		if (campaignId) {
 			
 			$.ajax({
 				type : "GET",
 				url : bcs.bcsContextPath + '/edit/getShareCampaign?campaignId=' + campaignId
 			}).success(function(response){
-				console.info(response);
+				console.info("getShareCampaign's response:", response);
 				
 				// 活動標題
 				$('#campaignTitle').val(response.campaignName);
@@ -292,17 +344,42 @@ $(function(){
 				// 分享次數
 				$('#shareTimes').val(response.shareTimes);
 				
+				// 是否判斷加好友/綁定
+				if(response.judgement == 'DISABLE')
+					$('input[name="judgement"]')[0].checked = true;
+				else if (response.judgement == 'FOLLOW')
+					$('input[name="judgement"]')[1].checked = true;
+				else
+					$('input[name="judgement"]')[2].checked = true;
+				
+				// 是否自動送點
+				if(response.autoSendPoint == true || response.autoSendPoint == 'true'){
+					$('input[name="autoSendPoint"]')[0].checked = true;
+					linePointShow = true;
+				}else{ 
+					$('input[name="autoSendPoint"]')[1].checked = true;
+					linePointShow = false;
+				}
+				// 選擇發送Lint Points活動
+				linePointSerialId = response.linePointSerialId;
+				
 				// 活動圖片
 				$('#actionImgId').val(response.actionImgReferenceId);
 				if(response.actionImgReferenceId){
 					$('#actionImg').attr("src", bcs.bcsContextPath + '/getResource/IMAGE/' + response.actionImgReferenceId);
 				}
 				
+				// 活動圖片連結
+				$('#actionImgUrl').val(response.actionImgUrl);
+				
 				// 分享圖片
 				$('#shareImgId').val(response.shareImgReferenceId);
 				if(response.shareImgReferenceId){
 		            $('#shareImg').attr("src", bcs.bcsContextPath + '/getResource/IMAGE/' + response.shareImgReferenceId);
 				}
+
+				// 分享圖片連結
+				$('#shareImgUrl').val(response.shareImgUrl);
 				
 				// 說明圖片
 				$('#descriptionImgId').val(response.descriptionImgReferenceId);
@@ -310,6 +387,9 @@ $(function(){
 		            $('#descriptionImg').attr("src", bcs.bcsContextPath + '/getResource/IMAGE/' + response.descriptionImgReferenceId);
 				}
 
+				// 說明圖片連結
+				$('#descriptionImgUrl').val(response.descriptionImgUrl);
+				
             	setElementDate('campaignStartTime', response.startTime);
             	setElementDate('campaignEndTime', response.endTime);
 
@@ -322,6 +402,7 @@ $(function(){
 				console.info(response);
 				$.FailResponse(response);
 			}).done(function(){
+				getAutoLinePointMainList(linePointSerialId, linePointShow);
 			});
 
 			if(actionType == "Read"){
@@ -336,9 +417,55 @@ $(function(){
 				$('#campaignEndTimeMinute').attr('disabled',true);
 				$('#campaignShareMsg').attr('disabled',true);
 			}
+		}else{
+			// From Create Page
+			$('input[name="judgement"]')[0].checked = true;
+			$('input[name="autoSendPoint"]')[0].checked = true;
+			getAutoLinePointMainList(linePointSerialId, linePointShow);
 		}
 	};
 
+	var getAutoLinePointMainList = function(linePointSerialId, linePointShow){
+		console.info("linePointShow:", linePointShow);
+		// linePointShow
+		if(linePointShow){
+			$('#LinePointView').show();
+		}else{
+			$('#LinePointView').hide();
+		}
+		
+		// Line Point Main List
+		var selectedValue = "";
+		console.info("linePointSerialId", linePointSerialId);
+		
+		$.ajax({
+			type : "GET",
+			url : bcs.bcsContextPath + '/market/getAutoLinePointMainList'
+		}).success(function(response){
+			console.info('getLinePointList response:' + JSON.stringify(response));
+
+			var mainList = document.getElementById("mainList");
+			$.each(response, function(i, o){		
+				console.info('getLinePointList o:' + JSON.stringify(o));
+				 var opt = document.createElement('option');
+				 opt.value = o.id;
+				 opt.innerHTML = o.serialId; // + ' (' + o.title + ')';	
+				 console.info("o.serialId", o.serialId);
+				 if(linePointSerialId != null && o.serialId == linePointSerialId){
+					 selectedValue = opt.value;
+					 console.info("selectedValue", selectedValue);
+				 }
+				mainList.appendChild(opt);
+			});
+			$('#mainList').val(selectedValue);
+			
+		}).fail(function(response){
+			console.info(response);
+			$.FailResponse(response);
+		}).done(function(){
+		});		
+	};
+	
 	var imgUploadFormat = {
 			actionImageUpload : {rightWidth : 'eq750'},
 			shareImageUpload : {rightWidth : 'eq750'},

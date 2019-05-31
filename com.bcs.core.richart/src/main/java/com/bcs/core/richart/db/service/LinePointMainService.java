@@ -47,6 +47,14 @@ public class LinePointMainService {
 	public List<LinePointMain> findAll(){
 		return linePointMainRepository.findAll();
 	}
+ 
+	public List<LinePointMain> findManual(){
+		return linePointMainRepository.findBySendType(LinePointMain.SEND_TYPE_MANUAL);
+	}
+
+	public List<LinePointMain> findAuto(){
+		return linePointMainRepository.findBySendType(LinePointMain.SEND_TYPE_AUTO);
+	}
     
 	public LinePointMain findBySerialId(String serialId){
 		return linePointMainRepository.findBySerialId(serialId);

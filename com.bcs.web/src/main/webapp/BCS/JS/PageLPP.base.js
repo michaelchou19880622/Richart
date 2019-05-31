@@ -4,13 +4,13 @@
 $(function(){
 
 	$.BCS.actionTypeParam = $.urlParam("actionType");
-
+	
 	/**
 	 * 紀錄 最後按鈕
 	 */
 	var btnTarget = "";
 	var uploadList = "";
-
+	
 	// 表單驗證
 	var validator = $('#formSendGroup').validate({
 		rules : {
@@ -186,7 +186,7 @@ $(function(){
 
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/market/getLinePointMainList'
+			url : bcs.bcsContextPath + '/market/getManualLinePointMainList'
 		}).success(function(response){
 			console.info('getLinePointList response:' + JSON.stringify(response));
 

@@ -1,4 +1,10 @@
 $(function() {
+	var sendType = 'MANUAL';
+	$(".sendType").click(function(e){
+		sendType = e.currentTarget.value;
+		console.info("selectedSendType:", sendType);
+	});
+	
     $('.btn_save').click(function() {
         btnTarget = "btn_save";
         var campaignName = $('#campaignTitle').val();
@@ -15,6 +21,7 @@ $(function() {
         postData.serialId = campaignCode;
         postData.amount = sendPoint;
         postData.totalCount = campaignPersonNum;
+        postData.sendType = sendType;
         postData.status = "DRAFT";
         postData.successfulCount = 0;
         postData.failedCount = 0;

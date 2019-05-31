@@ -28,24 +28,37 @@
 								<tr>
 									<th>活動標題<font size="3" color="red">*</font></th>
 									<td>
-									<input type="text" id="campaignTitle" name="campaignTitle" value="" maxlength="50"  required="required">
+										<input type="text" id="campaignTitle" name="campaignTitle" value="" maxlength="50"  required="required">
 									</td>
 								</tr>
 								<tr>
 									<th>活動代碼<font size="3" color="red">*</font></th>
 									<td>
-									<input type="text" id="campaignCode" name="campaignCode" value="" maxlength="50"  required="required">
+										<input type="text" id="campaignCode" name="campaignCode" value="" maxlength="50"  required="required">
 									</td>
 								</tr>
 								<tr >
 									<th>點數/人<font size="3" color="red">*</font></th>
-									<td><input type="text" id="points" name="points"value="" maxlength="50"  required="required">
+									<td>
+										<input type="text" id="points" name="points"value="" maxlength="50"  required="required">
 									</td>
 								</tr>
-									<tr >
+								<tr>
 									<th>活動人數<font size="3" color="red">*</font></th>
-									<td><input type="text" id="campaignPersonNum" name="campaignPersonNum" value="" maxlength="50"  required="required">
+									<td>
+										<input type="text" id="campaignPersonNum" name="campaignPersonNum" value="" maxlength="50"  required="required">
 									</td>
+								</tr>
+								<tr>
+									<th>發送方式<font size="3" color="red">*</font></th>
+									<td>
+	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
+	                						<input type="radio" name="sendType" class="sendType" value="MANUAL" style="cursor: pointer;" checked=true>人工發送
+	            						</label>
+	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
+	                						<input type="radio" name="sendType" class="sendType" value="AUTO" style="cursor: pointer;">自動發送
+	            						</label>
+									</td>								
 								</tr>
 							</tbody>
 						</table>

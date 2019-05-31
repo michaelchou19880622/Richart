@@ -323,10 +323,12 @@ public class BCSRichMenuController extends BCSBaseController {
 			String richId = request.getParameter("richId");
 			if(StringUtils.isNotBlank(richId)){
 				RichMenuContent richMenuContent = richMenuContentService.getSelectedContentRichMenu(richId);
-				List<RichMenuContent> richMenu = richMenuContentService.findByStatusAndConditionAndUsingTime(RichMenuContent.STATUS_ACTIVE, richMenuContent.getCondition(), richMenuContent.getRichMenuStartUsingTime(), richMenuContent.getRichMenuEndUsingTime());
-				if(richMenu != null && richMenu.size() > 0){
-					throw new BcsNoticeException("請確認切換條件、使用期間，最多啟用一種圖文選單!");
-				}
+				
+				// IEKA's original code => we accept multiple active rich menus now
+//				List<RichMenuContent> richMenu = richMenuContentService.findByStatusAndConditionAndUsingTime(RichMenuContent.STATUS_ACTIVE, richMenuContent.getCondition(), richMenuContent.getRichMenuStartUsingTime(), richMenuContent.getRichMenuEndUsingTime());
+//				if(richMenu != null && richMenu.size() > 0){
+//					throw new BcsNoticeException("請確認切換條件、使用期間，最多啟用一種圖文選單!");
+//				}
 				String richMenuId = richMenuContentUIService.callCreateRichMenuAPI(CONFIG_STR.Default.toString(), richId);
 				SystemLogUtil.saveLogDebug(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi.toString(), LOG_TARGET_ACTION_TYPE.ACTION_ActiveRichMenu.toString(), "SYSTEM", richMenuId, richMenuContent.getRichId());
 				richMenuContentUIService.callUploadImageAPI(CONFIG_STR.Default.toString(), richMenuId, richMenuContent.getRichImageId());

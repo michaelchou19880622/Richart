@@ -109,6 +109,41 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>是否判斷加好友/綁定<span style="color: red">*</span></th>
+									<td>
+	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
+	                						<input type="radio" name="judgement" class="judgement" value="DISABLE" style="cursor: pointer;">否
+	            						</label>
+	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
+	                						<input type="radio" name="judgement" class="judgement" value="FOLLOW" style="cursor: pointer;">加好友
+	            						</label>
+	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
+	                						<input type="radio" name="judgement" class="judgement" value="BINDED" style="cursor: pointer;">綁定
+	            						</label>
+									</td>	
+                                </tr>   
+                                <tr>
+                                    <th>是否自動送點 <span style="color: red">*</span></th>
+									<td>
+	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
+	                						<input type="radio" name="autoSendPoint" class="autoSendPoint" value="ON" style="cursor: pointer;">是
+	            						</label>
+	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
+	                						<input type="radio" name="autoSendPoint" class="autoSendPoint" value="OFF" style="cursor: pointer;">否
+	            						</label>
+									</td>	
+                                </tr>                                
+                                <tr>
+                                    <th>選擇發送Lint Points活動</th>
+                                    <td>
+                                    	<div id="LinePointView">
+	                                        <select name="mainList" id="mainList" style="width: 300px;">
+	                                            <option value="">請選擇</option>
+	                                        </select>  
+                                        </div>                                       
+                                    </td>  
+                                </tr>                                
+                                <tr>
                                 	<th>活動標題圖片<span style="color: red">*</span></th>
                                 	<td colspan="2">
                                     	<div class="MdFRM03File">
@@ -120,8 +155,12 @@
                                             	<span class="mdBtnUploadTxt">上傳</span>
                                             	<input accept="image/jpeg, image/png" class="mdBtnUploadInput" name="actionImageUpload" type="file"  id="actionImageUpload">
                                         	</div>
+                                        	
                                         	<p class="MdTxtNotice01">上傳一張依據設計指南所製作的圖片。可支援的規格為750寬，可支援檔案格式為jpg/png。</p>
                                     	</div>
+                                        <div class="MdFRM01Input">
+                                            <input type="text" id="actionImgUrl" name="actionImgUrl" placeholder="圖片連結" maxlength="2000">
+                                        </div>
                                 	</td>
                             	</tr>
                             	<tr>
@@ -138,6 +177,9 @@
                                         	</div>
                                         	<p class="MdTxtNotice01">上傳一張依據設計指南所製作的圖片。可支援的規格為750寬，可支援檔案格式為jpg/png。</p>
                                     	</div>
+                                        <div class="MdFRM01Input">
+                                            <input type="text" id="shareImgUrl" name="shareImgUrl" placeholder="圖片連結" maxlength="2000" readOnly = true>
+                                        </div>                                    	
                                 	</td>
                             	</tr>
                             	<tr>
@@ -154,6 +196,9 @@
                                         	</div>
                                         	<p class="MdTxtNotice01">上傳一張依據設計指南所製作的圖片。可支援的規格為750寬，可支援檔案格式為jpg/png。</p>
                                     	</div>
+                                        <div class="MdFRM01Input">
+                                            <input type="text" id="descriptionImgUrl" name="descriptionImgUrl" placeholder="圖片連結" maxlength="2000">
+                                        </div>                                         	
                                 	</td>
                             	</tr>
                             	<tr>

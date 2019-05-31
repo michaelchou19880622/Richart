@@ -11,4 +11,5 @@ import com.bcs.core.db.persistence.EntityRepository;
 public interface LinePointMainRepository extends EntityRepository<LinePointMain, Long>{
 	public LinePointMain findBySerialId(String serialId);
 	public List<LinePointMain> findByStatus(String status);
+	public List<LinePointMain> findBySendType(String sendType);
 }

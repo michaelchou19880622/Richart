@@ -1,14 +1,117 @@
 $(function() {
+	var templateCount = 0;
+    var originalTr = {};
+    var originalTable = {};
+    
+	// Initialize Page
+	var initPage = function(){
+		// clone & remove
+	    originalTr = $('.templateTr').clone(true);
+	    $('.templateTr').remove();
+		originalTable = $('.templateTable').clone(true);
+		$('.templateTable').remove();
+	};
+	
+    var loadDataFunc = function() {
+		templateCount = 0;
+		// block
+		$('.LyMain').block($.BCS.blockMsgRead);
+		
+		// get all list data
+		getListData('全部', '/market/getAllLinePointMainList');
+//		getListData('人工發送', '/market/getManualLinePointMainList');
+//		getListData('自動發送', '/market/getAutoLinePointMainList');		
+    };
+	
+    // get list data
+	var getListData = function(name, url){
+        $.ajax({
+            type: "GET",
+            url: bcs.bcsContextPath + url
+        }).success(function(response) {
+			templateCount++;
+			addTab(name);
+			var templateTable = originalTable.clone(true);
+			
+            console.info("response:", response);
+            $.each(response, function(i, o) {
+                var templateTr = originalTr.clone(true); //增加一行
+                console.info("templateTr:", templateTr);
+                // templateTr.find('.campaignCode a').attr('href', bcs.bcsContextPath + '/getAllLinePointMainList?campaignCode=' + o.campaignCode);
+                templateTr.find('.campaignCode').html(o.serialId);
+                templateTr.find('.campaignName').html(o.title);
+                if (o.modifyTime) {
+                    templateTr.find('.modifyTime').html(moment(o.modifyTime).format('YYYY-MM-DD HH:mm:ss'));
+                } else {
+                    templateTr.find('.modifyTime').html('-');
+                }
+
+                templateTr.find('.campaignName').html(o.title);
+                templateTr.find('.sendPoint').html(o.amount);
+                templateTr.find('.campaignPersonNum').html(o.totalCount);
+                templateTr.find('.sendType').html(o.sendType);
+                templateTr.find('.setUpUser').html(o.modifyUser);
+
+                if (bcs.user.admin) {
+                    templateTr.find('.btn_detele').attr('id', o.id);
+                    templateTr.find('.btn_detele').click(btn_deteleFunc);
+                } else {
+                    templateTr.find('.btn_detele').remove();
+                }
+                
+                // Append to Table
+                templateTable.append(templateTr);
+            });
+            
+            // set attribute
+            templateTable.attr('name', 'templateTable' + templateCount);
+            
+			// append to Tab
+			$('#tab'+templateCount).append(templateTable);
+			$("#tabs").tabs({active: 0});
+
+        }).fail(function(response) {
+            console.info(response);
+            $.FailResponse(response);
+        }).done(function() {
+			switch(name){
+			case '全部':
+				getListData('人工發送', '/market/getManualLinePointMainList');
+
+				break;
+			case '人工發送':	
+				getListData('自動發送', '/market/getAutoLinePointMainList');
+				break;
+			case '自動發送':
+				$('.LyMain').unblock();
+				break;
+			}
+        });		
+	};
+	
+	// add tab
+	var addTab = function(name){
+        var target;
+        
+        $("#tabs ul").append(
+    		"<li class='tabLi'><a href='#tab" + templateCount + "'>" + name + "</a></li>"
+    	);
+        
+        $("#tabs").append(
+            "<div class='tabDiv' id='tab" + templateCount + "'></div>"
+        );
+        
+        $("#tabs").tabs("refresh");
+        $("#tabs").tabs({ active: templateCount-1 });
+    };
+    
+    // other Functions
+    // to Create Page
     $('.btn_add').click(function() {
         window.location.replace(bcs.bcsContextPath + '/market/linePointCreatePage');
     });
-    //============================ 轉址 ==============================
-    //	var btn_copyFunc = function(){
-    //		var campaignCode = $(this).attr('campaignCode');
-    //		console.info('btn_copyFunc campaignCode:' + campaignCode);
-    // 		window.location.replace(bcs.bcsContextPath + '/market/sendGroupCreatePage?campaignCode=' + campaignCode + '&actionType=Copy');
-    //	};
-
+    
+    // do Delete
     var btn_deteleFunc = function() {
         var campaignId = $(this).attr('id');
 
@@ -33,58 +136,11 @@ $(function() {
             $.FailResponse(response);
         }).done(function() {});
     };
-
-    var loadDataFunc = function() {
-
-        $.ajax({
-            type: "GET",
-            url: bcs.bcsContextPath + '/market/getLinePointMainList'
-        }).success(function(response) {
-
-            console.log(response);
-            $('.dataTemplate').remove();
-            console.info(response);
-
-            $.each(response, function(i, o) {
-                var groupData = templateBody.clone(true); //增加一行
-                console.info(groupData);
-                // 				groupData.find('.campaignCode a').attr('href', bcs.bcsContextPath + '/getLinePointMainList?campaignCode=' + o.campaignCode);
-                groupData.find('.campaignCode').html(o.serialId);
-                groupData.find('.campaignName').html(o.title);
-                if (o.modifyTime) {
-                    groupData.find('.modifyTime').html(moment(o.modifyTime).format('YYYY-MM-DD HH:mm:ss'));
-                } else {
-                    groupData.find('.modifyTime').html('-');
-                }
-
-                groupData.find('.campaignName').html(o.title);
-                groupData.find('.sendPoint').html(o.amount);
-                groupData.find('.campaignPersonNum').html(o.totalCount);
-                groupData.find('.setUpUser').html(o.modifyUser);
-
-                if (bcs.user.admin) {
-                    groupData.find('.btn_detele').attr('id', o.id);
-                    groupData.find('.btn_detele').click(btn_deteleFunc);
-                } else {
-                    groupData.find('.btn_detele').remove();
-                }
-
-                //				if(o.serialId == "0"){ //假設有預設群組 <0
-                //					groupData.find('.btn_copy').remove();
-                //					groupData.find('.btn_detele').remove();
-                //				}
-
-                $('#tableBody').append(groupData);
-            });
-
-        }).fail(function(response) {
-            console.info(response);
-            $.FailResponse(response);
-        }).done(function() {});
-    };
-
-    var templateBody = {};
-    templateBody = $('.dataTemplate').clone(true);
-    $('.dataTemplate').remove();
+    
+	// main()
+	// initialize Page & load Data
+    initPage();
+    $("#tabs").tabs();
     loadDataFunc();
+
 });

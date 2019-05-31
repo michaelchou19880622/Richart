@@ -154,9 +154,8 @@ public class RichMenuLineApiService {
 			}
 		}
 	}
-	
-	public PostLineResponse callLinkRichMenuToUserAPI(String channelId, String richMenuId, String uid, int retryCount)
-			throws Exception {
+	// Set UID's Rich Menu
+	public PostLineResponse callLinkRichMenuToUserAPI(String richMenuId, String uid, int retryCount) throws Exception {
 		logger.debug("callLinkRichMenuToUserAPI");
 
 		Map<String, String> map = new HashMap<String, String>();
@@ -169,7 +168,7 @@ public class RichMenuLineApiService {
 			String apiUrl = CoreConfigReader.getString(CONFIG_STR.LINE_RICH_MENU_LINK_API);
 			apiUrl = apiUrl.replace("{richMenuId}", richMenuId);
 			apiUrl = apiUrl.replace("{userId}", uid);
-			String channelAccessToken = CoreConfigReader.getString(channelId, CONFIG_STR.ChannelToken.toString(), true);
+			String channelAccessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
 			
 			HttpClient httpclient = HttpClientUtil.generateClient();
 		    
@@ -200,7 +199,7 @@ public class RichMenuLineApiService {
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_LinkRichMenuToUser_Error, start, status, map.toString(), status + "");
 			
 			if(retryCount < 5)
-				return this.callLinkRichMenuToUserAPI(channelId, richMenuId, uid, retryCount + 1);
+				return this.callLinkRichMenuToUserAPI(richMenuId, uid, retryCount + 1);
 			else
 				throw e;
 		}
@@ -253,6 +252,7 @@ public class RichMenuLineApiService {
 				throw e;
 		}
 	}
+	
 	
 	public PostLineResponse callUnlinkRichMenuToUserAPI(String channelId, String uid, int retryCount)
 			throws Exception {
