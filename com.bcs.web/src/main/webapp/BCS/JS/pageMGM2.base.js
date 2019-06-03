@@ -112,7 +112,7 @@ $(function(){
 					queryBody.find('.autoSendPoint').html('否');
 				
 				queryBody.find('.actionImgUrl').html(o.actionImgUrl);
-				queryBody.find('.shareImgUrl').html(o.shareImgUrl);
+				//queryBody.find('.shareImgUrl').html(o.shareImgUrl);
 				queryBody.find('.descriptionImgUrl').html(o.descriptionImgUrl);
 				queryBody.find('.linePointSerialId').html(o.linePointSerialId);
 				

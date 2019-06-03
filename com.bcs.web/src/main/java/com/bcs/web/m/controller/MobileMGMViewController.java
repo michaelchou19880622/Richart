@@ -147,15 +147,21 @@ public class MobileMGMViewController extends BCSBaseController {
 //            
 //            if(StringUtils.isBlank(actionImgUrl) || StringUtils.isBlank(shareImgUrl) || StringUtils.isBlank(descriptionImgUrl)) {
             	
-            	
+            
             String actionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
             String shareImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
             String descriptionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
+            
+            String actionImgUrlLink = shareCampaign.getActionImgUrl();
+            String descriptionImgUrlLink = shareCampaign.getDescriptionImgUrl();
+            
 //            }
             
             model.addAttribute("actionImgUrl", actionImgUrl);
             model.addAttribute("shareImgUrl", shareImgUrl);
             model.addAttribute("descriptionImgUrl", descriptionImgUrl);
+            model.addAttribute("actionImgUrlLink", actionImgUrlLink);
+            model.addAttribute("descriptionImgUrlLink", descriptionImgUrlLink);
             return MobilePageEnum.DoMgmPage.toString();//TODO 
         } catch (Exception e) {
             logger.error(ErrorRecord.recordError(e));
@@ -209,6 +215,7 @@ public class MobileMGMViewController extends BCSBaseController {
             }
             String url = UriHelper.getMgmClickTracingUrl() + shareUserRecord.getShareUserRecordId();
  
+            logger.info("SC1:"+URLEncoder.encode(message + url, "UTF-8").replace("+", "%20"));
             return URLEncoder.encode(message + url, "UTF-8").replace("+", "%20");
         } catch (Exception e) {
             logger.error(ErrorRecord.recordError(e));

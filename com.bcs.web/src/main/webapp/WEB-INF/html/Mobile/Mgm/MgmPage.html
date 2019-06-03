@@ -34,11 +34,14 @@
     <body>
 	    <div class="wrapper" >
 	    	<div class="mainDiv" th:if="${errorMsg == null}" >
-	            <img id="actionImg" style="width:100%;border:0px;margin:0px;float:left;" th:src="${actionImgUrl}" />
-
+	    		<a th:href="${actionImgUrlLink}"> 
+	            	<img id="actionImg" style="width:100%;border:0px;margin:0px;float:left;" th:src="${actionImgUrl}" />
+				</a>
+				
 	            <img id="shareImg" style="width:100%;border:0px;margin:0px;float:left;" th:src="${shareImgUrl}" />
-
-	            <img id="descriptionImg" style="width:100%;border:0px;margin:0px;clear:both;" th:src="${descriptionImgUrl}" />
+				<a th:href="${descriptionImgUrlLink}"> 
+	            	<img id="descriptionImg" style="width:100%;border:0px;margin:0px;clear:both;" th:src="${descriptionImgUrl}" />
+	            </a>
 	        </div>
 	    </div>
 	    <input id="errorMsg" type="hidden" th:value="${errorMsg == null? '' : errorMsg}"/>
