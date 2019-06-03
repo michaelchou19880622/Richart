@@ -168,8 +168,6 @@ public class ContentRewardCardUIService {
 			}
 			
 			createSystemLog(action, contentRewardCard, contentRewardCard.getModifyUser(), contentRewardCard.getModifyTime(), contentRewardCard.getRewardCardId().toString());
-			// CDN
-			ChtCDNUtil.clearCacheData("bcs/getLink/*");
 		}
 		return contentRewardCard;
 	}

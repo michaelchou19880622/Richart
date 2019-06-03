@@ -31,6 +31,8 @@ import com.bcs.core.upload.ImportDataFromExcel;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.web.ui.model.ContentCouponModel;
 
+import com.bcs.core.utils.ChtCDNUtil;
+
 @Service
 public class ContentCouponUIService {
 
@@ -112,6 +114,8 @@ public class ContentCouponUIService {
 			contentFlagService.save(String.valueOf(contentCoupon.getCouponId()), ContentFlag.CONTENT_TYPE_COUPON, contentCouponModel.getFlagValueList());
 
 			createSystemLog(action, contentCoupon, contentCoupon.getModifyUser(), contentCoupon.getModifyTime(), contentCoupon.getCouponId().toString());
+			// CDN
+			ChtCDNUtil.clearCacheData("bcs/getLink/*");
 		}
 		return contentCoupon;
 	}
@@ -133,7 +137,6 @@ public class ContentCouponUIService {
 	 * @param adminUserAccount
 	 * @throws BcsNoticeException
 	 */
-
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public void deleteFromUI(String couponId, String adminUserAccount) throws BcsNoticeException {
 		logger.info("deleteFromUI:" + couponId);
@@ -215,7 +218,6 @@ public class ContentCouponUIService {
 	 * @throws Exception
 	 */
 	private ContentCoupon mergeOldData(ContentCoupon newContentCoupon) throws Exception {
-
 		// 原資料
 		ContentCoupon oldContentCoupon = contentCouponService.findOne(newContentCoupon.getCouponId());
 
@@ -261,7 +263,7 @@ public class ContentCouponUIService {
 					throw new BcsNoticeException("欄位錯誤，應為 " + serialNumber);
 				}
 				ContentCouponCode contentCouponCode = new ContentCouponCode();
-				contentCouponCode.setCouponCode(data.get(serialNumber));
+				contentCouponCode.setCouponCode((String)data.get(serialNumber));
 				contentCouponCode.setCouponId(contentCoupon.getCouponId());
 				contentCouponCode.setStatus(ContentCouponCode.COUPON_CODE_IS_NOT_USE);
 				contentCouponCode.setModifyTime(time);
@@ -271,7 +273,7 @@ public class ContentCouponUIService {
 				} catch (Exception e) {
 					String error = ErrorRecord.recordError(e, false);
 					logger.error(error);
-					throw new BcsNoticeException("優惠券錯誤：錯誤的電子序號為" + data.get(serialNumber) + "，請重新上傳正確之檔案。");
+					throw new BcsNoticeException("優惠券錯誤：錯誤的電子序號為" + (String)data.get(serialNumber) + "，請重新上傳正確之檔案。");
 				}
 			}
 		}

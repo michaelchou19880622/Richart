@@ -1,19 +1,8 @@
 package com.bcs.core.enums;
 
 public enum CONFIG_STR {
-
-	// need setting
-	LINE_POINT_API_CLIENT_ID("line.point.api.client.id"),
-	LINE_POINT_MESSAGE_PUSH_URL("line.point.push.url"),
-
-	HASH_PREFIX1(""),
-	
-	//--------------- 新增常數--------------------------
-
-	
 	SYSTEM_START_DATE("system.start.date"),
 	SYSTEM_TYPE("bcs.system.type"),
-	
 	
 	SYSTEM_ID("system.id"),
 	SYSTEM_TYPE_IS_API("system.is.api"),
@@ -143,14 +132,22 @@ public enum CONFIG_STR {
 	
 	BCS_API_CLUSTER_SEND("rest.api.cluster.send"),
 	BCS_API_CLUSTER_SEND_THIS("rest.api.cluster.send.this"),
+
+	// CDN
+	CHT_CDN_API_TOKEN("cht.cdn.api.token"), 
+	CHT_CDN_DIRECTORYPURGE_API_URL("cht.cdn.directoryPurge.api.url"),
 	
-	//MGM
+	// MGM
 	MGM_ACTION_IMG_CDN_URL("mgm.action.img.cdn.url"),
 	MGM_SHARE_IMG_CDN_URL("mgm.share.img.cdn.url"),
 	MGM_DESCRIPTION_IMG_CDN_URL("mgm.description.img.cdn.url"),
 	ADD_LINE_FRIEND_LINK("add.line.friend.link"),
 	
-	//Rich Menu
+	// Line Point
+	LINE_POINT_API_CLIENT_ID("line.point.api.client.id"),
+	LINE_POINT_MESSAGE_PUSH_URL("line.point.push.url"),
+	
+	// Rich Menu
 	NUMBER_OF_ITEM_IN_LISTPAGE("number.of.item.in.listPage"),
 	
 	LINE_RICH_MENU_CREATE_API("line.rich.menu.create.api"),
