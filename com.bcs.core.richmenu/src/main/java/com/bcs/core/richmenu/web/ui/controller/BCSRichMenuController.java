@@ -68,21 +68,26 @@ public class BCSRichMenuController extends BCSBaseController {
 	RichMenuContentUIService richMenuContentUIService;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuCreatePage")
-	public String richMsgCreatePage(HttpServletRequest request, HttpServletResponse response) {
+	public String richMenuCreatePage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("richMenuCreatePage");
 		return BcsPageEnum.RichMenuCreatePage.toString();
 	}
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuListPage")
-	public String richMsgListPage(HttpServletRequest request, HttpServletResponse response) {
+	public String richMenuListPage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("richMenuListPage");
 		return BcsPageEnum.RichMenuListPage.toString();
 	}
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuListDeletePage")
-	public String richMsgListDeletePage(HttpServletRequest request, HttpServletResponse response) {
+	public String richMenuListDeletePage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("richMenuListDeletePage");
 		return BcsPageEnum.RichMenuListDeletePage.toString();
 	}
-
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuGroupListPage")
+	public String richMenuGroupListPage(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("richMenuGroupListPage");
+		return BcsPageEnum.RichMenuGroupListPage.toString();
+	}
+	
 	// 取得圖文訊息
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getRichMenu/{richId}")
 	@ResponseBody

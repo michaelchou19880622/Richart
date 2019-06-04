@@ -206,8 +206,7 @@ $(function(){
 		
 		if(groupId < 0){ // 預設群組不需要設定
 			postData.groupId = groupId;
-		}
-		else{
+		}else{
 			if(queryDataDoms.length == 0){
 				alert('請設定群組條件');
 				return;

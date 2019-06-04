@@ -372,8 +372,7 @@ public class BCSSendGroupController extends BCSBaseController {
 				
 				logger.info("getSendGroupConditionResult Success");
 				return new ResponseEntity<>(result, HttpStatus.OK);
-			}
-			else{
+			}else{
 				Long result= 0L;
 
 				if(StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)){
@@ -602,6 +601,9 @@ public class BCSSendGroupController extends BCSBaseController {
 		if(groupId == null){
 			try{
 				List<String> mids = groupGenerateService.findMIDBySendGroupDetail(sendGroup.getSendGroupDetail());
+				logger.info("tempId1:"+tempId);
+				logger.info("mids1:"+mids.toString());
+				
 				if(mids != null && mids.size() >0){
 
 					List<String> titles = new ArrayList<String>();

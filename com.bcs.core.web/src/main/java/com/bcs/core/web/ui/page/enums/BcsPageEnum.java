@@ -25,6 +25,7 @@ public enum BcsPageEnum {
 	RichMenuCreatePage("/BCS/Views/PageRM1"),
 	RichMenuListPage("/BCS/Views/PageRM2"),
 	RichMenuListDeletePage("/BCS/Views/PageRM3"),
+	RichMenuGroupListPage("/BCS/Views/PageRMGL"),
 
 	MsgCreatePage("/BCS/Views/Page3"),
 	MsgListDraftPage("/BCS/Views/Page4-1"),

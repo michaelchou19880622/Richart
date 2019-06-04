@@ -24,7 +24,7 @@ import com.bcs.core.log.util.SystemLogUtil;
 import com.bcs.core.receive.helper.SignatureValidationHelper;
 import com.bcs.core.receive.model.ReceivedModelOriginal;
 import com.bcs.core.resource.CoreConfigReader;
-import com.bcs.core.richmenu.web.ui.service.RichMenuContentUIService;
+import com.bcs.core.richmenu.core.api.service.RichMenuReceivingApiService;
 import com.bcs.core.utils.ErrorRecord;
 
 
@@ -35,7 +35,7 @@ public class LineBotApiController {
 	@Autowired
 	private AkkaBotService akkaBotService;
 	@Autowired
-	RichMenuContentUIService richMenuContentUIService;
+	RichMenuReceivingApiService richMenuReceivingApiService;
 	/** Logger */
 	private static Logger logger = Logger.getLogger(LineBotApiController.class);
 
@@ -47,27 +47,13 @@ public class LineBotApiController {
 		logger.debug("receivingMsg:" + receivingMsg);
 		
 		try{
-			// RichMenuPostBack
-			// Rich Menu Post back Validate
-			JSONObject recivingObject = new JSONObject(receivingMsg);
-			String postbackString = recivingObject.getString("postback");
-			if(null!=postbackString) {
-				JSONObject postbackObject = new JSONObject(postbackString);
-				String data = postbackObject.getString("data");
-				logger.info("front1:"+data.substring(0, 5));
-				logger.info("back1:"+data.substring(6));
-				if(data.substring(0, 5).equals("page=")) {
-					// This is a Rich Menu Post back
-					Integer toPage = Integer.parseInt(data.substring(6));
-					
-					String richMenuId = "23";
-					String uid = "U12";
-					richMenuContentUIService.callLinkRichMenuToUserAPI(richMenuId, uid);
-					return;
-				}
+			// RichMenu
+			if(richMenuReceivingApiService.richMenuMsgValidate(receivingMsg)) {
+				logger.debug("-------RichMenu Receiving Success-------");
+				response.setStatus(200);
+				SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBotApi, LOG_TARGET_ACTION_TYPE.ACTION_Receive, start, 200, receivingMsg, "200");				
+				return;
 			}
-			
-			
 			
 			String channelSignature = request.getHeader(LINE_HEADER.HEADER_BOT_ChannelSignature.toString());
 			
