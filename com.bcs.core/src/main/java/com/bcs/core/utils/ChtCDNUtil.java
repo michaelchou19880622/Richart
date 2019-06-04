@@ -1,4 +1,4 @@
-﻿package com.bcs.core.utils;
+package com.bcs.core.utils;
 
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.resource.CoreConfigReader;
