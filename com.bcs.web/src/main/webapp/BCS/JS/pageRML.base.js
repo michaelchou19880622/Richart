@@ -42,7 +42,7 @@ $(function(){
 				console.info('valueObj', valueObj);
 
 				richMsgTr.find('.richId').val(key);
-				richMsgTr.find('.richMenuId').html(valueObj[12]);
+				richMsgTr.find('.richMenuId').val(valueObj[12]);
 				richMsgTr.find('.richMenuName').html(valueObj[0]);
 				richMsgTr.find('.richMenuImgTitle img').attr('richId', key);
 				richMsgTr.find('.richMenuImgTitle img').attr('src', bcs.bcsContextPath + "/getResource/IMAGE/" + valueObj[4]);

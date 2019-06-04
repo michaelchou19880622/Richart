@@ -19,6 +19,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -46,35 +47,43 @@ public class RichMenuReceivingApiService {
 	
 	// validate
 	public boolean richMenuMsgValidate(String receivingMsg) {
-		// RichMenuPostBack
-		// Rich Menu Post back Validate
-		logger.info("REMSG1:"+receivingMsg);
-		return false;
-//		try {
-//			JSONObject recivingObject = new JSONObject(receivingMsg);
-//
-//			String postbackString = recivingObject.getString("postback");
-//			if(null!=postbackString) {
-//				JSONObject postbackObject = new JSONObject(postbackString);
-//				String data = postbackObject.getString("data");
-//				logger.info("front1:"+data.substring(0, 5));
-//				logger.info("back1:"+data.substring(6));
-//				if(data.substring(0, 5).equals("page=")) {
-//					// This is a Rich Menu Post back
-//					Integer toPage = Integer.parseInt(data.substring(6));
-//					
-//					String richMenuId = "23";
-//					String uid = "U12";
-//					this.callLinkRichMenuToUserAPI(richMenuId, uid);
-//					return false;
-//				}
-//			}
-//		}catch(Throwable e){
-//			logger.error(ErrorRecord.recordError(e));
-//			logger.debug("-------richMenuMsgValidate Fail-------");
-//			return false;
-//		}
-//		return false;
+		try {
+			logger.info("receivingMsg:"+receivingMsg);
+			
+			JSONObject recivingObject = new JSONObject(receivingMsg);
+			logger.info("recivingObject:"+recivingObject.toString());
+			
+			JSONArray eventsArray = recivingObject.getJSONArray("events");
+			logger.info("eventsArray:" + eventsArray.toString());
+			
+			Object firstEvent =  eventsArray.get(0);
+			logger.info("firstEvent:" + firstEvent.toString());
+			
+			JSONObject firstEventObject = (JSONObject) firstEvent;
+			logger.info("firstEventObject:" + firstEventObject.toString());
+			
+			// source-uid
+			JSONObject sourceObject = firstEventObject.getJSONObject("source");
+			logger.info("sourceObject:" + sourceObject.toString());
+			
+			String uid = sourceObject.getString("userId");
+			logger.info("uid:" + uid);
+			
+			// postback-data
+			JSONObject postbackObject = firstEventObject.getJSONObject("postback");	
+			logger.info("postbackObject" + postbackObject);
+			
+			String richMenuId = postbackObject.getString("data");
+			logger.info("richMenuId:" + richMenuId);
+			logger.debug("-------richMenuMsgValidate Success-------");
+			
+			callLinkRichMenuToUserAPI(richMenuId, uid);
+			return true;
+		}catch(Throwable e){
+			logger.error(ErrorRecord.recordError(e));
+			logger.debug("------- not a richMenuMsg -------");
+			return false;
+		}
 	}
 	
 	// 設定指定UID的圖文選單API
@@ -85,7 +94,7 @@ public class RichMenuReceivingApiService {
 			if(result.getStatus() != 200){
 				throw new Exception(result.getResponseStr());
 			}
-			logger.debug("callLinkRichMenuToAllUserAPI result:" + result);			
+			logger.debug("callLinkRichMenuToUserAPI result:" + result);			
 		}catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
 			throw new BcsNoticeException(e.getMessage());

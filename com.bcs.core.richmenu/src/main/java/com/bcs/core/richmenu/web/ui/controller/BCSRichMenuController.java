@@ -82,10 +82,10 @@ public class BCSRichMenuController extends BCSBaseController {
 		logger.info("richMenuListDeletePage");
 		return BcsPageEnum.RichMenuListDeletePage.toString();
 	}
-	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuGroupListPage")
-	public String richMenuGroupListPage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("richMenuGroupListPage");
-		return BcsPageEnum.RichMenuGroupListPage.toString();
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuGroupPage")
+	public String richMenuGroupPage(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("richMenuGroupPage");
+		return BcsPageEnum.RichMenuListDeletePage.toString();
 	}
 	
 	// 取得圖文訊息
@@ -187,15 +187,16 @@ public class BCSRichMenuController extends BCSBaseController {
 			if (actionType.equals("Edit")) { //變更
 				contentRichMenu = richMenuContentService.getSelectedContentRichMenu(richId);
 				
+				// IKEA's original code
 				// 檢查啟用中的RichMenu使用期間
-				if(RichMenuContent.STATUS_ACTIVE.equals(contentRichMenu.getStatus())){
-					Date newStartUsingTime = sdf.parse(createRichMenuModel.getRichMenuStartUsingTime());
-					Date newEndUsingTime = sdf.parse(createRichMenuModel.getRichMenuEndUsingTime());
-					List<RichMenuContent> richMenu = richMenuContentService.findByStatusAndConditionAndUsingTime(RichMenuContent.STATUS_ACTIVE, contentRichMenu.getCondition(), newStartUsingTime, newEndUsingTime);
-					if(richMenu != null && richMenu.size() > 0){
-						throw new BcsNoticeException("請確認切換條件、使用期間，最多啟用一種圖文選單!");
-					}
-				}
+//				if(RichMenuContent.STATUS_ACTIVE.equals(contentRichMenu.getStatus())){
+//					Date newStartUsingTime = sdf.parse(createRichMenuModel.getRichMenuStartUsingTime());
+//					Date newEndUsingTime = sdf.parse(createRichMenuModel.getRichMenuEndUsingTime());
+//					List<RichMenuContent> richMenu = richMenuContentService.findByStatusAndConditionAndUsingTime(RichMenuContent.STATUS_ACTIVE, contentRichMenu.getCondition(), newStartUsingTime, newEndUsingTime);
+//					if(richMenu != null && richMenu.size() > 0){
+//						throw new BcsNoticeException("請確認切換條件、使用期間，最多啟用一種圖文選單!");
+//					}
+//				}
 				
 				richMenuContentService.getPreDetailIdAndLinkId(richId); //取得原先圖文訊息的DetailId與LinkId
 			} else { //新增與複製

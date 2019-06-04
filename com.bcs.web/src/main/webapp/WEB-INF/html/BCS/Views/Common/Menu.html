@@ -68,15 +68,15 @@
                 </li>
                 <li>
                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'PageRMGL'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/edit/richMenuGroupListPage}"><span>圖文選單群組列表</span></a>
-                        </li>                    
+                    <ul class="MdNonDisp subMenu" style="display:none">   
                         <li th:classappend="${currentPage == 'PageRM2'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/edit/richMenuListPage}"><span>圖文選單列表</span></a>
                         </li>
                         <li th:classappend="${currentPage == 'PageRM1'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/edit/richMenuCreatePage}"><span>建立圖文選單</span></a>
+                        </li>
+                        <li th:classappend="${currentPage == 'PageRM4'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/richMenuGroupPage}"><span>圖文選單群組</span></a>
                         </li>
                     </ul>
                 </li>                
