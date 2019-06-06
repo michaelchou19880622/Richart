@@ -13,7 +13,7 @@ public class LinePointPushModel extends AbstractBcsEntity {
 	public static final String SEND_TYPE_DELAY = "DELAY";
 
 	public static final String SOURCE_TYPE_BCS = "BCS";
-	
+	public static final String SOURCE_TYPE_MGM = "MGM";
 	private String clientId;
 	
 	private JSONArray uid;

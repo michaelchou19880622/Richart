@@ -20,6 +20,9 @@ indexes = {
 public class ShareUserRecord extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
 
+	public static final String COMPLETE_STATUS_UNDONE = "UNDONE";
+	public static final String COMPLETE_STATUS_DONE = "DONE";
+	
     @Id
     @Column(name = "SHARE_USER_RECORD_ID", columnDefinition="nvarchar(50)")
     private String shareUserRecordId;
@@ -33,6 +36,9 @@ public class ShareUserRecord extends AbstractBcsEntity{
     @Column(name = "CAMPAIGN_ID")
     private String campaignId;
 
+    @Column(name = "COMPLETE_STATUS", columnDefinition="varchar(20)")
+    private String completeStatus;
+    
     public String getShareUserRecordId() {
         return shareUserRecordId;
     }
@@ -64,4 +70,12 @@ public class ShareUserRecord extends AbstractBcsEntity{
     public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
     }
+
+	public String getCompleteStatus() {
+		return completeStatus;
+	}
+
+	public void setCompleteStatus(String completeStatus) {
+		this.completeStatus = completeStatus;
+	}
 }

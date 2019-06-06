@@ -16,6 +16,9 @@ public interface ShareCampaignClickTracingRepository extends EntityRepository<Sh
     ShareCampaignClickTracing findByUidAndShareUserRecordId(String uid, String shareUserRecordId);
     
     @Transactional(readOnly = true, timeout = 30)
+    List<ShareCampaignClickTracing> findByShareUserRecordId(String shareUserRecordId);
+    
+    @Transactional(readOnly = true, timeout = 30)
     @Query(value = "select b.uid as share_uid, "
             + "a.uid as click_uid, "
             + "a.modifyTime as click_time "

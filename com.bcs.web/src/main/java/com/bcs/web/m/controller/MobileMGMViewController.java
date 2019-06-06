@@ -204,6 +204,7 @@ public class MobileMGMViewController extends BCSBaseController {
                 shareUserRecord.setUid(uid);
                 shareUserRecord.setModifyTime(now);
                 shareUserRecord.setCampaignId(campaignId);
+                shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_UNDONE);
                 shareUserRecordService.save(shareUserRecord);
             }
 

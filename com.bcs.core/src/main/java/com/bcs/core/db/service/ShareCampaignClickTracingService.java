@@ -26,4 +26,8 @@ public class ShareCampaignClickTracingService {
 	public List<Object[]> findByModifyTimeAndCampaignId(Date start, Date end, String campaignId){
 	    return shareCampaignClickTracingRepository.findByModifyTimeAndCampaignId(start, end, campaignId);
 	}
+	
+	public List<ShareCampaignClickTracing> findByShareUserRecordId(String shareUserRecordId){
+	    return shareCampaignClickTracingRepository.findByShareUserRecordId(shareUserRecordId);
+	}
 }

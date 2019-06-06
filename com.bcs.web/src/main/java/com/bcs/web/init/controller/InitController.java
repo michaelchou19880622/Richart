@@ -19,6 +19,7 @@ import com.bcs.core.record.service.CatchRecordBinded;
 import com.bcs.core.record.service.CatchRecordOpAddReceive;
 import com.bcs.core.record.service.CatchRecordOpBlockedReceive;
 import com.bcs.core.resource.CoreConfigReader;
+import com.bcs.core.richart.scheduler.service.MGMTaskService;
 import com.bcs.core.utils.DataSyncUtil;
 import com.bcs.core.utils.ErrorRecord;
 
@@ -44,6 +45,8 @@ public class InitController {
 	private LiveChatTaskService liveChatTaskService;
 	@Autowired
 	private PushMessageTaskService pushMessageTaskService;
+	@Autowired
+	private MGMTaskService mgmTaskService;
 	
 	/** Logger */
 	private static Logger logger = Logger.getLogger(InitController.class);
@@ -95,6 +98,13 @@ public class InitController {
 		/* 定期檢查 User 的 status，避免卡在真人客服頻道 */
 		try {
 			liveChatTaskService.checkUserStatus();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		// MGM CheckLinePoint Task
+		try {
+			mgmTaskService.mgmCheckLinePoint();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
