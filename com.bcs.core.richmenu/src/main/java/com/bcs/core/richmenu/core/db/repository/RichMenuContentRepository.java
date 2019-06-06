@@ -29,7 +29,12 @@ public interface RichMenuContentRepository extends EntityRepository<RichMenuCont
             + "and x.richMenuStartUsingTime < ?3 "
             + "and x.richMenuEndUsingTime >= ?3")
     RichMenuContent findByStatusAndCondition(String status, String condition, Date now);
-    
+
+    @Transactional(readOnly = true, timeout = 30)
+    @Query(value = "select x from RichMenuContent x "
+            + "where x.richMenuGroupId = ?1 ")
+    List<RichMenuContent> findByRichMenuGroupId(String richMenuGroupId);
+
     @Transactional(readOnly = true, timeout = 30)
     @Query(value = "select x from RichMenuContent x "
             + "where x.status = ?1 "

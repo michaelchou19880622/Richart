@@ -166,7 +166,7 @@ $(function(){
 			$('.LyMain').block($.BCS.blockMsgSave);
 			$.ajax({
 				type : "DELETE",
-				url : bcs.bcsContextPath + '/edit/stopRichMenu/' + selectedContentRichMenuId + '?richMenuId=' + selectedRichMenuId
+				url : bcs.bcsContextPath + '/edit/stopRichMenu/' + selectedContentRichMenuId
 			}).success(function(response){
 				alert("停用成功！");
 				$initPagination();

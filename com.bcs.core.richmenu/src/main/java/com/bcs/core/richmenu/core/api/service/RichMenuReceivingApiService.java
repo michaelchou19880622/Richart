@@ -32,6 +32,8 @@ import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.log.util.SystemLogUtil;
 import com.bcs.core.resource.CoreConfigReader;
+import com.bcs.core.richmenu.core.db.entity.RichMenuContent;
+import com.bcs.core.richmenu.core.db.repository.RichMenuContentRepository;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.HttpClientUtil;
 import com.bcs.core.utils.InputStreamUtil;
@@ -44,7 +46,8 @@ public class RichMenuReceivingApiService {
 	private static Logger logger = Logger.getLogger(RichMenuReceivingApiService.class);
 	@Autowired
 	private RichMenuLineApiService lineRichMenuApiService;
-	
+	@Autowired
+	private RichMenuContentRepository richMenuContentRepository;
 	// validate
 	public boolean richMenuMsgValidate(String receivingMsg) {
 		try {
@@ -73,7 +76,13 @@ public class RichMenuReceivingApiService {
 			JSONObject postbackObject = firstEventObject.getJSONObject("postback");	
 			logger.info("postbackObject" + postbackObject);
 			
-			String richMenuId = postbackObject.getString("data");
+			String richId = postbackObject.getString("data");
+			logger.info("richId:" + richId);
+			
+			RichMenuContent richMenuContent = richMenuContentRepository.findOne(richId);
+			logger.info("richMenuContent:" + richMenuContent);
+			
+			String richMenuId = richMenuContent.getRichMenuId();
 			logger.info("richMenuId:" + richMenuId);
 			logger.debug("-------richMenuMsgValidate Success-------");
 			

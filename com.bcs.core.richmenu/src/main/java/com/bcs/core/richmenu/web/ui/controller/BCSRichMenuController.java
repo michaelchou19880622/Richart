@@ -32,6 +32,7 @@ import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.log.util.SystemLogUtil;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.utils.ErrorRecord;
+import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
 
@@ -82,10 +83,18 @@ public class BCSRichMenuController extends BCSBaseController {
 		logger.info("richMenuListDeletePage");
 		return BcsPageEnum.RichMenuListDeletePage.toString();
 	}
-	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuGroupPage")
-	public String richMenuGroupPage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("richMenuGroupPage");
-		return BcsPageEnum.RichMenuListDeletePage.toString();
+
+	// getRichMenuListByRichMenuGroupId 
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/getRichMenuListByRichMenuGroupId/{richMenuGroupId}")
+	@ResponseBody
+	public ResponseEntity<?> getRichMenuListByRichMenuGroupId(HttpServletRequest request, HttpServletResponse response,
+			@CurrentUser CustomUser customUser, @PathVariable String richMenuGroupId) throws IOException {
+		logger.info("getRichMenuListByRichMenuGroupId");
+		List<RichMenuContent> result = new ArrayList();
+		List<RichMenuContent> list = richMenuContentService.getRichMenuListByRichMenuGroupId(richMenuGroupId);
+		result.addAll(list);
+		logger.debug("getRichMenuListByRichMenuGroupId result:" + ObjectUtil.objectToJsonStr(result));
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
 	// 取得圖文訊息
@@ -223,6 +232,8 @@ public class BCSRichMenuController extends BCSBaseController {
 			
 			for (int i = 0, max = createRichMenuModel.getRichMenuImgUrls().size(); i < max; i++) {
 				CreateRichMenuModel url = createRichMenuModel.getRichMenuImgUrls().get(i);
+				//logger.info("i="+i+", url="+url.toString());
+				
 				String richMenuDetailId = "";
 				String linkId = "";
 				if (i + 1 > richMenuDetailIdAndLinkIds.size()) { //新增連結
@@ -270,19 +281,23 @@ public class BCSRichMenuController extends BCSBaseController {
 			}
 			
 			// 啟用中的圖文選單，編輯流程，先建再刪再更新RichMenuId
-			if(RichMenuContent.STATUS_ACTIVE.equals(contentRichMenu.getStatus())){
-				String oldRichMenuId = contentRichMenu.getRichMenuId();
-				
-				String newRichMenuId = richMenuContentUIService.callCreateRichMenuAPI(CONFIG_STR.Default.toString(), contentRichMenu, contentRichMenuDetails, contentLinks, 0);
-				contentRichMenu.setRichMenuId(newRichMenuId);
-
-				SystemLogUtil.saveLogDebug(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi.toString(), LOG_TARGET_ACTION_TYPE.ACTION_ActiveRichMenu.toString(), "SYSTEM", newRichMenuId, contentRichMenu.getRichId());
-				
-				richMenuContentUIService.callUploadImageAPI(CONFIG_STR.Default.toString(), newRichMenuId, contentRichMenu.getRichImageId());
-				
-				richMenuContentUIService.callDeleteRichMenuAPI(CONFIG_STR.Default.toString(), oldRichMenuId);
-			}			
+//			if(RichMenuContent.STATUS_ACTIVE.equals(contentRichMenu.getStatus())){
+//				String oldRichMenuId = contentRichMenu.getRichMenuId();
+//				
+//				String newRichMenuId = richMenuContentUIService.callCreateRichMenuAPI(CONFIG_STR.Default.toString(), contentRichMenu, contentRichMenuDetails, contentLinks, 0);
+//				contentRichMenu.setRichMenuId(newRichMenuId);
+//
+//				SystemLogUtil.saveLogDebug(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi.toString(), LOG_TARGET_ACTION_TYPE.ACTION_ActiveRichMenu.toString(), "SYSTEM", newRichMenuId, contentRichMenu.getRichId());
+//				
+//				richMenuContentUIService.callUploadImageAPI(CONFIG_STR.Default.toString(), newRichMenuId, contentRichMenu.getRichImageId());
+//				
+//				richMenuContentUIService.callDeleteRichMenuAPI(CONFIG_STR.Default.toString(), oldRichMenuId);
+//			}
 			
+			logger.info("contentRichMenu:" + contentRichMenu);
+			logger.info(contentRichMenuDetails);
+			logger.info(contentLinks);
+			logger.info(contentFlagMap);
 			richMenuContentService.createRichMsg(contentRichMenu, contentRichMenuDetails, contentLinks, contentFlagMap);
 			
 			return new ResponseEntity<>("save success", HttpStatus.OK);
@@ -360,17 +375,20 @@ public class BCSRichMenuController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> stopRichMenu(HttpServletRequest request,  HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @PathVariable String richId) {
-		logger.info("deleteRichMenu");
-		String richMenuId = request.getParameter("richMenuId");
+		logger.info("stopRichMenu");
 		try {
 			// Check Delete Right
 			boolean isAdmin = customUser.isAdmin();
 			if(isAdmin) {
-				if(StringUtils.isNotBlank(richMenuId)){
+				if(StringUtils.isNotBlank(richId)){
 					// call RichMenu API
+					RichMenuContent richMenuContent = richMenuContentService.getSelectedContentRichMenu(richId);
+					String richMenuId = richMenuContent.getRichMenuId();
 					richMenuContentUIService.callDeleteRichMenuAPI(CONFIG_STR.Default.toString(), richMenuId);
+
 				}
 				richMenuContentService.disableRichMenu(richId, customUser.getAccount());
+				
 				return new ResponseEntity<>("Delete Success", HttpStatus.OK);
 			} else {
 				throw new BcsNoticeException("此帳號沒有刪除權限");

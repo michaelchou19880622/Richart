@@ -136,6 +136,13 @@ public class RichMenuContentService {
     }
 	
 	/**
+	 * 取得圖文選單 By RichMenuGroupId
+     */
+	public List<RichMenuContent> getRichMenuListByRichMenuGroupId(String richMenuGroupId) {
+    	return contentRichMenuRepository.findByRichMenuGroupId(richMenuGroupId);
+    }
+    
+	/**
 	 * 取得圖文選單
      */
     @SuppressWarnings("unchecked")

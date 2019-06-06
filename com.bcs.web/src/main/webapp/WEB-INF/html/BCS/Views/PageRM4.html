@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"  
+      th:with="strList = ${ {'/BCS/JS/pageRM4.base.js'} }">
+<head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu Group Page', ${strList})" >
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+    <div class="LyContents">
+    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRM4')"></div>
+    	
+        <!-- Right Content -->
+        <div class="LyMain" role="main">
+            <form>
+                <section>
+                    <header class="ContentHead">
+                        <h3 class="CHTtl">圖文選單發送群組</h3>
+                    </header>
+
+                    <br></br>
+	                <header class="ContentHead">
+                   		<div class="CHTtl" style="display: inline">建立新圖文選單群組：</div>
+                   		<input type="text" id="groupName" name="groupName" placeholder="群組名稱" value="" maxlength="50" required="required">
+	                    <input class="btn_save" id="createGroup" type="button" value="建立" style="cursor: pointer;">
+                    </header>
+                    
+                    <div class="mainFrame">
+                        <table border="1" id="templateTable">
+                            <colgroup>
+                            	<col width="180">
+                            	<col width="150">
+                            	<col width="100">
+                            	<col width="100">
+                            	<col width="130">
+                            	<col width="130">
+                            	<col width="130">
+                            	<col width="130">
+                            	<col width="130">
+                            </colgroup>
+                             <tr class="templateHeader">
+                                <th>群組名稱</th>
+                                <th>修改時間</th>
+                                <th>建立人員</th>
+                                <th>刪除</th>
+                             </tr>
+                             <tbody class="templateTbody">
+	                             <tr class="templateTr">
+	                                <td class="title">
+	                                	<input type="hidden" class="groupId">
+	                                    <div><a href="richMenuListPage" class="name"></a></div>
+                               		</td>
+									<td class="modifyTime"></td>
+									<td class="modifyUser"></td>
+									<td>
+	                                    <input class="btn_detele" style="cursor: pointer;" type="button" value="刪除">
+	                                </td>
+								</tr>
+							</tbody>
+                        </table>
+                    </div>
+
+                </section>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

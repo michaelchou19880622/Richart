@@ -28,6 +28,8 @@ $(function(){
 		
 		$('.LyMain').block($.BCS.blockMsgRead);
 		
+		console.info("url:", bcs.bcsContextPath + '/edit/getRichMenuList?queryFlag='+ encodeURIComponent(thisQueryFlag) + '&page=' + page + '&isAsc=' + thisIsAsc + '&status=DISABLE');
+		
 		$.ajax({
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/getRichMenuList?queryFlag='+ encodeURIComponent(thisQueryFlag) + '&page=' + page + '&isAsc=' + thisIsAsc + '&status=DISABLE'
