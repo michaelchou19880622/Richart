@@ -8,20 +8,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bcs.core.richart.db.entity.LinePointDetail;
-import com.bcs.core.richart.db.entity.LinePointMain;
+import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
 import com.bcs.core.db.persistence.EntityRepository;
 
-public interface LinePointDetailRepository extends EntityRepository<LinePointDetail, Long>{
+public interface LinePointScheduledDetailRepository extends EntityRepository<LinePointScheduledDetail, Long>{
 
-    @Transactional(timeout = 30)
-    @Query(value = "select x from LinePointDetail x where x.status = ?1 and x.linePointMainId = ?2 order by x.triggerTime desc")
-	public List<LinePointDetail> findByStatusAndLinePointMainId(String status, Long linePointMainId);
-    
+	@Transactional(timeout = 30)
+	public List<LinePointScheduledDetail> findByLinePointMainId(long linePointMainId);
+	
+	//public List<LinePointScheduledDetail> findByStatus(String status);
 //	public LinePointDetail findBySerialId(String serialId);
 //	
-//	public List<LinePointDetail> findByStatus(String status);
-//	
-//	public List<LinePointDetail> findByMsgLpId(long msgLpId);
 //	
 //	@Query(value="SELECT * FROM BCS_LINE_POINT_DETAIL WHERE SERIAL_ID = ?1 AND UID is null", nativeQuery=true)
 //	public abstract List<LinePointDetail> findBySerialIdAndEmptyUid(String paramString);

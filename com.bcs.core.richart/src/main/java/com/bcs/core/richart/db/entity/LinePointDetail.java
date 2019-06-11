@@ -20,11 +20,13 @@ import com.bcs.core.utils.ObjectUtil;
 public class LinePointDetail extends AbstractBcsEntity {
 	private static final long serialVersionUID = 1L;
 
-	public static final String STATUS_WAIT = "WAIT";
+	//public static final String STATUS_WAIT = "WAIT";
 	public static final String STATUS_SUCCESS = "SUCCESS";
 	public static final String STATUS_FAIL = "FAIL";
 	
 	public static final String TRANSCATION_TYPE_ISSUE = "ISSUE";
+
+	public static final String DESCRIPTION_OVERFLOW = "OVERFLOW";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

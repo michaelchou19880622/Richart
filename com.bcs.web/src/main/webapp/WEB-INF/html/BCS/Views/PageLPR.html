@@ -15,18 +15,24 @@
             <form>
                 <section>
                     <header class="ContentHead">
-                        <h3 class="CHTtl">LINE POINT 發送列表</h3>
+                        <h3 class="CHTtl">LINE POINT 發送報表</h3>
                     </header>
                     <div class="CHBtnSet">
-                        <div class="CHRight"><input class="btn_add" style="cursor: pointer;" type="button" value="建立"></div>
+                    	<div class="CHRight">
+                    		<a class="btn_add" id="btnExcel" style="cursor: pointer; padding: 7px 12px; text-decoration: none">匯出 EXCEL</a>
+                    		<input class="btn_add" id="btnCreate" style="cursor: pointer;" type="button" value="建立">
+                    		
+                    	</div>
                     </div>
                     <div class="mainFrame">
                         <table border="1" id="tableBody">
                             <colgroup>
-                            	<col width="180">
+                            	<col width="150">
                             	<col width="150">
                             	<col width="100">
                             	<col width="100">
+                            	<col width="130">
+                            	<col width="130">
                             	<col width="130">
                             	<col width="130">
                             	<col width="130">
@@ -36,21 +42,25 @@
                              <tr class="tableHeader">
                                 <th>活動代碼</th>
                                 <th>標題</th>
-                                <th>修改時間</th>
+                                <th>建立時間</th>
                                 <th>點數 / 人</th>
                                 <th>應發送總數</th>
                                 <th>成功發送數</th>
                                 <th>失敗發送數</th>
+                                <th>排程明細</th>
+                                <th>發送狀態</th>
                                 <th>發送方式</th>
                                 <th>建立人員</th>
                              <tr class="dataTemplate">
-                                <td class="serialId"><a href=""></a></td>
+                                <td class="serialId"></td>
 								<td class="title"></td>
 								<td class="modifyTime"></td>
 								<td class="amount"></td>
 								<td class="totalCount"></td>
 								<td class="successfulCount"></td>
 								<td class="failedCount"></td>
+								<td class="schedule"></td>
+								<td class="status"></td>
 								<td class="sendType"></td>
 								<td class="modifyUser"></td>
 							</tr>

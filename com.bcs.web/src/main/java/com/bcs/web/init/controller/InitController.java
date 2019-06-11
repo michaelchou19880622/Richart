@@ -1,5 +1,7 @@
 package com.bcs.web.init.controller;
 
+import java.text.SimpleDateFormat;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -19,9 +21,12 @@ import com.bcs.core.record.service.CatchRecordBinded;
 import com.bcs.core.record.service.CatchRecordOpAddReceive;
 import com.bcs.core.record.service.CatchRecordOpBlockedReceive;
 import com.bcs.core.resource.CoreConfigReader;
+import com.bcs.core.richart.scheduler.service.LinePointAMSchedulerService;
+import com.bcs.core.richart.scheduler.service.LinePointPMSchedulerService;
 import com.bcs.core.richart.scheduler.service.MGMTaskService;
 import com.bcs.core.utils.DataSyncUtil;
 import com.bcs.core.utils.ErrorRecord;
+import com.bcs.core.enums.CONFIG_STR;
 
 @Controller
 @RequestMapping("/init")
@@ -44,7 +49,9 @@ public class InitController {
 	@Autowired
 	private LiveChatTaskService liveChatTaskService;
 	@Autowired
-	private PushMessageTaskService pushMessageTaskService;
+	private LinePointAMSchedulerService linePointAMSchedulerService;
+	@Autowired
+	private LinePointPMSchedulerService linePointPMSchedulerService;
 	@Autowired
 	private MGMTaskService mgmTaskService;
 	
@@ -101,12 +108,28 @@ public class InitController {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// MGM CheckLinePoint Task
 		try {
 			mgmTaskService.mgmCheckLinePoint();
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+		
+		// LinePoint AM Push flow
+		try {
+			logger.info("init LinePoint AM Push flow");
+			linePointAMSchedulerService.startCircle();
+		} catch (Throwable e) {
+			logger.error(ErrorRecord.recordError(e));
+		}
+		
+//		// LinePoint PM Push flow
+		try {
+			logger.info("init LinePoint PM Push flow");
+			linePointPMSchedulerService.startCircle();
+		} catch (Throwable e) {
+			logger.error(ErrorRecord.recordError(e));
 		}
 		
 		/* 定期查找 FTP 有沒有需要發送的訊息檔案 */

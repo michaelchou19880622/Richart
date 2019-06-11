@@ -186,7 +186,7 @@ $(function(){
 
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/market/getManualLinePointMainList'
+			url : bcs.bcsContextPath + '/market/getUndoneManualLinePointMainList'
 		}).success(function(response){
 			console.info('getLinePointList response:' + JSON.stringify(response));
 

@@ -57,7 +57,7 @@ public enum CONFIG_STR {
 	LINE_SWITCH_API_SWITCHER_NOTICE("line.switcher.notice"),
 	
 	ChannelToken("ChannelToken"),
-	LINE_POINT_ChannelToken("LinePoint.ChannelToken"),
+//	LINE_POINT_ChannelToken("LinePoint.ChannelToken"), // just use upon token
 	ChannelServiceCode("ChannelServiceCode"),
 	ChannelRefresh("ChannelRefresh"),
 	
@@ -146,6 +146,11 @@ public enum CONFIG_STR {
 	// Line Point
 	LINE_POINT_API_CLIENT_ID("line.point.api.client.id"),
 	LINE_POINT_MESSAGE_PUSH_URL("line.point.push.url"),
+	
+	// LinePoint & MGM Schedule Settings
+	LINE_POINT_AM_START_TIME("line.point.am.start.time"),
+	LINE_POINT_PM_START_TIME("line.point.pm.start.time"),
+	MGM_TRIGGER_SECONDS("mgm.trigger.seconds"),
 	
 	// Rich Menu
 	NUMBER_OF_ITEM_IN_LISTPAGE("number.of.item.in.listPage"),

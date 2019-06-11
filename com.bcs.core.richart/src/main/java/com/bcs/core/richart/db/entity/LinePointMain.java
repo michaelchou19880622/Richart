@@ -29,11 +29,10 @@ import com.bcs.core.json.AbstractBcsEntity;
 public class LinePointMain extends AbstractBcsEntity {
 	private static final long serialVersionUID = 1L;
 	
-	public static final String MESSAGE_STATUS_DELETE = "DELETE";
-	public static final String MESSAGE_STATUS_DRAFT = "DRAFT";
-	public static final String MESSAGE_STATUS_COMPLETE = "COMPLETE";
-	public static final String MESSAGE_STATUS_SCHEDULED = "SCHEDULED";
-	public static final String MESSAGE_STATUS_FAIL = "FAIL";
+	public static final String STATUS_DELETE = "DELETE";
+	public static final String STATUS_IDLE = "IDLE";
+	public static final String STATUS_SCHEDULED = "SCHEDULED";
+	public static final String STATUS_COMPLETE = "COMPLETE";
 	
 	public static final String SEND_TYPE_MANUAL = "MANUAL"; // BY BCS 
 	public static final String SEND_TYPE_AUTO = "AUTO"; // BY MGM
@@ -60,7 +59,7 @@ public class LinePointMain extends AbstractBcsEntity {
 	
 	@Column(name = "SEND_TYPE", columnDefinition="varchar(50)")
 	private String sendType;
-	
+
 	@Column(name = "SUCCESSFUL_COUNT")
 	private Long successfulCount;
 	
@@ -72,7 +71,6 @@ public class LinePointMain extends AbstractBcsEntity {
 
 	@Column(name = "STATUS", columnDefinition="nvarchar(50)")
 	private String status;
-
 
 	public String getSerialId() {
 		return serialId;

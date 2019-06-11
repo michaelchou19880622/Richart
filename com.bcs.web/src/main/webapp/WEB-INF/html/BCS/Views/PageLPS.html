@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/BCS/Views/Common/Head :: head ('Line Point Schedule Page', '/BCS/JS/PageLPS.base.js')">
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+    <div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('LinePointReportPage')"></div>
+
+        <!-- Right Content -->
+        <div class="LyMain" role="main">
+            <form>
+                <section>
+                    <header class="ContentHead">
+                        <h3 class="CHTtl">LINE POINT 排程明細</h3>
+                    </header>
+                   	此區為符合條件待發送LinePoint的UID。早上九點/下午三點進行發送後，此區的UID將移至成功/失敗發送數明細。	
+                    <div class="CHBtnSet">
+                        <div class="CHRight">
+                        	<input class="btn_add" style="cursor: pointer;" type="button" value="返回">
+                       	</div>
+                    </div>
+                    <div class="mainFrame">
+                        <table border="1" id="tableBody">
+                            <colgroup>
+                            	<col width="150">
+                            </colgroup>
+                             <tr class="tableHeader">
+                                <th>UID</th>
+                             <tr class="dataTemplate">
+                                <td class="uid"></td>
+							</tr>
+                        </table>
+                    </div>
+
+                </section>
+            </form>
+        </div>
+    </div>
+ 
+    
+    
+    
+</body>
+
+</html>

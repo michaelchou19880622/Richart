@@ -22,7 +22,7 @@ $(function() {
         postData.amount = sendPoint;
         postData.totalCount = campaignPersonNum;
         postData.sendType = sendType;
-        postData.status = "DRAFT";
+        postData.status = "IDLE";
         postData.successfulCount = 0;
         postData.failedCount = 0;
         

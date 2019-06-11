@@ -72,7 +72,7 @@ public class ShareUserRecordService {
     			"select SHARE_USER_RECORD_ID, CAMPAIGN_ID, UID " + 
     	        		"from BCS_SHARE_USER_RECORD " + 
     	        		"where COMPLETE_STATUS = 'UNDONE' " + 
-    	        		"and MODIFY_TIME >= DATEADD(day, -100, GETDATE()) and MODIFY_TIME < GETDATE() "; // -100 > -1
+    	        		"and MODIFY_TIME >= DATEADD(day, -1, GETDATE()) and MODIFY_TIME < GETDATE() "; // -1 = yesterday
     	
     	Query query = entityManager.createNativeQuery(queryString);
 		List<Object[]> list = query.getResultList();

@@ -22,7 +22,9 @@ import com.bcs.core.db.service.ShareUserRecordService;
 import com.bcs.core.richart.akka.service.LinePointPushAkkaService;
 import com.bcs.core.richart.api.model.LinePointPushModel;
 import com.bcs.core.richart.db.entity.LinePointMain;
+import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
 import com.bcs.core.richart.db.service.LinePointMainService;
+import com.bcs.core.richart.db.service.LinePointScheduledDetailService;
 //import com.bcs.core.richart.scheduler.service.MGMService;
 import com.bcs.core.spring.ApplicationContextProvider;
 //import com.bcs.core.taishin.circle.db.entity.BillingNoticeMain;
@@ -34,17 +36,18 @@ public class MGMTask implements Job {
 	ShareCampaignService shareCampaignService = ApplicationContextProvider.getApplicationContext().getBean(ShareCampaignService.class);
 	ShareCampaignClickTracingService shareCampaignClickTracingService = ApplicationContextProvider.getApplicationContext().getBean(ShareCampaignClickTracingService.class);
 	LinePointMainService linePointMainService = ApplicationContextProvider.getApplicationContext().getBean(LinePointMainService.class);
-	LinePointPushAkkaService linePointPushAkkaService = ApplicationContextProvider.getApplicationContext().getBean(LinePointPushAkkaService.class);
+	LinePointScheduledDetailService linePointScheduledDetailService = ApplicationContextProvider.getApplicationContext().getBean(LinePointScheduledDetailService.class);
+	//LinePointPushAkkaService linePointPushAkkaService = ApplicationContextProvider.getApplicationContext().getBean(LinePointPushAkkaService.class);
 	
 	private static Logger logger = Logger.getLogger(MGMTask.class);
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
-			//logger.info("[MGMTask execute]");
+			logger.info("[MGMTask execute]");
 			
 			// get undoneUser			
 			Map<String, List<String>> undoneUser = shareUserRecordService.findLatelyUndoneUsers();
-			//logger.info("undoneUser:"+undoneUser);
+			logger.info("undoneUser:"+undoneUser);
 			
 			for(Map.Entry<String, List<String>> entry : undoneUser.entrySet()) {
 			    String shareUserRecordId = entry.getKey();
@@ -76,25 +79,22 @@ public class MGMTask implements Job {
 			    // undone -> done
 			    logger.info("符合要求人數:"+count + "/" + shareCampaign.getShareTimes());
 			    if(count >= shareCampaign.getShareTimes()) {
-			    	// change status
+			    	// change shareUserRecord status
 			    	ShareUserRecord shareUserRecord = shareUserRecordService.findOne(shareUserRecordId);
 			    	shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
 			    	shareUserRecordService.save(shareUserRecord);
 			    	
-			    	// send line point
+			    	// change linePointMain status
 			    	String linePointSerialId = shareCampaign.getLinePointSerialId();
+			    	LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+			    	linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+			    	linePointMainService.save(linePointMain);
 			    	
-					JSONArray uids = new JSONArray();
-					uids.put(uid);
-					LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);				
-					LinePointPushModel linePointPushModel = new LinePointPushModel();
-					linePointPushModel.setAmount(linePointMain.getAmount());
-					linePointPushModel.setUid(uids);
-					linePointPushModel.setEventId(linePointMain.getId());
-					linePointPushModel.setSource(LinePointPushModel.SOURCE_TYPE_MGM);
-					linePointPushModel.setSendTimeType(LinePointPushModel.SEND_TYPE_IMMEDIATE);
-					linePointPushModel.setTriggerTime(new Date());
-					linePointPushAkkaService.tell(linePointPushModel);
+			    	// save linePointScheduledDetail
+			    	LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+			    	linePointScheduledDetail.setUid(uid);
+			    	linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+			    	linePointScheduledDetailService.save(linePointScheduledDetail);
 			    }
 			}
 		} catch (Exception e) {

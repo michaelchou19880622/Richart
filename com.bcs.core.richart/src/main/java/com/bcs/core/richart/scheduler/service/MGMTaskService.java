@@ -5,6 +5,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.Date;
 
+import org.jcodec.common.logging.Logger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -16,6 +17,8 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.bcs.core.enums.CONFIG_STR;
+import com.bcs.core.resource.CoreConfigReader;
 
 import com.bcs.core.richart.scheduler.handler.MGMTask;
 
@@ -27,9 +30,13 @@ public class MGMTaskService {
 			// Create JobDetail
 			JobDetail jobDetail = JobBuilder.newJob(MGMTask.class).withIdentity("mgmCheckLinePointJob", "MGMJobGroup").build(); // JobName, JobGroup	
 			
+			// Get Seconds
+			Integer triggerSeconds = CoreConfigReader.getInteger(CONFIG_STR.MGM_TRIGGER_SECONDS, true);
+			//Logger.info("MGM_TRIGGER_SECONDS:" + triggerSeconds);
+			
 			// Create Trigger
-			SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(30).repeatForever();
-			Trigger trigger=TriggerBuilder.newTrigger().withIdentity("MGMTrigger","MGMTriggerGroup").startNow().withSchedule(builder).build();
+			SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(triggerSeconds).repeatForever();
+			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("MGMTrigger","MGMTriggerGroup").startNow().withSchedule(builder).build();
 			
 			// Create Scheduler
 			SchedulerFactory schedulerFactory = new StdSchedulerFactory();

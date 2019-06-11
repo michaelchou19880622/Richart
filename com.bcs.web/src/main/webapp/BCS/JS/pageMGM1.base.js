@@ -440,7 +440,7 @@ $(function(){
 		
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/market/getAutoLinePointMainList'
+			url : bcs.bcsContextPath + '/market/getUndoneAutoLinePointMainList'
 		}).success(function(response){
 			console.info('getLinePointList response:' + JSON.stringify(response));
 

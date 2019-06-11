@@ -20,7 +20,9 @@ public enum BcsPageEnum {
 	LinePointListPage("/BCS/Views/PageLPL"),
 	LinePointPushPage("/BCS/Views/PageLPP"),
 	LinePointReportPage("/BCS/Views/PageLPR"),
-
+	LinePointDetailPage("/BCS/Views/PageLPD"),
+	LinePointSchedulePage("/BCS/Views/PageLPS"),
+	
 	//RichMenu Page
 	RichMenuCreatePage("/BCS/Views/PageRM1"),
 	RichMenuListPage("/BCS/Views/PageRM2"),

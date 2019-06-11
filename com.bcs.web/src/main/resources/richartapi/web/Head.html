@@ -69,17 +69,9 @@
             Security.EMPNM = '[[${#authentication.principal.username}]]'; // 帶入User名稱
             Security.SYSDT = '[[${#authentication.principal.day}]]'; // 帶入當天日期
 
-            var canCopy = [
-                [$ {#
-                    authentication.principal.cancopy
-                }]
-            ];
-            var canPrinting = [
-                [$ {#
-                    authentication.principal.canprinting
-                }]
-            ];
-
+            var canCopy = [[${#authentication.principal.cancopy}]];
+            var canPrinting = [[${#authentication.principal.canprinting}]];
+            
             // 依據使用者權限設定
             // 有列印&複製權限
             if (canCopy && canPrinting) {

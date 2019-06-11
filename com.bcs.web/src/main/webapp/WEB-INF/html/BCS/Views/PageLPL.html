@@ -18,7 +18,13 @@
                         <h3 class="CHTtl">LINE POINT活動列表</h3>
                     </header>
                     <div class="CHBtnSet">
-                        <div class="CHRight"><input class="btn_add" style="cursor: pointer;" type="button" value="建立活動"></div>
+                        <div class="CHLeft">
+                        	<input type="text" id="searchText" name="searchText" value="" maxlength="50"  required="required">
+                        	<input class="btn_save" style="cursor: pointer;" type="button" value="查詢">
+                        </div>
+                        <div class="CHRight">
+                        	<input class="btn_add" style="cursor: pointer;" type="button" value="建立活動">
+                       	</div>
                     </div>
 					<div class="mainFrame alignLeft" id="mainFrameId">
                         <div id="tabs">
@@ -32,6 +38,7 @@
                             	<col width="150">
                             	<col width="100">
                             	<col width="100">
+                            	<col width="100">
                             	<col width="130">
                             	<col width="130">
                             	<col width="130">
@@ -40,9 +47,10 @@
                             <tr class="templateTh">
                                 <th>活動代碼</th>
                                 <th>標題</th>
-                                <th>修改時間</th>
+                                <th>建立時間</th>
                                 <th>點數 / 人</th>
                                 <th>活動人數</th>
+                                <th>發送狀態</th>
                                 <th>發送方式</th>
                                 <th>建立人員</th>
                                 <th>刪除</th>
@@ -54,6 +62,7 @@
 	                                <td class="modifyTime"></td>                            
 	                                <td class="sendPoint"></td><!--  發送人數 -->
 	                                <td class="campaignPersonNum"></td>
+	                                <td class="status"></td>
 	                                <td class="sendType"></td>
 	                                <td class="setUpUser"></td><!--  建立人員 -->
 	                                <td>

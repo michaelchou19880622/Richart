@@ -20,7 +20,7 @@
                 </li>
                 
                    <li >
-                    <a href="" style="cursor: pointer;"><span>Line Point</span></a>
+                    <a href="" style="cursor: pointer;"><span>Line Point 活動</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
                         <li th:classappend="${currentPage == 'LinePointCreatePage'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/market/linePointCreatePage}"><span>建立 Line Point 活動</span></a>
@@ -31,9 +31,12 @@
                          <li th:classappend="${currentPage == 'LinePointPushPage'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/market/linePointPushPage}"><span>發送 Line Point 活動</span></a>
                         </li>
-                          <li th:classappend="${currentPage == 'LinePointReportPage'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/market/linePointReportPage}"><span>Line Point 活動報表</span></a>
+                        <li th:classappend="${currentPage == 'LinePointReportPage'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/market/linePointReportPage}"><span>Line Point 發送報表</span></a>
                         </li>
+<!--                    <li th:classappend="${currentPage == 'LinePointDetailPage'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/market/linePointDetailPage}"><span>Line Point 活動明細</span></a>
+                        </li> -->
                     </ul>
                 </li>
                 

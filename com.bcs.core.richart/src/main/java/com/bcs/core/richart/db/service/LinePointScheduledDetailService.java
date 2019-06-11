@@ -10,43 +10,40 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bcs.core.richart.db.entity.LinePointDetail;
+import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
 import com.bcs.core.richart.db.entity.LinePointMain;
-import com.bcs.core.richart.db.repository.LinePointDetailRepository;
+import com.bcs.core.richart.db.repository.LinePointScheduledDetailRepository;
 import com.bcs.core.richart.db.repository.LinePointMainRepository;
 
 @Service
-public class LinePointDetailService {
+public class LinePointScheduledDetailService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LinePointDetailService.class);
+	private static Logger logger = Logger.getLogger(LinePointScheduledDetailService.class);
 	@Autowired
-	private LinePointDetailRepository linePointDetailRepository;
+	private LinePointScheduledDetailRepository linePointScheduledDetailRepository;
 
     @PersistenceContext
     EntityManager entityManager;
     
-	public void delete(Long msgId){
-		LinePointDetail main = linePointDetailRepository.findOne(msgId);
-		main.setStatus(LinePointMain.STATUS_DELETE);
-		this.save(main);
+	public void save(LinePointScheduledDetail linePointScheduledDetail){
+		linePointScheduledDetailRepository.save(linePointScheduledDetail);
 	}
     
-	public void save(LinePointDetail linePoint){
-		linePointDetailRepository.save(linePoint);
-	}
-    
-	public LinePointDetail findOne(Long msgId){
-		return linePointDetailRepository.findOne(msgId);
-	}
-    
-	public List<LinePointDetail> findSuccess(Long linePointMainId){
-		return linePointDetailRepository.findByStatusAndLinePointMainId(LinePointDetail.STATUS_SUCCESS, linePointMainId);
+	public LinePointScheduledDetail findOne(Long msgId){
+		return linePointScheduledDetailRepository.findOne(msgId);
 	}
 	
-	public List<LinePointDetail> findFail(Long linePointMainId){
-		return linePointDetailRepository.findByStatusAndLinePointMainId(LinePointDetail.STATUS_FAIL, linePointMainId);
+	public List<LinePointScheduledDetail> findByLinePointMainId(Long linePointMainId){
+		return linePointScheduledDetailRepository.findByLinePointMainId(linePointMainId);
 	}
-		
+	
+	public void delete(LinePointScheduledDetail linePointScheduledDetail) {
+		linePointScheduledDetailRepository.delete(linePointScheduledDetail);
+	}
+	public List<LinePointScheduledDetail> findAll(Long mainId){
+		return linePointScheduledDetailRepository.findByLinePointMainId(mainId);
+	}	
+	
 //	public LinePointDetail findBySerialId(String serialId){
 //		return linePointDetailRepository.findBySerialId(serialId);
 //	}

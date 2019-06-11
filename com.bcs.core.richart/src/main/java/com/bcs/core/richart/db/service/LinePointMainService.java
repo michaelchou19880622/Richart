@@ -48,18 +48,37 @@ public class LinePointMainService {
 		return linePointMainRepository.findAll();
 	}
  
+	public List<LinePointMain> findAll(String searchText){
+		return linePointMainRepository.findAll(searchText);
+	}
+	
 	public List<LinePointMain> findManual(){
 		return linePointMainRepository.findBySendType(LinePointMain.SEND_TYPE_MANUAL);
 	}
-
+	
+	public List<LinePointMain> findManual(String searchText){
+		return linePointMainRepository.findBySendType(LinePointMain.SEND_TYPE_MANUAL, searchText);
+	}
+	
 	public List<LinePointMain> findAuto(){
 		return linePointMainRepository.findBySendType(LinePointMain.SEND_TYPE_AUTO);
 	}
-    
+	
+	public List<LinePointMain> findAuto(String searchText){
+		return linePointMainRepository.findBySendType(LinePointMain.SEND_TYPE_AUTO, searchText);
+	}
+	
+	public List<LinePointMain> findUndoneManual(){
+		return linePointMainRepository.findUndoneBySendType(LinePointMain.SEND_TYPE_MANUAL);
+	}
+
+	public List<LinePointMain> findUndoneAuto(){
+		return linePointMainRepository.findUndoneBySendType(LinePointMain.SEND_TYPE_AUTO);
+	}
+	
 	public LinePointMain findBySerialId(String serialId){
 		return linePointMainRepository.findBySerialId(serialId);
 	}
-	
 	
 	public List<LinePointMain> findByStatus(String status){
 		return linePointMainRepository.findByStatus(status);
