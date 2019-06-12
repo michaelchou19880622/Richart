@@ -68,12 +68,10 @@ public class MGMTask implements Job {
 			    Integer count = 0;
 			    for(ShareCampaignClickTracing shareCampaignClickTracing : friends) {
 			    	String friendUid = shareCampaignClickTracing.getUid();
-			    	if(shareUserRecordService.checkJudgement(friendUid, stateJudgement) == 1) {
+			    	if(shareUserRecordService.checkJudgement(friendUid, stateJudgement)) {
 			    		logger.info("他送符合要求的人："+friendUid);
+			    		count++;
 			    	}
-			    	
-			    	count += shareUserRecordService.checkJudgement(friendUid, stateJudgement);
-			    	
 			    }
 			    
 			    // undone -> done

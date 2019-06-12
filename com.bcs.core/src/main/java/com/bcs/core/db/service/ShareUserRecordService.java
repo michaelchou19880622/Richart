@@ -96,11 +96,11 @@ public class ShareUserRecordService {
     }
 
     @SuppressWarnings("unchecked")
-    public int checkJudgement(String uid, String stateJudgement){
+    public boolean checkJudgement(String uid, String stateJudgement){
     	String queryString = 
     			"select count(0) from BCS_LINE_USER where MID = '" + uid + "' " + stateJudgement;
     	Query query = entityManager.createNativeQuery(queryString);
 		List<Object[]> list = query.getResultList();
-		return (list.toString().contentEquals("[1]")?1:0);
+		return (list.toString().contentEquals("[1]")); // [1] or [0]
     }
 }

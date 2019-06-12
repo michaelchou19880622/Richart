@@ -92,7 +92,7 @@ public class LinePointPMSchedulerService {
 				logger.debug("LinePointPMSchedulerService startCircle....");
 				pushScheduledLinePoint();
 			}
-		}, delay, 1, TimeUnit.DAYS);
+		}, delay, 86400, TimeUnit.SECONDS);
 	}
 	
 	/**
