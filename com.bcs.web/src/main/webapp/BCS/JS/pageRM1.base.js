@@ -306,6 +306,8 @@ $(function(){
 					urls = valueObj[3].split(",");
 				}
 				var actionTypeList = ["web"];
+				console.info("actionTypeList:", actionTypeList); // ["sendMessage", "sendMessage", "postback"]
+				
 				if(valueObj[14]){
 					actionTypeList = valueObj[14].split(",");
 				}
@@ -316,13 +318,14 @@ $(function(){
 				
 				linkNumbers = urls.length;
 				
+				
 				changeRichTypeImg(richType); //變更type圖示
 				if (richType == "11" || richType == "12") {
 					$('#customizeTypeBtn').show();
 				} else {
 					frameTypePointXY = framesTypePointXY[Number(richType) - 1];
 				}
-				generateRichMsgUrl();
+				generateRichMsgUrl(); 
 				
 				var richMsgUrlPageTrs = $('.richMsgUrlPageTr');
 				for(var i=0; i < linkNumbers; i++) {
@@ -401,6 +404,7 @@ $(function(){
     			$.FailResponse(response);
     		}).done(function(){
     			getGoToList();
+    			console.info(".richMsgUrl:", $('.richMsgUrl'));
     		});
 		} else {
 			actionType = "Create";
@@ -413,7 +417,7 @@ $(function(){
 			url : bcs.bcsContextPath + '/edit/getRichMenuListByRichMenuGroupId/' + groupId 
 		}).success(function(response){
 			console.info('getRichMenuListByRichMenuGroupId response:' + JSON.stringify(response));
-
+			
 			var goToLists = $('.goToList');
 			$.each(goToLists, function(k, v){
 				var goToList = goToLists[k];
@@ -434,15 +438,53 @@ $(function(){
 //				$('#goToList').val(selectedValue);
 								
 			});
-			
-
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
 		}).done(function(){
+			setGoToList();
 		});		
 	};
 	
+	var setGoToList = function(){
+		var postbackTds = $('.postbackTd');
+		console.info('postbackTd:', $('.postbackTd'));
+		
+		$.each(postbackTds, function(k, v){
+			// var url1 = postbackTds[k].find();
+			console.info("goToPath:", $(postbackTds[k]).find('.goToPath'));
+			//var path = $(postbackTds[k]).find('.goToPath')
+			console.info("goToList:", $(postbackTds[k]).find('.goToList'));
+		});
+		
+//		var goToLists = $('.goToList');
+//		var richMsgUrls = $('.richMsgUrl');
+//		console.info("richMsgUrls:", richMsgUrls);
+//		
+//		$.each(richMsgUrls, function(k, v){
+//			var url1 = richMsgUrls[k].value;
+//			console.info("url1:", url1);
+//			console.info("cloesest:", $(richMsgUrls[k]).closest('.goToList'));
+			
+			
+			
+////			var selectedValue = "";
+//			$.each(response, function(i, o){		
+//				console.info('goToList o:' + JSON.stringify(o));
+//				 var opt = document.createElement('option');
+//				 opt.value = o.richId;
+//				 opt.innerHTML = o.richMenuName; // + ' (' + o.title + ')';	
+//				 //console.info("o.serialId", o.serialId);
+////				 if(richId != null && richId == o.richId){
+////					 selectedValue = o.richMenuName;
+////					 console.info("selectedValue", selectedValue);
+////				 }
+//				goToList.appendChild(opt);
+//			});
+////			$('#goToList').val(selectedValue);
+							
+//		});
+	}
 	//點擊圖文訊息類別後變更設定連結的圖示
 	var linkNumbers = 0; //連結數
 	var menuSize = 'FULL'; //RichMenu Size
@@ -570,6 +612,7 @@ $(function(){
 			var nameTarget = 'RichMsg' + totalUrlCount;
 			richMsgUrlPage.find('.richMsgUrl').attr('name', nameTarget);
 			validateNameSet.push(nameTarget);
+			console.info("nameTarget:", nameTarget);
 			
 			appendHtml += '<tr class="richMsgUrlPageTr">' + richMsgUrlPage.html() + '</tr>';
 			appendHtml += '<tr class="richMsgUrlTxtTr">' + richMsgUrlTxt.html() + '</tr>';
