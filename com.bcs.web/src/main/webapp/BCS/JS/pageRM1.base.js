@@ -423,11 +423,15 @@ $(function(){
 				var goToList = goToLists[k];
 				
 //				var selectedValue = "";
+				var count = 0;
 				$.each(response, function(i, o){		
 					console.info('goToList o:' + JSON.stringify(o));
 					 var opt = document.createElement('option');
-					 opt.value = o.richId;
-					 opt.innerHTML = o.richMenuName; // + ' (' + o.title + ')';	
+					 //opt.richId = o.richId;
+					 //opt.attr('richId', o.richId);
+					 
+					 opt.value = ++count;
+					 opt.innerHTML = o.richMenuName + ' (' + o.richId + ')';	
 					 //console.info("o.serialId", o.serialId);
 //					 if(richId != null && richId == o.richId){
 //						 selectedValue = o.richMenuName;
@@ -452,9 +456,41 @@ $(function(){
 		
 		$.each(postbackTds, function(k, v){
 			// var url1 = postbackTds[k].find();
-			console.info("goToPath:", $(postbackTds[k]).find('.goToPath'));
-			//var path = $(postbackTds[k]).find('.goToPath')
-			console.info("goToList:", $(postbackTds[k]).find('.goToList'));
+			var goToPaths = $(postbackTds[k]).find('.goToPath');
+			console.info("goToPaths:", goToPaths);
+			if(goToPaths.length > 0) {
+				var goToPath = goToPaths[0].value;
+				console.info("goToPath:", goToPath);
+				
+				var goToList = $(postbackTds[k]).find('#goToList')[0];
+				
+				//$(postbackTds[k]).find('#goToList').val(1);
+				
+				console.info("goToList:", goToList);
+				var index = 0;
+				$.each(goToList, function(i, o){		
+					console.info('goToList o:' + o);
+					 //var opt = document.createElement('option');
+					 console.info('o.value:', o.value);
+					 console.info('o.innerHTML:', o.innerHTML);
+					 
+					 var search = o.innerHTML.search(goToPath);
+					 console.info('search:', search);
+					 if(search > -1){
+						 console.info("get index:", index);
+						 $(postbackTds[k]).find('#goToList').val(index);
+					 }
+					 //goToList.val(o.value);
+//					 opt.value = o.richId;
+//					 opt.innerHTML = o.richMenuName; 
+//					 if(linePointSerialId != null && o.serialId == linePointSerialId){
+//						 selectedValue = opt.value;
+//						 console.info("selectedValue", selectedValue);
+//					 }
+					 index++;
+				});
+				
+			}
 		});
 		
 //		var goToLists = $('.goToList');
@@ -1104,7 +1140,8 @@ $(function(){
 			changeCondition : $('.changeConditionSelect').val(),
 			menuSize : menuSize,
 			richMenuStartUsingTime : momentRichMenuStartUsingTime.format(dateFormat),
-			richMenuEndUsingTime : momentRichMenuEndUsingTime.format(dateFormat)
+			richMenuEndUsingTime : momentRichMenuEndUsingTime.format(dateFormat),
+			richMenuGroupId : groupId
 		}
 		console.info(postData);
 		
@@ -1123,7 +1160,7 @@ $(function(){
 			} else {
 				alert("建立圖文訊息成功！");
 			}
-			window.location.replace(bcs.bcsContextPath + '/edit/richMenuListPage');
+			window.location.replace(bcs.bcsContextPath + '/edit/richMenuListPage?groupId=' + groupId);
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);

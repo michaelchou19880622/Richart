@@ -2,7 +2,7 @@
  * 
  */
 $(function(){
-	var groupId = 1;
+	var groupId = 0;
 	
 	$('.btn_add').click(function(){
  		//window.location.replace('richMenuCreatePage');
@@ -170,7 +170,7 @@ $(function(){
 	};
 	
 	var setCopyBtnEvent = function() {
-		$('.btn_copy').click(function(e) {
+		$('.btn_clone').click(function(e) {
 			var copyConfirm = confirm("請確認是否複製");
 			if (!copyConfirm) return; //點擊取消
 			
@@ -268,6 +268,7 @@ $(function(){
 	var richMsgTrTemplate = {};
 	
 	var initTemplate = function(){
+		groupId = $.urlParam("groupId");
 		richMsgTrTemplate = $('.richMsgTrTemplate').clone(true);
 		$('.richMsgTrTemplate').remove();
 	}

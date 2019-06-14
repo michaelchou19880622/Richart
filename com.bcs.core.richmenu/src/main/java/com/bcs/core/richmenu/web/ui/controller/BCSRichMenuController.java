@@ -214,6 +214,7 @@ public class BCSRichMenuController extends BCSBaseController {
 				contentRichMenu.setStatus(RichMenuContent.STATUS_DISABLE);
 			}
 			
+			contentRichMenu.setRichMenuGroupId(createRichMenuModel.getRichMenuGroupId());
 			contentRichMenu.setRichType(createRichMenuModel.getRichType());
 			contentRichMenu.setRichImageId(createRichMenuModel.getRichImageId());
 			contentRichMenu.setRichMenuName(createRichMenuModel.getRichMenuName());
