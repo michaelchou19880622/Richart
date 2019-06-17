@@ -23,6 +23,8 @@ public class RichMenuContent extends AbstractBcsEntity{
 	public static final String STATUS_CLOSE = "CLOSE";
 	public static final String SIZE_FULL = "FULL";
 	public static final String SIZE_HALF = "HALF";
+	public static final String LEVEL_MAIN = "MAIN";
+	public static final String LEVEL_COLUMN = "COLUMN";
 	
 	@Id
 	@Column(name = "RICH_ID", columnDefinition="nvarchar(50)")
@@ -58,8 +60,8 @@ public class RichMenuContent extends AbstractBcsEntity{
 	@Column(name = "STATUS", columnDefinition="nvarchar(50)")
 	private String status;
 	
-	@Column(name = "CONDITION", columnDefinition="nvarchar(50)")
-	private String condition;
+	@Column(name = "LEVEL", columnDefinition="nvarchar(50)")
+	private String level;
 	
 	@Column(name = "MENU_SIZE", columnDefinition="nvarchar(10)")
 	private String menuSize;
@@ -161,12 +163,12 @@ public class RichMenuContent extends AbstractBcsEntity{
 		this.status = status;
 	}
 	
-	public String getCondition() {
-		return condition;
+	public String getLevel() {
+		return level;
 	}
 
-	public void setCondition(String condition) {
-		this.condition = condition;
+	public void setLevel(String level) {
+		this.level = level;
 	}
 	
 	public String getMenuSize() {

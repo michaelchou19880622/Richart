@@ -72,18 +72,26 @@
                 <li>
                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
-                    	<li th:classappend="${currentPage == 'PageRM4'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/edit/richMenuGroupPage}"><span>圖文選單群組</span></a>
+                    	<li th:classappend="${currentPage == 'PageRMgL'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/richMenuGroupListPage}"><span>圖文選單群組列表</span></a>
                         </li>
-                        <li th:classappend="${currentPage == 'PageRM2'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/edit/richMenuListPage}"><span>圖文選單列表</span></a>
+                        <li th:classappend="${currentPage == 'PageRMmL'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/richMenuMemberListPage}"><span>圖文選單群組成員列表</span></a>
                         </li>
-                        <li th:classappend="${currentPage == 'PageRM1'} ? 'ExSelected'">
+                        <li th:classappend="${currentPage == 'PageRMC'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/edit/richMenuCreatePage}"><span>建立圖文選單</span></a>
                         </li>
-
+                        <li th:classappend="${currentPage == 'PageRMB'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/richMenuBindingPage}"><span>圖文選單與使用者相連</span></a>
+                        </li>  
+<!--                         <li th:classappend="${currentPage == 'PageRMsgL'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/richMenuSendGroupListPage}"><span>建立圖文選單發送群組</span></a>
+                        </li>
+                        <li th:classappend="${currentPage == 'PageRMsgC'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/richMenuSendGroupCreatePage}"><span>建立圖文選單發送群組</span></a>
+                        </li> -->
                     </ul>
-                </li>                
+                </li>
                 <li sec:authorize="hasAnyRole('ROLE_EDIT', 'ROLE_ADMIN')">
                     <a href="" style="cursor: pointer;"><span>MGM活動</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">

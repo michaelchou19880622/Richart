@@ -24,10 +24,11 @@ public enum BcsPageEnum {
 	LinePointSchedulePage("/BCS/Views/PageLPS"),
 	
 	//RichMenu Page
-	RichMenuCreatePage("/BCS/Views/PageRM1"),
-	RichMenuListPage("/BCS/Views/PageRM2"),
-	RichMenuListDeletePage("/BCS/Views/PageRM3"),
-	RichMenuGroupPage("/BCS/Views/PageRM4"),
+	RichMenuGroupListPage("/BCS/Views/PageRMgL"),
+	RichMenuMemberListPage("/BCS/Views/PageRMmL"),
+	RichMenuCreatePage("/BCS/Views/PageRMC"),
+	RichMenuBindingPage("/BCS/Views/PageRMB"),	
+	
 	
 	RichMenuSendGroupCreatePage(""),
 	RichMenuSendGroupListPage(""),

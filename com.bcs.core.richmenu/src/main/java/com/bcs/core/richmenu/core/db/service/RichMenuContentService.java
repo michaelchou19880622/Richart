@@ -142,6 +142,10 @@ public class RichMenuContentService {
     	return contentRichMenuRepository.findByRichMenuGroupId(richMenuGroupId);
     }
     
+	public List<RichMenuContent> getRichMenuListByRichMenuGroupIdAndLevel(String richMenuGroupId, String level) {
+    	return contentRichMenuRepository.findByRichMenuGroupIdAndLevel(richMenuGroupId, level);
+    }
+	
 	/**
 	 * 取得圖文選單
      */
@@ -173,7 +177,7 @@ public class RichMenuContentService {
 					+ "BCS_RICH_MENU_CONTENT_DETAIL.ACTION_TYPE, "
     				+ "BCS_RICH_MENU_CONTENT.RICH_MENU_NAME, "
     				+ "BCS_RICH_MENU_CONTENT.RICH_MENU_SHOW_STATUS, "
-					+ "BCS_RICH_MENU_CONTENT.CONDITION, "
+					+ "BCS_RICH_MENU_CONTENT.LEVEL, "
 					+ "BCS_RICH_MENU_CONTENT.MENU_SIZE, "
 					+ "BCS_RICH_MENU_CONTENT.RICH_MENU_START_USING_TIME, "
 					+ "BCS_RICH_MENU_CONTENT.RICH_MENU_END_USING_TIME "
@@ -250,7 +254,7 @@ public class RichMenuContentService {
     					+ "BCS_RICH_MENU_CONTENT.RICH_IMAGE_ID, "
     					+ "BCS_RICH_MENU_CONTENT_LINK.LINK_TITLE, "
     					+ "BCS_RICH_MENU_CONTENT.STATUS, "
-    					+ "BCS_RICH_MENU_CONTENT.CONDITION, "
+    					+ "BCS_RICH_MENU_CONTENT.LEVEL, "
     					+ "BCS_RICH_MENU_CONTENT_DETAIL.ACTION_TYPE, "
     					+ "BCS_RICH_MENU_CONTENT_DETAIL.LINK_ID "
     			+ "FROM BCS_RICH_MENU_CONTENT "
@@ -350,7 +354,7 @@ public class RichMenuContentService {
                         + "BCS_RICH_MENU_CONTENT.RICH_IMAGE_ID, "
                         + "BCS_RICH_MENU_CONTENT_LINK.LINK_TITLE, "
                         + "BCS_RICH_MENU_CONTENT.STATUS, "
-                        + "BCS_RICH_MENU_CONTENT.CONDITION, "
+                        + "BCS_RICH_MENU_CONTENT.LEVEL, "
                         + "BCS_RICH_MENU_CONTENT_DETAIL.ACTION_TYPE, "
                         + "BCS_RICH_MENU_CONTENT_DETAIL.LINK_ID, "
                         + "BCS_RICH_MENU_CONTENT_DETAIL.RICH_DETAIL_LETTER, "

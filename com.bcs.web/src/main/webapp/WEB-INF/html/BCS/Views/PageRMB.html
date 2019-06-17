@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	  th:with="strList = ${ {'/BCS/JS/MsgFragment/MsgFragment.js', '/BCS/JS/PageRMB.base.js'} }" >
+<head
+	th:replace="/BCS/Views/Common/Head :: head ('Rich Menu Binding Page',  ${strList})">
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRMB')"></div>
+
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+		       <form id="formSendGroup">
+                <section>
+                    <header class="ContentHead">
+                        <h3 class="CHTtl">圖文選單與使用者的關聯設置</h3>
+                        <p class="CHDesc">您可選擇Rich Menu，上傳清單。</p>
+                    </header>
+
+                    <div class="mainFrame CMsg">
+                        <table border="1">
+                            <colgroup><col width="190"><col></colgroup>
+                            <tbody >
+                             	<tr>
+                            	 	<th>Rich Menu</th>
+                                    <td>
+                                        <select name="mainList" id="mainList" style="width: 300px;">
+                                            <option value="">請選擇</option>
+                                        </select>                                        
+                                    </td>  
+                             	</tr>
+                             	<tr>
+                            	 	<th>使用者清單</th>
+                                    <td>
+                                        <!--  <input type="file" id="fileupload" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/plain, .csv">-->
+                                        <input type="file" id="fileupload" >
+                                        <br />
+                                        <label id="sendCount"></label>
+                                        <br />
+                                        <select name="sendList" id="sendList" size="10" style="width: 300px;">
+                                        </select>                                        
+                                    </td>  
+                             	</tr>                             	
+              
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+                <div class="BtnSet">
+                    <div>
+                        <input class="btn_save" type="button" value="修改" style="cursor: pointer;">
+                        <input class="btn_cancel" type="button" value="取消" style="cursor: pointer;">
+                    </div>
+                </div>
+
+            </form>
+
+		</div>
+	</div>
+
+</body>
+
+
+
+</html>

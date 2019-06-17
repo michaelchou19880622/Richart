@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" th:with="strList = ${ {'/BCS/JS/MsgFragment/MsgList.base.js', '/BCS/JS/MsgFragment/PaginationFragment.js', '/BCS/JS/pageRM2.base.js'} }">
+      xmlns:th="http://www.thymeleaf.org" th:with="strList = ${ {'/BCS/JS/MsgFragment/MsgList.base.js', '/BCS/JS/MsgFragment/PaginationFragment.js', '/BCS/JS/pageRMmL.base.js'} }">
 <head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu List Page', ${strList})">
 </head>
 
@@ -8,7 +8,7 @@
 	<header th:replace="/BCS/Views/Common/Header :: header"></header>
 
     <div class="LyContents">
-    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRM2')"></div>
+    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRMmL')"></div>
 
         <!-- Right Content -->
         <div class="LyMain" role="main">
@@ -16,7 +16,7 @@
                 <section>
 
                     <header class="ContentHead">
-                        <h3 class="CHTtl">組內圖文選單列表</h3>
+                        <h3 class="CHTtl">圖文選單群組成員列表</h3>
                     </header>
                    	
                    	<div class="CHBtnSet">
@@ -40,17 +40,19 @@
 	                            <col width="70">
 	                            <col width="50">
 	                            <col width="70">
-	                            <col width="50">
+	                            <col width="100">
+	                            <col width="100">
                             </colgroup>
                             <tr>
                                 <th>名稱</th>
-                                <th>切換條件</th>
+                                <th>層級</th>
                                 <th>使用期間</th>
                                 <th>圖文選單ID</th>
                                 <th>狀態</th>
                                 <th>建立時間</th>
                                 <th>建立人員</th>
-                                <th>報表/複製/開關</th>
+                                <th>開關</th>
+                                <th>複製/刪除</th>
                             </tr>
                             <tbody class="richMsgTrTemplate">
                             <tr>
@@ -60,18 +62,20 @@
                                     <img src="" width="100px" style="cursor: pointer;">
                                     <div><a href="richMenuCreatePage" class="richMenuName"></a></div>
                                 </td>
-                                <td class="richMenuChangeCondition" style="text-align: left;"></td>
+                                <td class="richMenuLevel" style="text-align: left;"></td>
                                 <td class="richMenuUseTime" style="text-align: left;"></td>
                                 <td class="richMenuId"></td>
                                 <td class="richMenuStatus"></td>
                                 <td class="richMsgCreateTime"></td>
                                 <td class="richMsgCreateUser"></td>
                                 <td>
-                                	<input class="btn_dialog exportReport" type="button" value="報表" style="cursor: pointer;">
-                                    <input class="btn_clone" type="button" value="複製" style="cursor: pointer;">
                                     <input class="btn_redesign" type="button" value="啟用" style="cursor: pointer;">
                                     <input class="btn_disable" type="button" value="停用" style="cursor: pointer;">
-                                    <input class="btn_disable" type="button" value="刪除" style="cursor: pointer;">
+                                </td>
+                                <td>
+<!--                                 	<input class="btn_dialog exportReport" type="button" value="報表" style="cursor: pointer;"> -->
+                                    <input class="btn_clone" type="button" value="複製" style="cursor: pointer;">
+                                    <input class="btn_delete" type="button" value="刪除" style="cursor: pointer;">
                                     <iframe id="downloadReport" style='display:none' ></iframe>
                                 </td>
                             </tr>

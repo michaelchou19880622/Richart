@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"  
-      th:with="strList = ${ {'/BCS/JS/pageRM4.base.js'} }">
+      th:with="strList = ${ {'/BCS/JS/pageRMgL.base.js'} }">
 <head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu Group Page', ${strList})" >
 </head>
 
@@ -9,14 +9,14 @@
 	<header th:replace="/BCS/Views/Common/Header :: header"></header>
 
     <div class="LyContents">
-    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRM4')"></div>
+    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRMgL')"></div>
     	
         <!-- Right Content -->
         <div class="LyMain" role="main">
             <form>
                 <section>
                     <header class="ContentHead">
-                        <h3 class="CHTtl">圖文選單發送群組</h3>
+                        <h3 class="CHTtl">圖文選單群組列表</h3>
                     </header>
 
                     <br></br>
@@ -33,11 +33,6 @@
                             	<col width="150">
                             	<col width="100">
                             	<col width="100">
-                            	<col width="130">
-                            	<col width="130">
-                            	<col width="130">
-                            	<col width="130">
-                            	<col width="130">
                             </colgroup>
                              <tr class="templateHeader">
                                 <th>群組名稱</th>
@@ -49,7 +44,7 @@
 	                             <tr class="templateTr">
 	                                <td class="title">
 	                                	<input type="hidden" class="groupId">
-	                                    <div><a href="richMenuListPage" class="name"></a></div>
+	                                    <div><a href="richMenuMemberPage" class="name"></a></div>
                                		</td>
 									<td class="modifyTime"></td>
 									<td class="modifyUser"></td>

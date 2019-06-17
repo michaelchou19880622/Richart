@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"  
-      th:with="strList = ${ {'/BCS/JS/MsgFragment/RichMsgPreviewContent.js', '/BCS/JS/MsgFragment/PreviewDialog.js', '/BCS/JS/pageRM1.base.js'} }">
+      th:with="strList = ${ {'/BCS/JS/MsgFragment/RichMsgPreviewContent.js', '/BCS/JS/MsgFragment/PreviewDialog.js', '/BCS/JS/pageRMC.base.js'} }">
 <head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu Create Page', ${strList})" >
 </head>
 
@@ -9,7 +9,7 @@
 	<header th:replace="/BCS/Views/Common/Header :: header"></header>
 
     <div class="LyContents">
-    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRM1')"></div>
+    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRMC')"></div>
 
         <!-- Right Content -->
         <div class="LyMain" role="main">
@@ -198,14 +198,14 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>圖文選單切換條件<span style="color: red">*</span></th>
+                                <th>圖文選單首頁<span style="color: red">*</span></th>
                                 <td colspan="2">
                                 	<div class="option">
                                             <div class="optionLabel">請選擇</div>
                                             <select class="optionSelect changeConditionSelect" name="changeConditionSelect">
                                                 <option value="">請選擇</option>
-                                                <option value="BINDED">已綁定</option>
-                                                <option value="UNBIND">未綁定</option>
+                                                <option value="MAIN">首頁</option>
+                                                <option value="COLUMN">非首頁</option>
                                             </select>
                                     </div>
                                 </td>
@@ -327,8 +327,8 @@
             						<select name="goToList" class="goToList" id="goToList" style="width: 300px;">
                                     		<option value="">請選擇</option>
                                     </select> 
-                                    <div class="MdFRM01Input" style="visibility:hidden">
-                						<input type="text" class="goToPath" placeholder="限300字" maxlength="300">
+                                    <div class="MdFRM01Input" > <!-- style="visibility:hidden" -->
+                						<input type="text" class="goToPath" placeholder="" value="NULL" maxlength="300" readonly>
             						</div>
                                 </td>
                             </tr>

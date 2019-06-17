@@ -263,10 +263,13 @@ $(function(){
 	}
 	
 	var richId = "";
+	var groupId = "";
 	var richType = "";
 	var actionType = "";
+	
 	var getDataByRichId = function() {
 		richId = $.urlParam("richId"); //從列表頁導過來的參數
+		groupId = $.urlParam("groupId"); //從列表頁導過來的參數
 		actionType = $.urlParam("actionType"); //從列表頁導過來的參數
 		
 		if (richId != null && richId != "") {
@@ -303,6 +306,8 @@ $(function(){
 					urls = valueObj[3].split(",");
 				}
 				var actionTypeList = ["web"];
+				console.info("actionTypeList:", actionTypeList); // ["sendMessage", "sendMessage", "postback"]
+				
 				if(valueObj[14]){
 					actionTypeList = valueObj[14].split(",");
 				}
@@ -313,13 +318,14 @@ $(function(){
 				
 				linkNumbers = urls.length;
 				
+				
 				changeRichTypeImg(richType); //變更type圖示
 				if (richType == "11" || richType == "12") {
 					$('#customizeTypeBtn').show();
 				} else {
 					frameTypePointXY = framesTypePointXY[Number(richType) - 1];
 				}
-				generateRichMsgUrl();
+				generateRichMsgUrl(); 
 				
 				var richMsgUrlPageTrs = $('.richMsgUrlPageTr');
 				for(var i=0; i < linkNumbers; i++) {
@@ -373,8 +379,8 @@ $(function(){
 				});
 				
 				// 圖文選單切換條件
-				var condition = valueObj[17];
-				$('.changeConditionSelect').val(condition);
+				var level = valueObj[17];
+				$('.changeConditionSelect').val(level);
 				$('.changeConditionSelect').change();
 				
 				//觸發輸入文字計數
@@ -397,12 +403,135 @@ $(function(){
     			console.info(response);
     			$.FailResponse(response);
     		}).done(function(){
+    			getGoToList();
+    			console.info(".richMsgUrl:", $('.richMsgUrl'));
     		});
 		} else {
 			actionType = "Create";
 		}
 	}
 	
+	var getGoToList = function(){
+		$.ajax({
+			type : "GET",
+			url : bcs.bcsContextPath + '/edit/getRichMenuListByRichMenuGroupId/' + groupId 
+		}).success(function(response){
+			console.info('getRichMenuListByRichMenuGroupId response:' + JSON.stringify(response));
+			
+			var goToLists = $('.goToList');
+			$.each(goToLists, function(k, v){
+				var goToList = goToLists[k];
+				
+//				var selectedValue = "";
+				var count = 0;
+				$.each(response, function(i, o){		
+					console.info('goToList o:' + JSON.stringify(o));
+					 var opt = document.createElement('option');
+					 //opt.richId = o.richId;
+					 //opt.attr('richId', o.richId);
+					 
+					 opt.value = ++count;
+					 opt.innerHTML = o.richMenuName;
+					 
+					 var input = document.createElement('input');
+					 input.setAttribute('type', 'text');
+					 input.setAttribute('name', 'richId');
+					 input.setAttribute('value', o.richId);
+					 //input.innerHTML = o.richId;
+					 opt.appendChild(input);
+					 
+					 //opt.appendChild 
+					 // o.richId
+					 
+					 //console.info("o.serialId", o.serialId);
+//					 if(richId != null && richId == o.richId){
+//						 selectedValue = o.richMenuName;
+//						 console.info("selectedValue", selectedValue);
+//					 }
+					goToList.appendChild(opt);
+				});
+//				$('#goToList').val(selectedValue);
+								
+			});
+		}).fail(function(response){
+			console.info(response);
+			$.FailResponse(response);
+		}).done(function(){
+			setGoToList();
+		});		
+	};
+	
+	var setGoToList = function(){
+		var postbackTds = $('.postbackTd');
+		console.info('postbackTd:', $('.postbackTd'));
+		
+		$.each(postbackTds, function(k, v){
+			// var url1 = postbackTds[k].find();
+			var goToPaths = $(postbackTds[k]).find('.goToPath');
+			console.info("goToPaths:", goToPaths);
+			if(goToPaths.length > 0) {
+				var goToPath = goToPaths[0].value;
+				console.info("goToPath:", goToPath);
+				
+				var goToList = $(postbackTds[k]).find('#goToList')[0];
+				
+				//$(postbackTds[k]).find('#goToList').val(1);
+				
+				console.info("goToList:", goToList);
+				var index = 0;
+				$.each(goToList, function(i, o){		
+					console.info('goToList o:' + o);
+					 //var opt = document.createElement('option');
+					 console.info('o.value:', o.value);
+					 console.info('o.innerHTML:', o.innerHTML);
+					 
+					 var search = o.innerHTML.search(goToPath);
+					 console.info('search:', search);
+					 if(search > -1){
+						 console.info("get index:", index);
+						 $(postbackTds[k]).find('#goToList').val(index);
+					 }
+					 //goToList.val(o.value);
+//					 opt.value = o.richId;
+//					 opt.innerHTML = o.richMenuName; 
+//					 if(linePointSerialId != null && o.serialId == linePointSerialId){
+//						 selectedValue = opt.value;
+//						 console.info("selectedValue", selectedValue);
+//					 }
+					 index++;
+				});
+				
+			}
+		});
+		
+//		var goToLists = $('.goToList');
+//		var richMsgUrls = $('.richMsgUrl');
+//		console.info("richMsgUrls:", richMsgUrls);
+//		
+//		$.each(richMsgUrls, function(k, v){
+//			var url1 = richMsgUrls[k].value;
+//			console.info("url1:", url1);
+//			console.info("cloesest:", $(richMsgUrls[k]).closest('.goToList'));
+			
+			
+			
+////			var selectedValue = "";
+//			$.each(response, function(i, o){		
+//				console.info('goToList o:' + JSON.stringify(o));
+//				 var opt = document.createElement('option');
+//				 opt.value = o.richId;
+//				 opt.innerHTML = o.richMenuName; // + ' (' + o.title + ')';	
+//				 //console.info("o.serialId", o.serialId);
+////				 if(richId != null && richId == o.richId){
+////					 selectedValue = o.richMenuName;
+////					 console.info("selectedValue", selectedValue);
+////				 }
+//				goToList.appendChild(opt);
+//			});
+////			$('#goToList').val(selectedValue);
+							
+//		});
+	}
 	//點擊圖文訊息類別後變更設定連結的圖示
 	var linkNumbers = 0; //連結數
 	var menuSize = 'FULL'; //RichMenu Size
@@ -530,6 +659,7 @@ $(function(){
 			var nameTarget = 'RichMsg' + totalUrlCount;
 			richMsgUrlPage.find('.richMsgUrl').attr('name', nameTarget);
 			validateNameSet.push(nameTarget);
+			console.info("nameTarget:", nameTarget);
 			
 			appendHtml += '<tr class="richMsgUrlPageTr">' + richMsgUrlPage.html() + '</tr>';
 			appendHtml += '<tr class="richMsgUrlTxtTr">' + richMsgUrlTxt.html() + '</tr>';
@@ -938,11 +1068,26 @@ $(function(){
 		var richMsgUrlTxtTr = $('.richMsgUrlTxtTr');
 		var richMsgLinkTitles = richMsgUrlTxtTr.find('.richMsgLinkTxt');
 		var richMsgLetters = $('.typeSideTxt');
+
 		
 		//選擇自訂框架
 		if ($("input[name='templateFrameType']:checked").val() == "11" || $("input[name='templateFrameType']:checked").val() == "12" ) {
 			var draggablePositions = getUrlDraggablePosition();
 			for (var i in draggablePositions) {
+				
+				var actionType1 = $(richMsgUrls[i]).closest('.richMsgUrlPageTr').find('.actionType:checked').val();
+				var linkUrl = richMsgUrls[i].value;
+				if(actionType1 == 'postback'){
+					var goToList = $(richMsgUrls[i]).closest('.richMsgUrlPageTr').find('.goToList')[0];
+					console.info("goToList", goToList);
+					var path = goToList.options[goToList.selectedIndex].value;
+					console.info("path", path);
+					linkUrl = path;
+				}
+				console.info("i=", i);
+				console.info("actionType1:", actionType1);
+				console.info("linkUrl:", linkUrl);
+				
 				if (draggablePositions[i].endX > originalImgWidth || draggablePositions[i].endY > originalImgHeight
 						|| draggablePositions[i].startX < 0 || draggablePositions[i].startY < 0) {
 					alert("自訂連結區塊超出圖片範圍，請再次確認");
@@ -955,7 +1100,7 @@ $(function(){
 					startPointY : draggablePositions[i].startY,
 					endPointX : draggablePositions[i].endX,
 					endPointY : draggablePositions[i].endY,
-					linkUrl : richMsgUrls[i].value,
+					linkUrl : linkUrl,
 					linkTitle : richMsgLinkTitles[i].value,
 					linkTagList : richMsgUrlTxtTr.eq(i).data('linkTagContentFlag').getContentFlagList(),
 					actionType : $(richMsgUrls[i]).closest('.richMsgUrlPageTr').find('.actionType:checked').val()
@@ -963,19 +1108,43 @@ $(function(){
 			}
 		} else {
 			$.each(richMsgUrls, function(i, v) {
+				var actionType1 = $(richMsgUrls[i]).closest('.richMsgUrlPageTr').find('.actionType:checked').val();
+				var linkUrl = richMsgUrls[i].value;
+				if(actionType1 == 'postback'){
+					var goToList = $(richMsgUrls[i]).closest('.richMsgUrlPageTr').find('.goToList')[0];
+					console.info("goToList", goToList);
+					var path = goToList.options[goToList.selectedIndex].value;
+					//var path = goToList.options[goToList.selectedIndex].innerText;
+					//var child = goToList.options[goToList.selectedIndex].find
+					// $("input[name='templateFrameType']");
+					var column = goToList.options[goToList.selectedIndex]; //find("input[name='richId']");
+					console.info('column:', column);
+					var child = $(column).find("input[name='richId']")[0];
+					console.info('child:', child.value);
+					
+					console.info("path", path);
+					linkUrl = child.value;
+				}
+				console.info("i=", i);
+				console.info("actionType1:", actionType1);
+				console.info("linkUrl:", linkUrl);
+				
 				richMsgImgUrls.push({
 					richDetailLetter : richMsgLetters[i].innerText,
 					startPointX : frameTypePointXY[i].startX,
 					startPointY : frameTypePointXY[i].startY,
 					endPointX : frameTypePointXY[i].endX,
 					endPointY : frameTypePointXY[i].endY,
-					linkUrl : richMsgUrls[i].value,
+					linkUrl : linkUrl,
 					linkTitle : richMsgLinkTitles[i].value,
 					linkTagList : richMsgUrlTxtTr.eq(i).data('linkTagContentFlag').getContentFlagList(),
 					actionType : $(richMsgUrls[i]).closest('.richMsgUrlPageTr').find('.actionType:checked').val()
 				});
 			});
 		}
+		//return;
+		
+		console.info("richMsgImgUrls[2]", richMsgImgUrls[2].linkUrl);
 		
 		// 使用效期
 		var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
@@ -991,7 +1160,8 @@ $(function(){
 			changeCondition : $('.changeConditionSelect').val(),
 			menuSize : menuSize,
 			richMenuStartUsingTime : momentRichMenuStartUsingTime.format(dateFormat),
-			richMenuEndUsingTime : momentRichMenuEndUsingTime.format(dateFormat)
+			richMenuEndUsingTime : momentRichMenuEndUsingTime.format(dateFormat),
+			richMenuGroupId : groupId
 		}
 		console.info(postData);
 		
@@ -1010,7 +1180,7 @@ $(function(){
 			} else {
 				alert("建立圖文訊息成功！");
 			}
-			window.location.replace(bcs.bcsContextPath + '/edit/richMenuListPage');
+			window.location.replace(bcs.bcsContextPath + '/edit/richMenuMemberListPage?groupId=' + groupId);
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
@@ -1141,7 +1311,7 @@ $(function(){
 		    return;
 		}
 		
-		window.location.replace(bcs.bcsContextPath + '/edit/richMenuListPage');
+		window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupListPage');
 	});
 	
 	var optionSelectChange_func = function(){

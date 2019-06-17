@@ -1,6 +1,7 @@
 $(function() {
 	var originalTr = {};
 	
+	// do Save
     $('.btn_save').click(function() {
         var groupName = $('#groupName').val();
         if (!groupName) {
@@ -25,7 +26,7 @@ $(function() {
             	alert('群組名稱不可與其他群組重複');
             }else{
             	alert('成功建立');
-                window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupPage');
+                window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupListPage');
             }
         }).fail(function(response) {
             console.info(response);
@@ -51,7 +52,7 @@ $(function() {
         }).success(function(response) {
             console.info(response);
             alert("成功刪除");
-            window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupPage');
+            window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupListPage');
         }).fail(function(response) {
             console.info(response);
             $.FailResponse(response);
@@ -83,7 +84,7 @@ $(function() {
                 console.info("templateTr:", templateTr);
                 
                 templateTr.find('.name').html(o.richMenuGroupName);
-                templateTr.find('.title a').attr('href', bcs.bcsContextPath + '/edit/richMenuListPage?groupId=' + o.richMenuGroupId);
+                templateTr.find('.title a').attr('href', bcs.bcsContextPath + '/edit/richMenuMemberListPage?groupId=' + o.richMenuGroupId);
 
                 templateTr.find('.modifyTime').html(moment(o.modifyTime).format('YYYY-MM-DD HH:mm:ss'));
                 templateTr.find('.modifyUser').html(o.modifyUser);
