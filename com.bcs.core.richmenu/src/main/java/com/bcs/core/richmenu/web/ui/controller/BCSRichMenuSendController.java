@@ -39,7 +39,7 @@ import com.bcs.core.db.service.MsgSendRecordService;
 import com.bcs.core.db.service.SendGroupService;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.richmenu.web.ui.model.SendRichMenuModel;
-import com.bcs.core.richmenu.web.ui.service.SendRichMenuUIService;
+import com.bcs.core.richmenu.web.ui.service.RichMenuSendUIService;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.web.security.CurrentUser;
@@ -74,7 +74,7 @@ public class BCSRichMenuSendController extends BCSBaseController {
 	/** Logger */
 	private static Logger logger = Logger.getLogger(BCSRichMenuSendController.class);
 	@Autowired
-	private SendRichMenuUIService sendMsgUIService;
+	private RichMenuSendUIService sendMsgUIService;
 	
 	@RequestMapping(method = RequestMethod.POST, value ="/edit/sendingRichMenu", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody

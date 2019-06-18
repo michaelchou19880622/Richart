@@ -76,7 +76,7 @@ import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.response.BotApiResponse;
 
 @Service
-public class SendRichMenuUIService {
+public class RichMenuSendUIService {
 	@Autowired
 	private RichMenuSendGroupService richMenuSendGroupService;
 	@Autowired
@@ -113,7 +113,7 @@ public class SendRichMenuUIService {
 	private UserLiveChatService userLiveChatService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SendRichMenuUIService.class);
+	private static Logger logger = Logger.getLogger(RichMenuSendUIService.class);
 	
 	// Send SendRichMenuModel
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
