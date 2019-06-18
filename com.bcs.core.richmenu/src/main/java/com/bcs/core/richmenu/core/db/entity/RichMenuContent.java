@@ -30,8 +30,8 @@ public class RichMenuContent extends AbstractBcsEntity{
 	@Column(name = "RICH_ID", columnDefinition="nvarchar(50)")
 	private String richId;
 	
-	@Column(name = "RICH_MENU_GROUP_ID", columnDefinition="nvarchar(50)")
-	private String richMenuGroupId;
+	@Column(name = "RICH_MENU_GROUP_ID")
+	private Long richMenuGroupId;
 	
 	@Column(name = "RICH_MENU_ID", columnDefinition="nvarchar(150)")
 	private String richMenuId;
@@ -83,11 +83,11 @@ public class RichMenuContent extends AbstractBcsEntity{
 	}
 
 
-	public String getRichMenuGroupId() {
+	public Long getRichMenuGroupId() {
 		return richMenuGroupId;
 	}
 
-	public void setRichMenuGroupId(String richMenuGroupId) {
+	public void setRichMenuGroupId(Long richMenuGroupId) {
 		this.richMenuGroupId = richMenuGroupId;
 	}
 

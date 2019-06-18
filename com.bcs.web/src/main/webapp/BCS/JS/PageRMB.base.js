@@ -157,7 +157,6 @@ $(function(){
 
 	// 取得活動列表下拉選單 
 	var loadDataFunc = function(){
-		var serialId = "";
 
 		$.ajax({
 			type : "GET",

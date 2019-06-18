@@ -110,11 +110,11 @@ public class InitController {
 		}
 
 		// MGM CheckLinePoint Task
-		try {
-			mgmTaskService.mgmCheckLinePoint();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			mgmTaskService.mgmCheckLinePoint();
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}
 		
 		// LinePoint AM Push flow
 		try {

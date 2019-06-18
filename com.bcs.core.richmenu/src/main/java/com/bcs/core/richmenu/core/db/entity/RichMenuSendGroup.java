@@ -28,6 +28,12 @@ public class RichMenuSendGroup extends AbstractBcsEntity{
 	@Column(name = "GROUP_TITLE", columnDefinition="nvarchar(50)")
 	private String groupTitle;
 
+	@Column(name = "RICH_MENU_GROUP_ID")
+	private Long richMenuGroupId;
+	
+	@Column(name = "RICH_MENU_GROUP_NAME", columnDefinition="nvarchar(50)")
+	private String richMenuGroupName;
+	
 	@Column(name = "GROUP_DESCRIPTION", columnDefinition="nvarchar(1000)")
 	private String groupDescription;
 
@@ -87,5 +93,20 @@ public class RichMenuSendGroup extends AbstractBcsEntity{
 	public void setSendGroupDetail(List<RichMenuSendGroupDetail> sendGroupDetail) {
 		this.sendGroupDetail = sendGroupDetail;
 	}
-	
+
+	public Long getRichMenuGroupId() {
+		return richMenuGroupId;
+	}
+
+	public void setRichMenuGroupId(Long richMenuGroupId) {
+		this.richMenuGroupId = richMenuGroupId;
+	}
+
+	public String getRichMenuGroupName() {
+		return richMenuGroupName;
+	}
+
+	public void setRichMenuGroupName(String richMenuGroupName) {
+		this.richMenuGroupName = richMenuGroupName;
+	}	
 }

@@ -138,11 +138,11 @@ public class RichMenuContentService {
 	/**
 	 * 取得圖文選單 By RichMenuGroupId
      */
-	public List<RichMenuContent> getRichMenuListByRichMenuGroupId(String richMenuGroupId) {
+	public List<RichMenuContent> getRichMenuListByRichMenuGroupId(Long richMenuGroupId) {
     	return contentRichMenuRepository.findByRichMenuGroupId(richMenuGroupId);
     }
     
-	public List<RichMenuContent> getRichMenuListByRichMenuGroupIdAndLevel(String richMenuGroupId, String level) {
+	public List<RichMenuContent> getRichMenuListByRichMenuGroupIdAndLevel(Long richMenuGroupId, String level) {
     	return contentRichMenuRepository.findByRichMenuGroupIdAndLevel(richMenuGroupId, level);
     }
 	

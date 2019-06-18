@@ -33,8 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bcs.core.db.repository.GroupGenerateRepository;
 import com.bcs.core.db.service.UserFieldSetService;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.richmenu.core.db.entity.RichMenuGroup;
 import com.bcs.core.richmenu.core.db.entity.RichMenuSendGroup;
 import com.bcs.core.richmenu.core.db.service.RichMenuGroupGenerateService;
+import com.bcs.core.richmenu.core.db.service.RichMenuGroupService;
 import com.bcs.core.richmenu.core.db.service.RichMenuSendGroupService;
 import com.bcs.core.richmenu.web.ui.service.RichMenuExportExcelUIService;
 import com.bcs.core.richmenu.web.ui.service.RichMenuSendGroupUIService;
@@ -65,7 +67,8 @@ public class BCSRichMenuSendGroupController extends BCSBaseController {
 	private RichMenuGroupGenerateService groupGenerateService;
 	@Autowired
 	private RichMenuExportExcelUIService exportExcelUIService;
-	
+	@Autowired
+	private RichMenuGroupService richMenuGroupService;
 	/** Logger */
 	private static Logger logger = Logger.getLogger(BCSRichMenuSendGroupController.class);
 
@@ -79,7 +82,7 @@ public class BCSRichMenuSendGroupController extends BCSBaseController {
 	@RequestMapping(method = RequestMethod.GET, value = "/market/richMenuSendGroupListPage")
 	public String richMenuSendGroupListPage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("richMenuSendGroupListPage");
-		return BcsPageEnum.SendGroupListPage.toString();
+		return BcsPageEnum.RichMenuSendGroupListPage.toString();
 	}
 
 	// 查詢RichMenu發送群組列表
@@ -158,7 +161,7 @@ public class BCSRichMenuSendGroupController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> createRichMenuSendGroup(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @RequestBody RichMenuSendGroup sendGroup) throws IOException {
-		logger.info("createRichMenuSendGroup");
+		logger.info("[createRichMenuSendGroup]");
 		try{
 			if(sendGroup != null){
 				if(StringUtils.isBlank(sendGroup.getGroupTitle())){
@@ -167,6 +170,9 @@ public class BCSRichMenuSendGroupController extends BCSBaseController {
 				if(StringUtils.isBlank(sendGroup.getGroupDescription())){
 					throw new Exception("GroupDescription Null");
 				}
+				
+				//RichMenuGroup richMenuGroup = richMenuGroupService.findOne(richMenuGroupId);
+				
 				String adminUserAccount = customUser.getAccount();
 				RichMenuSendGroup result = sendGroupUIService.saveFromUI(sendGroup, adminUserAccount);
 				return new ResponseEntity<>(result, HttpStatus.OK);

@@ -160,7 +160,7 @@ public class BCSRichMenuGroupController extends BCSBaseController {
 	@RequestMapping(method = RequestMethod.POST, value = "/edit/richMenuBinding", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<?> pushLinePoint(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser,
-			@RequestBody List<String> uids, @RequestParam String richMenuGroupId) throws IOException {
+			@RequestBody List<String> uids, @RequestParam Long richMenuGroupId) throws IOException {
 		try {
 				// Get Main Page
 				logger.info("richMenuGroupId:"+richMenuGroupId);

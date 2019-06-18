@@ -548,6 +548,8 @@ $(function(){
 			return;
 		}
 		
+		getGoToList();
+		
 		changeRichTypeImg(selectedRichType);
 		
 		switch (selectedRichType) {
@@ -1142,9 +1144,6 @@ $(function(){
 				});
 			});
 		}
-		//return;
-		
-		console.info("richMsgImgUrls[2]", richMsgImgUrls[2].linkUrl);
 		
 		// 使用效期
 		var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
@@ -1311,7 +1310,7 @@ $(function(){
 		    return;
 		}
 		
-		window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupListPage');
+		window.location.replace(bcs.bcsContextPath + '/edit/richMenuMemberListPage?groupId=' + groupId);
 	});
 	
 	var optionSelectChange_func = function(){

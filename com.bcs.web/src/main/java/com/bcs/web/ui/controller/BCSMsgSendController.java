@@ -429,6 +429,7 @@ public class BCSMsgSendController extends BCSBaseController {
 			@RequestBody SendMsgModel sendMsgModel			
 			) throws IOException {
 		logger.info("sendingMsg");
+		logger.info("sendMsgModel:" + sendMsgModel);
 
 		try{
 			if(sendMsgModel != null){

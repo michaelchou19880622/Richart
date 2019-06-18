@@ -27,7 +27,7 @@ public class CreateRichMenuModel extends AbstractBcsEntity{
 	private String menuSize;
 	private String richMenuStartUsingTime;
 	private String richMenuEndUsingTime;
-	private String richMenuGroupId;
+	private Long richMenuGroupId;
 	
 	public List<CreateRichMenuModel> getRichMenuImgUrls() {
 		return richMenuImgUrls;
@@ -155,10 +155,10 @@ public class CreateRichMenuModel extends AbstractBcsEntity{
 	public void setRichMenuEndUsingTime(String richMenuEndUsingTime) {
 		this.richMenuEndUsingTime = richMenuEndUsingTime;
 	}
-	public String getRichMenuGroupId() {
+	public Long getRichMenuGroupId() {
 		return richMenuGroupId;
 	}
-	public void setRichMenuGroupId(String richMenuGroupId) {
+	public void setRichMenuGroupId(Long richMenuGroupId) {
 		this.richMenuGroupId = richMenuGroupId;
 	}
 }

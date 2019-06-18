@@ -27,12 +27,10 @@ public enum BcsPageEnum {
 	RichMenuGroupListPage("/BCS/Views/PageRMgL"),
 	RichMenuMemberListPage("/BCS/Views/PageRMmL"),
 	RichMenuCreatePage("/BCS/Views/PageRMC"),
-	RichMenuBindingPage("/BCS/Views/PageRMB"),	
-	
-	
-	RichMenuSendGroupCreatePage(""),
-	RichMenuSendGroupListPage(""),
-	
+	RichMenuBindingPage("/BCS/Views/PageRMB"),
+	RichMenuSendGroupCreatePage("/BCS/Views/PageRMsgC"),
+	RichMenuSendGroupListPage("/BCS/Views/PageRMsgL"),
+	RichMenuSendMsgCreatePage("/BCS/Views/PagermSMsgC"),
 	
 	MsgCreatePage("/BCS/Views/Page3"),
 	MsgListDraftPage("/BCS/Views/Page4-1"),

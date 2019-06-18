@@ -85,7 +85,7 @@ public class BCSRichMenuController extends BCSBaseController {
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getRichMenuListByRichMenuGroupId/{richMenuGroupId}")
 	@ResponseBody
 	public ResponseEntity<?> getRichMenuListByRichMenuGroupId(HttpServletRequest request, HttpServletResponse response,
-			@CurrentUser CustomUser customUser, @PathVariable String richMenuGroupId) throws IOException {
+			@CurrentUser CustomUser customUser, @PathVariable Long richMenuGroupId) throws IOException {
 		logger.info("getRichMenuListByRichMenuGroupId");
 		List<RichMenuContent> result = new ArrayList();
 		List<RichMenuContent> list = richMenuContentService.getRichMenuListByRichMenuGroupId(richMenuGroupId);

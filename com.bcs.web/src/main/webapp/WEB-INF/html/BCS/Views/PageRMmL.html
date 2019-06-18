@@ -8,7 +8,7 @@
 	<header th:replace="/BCS/Views/Common/Header :: header"></header>
 
     <div class="LyContents">
-    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRMmL')"></div>
+    	<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRMgL')"></div>
 
         <!-- Right Content -->
         <div class="LyMain" role="main">
@@ -33,21 +33,23 @@
                     <div class="mainFrame">
                         <table border="1" id="richMsgListTable">
                             <colgroup>
+                           		<col width="100">
 	                            <col width="100">
 	                            <col width="50">
 	                            <col width="100">
-	                            <col width="150">
-	                            <col width="70">
+	                            <col width="100">
 	                            <col width="50">
-	                            <col width="70">
-	                            <col width="100">
-	                            <col width="100">
+	                            <col width="50">
+	                            <col width="50">
+	                            <col width="50">
+	                            <col width="50">
                             </colgroup>
                             <tr>
+                            	<th>ID</th>
                                 <th>名稱</th>
                                 <th>層級</th>
                                 <th>使用期間</th>
-                                <th>圖文選單ID</th>
+                                <th>啟用碼</th>
                                 <th>狀態</th>
                                 <th>建立時間</th>
                                 <th>建立人員</th>
@@ -56,11 +58,12 @@
                             </tr>
                             <tbody class="richMsgTrTemplate">
                             <tr>
+                            	<td class="id"></td>
                                 <td class="richMenuImgTitle">
                                 	<input type="hidden" class="richId">
                                 	<input type="hidden" class="richMenuId">
                                     <img src="" width="100px" style="cursor: pointer;">
-                                    <div><a href="richMenuCreatePage" class="richMenuName"></a></div>
+                                    <div><a href="" class="richMenuName"></a></div>
                                 </td>
                                 <td class="richMenuLevel" style="text-align: left;"></td>
                                 <td class="richMenuUseTime" style="text-align: left;"></td>

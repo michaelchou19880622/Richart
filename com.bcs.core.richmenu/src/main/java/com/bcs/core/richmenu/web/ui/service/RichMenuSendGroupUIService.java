@@ -73,6 +73,7 @@ public class RichMenuSendGroupUIService {
 		
 		List<RichMenuSendGroupDetail> list = sendGroup.getSendGroupDetail();
 		sendGroup.setSendGroupDetail(new ArrayList<RichMenuSendGroupDetail>());
+		logger.info("list:"+list);
 		
 		// Save Send Group
 		sendGroupService.save(sendGroup);

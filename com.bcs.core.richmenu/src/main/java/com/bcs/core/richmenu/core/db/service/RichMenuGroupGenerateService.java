@@ -28,7 +28,7 @@ public class RichMenuGroupGenerateService {
 	}
 
 	public List<String> findMIDBySendGroupDetailGroupId(Long groupId) throws Exception{
-		logger.debug("findMIDBySendGroupDetailGroupId");
+		logger.info("findMIDBySendGroupDetailGroupId");
 		return groupGenerateRepository.findMIDBySendGroupDetailGroupId(groupId);
 	}
 	

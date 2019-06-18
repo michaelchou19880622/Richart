@@ -33,9 +33,9 @@ public interface RichMenuContentRepository extends EntityRepository<RichMenuCont
     @Transactional(readOnly = true, timeout = 30)
     @Query(value = "select x from RichMenuContent x "
             + "where x.richMenuGroupId = ?1 and x.status <> 'DELETE' order by x.modifyTime desc ")
-    List<RichMenuContent> findByRichMenuGroupId(String richMenuGroupId);
+    List<RichMenuContent> findByRichMenuGroupId(Long richMenuGroupId);
 
-    List<RichMenuContent> findByRichMenuGroupIdAndLevel(String richMenuGroupId, String level);
+    List<RichMenuContent> findByRichMenuGroupIdAndLevel(Long richMenuGroupId, String level);
     
     @Transactional(readOnly = true, timeout = 30)
     @Query(value = "select x from RichMenuContent x "

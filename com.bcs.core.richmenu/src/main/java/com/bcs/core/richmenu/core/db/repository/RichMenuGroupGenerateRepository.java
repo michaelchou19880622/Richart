@@ -57,7 +57,10 @@ public class RichMenuGroupGenerateRepository{
 	@SuppressWarnings("unchecked")
 	public List<String> findMIDBySendGroupDetailGroupId(Long groupId) throws Exception {
 		List<RichMenuSendGroupDetail> sendGroupDetails = sendGroupDetailRepository.findBySendGroupGroupId(groupId);
+		logger.info("sendGroupDetails:"+sendGroupDetails);
 		Query query = buildFindQuery(sendGroupDetails, "DISTINCT MID");
+		logger.info("query:"+query);
+		logger.info("getResultList:"+query.getResultList());
 		return query.getResultList();
 	}
 	
