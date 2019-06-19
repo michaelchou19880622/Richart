@@ -37,32 +37,17 @@ public class ExecuteSendRichMenuTask {
 	/** Logger */
 	private static Logger logger = Logger.getLogger(ExecuteSendRichMenuTask.class);
 
-	public void executeSendMsg(List<String> uids, Long richMenuGroupId) throws Exception{
+	public void executeSendMsg(List<String> uids, String richMenuId) throws Exception{
 		logger.info("uids:" + uids);
-		logger.info("richMenuGroupId" + richMenuGroupId);
+		logger.info("richMenuGroupId" + richMenuId);
 		
-		RichMenuContentService richMenuContentService = ApplicationContextProvider.getApplicationContext().getBean(RichMenuContentService.class);
 		RichMenuContentUIService richMenuContentUIService = ApplicationContextProvider.getApplicationContext().getBean(RichMenuContentUIService.class);
-		try {
-		// Get Main Page
-		logger.info("richMenuGroupId:"+richMenuGroupId);
-		List<RichMenuContent> richMenuContents = richMenuContentService.getRichMenuListByRichMenuGroupIdAndLevel(richMenuGroupId, RichMenuContent.LEVEL_MAIN);
-		logger.info("richMenuContents:"+richMenuContents);
-		if(richMenuContents.size() != 1) {
-			throw new BcsNoticeException("請設置為一個首頁！ 首頁數量為：" + richMenuContents.size());
-		}
-		RichMenuContent richMenuContent = richMenuContents.get(0);
-		logger.info("richMenuContent:"+richMenuContent);
-		if(richMenuContent == null) {
-			throw new BcsNoticeException("請將首頁設為ACTIVE");
-		}
-		String richMenuId = richMenuContent.getRichMenuId();
-		logger.info("richMenuId:"+richMenuId);
 		
-		// Modify
-		for(String uid : uids) {
-			richMenuContentUIService.callLinkRichMenuToUserAPI(richMenuId, uid);			
-		}
+		try {
+			// Modify
+			for(String uid : uids) {
+				richMenuContentUIService.callLinkRichMenuToUserAPI(richMenuId, uid);			
+			}
 		}catch(Exception e){
 			throw e;
 		}

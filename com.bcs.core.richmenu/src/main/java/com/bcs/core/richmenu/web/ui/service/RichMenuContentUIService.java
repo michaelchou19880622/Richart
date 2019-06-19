@@ -138,13 +138,13 @@ public class RichMenuContentUIService {
 	
 	// 設定指定UID的圖文選單API
 	public void callLinkRichMenuToUserAPI(String richMenuId, String uid) throws BcsNoticeException  {
-		logger.info(" ContentRichMenuUIService callLinkRichMenuToAllUserAPI");
+		logger.info(" ContentRichMenuUIService callLinkRichMenuToUserAPI");
 		try{			
 			PostLineResponse result = lineRichMenuApiService.callLinkRichMenuToUserAPI(richMenuId, uid, 0);
 			if(result.getStatus() != 200){
 				throw new Exception(result.getResponseStr());
 			}
-			logger.debug("callLinkRichMenuToAllUserAPI result:" + result);			
+			logger.debug("callLinkRichMenuToUserAPI result:" + result);			
 		}catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
 			throw new BcsNoticeException(e.getMessage());

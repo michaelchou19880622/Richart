@@ -47,36 +47,39 @@ $(function(){
 			console.info(response);
 	
 			$.each(response, function(i, o){
-				var groupData = templateBody.clone(true);
+				if(o.groupId > 0) {
+					var groupData = templateBody.clone(true);
 
-				groupData.find('.groupTitle a').attr('href', bcs.bcsContextPath + '/market/richMenuSendGroupCreatePage?groupId=' + o.groupId + '&actionType=Edit');
-				groupData.find('.groupTitle a').html(o.groupTitle);
-				groupData.find('.groupDescription').html(o.groupDescription);
-				if(o.modifyTime){
-					groupData.find('.modifyTime').html(moment(o.modifyTime).format('YYYY-MM-DD HH:mm:ss'));
+					groupData.find('.groupTitle a').attr('href', bcs.bcsContextPath + '/market/richMenuSendGroupCreatePage?groupId=' + o.groupId + '&actionType=Edit');
+					groupData.find('.groupTitle a').html(o.groupTitle);
+					groupData.find('.groupDescription').html(o.groupDescription);
+					if(o.modifyTime){
+						groupData.find('.modifyTime').html(moment(o.modifyTime).format('YYYY-MM-DD HH:mm:ss'));
+					}
+					else{
+						groupData.find('.modifyTime').html('-');
+					}
+					groupData.find('.modifyUser').html(o.modifyUser);
+					groupData.find('.richMenuGroupName').html(o.richMenuGroupName);
+		
+					groupData.find('.btn_copy').attr('groupId', o.groupId);
+					groupData.find('.btn_copy').click(btn_copyFunc);
+					
+					if (bcs.user.admin) {
+						groupData.find('.btn_detele').attr('groupId', o.groupId);
+						groupData.find('.btn_detele').click(btn_deteleFunc);
+					} else {
+						groupData.find('.btn_detele').remove();
+					}
+					
+					if(o.groupId < 0){
+						groupData.find('.btn_copy').remove();
+						groupData.find('.btn_detele').remove();
+					}
+		
+					$('#tableBody').append(groupData);
 				}
-				else{
-					groupData.find('.modifyTime').html('-');
-				}
-				groupData.find('.modifyUser').html(o.modifyUser);
-				groupData.find('.richMenuGroupName').html(o.richMenuGroupName);
-	
-				groupData.find('.btn_copy').attr('groupId', o.groupId);
-				groupData.find('.btn_copy').click(btn_copyFunc);
-				
-				if (bcs.user.admin) {
-					groupData.find('.btn_detele').attr('groupId', o.groupId);
-					groupData.find('.btn_detele').click(btn_deteleFunc);
-				} else {
-					groupData.find('.btn_detele').remove();
-				}
-				
-				if(o.groupId < 0){
-					groupData.find('.btn_copy').remove();
-					groupData.find('.btn_detele').remove();
-				}
-	
-				$('#tableBody').append(groupData);
+
 			});
 			
 		}).fail(function(response){

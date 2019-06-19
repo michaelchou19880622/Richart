@@ -197,14 +197,37 @@ $(function(){
 			data : JSON.stringify(postData)
 		}).success(function(response){
 			console.info(response);
-			alert( '儲存成功');
-	 		window.location.replace(bcs.bcsContextPath + '/market/richMenuSendGroupListPage');
+			setRichMenuLink(groupId);
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
 		}).done(function(){
 		});
 	});
+	
+	var setRichMenuLink = function(sendGroupId){
+		var postData = {};
+		postData.sendGroupId = sendGroupId;
+		console.info('postData', postData);
+		
+		// 傳送資料
+		$.ajax({
+			type : "POST",
+			url : bcs.bcsContextPath +'/edit/sendingRichMenu',
+            cache: false,
+            contentType: 'application/json',
+            processData: false,
+			data : JSON.stringify(postData)
+		}).success(function(response){
+			console.info(response);
+			alert( '設定成功');
+	 		window.location.replace(bcs.bcsContextPath + '/market/richMenuSendGroupListPage');
+		}).fail(function(response){
+			console.info(response);
+			$.FailResponse(response);
+		}).done(function(){
+		});
+	};
 	
 	var getDetailFunc = function(){
 

@@ -37,6 +37,7 @@ import com.bcs.core.db.entity.ContentSticker;
 import com.bcs.core.db.entity.ContentTemplateMsg;
 import com.bcs.core.db.entity.MsgDetail;
 import com.bcs.core.db.entity.MsgMain;
+import com.bcs.core.richmenu.core.db.entity.RichMenuContent;
 import com.bcs.core.richmenu.core.db.entity.RichMenuSendGroup;
 import com.bcs.core.db.entity.UserLiveChat;
 import com.bcs.core.db.service.ContentCouponService;
@@ -52,6 +53,7 @@ import com.bcs.core.db.service.GroupGenerateService;
 import com.bcs.core.db.service.MsgDetailService;
 import com.bcs.core.db.service.MsgMainService;
 import com.bcs.core.db.service.MsgSendMainService;
+import com.bcs.core.richmenu.core.db.service.RichMenuContentService;
 import com.bcs.core.richmenu.core.db.service.RichMenuGroupGenerateService;
 import com.bcs.core.richmenu.core.db.service.RichMenuSendGroupService;
 import com.bcs.core.db.service.SerialSettingService;
@@ -111,7 +113,8 @@ public class RichMenuSendUIService {
 	private ContentTemplateMsgService contentTemplateMsgService;
 	@Autowired
 	private UserLiveChatService userLiveChatService;
-	
+	@Autowired
+	private RichMenuContentService richMenuContentService;
 	/** Logger */
 	private static Logger logger = Logger.getLogger(RichMenuSendUIService.class);
 	
@@ -134,16 +137,27 @@ public class RichMenuSendUIService {
 		
 		// check richMenuGroupId
 		Long richMenuGroupId = sendGroup.getRichMenuGroupId();
-		if(groupId == null) {
+		if(richMenuGroupId == null) {
 			logger.error("richMenuGroupId Error");
 			throw new BcsNoticeException("群組設定錯誤");
 		}
 		
-		// check SendType = IMMEDIATE
-		String sendingMsgType = sendRichMenuModel.getSendingMsgType();
-		if(!MsgMain.SENDING_MSG_TYPE_IMMEDIATE.equals(sendingMsgType)){
-			throw new Exception("UnKnow SendingMsgType : " + sendingMsgType);
+		// get richMenuContents (Main Page)
+		logger.info("richMenuGroupId:"+richMenuGroupId);
+		List<RichMenuContent> richMenuContents = richMenuContentService.getRichMenuListByRichMenuGroupIdAndLevel(richMenuGroupId, RichMenuContent.LEVEL_MAIN);
+		logger.info("richMenuContents:"+richMenuContents);
+		if(richMenuContents.size() != 1) {
+			throw new BcsNoticeException("請設置為一個首頁！ 首頁數量為：" + richMenuContents.size());
 		}
+		
+		// check richMenuContent, get richMenuId
+		RichMenuContent richMenuContent = richMenuContents.get(0);
+		logger.info("richMenuContent:"+richMenuContent);
+		if(richMenuContent == null) {
+			throw new BcsNoticeException("請將首頁設為ACTIVE");
+		}
+		String richMenuId = richMenuContent.getRichMenuId();
+		logger.info("richMenuId:"+richMenuId);
 		
 		List<String> mids = null;
 		if(sendGroup.getGroupId() > 0){
@@ -176,7 +190,7 @@ public class RichMenuSendUIService {
 		// Handle : IMMEDIATE
 		ExecuteSendRichMenuRunnable run = new ExecuteSendRichMenuRunnable();
 		run.mids = mids;
-		run.richMenuGroupId = richMenuGroupId;
+		run.richMenuId = richMenuId;
 		Thread thread = new Thread(run);
 		thread.start();
 //		Long msgId = this.saveMessage(sendRichMenuModel, adminUserAccount, MsgMain.MESSAGE_STATUS_SCHEDULED);
@@ -210,13 +224,13 @@ public class RichMenuSendUIService {
 	
 	private static class ExecuteSendRichMenuRunnable implements Runnable{
 		public List<String> mids = null;
-		public Long richMenuGroupId = null;
+		public String richMenuId = null;
 		@Override
 		public void run() {
 			try{
 				if(mids != null){
 					ExecuteSendRichMenuTask task = new ExecuteSendRichMenuTask();
-					task.executeSendMsg(mids, richMenuGroupId);
+					task.executeSendMsg(mids, richMenuId);
 				}
 			}catch(Exception e){
 				logger.error(ErrorRecord.recordError(e));

@@ -139,24 +139,26 @@ $(function(){
 		postData.actionType = actionType;
 
 		postData.sendGroupId = sendGroupId;
-		postData.serialId = serialId;
-		postData.sendingMsgType = sendingMsgType;
-
-		postData.sendMsgDetails = MsgFrameContents;
-
-		postData.sendingMsgTime = sendingMsgTime;
-
-		postData.msgTagList = msgTagList;
-
-		var msgAction = postData.actionType;
-
-		var msgId = $.urlParam("msgId");
-
-		if($.BCS.actionTypeParam == "Edit"){
-			postData.msgId = msgId;
-		}
+//		postData.serialId = serialId;
+//		postData.sendingMsgType = sendingMsgType;
+//
+//		postData.sendMsgDetails = MsgFrameContents;
+//
+//		postData.sendingMsgTime = sendingMsgTime;
+//
+//		postData.msgTagList = msgTagList;
+//
+//		var msgAction = postData.actionType;
+//
+//		var msgId = $.urlParam("msgId");
+//
+//		if($.BCS.actionTypeParam == "Edit"){
+//			postData.msgId = msgId;
+//		}
+		
 		console.info('postData', postData);
-
+		
+		
 		// 傳送資料
 		$('.LyMain').block($.BCS.blockMsgSave);
 		$.ajax({

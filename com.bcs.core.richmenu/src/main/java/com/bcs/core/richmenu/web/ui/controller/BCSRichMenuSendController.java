@@ -86,12 +86,6 @@ public class BCSRichMenuSendController extends BCSBaseController {
 			if(sendMsgModel == null){
 				throw new Exception("SendRichMenuModel Null");
 			}
-			if(StringUtils.isBlank(sendMsgModel.getActionType())){
-				throw new Exception("ActionType Null");
-			}
-			if(!SendRichMenuModel.ACTION_TYPE.SendMsg.toString().equals(sendMsgModel.getActionType())){
-				throw new Exception("Validate ActionType Error");
-			}
 			if(!customUser.isAdmin()){
 				throw new BcsNoticeException("權限錯誤");
 			}
