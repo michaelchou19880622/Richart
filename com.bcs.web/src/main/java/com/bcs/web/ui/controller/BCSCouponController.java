@@ -307,9 +307,9 @@ public class BCSCouponController extends BCSBaseController {
 		if(StringUtils.isNotBlank(imageId)){
 			if(imageId.toLowerCase().startsWith("http")){
 				
-			}
-			else{
-				imageId = UriHelper.getResourceUri("IMAGE", imageId, true);
+			}else{
+				imageId = UriHelper.getCdnResourceUri("IMAGE", imageId, true);
+				//imageId = UriHelper.getResourceUri("IMAGE", imageId, true);
 			}
 		}
 		

@@ -3,6 +3,8 @@
  */
 $(function(){
 	var campaignId = $.urlParam("campaignId");
+	console.info("campaignId:", campaignId);
+	console.info("${actionImgUrlLink}:", actionImgUrlLink);
 	
 	var isMobile = false; //initiate as false
 	// device detection

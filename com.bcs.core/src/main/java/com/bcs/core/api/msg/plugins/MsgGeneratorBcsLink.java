@@ -107,9 +107,11 @@ public class MsgGeneratorBcsLink extends MsgGeneratorAbstract {
 
 	private void createMsgLink() throws Exception{
 		
-		String bcsLogoUri = UriHelper.getResourceBcsLogoUri();
+		String bcsLogoUri = UriHelper.getCdnResourceBcsLogoUri();
+		//String bcsLogoUri = UriHelper.getResourceBcsLogoUri();
 		if(StringUtils.isNotBlank(linkImageParams)){
-			bcsLogoUri = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, linkImageParams);
+			bcsLogoUri = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, linkImageParams);
+			//bcsLogoUri = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, linkImageParams);
 		}
 		
 		String linkTextParams = "前往";
@@ -121,7 +123,8 @@ public class MsgGeneratorBcsLink extends MsgGeneratorAbstract {
 
 		String bcsLogoUri = UriHelper.getResourceBcsLogoUri();
 		if(StringUtils.isNotBlank(linkImageParams)){
-			bcsLogoUri = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, linkImageParams);
+			bcsLogoUri = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, linkImageParams);
+			//bcsLogoUri = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, linkImageParams);
 		}
 		
 		String linkTextParams = "前往";

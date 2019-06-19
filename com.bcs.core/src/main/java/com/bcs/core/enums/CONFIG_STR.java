@@ -16,6 +16,7 @@ public enum CONFIG_STR {
 	
 	BaseUrlHTTPS("bcs.base.https.url"),
 	BaseUrlHTTP("bcs.base.http.url"),
+	CdnUrlHTTP("bcs.cdn.url"),
 	
 	PageMobile("bcs.base.url.page.mobile"),
 	ResourceMobile("bcs.base.url.resource.mobile"),

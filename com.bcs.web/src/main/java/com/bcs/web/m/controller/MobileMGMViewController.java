@@ -146,16 +146,22 @@ public class MobileMGMViewController extends BCSBaseController {
 //            String descriptionImgUrl = CoreConfigReader.getString(CONFIG_STR.MGM_DESCRIPTION_IMG_CDN_URL, true);
 //            
 //            if(StringUtils.isBlank(actionImgUrl) || StringUtils.isBlank(shareImgUrl) || StringUtils.isBlank(descriptionImgUrl)) {
-            	
+//          }           	
             
-            String actionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
-            String shareImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
-            String descriptionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
+            // CDN
+            String actionImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
+            String shareImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
+            String descriptionImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());            
+
+            // Original 
+//            String actionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
+//            String shareImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
+//            String descriptionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
             
             String actionImgUrlLink = shareCampaign.getActionImgUrl();
             String descriptionImgUrlLink = shareCampaign.getDescriptionImgUrl();
             
-//            }
+
             
             model.addAttribute("actionImgUrl", actionImgUrl);
             model.addAttribute("shareImgUrl", shareImgUrl);

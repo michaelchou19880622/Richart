@@ -30,7 +30,7 @@ public class ChtCDNUtil{
 		map.add("serviceName", "hpi");
 		map.add("useDeviceType", "0");
 		map.add("dropQueryString", "1");
-		map.add("url", CoreConfigReader.getString(CONFIG_STR.BaseUrlHTTPS) + path);
+		map.add("url", CoreConfigReader.getString(CONFIG_STR.BaseUrlHTTP) + path);
 		
 		HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(map, headers);
 		

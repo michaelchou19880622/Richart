@@ -15,27 +15,28 @@ public class UriHelper {
 	/** Logger */
 	private static Logger logger = Logger.getLogger(UriHelper.class);
 	
-	public static String bcsMPage = CoreConfigReader.getString(CONFIG_STR.M_PAGE);
+	public static String bcsMPage = CoreConfigReader.getString(CONFIG_STR.M_PAGE);				// http://www.webcomm.com.tw
 
 	static String baseUrl_Https = CoreConfigReader.getString(CONFIG_STR.BaseUrlHTTPS);
-//	static String baseUrl_Http = CoreConfigReader.getString(CONFIG_STR.BaseUrlHTTP);
+	static String cdnUrl_Https = CoreConfigReader.getString(CONFIG_STR.CdnUrlHTTP);
+	static String baseUrl_Http = CoreConfigReader.getString(CONFIG_STR.BaseUrlHTTP);
 	
-	static String pageBcs = CoreConfigReader.getString(CONFIG_STR.PageBCS);
-	static String resourceBCS = CoreConfigReader.getString(CONFIG_STR.ResourceBCS);
+	static String pageBcs = CoreConfigReader.getString(CONFIG_STR.PageBCS);						// bcs/
+	static String resourceBCS = CoreConfigReader.getString(CONFIG_STR.ResourceBCS);				// BCS/
 	
-	static String pageMobile = CoreConfigReader.getString(CONFIG_STR.PageMobile);
-	static String resourceMobile = CoreConfigReader.getString(CONFIG_STR.ResourceMobile);
+	static String pageMobile = CoreConfigReader.getString(CONFIG_STR.PageMobile);				// m/
+	static String resourceMobile = CoreConfigReader.getString(CONFIG_STR.ResourceMobile);		// Mobile/
 	
-	static String resourceApi = CoreConfigReader.getString("rest.api.path.resource");
-	static String resourceLink = CoreConfigReader.getString("rest.api.path.link.resource");
+	static String resourceApi = CoreConfigReader.getString("rest.api.path.resource");			// getResource/ v
+	static String resourceLink = CoreConfigReader.getString("rest.api.path.link.resource");		// getLink/
 
-	static String tracingUrl = CoreConfigReader.getString("rest.api.path.tracing.link");
-	static String oauthUrl = CoreConfigReader.getString("rest.api.path.oauth");
+	static String tracingUrl = CoreConfigReader.getString("rest.api.path.tracing.link");		// l/
+	static String oauthUrl = CoreConfigReader.getString("rest.api.path.oauth");					// l/validate
 	
-	static String previewImage = CoreConfigReader.getString("rest.api.path.bcs.preview.image");
-	static String bcsLogo = CoreConfigReader.getString("rest.api.path.bcs.logo");
+	static String previewImage = CoreConfigReader.getString("rest.api.path.bcs.preview.image"); // images/noImg_video.png  v
+	static String bcsLogo = CoreConfigReader.getString("rest.api.path.bcs.logo");			    // images/logo_bot.jpg v
 
-	static String staticSrcUrl = CoreConfigReader.getString("bcs.base.url.static.src");
+	static String staticSrcUrl = CoreConfigReader.getString("bcs.base.url.static.src");			// null
 
 	// Rich Menu
 	static String msgTracingUrl = CoreConfigReader.getString("rest.api.path.tracing.msg.link");
@@ -95,21 +96,50 @@ public class UriHelper {
         return sb.toString();
     }
     
+    // ---- Resource ----
+    // Using CDN
     
+	public static String getCdnResourceUri(String type, String id){
+		return cdnUrl_Https + pageBcs + resourceApi + type + "/" + id;
+	}
+	public static String getCdnResourceUri(String type, String id, boolean isSSL){
+		return getResourceUri(type, id, true);
+	}
+	public static String getCdnResourcePreviewUri(String type, String preview, String id){
+		return cdnUrl_Https + pageBcs + resourceApi + type + "/" + preview + "/" + id;
+	}
+	public static String getCdnResourcePreviewImageUri(){
+		return cdnUrl_Https + resourceBCS + previewImage;
+	}
+	public static String getCdnResourceBcsLogoUri(){	
+		return cdnUrl_Https + resourceMobile + bcsLogo;
+	}
+	
+	// Original Resource
 	public static String getResourceUri(String type, String id){
 		return getResourceUri(type, id, true);
 	}
 	public static String getResourceUri(String type, String id, boolean isSSL){
-
 		if(isSSL){
 			return baseUrl_Https + pageBcs + resourceApi + type + "/" + id;
 		}
 		else{
 			return baseUrl_Https + pageBcs + resourceApi + type + "/" + id;
 		}
+	}	
+	public static String getResourcePreviewUri(String type, String preview, String id){
+		return baseUrl_Https + pageBcs + resourceApi + type + "/" + preview + "/" + id;
+	}
+	public static String getResourcePreviewImageUri(){
+		return baseUrl_Https + resourceBCS + previewImage;
+	}
+	public static String getResourceBcsLogoUri(){	
+		return baseUrl_Https + resourceMobile + bcsLogo;
 	}
 	
-	public static String getStaticResourceUri(String type, String id){
+	// ------------------------------ //
+
+	public static String getStaticResourceUri(String type, String id){ // Not Using
 		
 		boolean useStaticSrc = CoreConfigReader.getBoolean(CONFIG_STR.SRC_USE_STATIC, true);
 
@@ -195,22 +225,7 @@ public class UriHelper {
 
 		return baseUrl_Https + oauthUrl;
 	}
-	
-	public static String getResourcePreviewUri(String type, String preview, String id){
-		
-		return baseUrl_Https + pageBcs + resourceApi + type + "/" + preview + "/" + id;
-	}
-	
-	public static String getResourcePreviewImageUri(){
-		
-		return baseUrl_Https + resourceBCS + previewImage;
-	}
-	
-	public static String getResourceBcsLogoUri(){
-		
-		return baseUrl_Https + resourceMobile + bcsLogo;
-	}
-	
+
 	public static String getIndexUri(){
 
 		return baseUrl_Https + pageMobile + "index";
