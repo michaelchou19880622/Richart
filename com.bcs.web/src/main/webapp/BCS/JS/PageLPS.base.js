@@ -22,7 +22,14 @@ $(function(){
 				$.each(response, function(i, o){
 					var groupData = templateBody.clone(true); //增加一行
 					console.info(groupData);
-					groupData.find('.uid').html(o.uid);		
+					groupData.find('.uid').html(o.uid);
+					groupData.find('.status').html(o.status);	
+					if(o.modifyTime){
+						groupData.find('.modifyTime').html(moment(o.modifyTime).format('YYYY-MM-DD HH:mm:ss'));
+					}else{
+						groupData.find('.modifyTime').html('-');
+					}
+					
 					$('#tableBody').append(groupData);
 				});
 				

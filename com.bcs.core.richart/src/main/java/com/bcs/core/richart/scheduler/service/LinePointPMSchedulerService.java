@@ -140,8 +140,14 @@ public class LinePointPMSchedulerService {
 		    ShareCampaign shareCampaign = shareCampaignService.findOne(campaignId);
 		    String judgement = shareCampaign.getJudgement();
 		    String stateJudgement = "";
-		    if(judgement == ShareCampaign.JUDGEMENT_FOLLOW) stateJudgement = " and status <> 'BLOCK' ";
-		    else if (judgement == ShareCampaign.JUDGEMENT_BINDED) stateJudgement = " and status = 'BINDED' ";
+		    
+		    if(judgement == ShareCampaign.JUDGEMENT_FOLLOW) {
+		    	String dateStr = shareCampaign.getStartTime().toString();
+		    	logger.info("dateStr:"+dateStr);
+		    	stateJudgement = " and status <> 'BLOCK' and createTime >= " + dateStr + " ";
+		    }else if (judgement == ShareCampaign.JUDGEMENT_BINDED) {
+		    	stateJudgement = " and status = 'BINDED' ";
+		    }
 
 		    // count checkJudgement
 		    List<ShareCampaignClickTracing> friends =  shareCampaignClickTracingService.findByShareUserRecordId(shareUserRecordId);
@@ -172,6 +178,8 @@ public class LinePointPMSchedulerService {
 		    	LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
 		    	linePointScheduledDetail.setUid(uid);
 		    	linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+		    	linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+		    	linePointScheduledDetail.setModifyTime(new Date());
 		    	linePointScheduledDetailService.save(linePointScheduledDetail);
 		    }
 		}
@@ -184,12 +192,15 @@ public class LinePointPMSchedulerService {
 			main.setStatus(LinePointMain.STATUS_IDLE);
 			linePointMainService.save(main);
 			
-			// find ScheduledDetails by mainId, input & delete them
+			// find ScheduledDetails by mainId, input & set them sended
 			List<LinePointScheduledDetail> details = linePointScheduledDetailService.findByLinePointMainId(main.getId());
 			JSONArray uid = new JSONArray();
 			for(LinePointScheduledDetail detail : details) {
 				uid.put(detail.getUid());
-				linePointScheduledDetailService.delete(detail);
+				
+				detail.setStatus(LinePointScheduledDetail.STATUS_SENDED);
+				detail.setModifyTime(new Date());
+				linePointScheduledDetailService.save(detail);
 			}
 			
 			// push to AkkaService

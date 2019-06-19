@@ -159,10 +159,9 @@ $(function(){
 			return;
 		}
 		
-		var groupIdInt = 33;
 		
-//		var groupIdStr = mainList.options[mainList.selectedIndex].value;
-//		var groupIdInt = parseInt(groupIdStr);
+		var groupIdStr = mainList.options[mainList.selectedIndex].value;
+		var groupIdInt = parseInt(groupIdStr);
 //		console.info("groupId's number: ", typeof groupIdInt === 'number' && isFinite(groupIdInt));
 		
 		var postData = {};

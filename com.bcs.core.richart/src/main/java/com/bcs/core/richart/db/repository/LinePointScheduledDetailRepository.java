@@ -14,6 +14,7 @@ import com.bcs.core.db.persistence.EntityRepository;
 public interface LinePointScheduledDetailRepository extends EntityRepository<LinePointScheduledDetail, Long>{
 
 	@Transactional(timeout = 30)
+	@Query(value="select x from LinePointScheduledDetail x where x.linePointMainId = ?1 order by x.modifyTime desc")
 	public List<LinePointScheduledDetail> findByLinePointMainId(long linePointMainId);
 	
 	//public List<LinePointScheduledDetail> findByStatus(String status);

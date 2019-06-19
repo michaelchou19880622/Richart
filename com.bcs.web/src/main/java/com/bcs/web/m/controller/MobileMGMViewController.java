@@ -183,7 +183,8 @@ public class MobileMGMViewController extends BCSBaseController {
     public String doMgmSharing(Model model, HttpServletRequest request,
             HttpServletResponse response) {
         logger.info("doMgmSharing");
-
+        logger.info("model:"+model);
+        
         HttpSession session = request.getSession();
 
         try {

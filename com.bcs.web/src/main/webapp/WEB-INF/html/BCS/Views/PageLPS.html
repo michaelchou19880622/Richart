@@ -17,7 +17,7 @@
                     <header class="ContentHead">
                         <h3 class="CHTtl">LINE POINT 排程明細</h3>
                     </header>
-                   	此區為符合條件待發送LinePoint的UID。早上九點/下午三點進行發送後，此區的UID將移至成功/失敗發送數明細。	
+                   	早上九點/下午三點進行發送，此區可看到發送排程的明細列表。
                     <div class="CHBtnSet">
                         <div class="CHRight">
                         	<input class="btn_add" style="cursor: pointer;" type="button" value="返回">
@@ -26,12 +26,18 @@
                     <div class="mainFrame">
                         <table border="1" id="tableBody">
                             <colgroup>
-                            	<col width="150">
+                            	<col width="100">
+                            	<col width="100">
+                            	<col width="100">
                             </colgroup>
                              <tr class="tableHeader">
                                 <th>UID</th>
+                                <th>狀態</th>
+                                <th>發送時間</th>
                              <tr class="dataTemplate">
                                 <td class="uid"></td>
+                                <td class="status"></td>
+                                <td class="modifyTime"></td>
 							</tr>
                         </table>
                     </div>
