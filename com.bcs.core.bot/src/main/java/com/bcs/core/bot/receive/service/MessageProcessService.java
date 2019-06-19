@@ -17,7 +17,6 @@ import com.bcs.core.bot.db.entity.BotReplyRecord;
 import com.bcs.core.bot.db.service.BotReplyRecordService;
 import com.bcs.core.bot.enums.SEND_TYPE;
 import com.bcs.core.db.entity.MsgDetail;
-import com.bcs.core.db.entity.UserLiveChat;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.enums.LIVE_CHAT_WORDING;
 import com.bcs.core.smartrobot.service.SwitchIconService;
@@ -28,6 +27,7 @@ import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.Sender;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.message.template.ButtonsTemplate;
@@ -43,6 +43,8 @@ public class MessageProcessService {
 			
 	@Autowired
 	private BotReplyRecordService botReplyRecordService;
+	@Autowired
+	private SwitchIconService switchIconService;
 	
 	public boolean isAttentionKeyword(JSONObject responseMsg) {
 		if(responseMsg.has("attentionKeywords"))
@@ -145,7 +147,9 @@ public class MessageProcessService {
 			actions.add(new PostbackAction(label, data));
 		}
 		
-		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions));
+		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+		
+		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions), sender);
 		
 		return message;
 	}
@@ -162,7 +166,9 @@ public class MessageProcessService {
 			text = LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.CUSTOMER_SERVICE_STILL_BUSY.toString());
 		}
 		
-		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions));
+		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+		
+		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions), sender);
 		
 		return message;
 	}
@@ -173,7 +179,9 @@ public class MessageProcessService {
 		
 		actions.add(new URIAction(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.CUSTOMER_SATISFACTION_DEGREE_BUTTON.toString()), surveyUrl));
 		
-		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions));
+		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+		
+		Message message = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions), sender);
 		
 		return message;
 	}
@@ -185,7 +193,9 @@ public class MessageProcessService {
 		
 		text += "「" + message + "」\n" + LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LEAVE_MESSAGE_CHOOSE.toString());
 		
-		Message confirmMessage = new TemplateMessage(text, new ConfirmTemplate(text, leftButtonAction, rightButtonAction));
+		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+
+		Message confirmMessage = new TemplateMessage(text, new ConfirmTemplate(text, leftButtonAction, rightButtonAction), sender);
 		
 		return confirmMessage;
 	}
@@ -196,7 +206,9 @@ public class MessageProcessService {
 		
 		actions.add(new PostbackAction(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LEAVE_MESSAGE_BUTTON.toString()), "action=LeaveMessage"));
 		
-		Message confirmMessage = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions));
+		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString()); 
+		
+		Message confirmMessage = new TemplateMessage(text, new ButtonsTemplate(null, null, text, actions), sender);
 		
 		return confirmMessage;
 	}
@@ -204,9 +216,10 @@ public class MessageProcessService {
 	public void replyTextMessage(String channelId, String channelName, List<String> textList, String replyToken) throws Exception {
 		List<Message> sendMsgList = new ArrayList<Message>();
 		Message message = null;
-
+		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString()); 
+		
 		for(String text : textList) {
-			message = new TextMessage(text);
+			message = new TextMessage(text, sender);
 			
 			sendMsgList.add(message);
 		}
@@ -231,7 +244,9 @@ public class MessageProcessService {
 		sendMsgDetail.setText(text);
 		sendMsgDetail.setMsgType(MsgGenerator.MSG_TYPE_TEXT);
 		
-		TextMessage textMesage = new TextMessage(text);
+		Sender sender = switchIconService.generateSenderModel(channelName); 
+		
+		TextMessage textMesage = new TextMessage(text, sender);
 		PushMessage pushMessage = new PushMessage(UID, textMesage);
 
 		SendToBotModel sendToBotModel = new SendToBotModel();

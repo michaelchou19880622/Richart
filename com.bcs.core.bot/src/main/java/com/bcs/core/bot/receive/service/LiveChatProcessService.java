@@ -11,18 +11,20 @@ import org.springframework.stereotype.Service;
 import com.bcs.core.api.service.LiveChatApiService;
 import com.bcs.core.api.service.model.LiveChatResponse;
 import com.bcs.core.api.service.model.LiveChatStartResponse;
+import com.bcs.core.bot.api.model.SendToBotModel;
+import com.bcs.core.bot.api.service.LineAccessApiService;
+import com.bcs.core.bot.enums.SEND_TYPE;
 import com.bcs.core.db.entity.UserLiveChat;
 import com.bcs.core.db.service.UserLiveChatService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.enums.LIVE_CHAT_WORDING;
 import com.bcs.core.exception.LiveChatException;
+import com.bcs.core.smartrobot.service.SwitchIconService;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.LiveChatWordingUtil;
-import com.bcs.core.bot.api.model.SendToBotModel;
-import com.bcs.core.bot.api.service.LineAccessApiService;
-import com.bcs.core.bot.enums.SEND_TYPE;
 import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.Sender;
 import com.linecorp.bot.model.message.TextMessage;
 
 @Service
@@ -38,10 +40,13 @@ public class LiveChatProcessService {
 	private UserLiveChatService userLiveChatService;
 	@Autowired
 	private MessageProcessService messageProcessService;
+	@Autowired
+	private SwitchIconService switchIconService;
 
 	public void startProcess(String channelId, String replyToken, String UID, String category) throws Exception {
 		try {
 			List<Message> messageList = new ArrayList<Message>();
+			Sender sender;
 			UserLiveChat userLiveChat = userLiveChatService.findByUIDAndNotFinishAndNotDiscrad(UID);
 
 			if (userLiveChat != null) {
@@ -63,7 +68,8 @@ public class LiveChatProcessService {
 						userLiveChatService.save(userLiveChat);
 
 						text = LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LIVE_CHAT_START.toString());
-						messageList.add(new TextMessage(text));
+						sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+						messageList.add(new TextMessage(text, sender));
 					} else if (resultStatus == LiveChatStartResponse.NON_OFFICE_HOUR) { // 不在客服服務時間
 						userLiveChat.setChatId(result.getChatId());
 						userLiveChat.setHash(result.getHash());
@@ -80,21 +86,24 @@ public class LiveChatProcessService {
 				case UserLiveChat.WAITING:// 等待中
 					text = LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_HAS_ALREADY_CHOOSE_CATEGORY.toString());
 					
-					messageList.add(new TextMessage(text));
+					sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+					messageList.add(new TextMessage(text, sender));
 					
 					break;
 
 				case UserLiveChat.IN_PROGRESS:// 已轉接客服
 					text = LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_IS_ALREADY_IN_PROGRESS.toString());
 					
-					messageList.add(new TextMessage(text));
+					sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+					messageList.add(new TextMessage(text, sender));
 					
 					break;
 				}
 			} else {
 				// 不可以串接客服
 				String text = LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_CANNOT_START.toString());
-				messageList.add(new TextMessage(text));
+				sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+				messageList.add(new TextMessage(text, sender));
 			}
 			
 			messageProcessService.replyMessage(channelId, replyToken, messageList, CONFIG_STR.AutoReply.toString());
@@ -109,6 +118,7 @@ public class LiveChatProcessService {
 			Boolean isInprogress = false;
 			Message message = null;
 			List<Message> sendMsgList = new ArrayList<Message>();
+			Sender sender;
 			UserLiveChat userLiveChat = userLiveChatService.findByUIDAndNotFinishAndNotDiscrad(UID);
 
 			if (userLiveChat != null) {
@@ -116,12 +126,14 @@ public class LiveChatProcessService {
 
 				switch (status) {
 				case UserLiveChat.WAITING:
-					message = new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_IS_ALREADY_WAITING.toString()));
+					sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+					message = new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_IS_ALREADY_WAITING.toString()), sender);
 					
 					break;
 				case UserLiveChat.IN_PROGRESS:
 					isInprogress = true;
-					message = new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_IS_ALREADY_IN_PROGRESS.toString()));
+					sender = switchIconService.generateSenderModel(CONFIG_STR.ManualReply.toString());
+					message = new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_IS_ALREADY_IN_PROGRESS.toString()), sender);
 					
 					break;
 				default:
@@ -130,7 +142,8 @@ public class LiveChatProcessService {
 					break;
 				}
 			} else {
-				message = new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_CANNOT_START.toString()));
+				sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+				message = new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.USER_CANNOT_START.toString()), sender);
 			}
 
 			sendMsgList.add(message);
@@ -195,8 +208,10 @@ public class LiveChatProcessService {
 
 			List<Message> messageList = new ArrayList<Message>();
 			
-			messageList.add(new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LEAVE_MESSAGE_INTRO.toString())));
-			messageList.add(new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LEAVE_MESSAGE_START.toString())));
+			Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString());
+			
+			messageList.add(new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LEAVE_MESSAGE_INTRO.toString()), sender));
+			messageList.add(new TextMessage(LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.LEAVE_MESSAGE_START.toString()), sender));
 			
 			messageProcessService.pushMessage(UID, messageList, CONFIG_STR.AutoReply.toString());
 			break;

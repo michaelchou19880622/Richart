@@ -11,9 +11,9 @@
 		<dependency>
 			<groupId>com.linecorp.bot</groupId>
 			<artifactId>line-bot-model</artifactId>
-			<version>1.12.0</version>
+			<version>1.5.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/line-bot-model-1.12.0.jar</systemPath>
+			<systemPath>${project.basedir}/lib/line-bot-model-1.5.0.jar</systemPath>
 		</dependency>
 		
 		<dependency>

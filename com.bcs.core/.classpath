@@ -26,6 +26,6 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="/com.bcs.web/src/main/webapp/WEB-INF/lib/barcode4j-light.jar"/>
 	<classpathentry exported="true" kind="lib" path="/com.bcs.web/src/main/webapp/WEB-INF/lib/TSIB.jar"/>
-	<classpathentry kind="lib" path="/com.bcs.web/src/main/webapp/WEB-INF/lib/line-bot-model-1.12.0.jar"/>
+	<classpathentry kind="lib" path="/com.bcs.web/src/main/webapp/WEB-INF/lib/line-bot-model-1.5.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
