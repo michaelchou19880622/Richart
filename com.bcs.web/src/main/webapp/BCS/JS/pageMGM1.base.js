@@ -288,6 +288,8 @@ $(function(){
 		var postData = getDateFromUI();
 		
 		console.info('postData', postData);
+		console.info('postData.judgement', postData.judgement);
+		console.info('postData.autoSendPoint', postData.autoSendPoint);
 		
 		if (!confirm(actionType == 'Create' ? '請確認是否建立' : '請確認是否儲存')) {
 			return false;

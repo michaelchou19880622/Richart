@@ -86,12 +86,20 @@ public class BCSRichMenuController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getRichMenuListByRichMenuGroupId(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @PathVariable Long richMenuGroupId) throws IOException {
-		logger.info("getRichMenuListByRichMenuGroupId");
-		List<RichMenuContent> result = new ArrayList();
-		List<RichMenuContent> list = richMenuContentService.getRichMenuListByRichMenuGroupId(richMenuGroupId);
-		result.addAll(list);
-		logger.info("getRichMenuListByRichMenuGroupId result:" + ObjectUtil.objectToJsonStr(result));
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		try {
+			logger.info("getRichMenuListByRichMenuGroupId richMenuGroupId="+richMenuGroupId);
+			List<RichMenuContent> result = new ArrayList();
+			List<RichMenuContent> list = richMenuContentService.getRichMenuListByRichMenuGroupId(richMenuGroupId);
+			result.addAll(list);
+			//logger.info("getRichMenuListByRichMenuGroupId result:" + ObjectUtil.objectToJsonStr(result));
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));	
+			if(e instanceof BcsNoticeException)
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			else
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	// activate RichMenu

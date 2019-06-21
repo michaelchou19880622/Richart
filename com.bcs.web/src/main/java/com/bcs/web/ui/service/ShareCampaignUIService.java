@@ -163,6 +163,12 @@ public class ShareCampaignUIService {
 	    oldShareCampaign.setDescriptionImgReferenceId(newShareCampaign.getDescriptionImgReferenceId());
 	    oldShareCampaign.setShareTimes(newShareCampaign.getShareTimes());
 	    
+	    oldShareCampaign.setJudgement(newShareCampaign.getJudgement());
+	    oldShareCampaign.setAutoSendPoint(newShareCampaign.getAutoSendPoint());
+	    oldShareCampaign.setActionImgUrl(newShareCampaign.getActionImgUrl());
+	    oldShareCampaign.setShareImgUrl(newShareCampaign.getShareImgUrl());
+	    oldShareCampaign.setDescriptionImgUrl(newShareCampaign.getDescriptionImgUrl());
+	    oldShareCampaign.setLinePointSerialId(newShareCampaign.getLinePointSerialId());
 		return oldShareCampaign;
 	}
 }

@@ -38,6 +38,7 @@ import com.bcs.core.db.service.MsgSendMainService;
 import com.bcs.core.db.service.MsgSendRecordService;
 import com.bcs.core.db.service.SendGroupService;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.resource.UriHelper;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.web.security.CurrentUser;
@@ -87,10 +88,16 @@ public class BCSMsgSendController extends BCSBaseController {
 	@RequestMapping(method = RequestMethod.GET, value ="/edit/msgCreatePage")
 	public String msgCreatePage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("msgCreatePage");
-		
 		return BcsPageEnum.MsgCreatePage.toString();
 	}
 
+	// CDN
+	@RequestMapping(method = RequestMethod.GET, value ="/edit/cdnMsgCreatePage")
+	public String cdnMsgCreatePage(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("cdnMsgCreatePage");
+		return BcsPageEnum.CdnMsgCreatePage.toString();
+	}
+	
 	/**
 	 * 訊息列表 導頁
 	 * 
@@ -409,6 +416,109 @@ public class BCSMsgSendController extends BCSBaseController {
 		}
 	}
 
+//	public static void main(String[] args){
+//		String oldContext = "{\"resourceType\":\"IMAGE\",\"resourceId\":\"29d3f6c8-6ba3-41d3-a6b1-d25cbbee85b6\"}";
+//		int i1 = oldContext.indexOf("Id") + 5;
+//		//i1+= 7;
+//		int i2 = oldContext.indexOf("\"}");
+//		String context = oldContext.substring(i1, i2);
+//		System.out.println(context);
+//		System.out.println(UriHelper.getCdnResourceUri("IMAGE", context));
+//	}
+	
+	// CDN
+	@ControllerLog(description="CDN 傳送,儲存訊息")
+	@RequestMapping(method = RequestMethod.POST, value ="/edit/sendingCdnMsg", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<?> sendingCdnMsg(HttpServletRequest request, HttpServletResponse response,
+			@CurrentUser CustomUser customUser, @RequestBody SendMsgModel sendMsgModel) throws IOException {
+		logger.info("sendingCdnMsg");
+		logger.info("sendMsgModel:" + sendMsgModel);
+		List<SendMsgDetailModel> details = sendMsgModel.getSendMsgDetails();
+		//logger.info("details:"+ details);
+		
+		List<SendMsgDetailModel> newD = new ArrayList();
+		for(int i = 0; i < details.size(); i++) {
+			SendMsgDetailModel detail = details.get(i);
+			//logger.info("di:"+detail);
+			detail.setDetailType("TEXT");
+			
+			String oldContext = detail.getDetailContent();
+			//logger.info("oldContext:"+oldContext);
+			int i1 = oldContext.indexOf("Id") + 5;
+			int i2 = oldContext.indexOf("\"}");
+			//logger.info("i1,i2: "+i1 + " " + i2);
+			String context = oldContext.substring(i1, i2);
+			
+			detail.setDetailContent("{\"Text\":\"" + UriHelper.getCdnResourceUri("IMAGE", context) + "\"}");
+			newD.add(detail);
+			//logger.info("dj:"+detail);
+		}
+		
+		//logger.info("newD:"+ newD);
+		sendMsgModel.setSendMsgDetails(newD);
+		logger.info("new sendMsgModel:"+ sendMsgModel);
+		
+		// --------------- //
+		try{
+			if(sendMsgModel != null){
+				if(StringUtils.isBlank(sendMsgModel.getActionType())){
+					throw new Exception("ActionType Null");
+				}
+				
+				/**
+				 * Send To Me Message
+				 */
+				if(SendMsgModel.ACTION_TYPE.SendToMe.toString().equals(sendMsgModel.getActionType())){
+					
+					return sendToMe(sendMsgModel, customUser);
+				}
+				/**
+				 * Send To Test Group Admin User
+				 */
+				else if(SendMsgModel.ACTION_TYPE.SendToTestGroup.toString().equals(sendMsgModel.getActionType())){
+					
+					return sendToTestGroup(sendMsgModel, customUser);
+				}
+				/**
+				 * Save Draft Message
+				 */
+				else if(SendMsgModel.ACTION_TYPE.SaveDraft.toString().equals(sendMsgModel.getActionType())){
+
+					return saveToDraft(sendMsgModel, customUser);
+				}
+				/**
+				 * Send Message or Save Draft
+				 */
+				else if(SendMsgModel.ACTION_TYPE.SendMsg.toString().equals(sendMsgModel.getActionType())){
+
+					if(customUser.isAdmin()){
+						return sendMsg(sendMsgModel, customUser);
+					}
+					else{
+						throw new BcsNoticeException("權限錯誤");
+					}
+				}
+				else{
+					throw new Exception("Validate ActionType Error");
+				}
+			}
+			else{
+				throw new Exception("SendMsgModel Null");
+			}
+		}
+		catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));
+
+			if(e instanceof BcsNoticeException){
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			}
+			else{
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+	
 	/**
 	 * 傳送, 儲存 訊息
 	 * 
@@ -430,7 +540,9 @@ public class BCSMsgSendController extends BCSBaseController {
 			) throws IOException {
 		logger.info("sendingMsg");
 		logger.info("sendMsgModel:" + sendMsgModel);
-
+		List<SendMsgDetailModel> details   = sendMsgModel.getSendMsgDetails();
+		logger.info("details:"+ details);
+		
 		try{
 			if(sendMsgModel != null){
 				if(StringUtils.isBlank(sendMsgModel.getActionType())){

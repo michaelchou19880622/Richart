@@ -197,11 +197,13 @@ $(function(){
 			data : JSON.stringify(postData)
 		}).success(function(response){
 			console.info(response);
-			setRichMenuLink(groupId);
+			console.info('groupId:', response.groupId);
+			setRichMenuLink(response.groupId);
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
 		}).done(function(){
+			
 		});
 	});
 	

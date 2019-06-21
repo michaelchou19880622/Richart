@@ -22,6 +22,12 @@ $(function(){
  		window.location.replace(bcs.bcsContextPath + '/edit/richMenuCreatePage?richId=' + richId + '&groupId=' + groupId + '&actionType=Edit');
 	};
 	
+	// to Create Page (read only)
+	var richMenuSelectReadOnlyFunc = function(){
+		var richId = $(this).attr('richId');
+ 		window.location.replace(bcs.bcsContextPath + '/edit/richMenuCreatePage?richId=' + richId + '&groupId=' + groupId + '&actionType=Edit&readOnly=true');
+	}
+	
 	// to Create Page (clone)
 	var setCopyBtnEvent = function() {
 		$('.btn_clone').click(function(e) {
@@ -36,10 +42,7 @@ $(function(){
 		
 	}
 	
-	// alert
-	var alertActiveCantEdit = function(){
-		var copyConfirm = alert("ACTIVE狀態下無法編輯，請先停用！");
-	}
+
 	
 	var setActiveBtnEvent = function() {
 		$('.btn_redesign').click(function(e) {
@@ -169,8 +172,8 @@ $(function(){
 					richMsgTr.find('.richMenuImgTitle img').click(richMenuSelectEventFunc);
 					richMsgTr.find('.richMenuImgTitle a').attr('href', bcs.bcsContextPath + '/edit/richMenuCreatePage?richId=' + o.richId + '&groupId=' + groupId + '&actionType=Edit');
 				}else{
-					richMsgTr.find('.richMenuImgTitle img').click(alertActiveCantEdit);
-					richMsgTr.find('.richMenuImgTitle a').attr('href', '#');
+					richMsgTr.find('.richMenuImgTitle img').click(richMenuSelectReadOnlyFunc);
+					richMsgTr.find('.richMenuImgTitle a').attr('href', bcs.bcsContextPath + '/edit/richMenuCreatePage?richId=' + o.richId + '&groupId=' + groupId + '&actionType=Edit&readOnly=true');
 				}
 				
 				var level = "";

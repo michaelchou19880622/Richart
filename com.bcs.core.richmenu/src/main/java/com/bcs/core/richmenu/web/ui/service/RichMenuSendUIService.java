@@ -124,22 +124,22 @@ public class RichMenuSendUIService {
 		// check GroupId
 		Long groupId = sendRichMenuModel.getSendGroupId();
 		if(groupId == null) {
-			logger.error("SendGroupId Error");
-			throw new BcsNoticeException("群組設定錯誤");
+			logger.info("SendGroupId Error");
+			throw new BcsNoticeException("SendGroupId Error");
 		}
 				
 		// check RichMenuSendGroup
 		RichMenuSendGroup sendGroup = richMenuSendGroupService.findOne(groupId);
 		if(sendGroup == null) {
-			logger.error("SendGroupId Null");
-			throw new BcsNoticeException("群組設定錯誤");
+			logger.info("SendGroupId Null");
+			throw new BcsNoticeException("SendGroupId Null");
 		}
 		
 		// check richMenuGroupId
 		Long richMenuGroupId = sendGroup.getRichMenuGroupId();
 		if(richMenuGroupId == null) {
-			logger.error("richMenuGroupId Error");
-			throw new BcsNoticeException("群組設定錯誤");
+			logger.info("richMenuGroupId Error");
+			throw new BcsNoticeException("richMenuGroupId Error");
 		}
 		
 		// get richMenuContents (Main Page)

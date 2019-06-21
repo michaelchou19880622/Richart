@@ -3,8 +3,11 @@ package com.bcs.core.api.msg;
 
 
 import org.apache.commons.lang3.StringUtils;
+//import org.jcodec.common.logging.Logger;
+import org.apache.log4j.Logger;
 
 import com.bcs.core.db.entity.MsgDetail;
+import com.bcs.core.invoice.service.InvoiceEventService;
 import com.bcs.core.resource.UriHelper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.linecorp.bot.model.message.ImageMessage;
@@ -13,6 +16,9 @@ import com.linecorp.bot.model.message.ImageMessage;
 public class MsgGeneratorImage extends MsgGeneratorAbstract {
 	private static final long serialVersionUID = 1L;
 
+    /** Logger */
+    private static Logger logger = Logger.getLogger(MsgGeneratorImage.class);
+    
 	public static boolean canSetMulti() throws Exception {
 		return true;
 	}
@@ -30,6 +36,9 @@ public class MsgGeneratorImage extends MsgGeneratorAbstract {
 	public MsgGeneratorImage(String originalContentUrl, String previewImageUrl, int toType) throws Exception{
 		super();
 		generatorContent(originalContentUrl, previewImageUrl, toType);
+		
+		logger.info("originalContentUrl:"+originalContentUrl);
+		logger.info("previewImageUrl:"+previewImageUrl);
 		
 		message = new ImageMessage(originalContentUrl, previewImageUrl);
 	}

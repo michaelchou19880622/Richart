@@ -262,7 +262,7 @@ public class LineAccessApiService {
 	}
 	
 	public static Response<ResponseBody> getImageFromLine(String channelId,String channelName, String msgId) throws Exception{
-		logger.debug("getImageFromLine:" + msgId);
+		logger.info("getImageFromLine:" + msgId);
 
 		Date start = new Date();
 		int status = 0;
@@ -272,6 +272,7 @@ public class LineAccessApiService {
 			Response<ResponseBody> response = getService(channelId,channelName)
 			                .getMessageContent(msgId)
 			                .execute();
+			logger.info("response:"+response);
 			logger.debug(response.code());
 			
 			status = response.code();

@@ -2,8 +2,10 @@
  *
  */
 $(function(){
-	$.BCS.actionTypeParam = $.urlParam("actionType");
 
+	$.BCS.actionTypeParam = $.urlParam("actionType");
+	
+	
 	/**
 	 * 紀錄 最後按鈕
 	 */
@@ -136,34 +138,32 @@ $(function(){
 
 		// 設定傳送資料
 		var postData = {};
-		//postData.actionType = actionType;
+		postData.actionType = actionType;
 
 		postData.sendGroupId = sendGroupId;
-//		postData.serialId = serialId;
-//		postData.sendingMsgType = sendingMsgType;
-//
-//		postData.sendMsgDetails = MsgFrameContents;
-//
-//		postData.sendingMsgTime = sendingMsgTime;
-//
-//		postData.msgTagList = msgTagList;
-//
-//		var msgAction = postData.actionType;
-//
-//		var msgId = $.urlParam("msgId");
-//
-//		if($.BCS.actionTypeParam == "Edit"){
-//			postData.msgId = msgId;
-//		}
-		
+		postData.serialId = serialId;
+		postData.sendingMsgType = sendingMsgType;
+
+		postData.sendMsgDetails = MsgFrameContents;
+
+		postData.sendingMsgTime = sendingMsgTime;
+
+		postData.msgTagList = msgTagList;
+
+		var msgAction = postData.actionType;
+
+		var msgId = $.urlParam("msgId");
+
+		if($.BCS.actionTypeParam == "Edit"){
+			postData.msgId = msgId;
+		}
 		console.info('postData', postData);
-		
-		
+
 		// 傳送資料
 		$('.LyMain').block($.BCS.blockMsgSave);
 		$.ajax({
 			type : "POST",
-			url : bcs.bcsContextPath +'/edit/sendingRichMenu',
+			url : bcs.bcsContextPath +'/edit/sendingCdnMsg',
             cache: false,
             contentType: 'application/json',
             processData: false,
@@ -172,7 +172,7 @@ $(function(){
 			console.info(response);
 			if(postData.actionType == "SaveDraft"){
 				alert('儲存成功');
-				window.location.replace(bcs.bcsContextPath +'/edit/richMenuSendMsgCreatePage');
+				window.location.replace(bcs.bcsContextPath +'/edit/msgListPage');
 			}
 			else if(postData.actionType == "SendMsg"){
 				if(sendingMsgType == "DELAY"){
@@ -184,7 +184,7 @@ $(function(){
 				else{
 					alert('立即傳送成功');
 				}
-				window.location.replace(bcs.bcsContextPath +'/edit/richMenuSendMsgCreatePage');
+				window.location.replace(bcs.bcsContextPath +'/edit/msgListSendedPage');
 			}
 			else{
 				alert('傳送成功');
@@ -548,7 +548,7 @@ $(function(){
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/getSerialSettingList'
 		}).success(function(response){
-			//console.info("response:", response);
+			console.info(response);
 
 			var SerialSettingList = response.SerialSettingList;
 			$.each(SerialSettingList, function(i, o){
@@ -588,8 +588,6 @@ $(function(){
 				type : "GET",
 				url : getDataUrl
 			}).success(function(response){
-				//console.info("sendGroup:", response);
-				
 				$('.dataTemplate').remove();
 				
 				// 回寫 發送群組
@@ -750,10 +748,12 @@ $(function(){
 
 		// 建立訊息
 		else{
-			// Get Rich Menu Send Group List
+			/**
+			 * Get Send Group List
+			 */
 			$.ajax({
 				type : "GET",
-				url : bcs.bcsContextPath + '/market/getRichMenuSendGroupTitleList'
+				url : bcs.bcsContextPath + '/market/getSendGroupTitleList'
 			}).success(function(response){
 				console.info(response);
 

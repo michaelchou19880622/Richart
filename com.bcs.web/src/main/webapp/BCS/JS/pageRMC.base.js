@@ -2,7 +2,17 @@
  * 
  */
 $(function(){
-	// 每個richType的連結座標(暫時這樣用)
+	
+	// ---- Global Variables ---- 
+	
+	var richId = "";
+	var groupId = "";
+	var richType = "";
+	var actionType = "";
+	var readOnly = "";
+	var btnTarget = ""; // last clicked button
+	
+	// every richType's XY
 	var framesTypePointXY = [
 	        // 全版
  			[{startX : 0, startY : 0, endX : 833, endY : 843}, {startX : 833, startY : 0, endX : 1666, endY : 843}, {startX : 1666, startY : 0, endX : 2500, endY : 843}, 
@@ -22,20 +32,42 @@ $(function(){
  			[{startX : 0, startY : 0, endX : 2500, endY : 843}]
  	];
 	
-	var dateFormat = "YYYY-MM-DD HH:mm:ss";
+
+	// ----  Date Picker Component---- 
 	
-	// 日期元件
+	// date format
+	var dateFormat = "YYYY-MM-DD HH:mm:ss";
 	$(".datepicker").datepicker({'dateFormat' : 'yy-mm-dd'});
 
-	/**
-	 * 紀錄 最後按鈕
-	 */
-	var btnTarget = "";
+	// 從欄位取得日期(型態是 Moment.js 的 date wraps)
+	var getMomentByElement = function(elementId) {
+		var yearMonthDay = $('#' + elementId).val();
+		var hour = $('#' + elementId + 'Hour').val();
+		var minute = $('#' + elementId + 'Minute').val();		
+		var momentDate = moment(yearMonthDay + ' ' + hour + ':' + minute + ':00', dateFormat);
+		return momentDate;
+	}
 	
-	// 表單驗證
+	// 設定日期時間欄位值
+	var setElementDate = function(elementId, timestamp) {
+		if (!timestamp) {
+			return;
+		}
+		var momentDate = moment(timestamp);
+		$('#' + elementId).val(momentDate.format('YYYY-MM-DD'));
+		
+		var hour = momentDate.hour();
+		$('#' + elementId + 'Hour').val(hour < 10 ? '0' + hour : hour).change();
+		
+		var minute = momentDate.minute();
+		$('#' + elementId + 'Minute').val(minute < 10 ? '0' + minute : minute).change();		
+	}
+	
+	
+	// ---- Table Validate ----
+	
 	var validator = $('#ContentValidateForm').validate({
-		rules : {
-			
+		rules : {	
 			// 圖文選單名稱
 			'richMenuName' : {
 				required : {
@@ -51,7 +83,6 @@ $(function(){
 			        param: 100
 				}
 			},
-			
 			// 圖文選單標題
 			'richMenuTitle' : {
 				required : {
@@ -80,12 +111,10 @@ $(function(){
 			        }
 				}
 			},
-	
 			// 主要圖片
 			'titleImage' : {
 				required : '.imgId:blank'
 			},
-			
 			// 使用效期
 			'richMenuStartUsingTime' : {
 				required : true,
@@ -122,7 +151,6 @@ $(function(){
 					anotherDateName : '使用效期開始日期'
 				}
 			},
-			
 			'richMenuEndUsingTimeHour' : {
 				required : true
 			},
@@ -133,35 +161,20 @@ $(function(){
 		}
 	});
 	
-	/**
-	 * 從欄位取得日期(型態是 Moment.js 的 date wraps)
-	 */
-	var getMomentByElement = function(elementId) {
-		var yearMonthDay = $('#' + elementId).val();
-		var hour = $('#' + elementId + 'Hour').val();
-		var minute = $('#' + elementId + 'Minute').val();		
-		var momentDate = moment(yearMonthDay + ' ' + hour + ':' + minute + ':00', dateFormat);
-		return momentDate;
-	}
-	
-	/**
-	 * 設定日期時間欄位值
-	 */
-	var setElementDate = function(elementId, timestamp) {
-		if (!timestamp) {
-			return;
+
+	// ---- Button Components ----
+
+	// do Cancel
+	$('input[name="cancel"]').click(function() {
+		var r = confirm("請確認是否取消");
+		if(r){
+			window.location.replace(bcs.bcsContextPath + '/edit/richMenuMemberListPage?groupId=' + groupId);
+		}else{
+		    return;
 		}
-		
-		var momentDate = moment(timestamp);
-		$('#' + elementId).val(momentDate.format('YYYY-MM-DD'));
-		
-		var hour = momentDate.hour();
-		$('#' + elementId + 'Hour').val(hour < 10 ? '0' + hour : hour).change();
-		
-		var minute = momentDate.minute();
-		$('#' + elementId + 'Minute').val(minute < 10 ? '0' + minute : minute).change();		
-	}
+	});
 	
+	// do ActionType Click
 	var actionTypeClick = function(){
 
 		var actionType = $(this).val();
@@ -201,14 +214,12 @@ $(function(){
 		}
 	}
 	
+	// do ActionType Radio Click
 	var setActionTypeRadioEvent = function(){
-
 		$('.actionType').click(actionTypeClick);
 	}
 	
-	/**
-	 * 初始化註記欄位為標籤元件
-	 */ 
+	// initialize label
 	var buildLinkTagContentFlag = function(element) {
 		return $.BCS.contentFlagComponent(element, 'LINK', {
 			placeholder : '請輸入註記'
@@ -218,8 +229,13 @@ $(function(){
 	var richMsgUrlPageTemplate = {};
 	var richMsgUrlTxtTemplate = {};
 	var urlTrTemplate = {};
+	
+	// initialize
 	var initTemplate = function(){
 		richId = $.urlParam("richId"); //從列表頁導過來的參數
+		groupId = $.urlParam("groupId"); //從列表頁導過來的參數
+		actionType = $.urlParam("actionType"); //從列表頁導過來的參數
+		readOnly = $.urlParam("readOnly"); //從列表頁導過來的參數
 		
 		richMsgUrlPageTemplate = $(".richMsgUrlPageTr").clone();
 		richMsgUrlTxtTemplate = $(".richMsgUrlTxtTr").clone();
@@ -245,6 +261,10 @@ $(function(){
 			$("input[name='templateFrameType']:checked").trigger("click");
 		}
 		
+		if(readOnly){
+			$('#save').remove();
+		}
+		
 		$('#customizeTypeBtn').hide();
 		$('#removeUrl').css({"margin-left": "3px"});
 		$('#addUrl').css({"margin-left": "3px"});
@@ -262,15 +282,16 @@ $(function(){
 		}
 	}
 	
-	var richId = "";
-	var groupId = "";
-	var richType = "";
-	var actionType = "";
+
 	
 	var getDataByRichId = function() {
-		richId = $.urlParam("richId"); //從列表頁導過來的參數
-		groupId = $.urlParam("groupId"); //從列表頁導過來的參數
-		actionType = $.urlParam("actionType"); //從列表頁導過來的參數
+//		richId = $.urlParam("richId"); //從列表頁導過來的參數
+//		groupId = $.urlParam("groupId"); //從列表頁導過來的參數
+//		actionType = $.urlParam("actionType"); //從列表頁導過來的參數
+		
+		console.info("richId", richId);
+		console.info("groupId", groupId);
+		console.info("actionType", actionType);
 		
 		if (richId != null && richId != "") {
 			$.ajax({
@@ -413,7 +434,7 @@ $(function(){
 	
 	var getGoToList = function(){
 		$.ajax({
-			type : "GET",
+			type : 'GET',
 			url : bcs.bcsContextPath + '/edit/getRichMenuListByRichMenuGroupId/' + groupId 
 		}).success(function(response){
 			console.info('getRichMenuListByRichMenuGroupId response:' + JSON.stringify(response));
@@ -491,46 +512,11 @@ $(function(){
 						 console.info("get index:", index);
 						 $(postbackTds[k]).find('#goToList').val(index);
 					 }
-					 //goToList.val(o.value);
-//					 opt.value = o.richId;
-//					 opt.innerHTML = o.richMenuName; 
-//					 if(linePointSerialId != null && o.serialId == linePointSerialId){
-//						 selectedValue = opt.value;
-//						 console.info("selectedValue", selectedValue);
-//					 }
 					 index++;
 				});
 				
 			}
 		});
-		
-//		var goToLists = $('.goToList');
-//		var richMsgUrls = $('.richMsgUrl');
-//		console.info("richMsgUrls:", richMsgUrls);
-//		
-//		$.each(richMsgUrls, function(k, v){
-//			var url1 = richMsgUrls[k].value;
-//			console.info("url1:", url1);
-//			console.info("cloesest:", $(richMsgUrls[k]).closest('.goToList'));
-			
-			
-			
-////			var selectedValue = "";
-//			$.each(response, function(i, o){		
-//				console.info('goToList o:' + JSON.stringify(o));
-//				 var opt = document.createElement('option');
-//				 opt.value = o.richId;
-//				 opt.innerHTML = o.richMenuName; // + ' (' + o.title + ')';	
-//				 //console.info("o.serialId", o.serialId);
-////				 if(richId != null && richId == o.richId){
-////					 selectedValue = o.richMenuName;
-////					 console.info("selectedValue", selectedValue);
-////				 }
-//				goToList.appendChild(opt);
-//			});
-////			$('#goToList').val(selectedValue);
-							
-//		});
 	}
 	//點擊圖文訊息類別後變更設定連結的圖示
 	var linkNumbers = 0; //連結數
@@ -538,6 +524,7 @@ $(function(){
 	var frameTypePointXY;
 	$("input[name='templateFrameType']").click(function(e) {
 		var selectedRichType = e.currentTarget.value; //選擇的連結類型
+		console.info("selectedRichType:", selectedRichType);
 		
 		$('#customizeTypeBtn').hide();
 		$('.urlDraggable').remove();
@@ -548,7 +535,12 @@ $(function(){
 			return;
 		}
 		
-		getGoToList();
+		if(selectedRichType == 11 || selectedRichType == 12){
+			// do nothing
+		}else{
+			getGoToList();
+		}
+		
 		
 		changeRichTypeImg(selectedRichType);
 		
@@ -1082,9 +1074,19 @@ $(function(){
 				if(actionType1 == 'postback'){
 					var goToList = $(richMsgUrls[i]).closest('.richMsgUrlPageTr').find('.goToList')[0];
 					console.info("goToList", goToList);
-					var path = goToList.options[goToList.selectedIndex].value;
-					console.info("path", path);
-					linkUrl = path;
+					//var path = goToList.options[goToList.selectedIndex].value;
+					//console.info("path", path);
+					//linkUrl = path;
+					var column = goToList.options[goToList.selectedIndex]; //find("input[name='richId']");
+					console.info('column:', column);
+					console.info('column.innerText:', column.innerText);
+					if(column.innerText == '請選擇'){
+						linkUrl = 'NULL';
+					}else{
+						var child = $(column).find("input[name='richId']")[0];
+						console.info('child:', child.value);
+						linkUrl = child.value;
+					}
 				}
 				console.info("i=", i);
 				console.info("actionType1:", actionType1);
@@ -1115,17 +1117,21 @@ $(function(){
 				if(actionType1 == 'postback'){
 					var goToList = $(richMsgUrls[i]).closest('.richMsgUrlPageTr').find('.goToList')[0];
 					console.info("goToList", goToList);
-					var path = goToList.options[goToList.selectedIndex].value;
+					//var path = goToList.options[goToList.selectedIndex].value;
 					//var path = goToList.options[goToList.selectedIndex].innerText;
 					//var child = goToList.options[goToList.selectedIndex].find
 					// $("input[name='templateFrameType']");
 					var column = goToList.options[goToList.selectedIndex]; //find("input[name='richId']");
 					console.info('column:', column);
-					var child = $(column).find("input[name='richId']")[0];
-					console.info('child:', child.value);
+					console.info('column.innerText:', column.innerText);
+					if(column.innerText == '請選擇'){
+						linkUrl = 'NULL';
+					}else{
+						var child = $(column).find("input[name='richId']")[0];
+						console.info('child:', child.value);
+						linkUrl = child.value;
+					}
 					
-					console.info("path", path);
-					linkUrl = child.value;
 				}
 				console.info("i=", i);
 				console.info("actionType1:", actionType1);
@@ -1235,6 +1241,7 @@ $(function(){
 		}
 		linkNumbers++;
 		generateRichMsgUrl();
+		getGoToList();
 		var letter = String.fromCharCode(64 + linkNumbers);
 		setDraggable(letter);
 	});
@@ -1300,19 +1307,6 @@ $(function(){
 		$('#customizeDialog').dialog('close');
 	});
 	
-	//取消鈕
-	$('input[name="cancel"]').click(function() {
-
-		var r = confirm("請確認是否取消");
-		if (r) {
-			// confirm true
-		} else {
-		    return;
-		}
-		
-		window.location.replace(bcs.bcsContextPath + '/edit/richMenuMemberListPage?groupId=' + groupId);
-	});
-	
 	var optionSelectChange_func = function(){
 		var selectValue = $(this).find('option:selected').text();
 		$(this).closest('.option').find('.optionLabel').html(selectValue);
@@ -1320,6 +1314,7 @@ $(function(){
 	
 	$('.changeConditionSelect').change(optionSelectChange_func);
 	$('.optionSelect').change(optionSelectChange_func);
+	
 	
 	initTemplate();
 	getDataByRichId();

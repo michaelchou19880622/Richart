@@ -67,6 +67,9 @@
                         <li th:classappend="${currentPage == 'Page25'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/edit/tracingGeneratePage}"><span>建立追蹤網址</span></a>
                         </li>
+                        <li th:classappend="${currentPage == 'PageCdnMsg'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/cdnMsgCreatePage}"><span>建立CDN訊息</span></a>
+                        </li>
                     </ul>
                 </li>
                 
@@ -74,7 +77,7 @@
                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
                     	<li th:classappend="${currentPage == 'PageRMgL'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/edit/richMenuGroupListPage}"><span>圖文選單群組列表</span></a>
+                        	<a th:href="@{/bcs/edit/richMenuGroupListPage}"><span>設計群組列表</span></a>
                         </li>
                         <!--<li th:classappend="${currentPage == 'PageRMmL'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/edit/richMenuMemberListPage}"><span>圖文選單群組成員列表</span></a>
@@ -86,14 +89,14 @@
                         	<a th:href="@{/bcs/edit/richMenuBindingPage}"><span>圖文選單與使用者相連</span></a>
                         </li>   -->
 						<li th:classappend="${currentPage == 'PageRMsgL'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/market/richMenuSendGroupListPage}"><span>使用者群組列表</span></a>
+                        	<a th:href="@{/bcs/market/richMenuSendGroupListPage}"><span>發送群組列表</span></a>
                         </li>
                         <li th:classappend="${currentPage == 'PageRMsgC'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/market/richMenuSendGroupCreatePage}"><span>建立使用者群組</span></a>
+                        	<a th:href="@{/bcs/market/richMenuSendGroupCreatePage}"><span>建立發送群組</span></a>
                         </li>
-<!--                         <li th:classappend="${currentPage == 'PagermSMsgC'} ? 'ExSelected'">
+                   <!--   <li th:classappend="${currentPage == 'PagermSMsgC'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/edit/richMenuSendMsgCreatePage}"><span>發送訊息</span></a>
-                        </li> -->
+                        </li><   -->
                     </ul>
                 </li>
                 
