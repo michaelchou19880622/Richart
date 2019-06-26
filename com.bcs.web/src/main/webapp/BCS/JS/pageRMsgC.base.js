@@ -5,6 +5,33 @@ $(function(){
 	var sendGroupCondition = null;
 	var btnTarget = ""; // 紀錄 最後按鈕
 	
+	// ---------------------
+	$(".useStartTimeScheduler").click(function(e){
+		var selectedUseStartTimeScheduler = e.currentTarget.value;
+		
+		switch(selectedUseStartTimeScheduler){
+			case 'NO' :
+				$("#startTimeView").hide();
+				break;
+			case 'YES' :
+				$("#startTimeView").show();
+				break;
+		}
+	});
+	
+	$(".useEndTimeScheduler").click(function(e){
+		var selectedUseEndTimeScheduler = e.currentTarget.value;
+		
+		switch(selectedUseEndTimeScheduler){
+			case 'NO' :
+				$("#endTimeView").hide();
+				break;
+			case 'YES' :
+				$("#endTimeView").show();
+				break;
+		}
+	});
+	
 	// ----  Date Picker Component---- 
 	
 	// date format
@@ -245,21 +272,35 @@ $(function(){
 		var groupIdInt = parseInt(groupIdStr);
 //		console.info("groupId's number: ", typeof groupIdInt === 'number' && isFinite(groupIdInt));
 		
-        // 使用效期
-        var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
-        var momentRichMenuEndUsingTime = getMomentByElement('richMenuEndUsingTime');
+        // useStartTimeSchedulers
+		var useStartTimeSchedulers = $('.useStartTimeScheduler');
+		var useStartTimeScheduler = useStartTimeSchedulers[0].checked;
+        // useEndTimeSchedulers
+		var useEndTimeSchedulers = $('.useEndTimeScheduler');
+		var useEndTimeScheduler = useEndTimeSchedulers[0].checked;
 		
 		var postData = {
 			groupId: groupId,
 			groupTitle: groupTitle,
-			groupType: 'DELETABLE',
+			groupType: 'NORMAL', // Not Default
 			groupDescription: groupDescription,
 			sendGroupDetail: sendGroupDetail,
 			richMenuGroupId: groupIdInt,
 			richMenuGroupName: groupName,
-            richMenuStartUsingTime : momentRichMenuStartUsingTime.format(dateFormat),
-            richMenuEndUsingTime : momentRichMenuEndUsingTime.format(dateFormat),
+            useStartTimeScheduler: useStartTimeScheduler,
+            useEndTimeScheduler: useEndTimeScheduler,
 		};
+        
+		// 使用效期
+        if(useStartTimeScheduler){
+        	var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
+        	postData.richMenuStartUsingTime = momentRichMenuStartUsingTime.format(dateFormat);
+        }
+        if(useEndTimeScheduler){
+        	var momentRichMenuEndUsingTime = getMomentByElement('richMenuEndUsingTime');
+        	postData.richMenuEndUsingTime = momentRichMenuEndUsingTime.format(dateFormat);
+        }
+        
 		console.info('postData', postData);
 		
 		/**
@@ -614,7 +655,24 @@ $(function(){
 					$('.dataTemplate').remove();
 					console.info(response);
 					
-					// 使用期間
+					// useStartTimeScheduler
+					if(response.useStartTimeScheduler == true || response.autoSendPoint == 'true'){
+						$('input[name="useStartTimeScheduler"]')[0].checked = true;
+						$('#startTimeView').show();
+					}else{ 
+						$('input[name="useStartTimeScheduler"]')[1].checked = true;
+						$('#startTimeView').hide();
+					}
+					// useEndTimeScheduler
+					if(response.useEndTimeScheduler == true || response.autoSendPoint == 'true'){
+						$('input[name="useEndTimeScheduler"]')[0].checked = true;
+						$('#endTimeView').show();
+					}else{ 
+						$('input[name="useEndTimeScheduler"]')[1].checked = true;
+						$('#endTimeView').hide();
+					}
+					
+					// StartUsingTime
 					setElementDate('richMenuStartUsingTime', response.richMenuStartUsingTime);
 	            	setElementDate('richMenuEndUsingTime', response.richMenuEndUsingTime);
 					
@@ -655,8 +713,14 @@ $(function(){
 							$('#tableBody').append(queryBody);
 							setValidationOnNewRow();
 						});
-					}
-					else{
+						
+						if(response.groupType == 'DEFAULT'){
+							$('#startTimeTr').remove();
+							$('#endTimeTr').remove();
+							$('#queryContent').remove();
+							$('#groupTitle').attr('disabled',true);
+						}
+					}else{
 						$('#groupTitle').attr('disabled',true);
 						$('#groupDescription').attr('disabled',true);
 						
@@ -671,13 +735,16 @@ $(function(){
 				});
 				
 				var actionType = $.urlParam("actionType");
-				
 				if(actionType == "Edit"){
 					$('.CHTtl').html('編輯發送群組');
 				}
 				else if(actionType == "Copy"){
 					$('.CHTtl').html('複製發送群組');
 				}
+			}else{
+				// Create
+				$('input[name="useStartTimeScheduler"]')[0].checked = true;
+				$('input[name="useEndTimeScheduler"]')[0].checked = true;
 			}
 		}).fail(function(response){
 			console.info(response);

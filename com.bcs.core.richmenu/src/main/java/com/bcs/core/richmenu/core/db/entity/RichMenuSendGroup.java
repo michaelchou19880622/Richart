@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @Table(name = "BCS_RICH_MENU_SEND_GROUP")
 public class RichMenuSendGroup extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
-	public static final String GROUP_TYPE_UNDELETABLE = "UNDELETABLE";
-	public static final String GROUP_TYPE_DELETABLE = "DELETABLE";
+	public static final String GROUP_TYPE_DEFAULT = "DEFAULT";
+	public static final String GROUP_TYPE_NORMAL = "NORMAL";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -57,6 +57,12 @@ public class RichMenuSendGroup extends AbstractBcsEntity{
 	@JsonDeserialize(using = CustomDateDeserializer.class)
 	@Column(name = "RICH_MENU_END_USING_TIME")
 	private Date richMenuEndUsingTime;
+	
+	@Column(name = "USE_START_TIME_SCHEDULER")
+	private Boolean useStartTimeScheduler;
+
+	@Column(name = "USE_END_TIME_SCHEDULER")
+	private Boolean useEndTimeScheduler;
 	
 	@OneToMany(mappedBy="sendGroup",cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	private List<RichMenuSendGroupDetail> sendGroupDetail;
@@ -147,5 +153,21 @@ public class RichMenuSendGroup extends AbstractBcsEntity{
 
 	public void setRichMenuEndUsingTime(Date richMenuEndUsingTime) {
 		this.richMenuEndUsingTime = richMenuEndUsingTime;
+	}
+
+	public Boolean getUseStartTimeScheduler() {
+		return useStartTimeScheduler;
+	}
+
+	public void setUseStartTimeScheduler(Boolean useStartTimeScheduler) {
+		this.useStartTimeScheduler = useStartTimeScheduler;
+	}
+
+	public Boolean getUseEndTimeScheduler() {
+		return useEndTimeScheduler;
+	}
+
+	public void setUseEndTimeScheduler(Boolean useEndTimeScheduler) {
+		this.useEndTimeScheduler = useEndTimeScheduler;
 	}
 }

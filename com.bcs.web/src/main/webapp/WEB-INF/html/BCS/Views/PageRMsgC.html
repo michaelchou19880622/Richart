@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:th="http://www.thymeleaf.org"
-    th:with="strList = ${ {'/BCS/JS/pageRMsgC.base.js'} }">
-<head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu Send Group Create Page', ${strList})" >
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:with="strList = ${ {'/BCS/JS/pageRMsgC.base.js'} }">
+
+<head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu Send Group Create Page', ${strList})">
 </head>
 
 <body>
-	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+    <header th:replace="/BCS/Views/Common/Header :: header"></header>
 
     <div class="LyContents">
-		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageRMsgC')"></div>
+        <div th:replace="/BCS/Views/Common/Menu :: menu ('PageRMsgC')"></div>
 
-        <!-- Right Content -->  
+        <!-- Right Content -->
         <div class="LyMain" role="main">
             <form id="formSendGroup">
                 <section>
@@ -21,22 +20,25 @@
                     </header>
                     <div class="mainFrame">
                         <table border="1">
-                            <colgroup><col width="190"><col></colgroup>
+                            <colgroup>
+                                <col width="190">
+                                <col>
+                            </colgroup>
                             <tbody>
                                 <tr>
                                     <th>群組名稱</th>
                                     <td>
-                                        <input type="text" id="groupTitle" name="groupTitle" value="" maxlength="50" >
+                                        <input type="text" id="groupTitle" name="groupTitle" value="" maxlength="50">
                                     </td>
                                 </tr>
                                 <tr>
-                            	 	<th>設計群組</th>
+                                    <th>設計群組</th>
                                     <td style="text-align: left;">
                                         <select name="mainList" id="mainList" style="width: 300px;">
                                             <option value="">請選擇</option>
-                                        </select>                                        
-                                    </td>  
-                             	</tr>
+                                        </select>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <th>群組說明</th>
                                     <td>
@@ -45,78 +47,100 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                <th>使用期間<span style="color: red">*</span></th>
-                                <td colspan="2">
-                                        <span>
-                                            <div class="option date">
-                                                <input type="text" 
-                                                	class="datepicker" 
-                                                	id="richMenuStartUsingTime" 
-                                                	name="richMenuStartUsingTime" 
-                                                	placeholder="YYYY-MM-DD"/>
-                                            </div>
-                                            <div class="option time">
-                                                <div class="optionLabel">00</div>
-                                                <select id="richMenuStartUsingTimeHour" name="richMenuStartUsingTimeHour" class="optionSelect">
-												    <option th:each="i : ${#numbers.sequence( 0, 23, 1)}"
-												    	th:with="hour=${i < 10 ? '0' + i : i}"
-												    	th:value="${hour}"
-												    	th:text="${hour}" >
-												    </option>
-                                                </select>
-                                            </div>
-                                            :
-                                            <div class="option time">
-                                                <div class="optionLabel">00</div>
-                                                <select id="richMenuStartUsingTimeMinute" name="richMenuStartUsingTimeMinute" class="optionSelect">
-												    <option th:each="i : ${#numbers.sequence( 0, 59, 1)}"
-												    	th:with="minute=${i < 10 ? '0' + i : i}"
-												    	th:value="${minute}"
-												    	th:text="${minute}" >
-												    </option>
-                                                </select>
-                                            </div>
-                                        </span>
-                                        ～
-                                        <span>
-                                            <div class="option date">
-                                                <input type="text" 
-                                                	class="datepicker" 
-                                                	id="richMenuEndUsingTime" 
-                                                	name="richMenuEndUsingTime" 
-                                                	placeholder="YYYY-MM-DD"/>
-                                            </div>
-                                            <div class="option time">
-                                                <div class="optionLabel">00</div>
-                                                <select id="richMenuEndUsingTimeHour" name="richMenuEndUsingTimeHour" class="optionSelect">
-												    <option th:each="i : ${#numbers.sequence( 0, 23, 1)}"
-												    	th:with="hour=${i < 10 ? '0' + i : i}"
-												    	th:value="${hour}"
-												    	th:text="${hour}" >
-												    </option>
-                                                </select>
-                                            </div>
-                                            :
-                                            <div class="option time">
-                                                <div class="optionLabel">00</div>
-                                                <select id="richMenuEndUsingTimeMinute" name="richMenuEndUsingTimeMinute" class="optionSelect">
-												    <option th:each="i : ${#numbers.sequence( 0, 59, 1)}"
-												    	th:with="minute=${i < 10 ? '0' + i : i}"
-												    	th:value="${minute}"
-												    	th:text="${minute}" >
-												    </option>
-                                                </select>
-                                            </div>
-                                        </span>
+                                <tr id="startTimeTr">
+                                    <th>開始時間</th>
+                                    <td colspan="2">
+                                        <label class="mdFRM05Input" style="text-align:left;float:left;">
+                                                <input type="radio" name="useStartTimeScheduler" class="useStartTimeScheduler" value="YES" style="cursor: pointer;">排程
+                                        </label>
+                                        <label class="mdFRM05Input" style="text-align:left;float:left;">
+                                                <input type="radio" name="useStartTimeScheduler" class="useStartTimeScheduler" value="NO" style="cursor: pointer;">即刻
+                                        </label>
+
+                                        <div id="startTimeView" style="inline;">
+                                            <span>
+                                                <div class="option date">
+                                                    <input type="text" 
+                                                        class="datepicker" 
+                                                        id="richMenuStartUsingTime" 
+                                                        name="richMenuStartUsingTime" 
+                                                        placeholder="YYYY-MM-DD"/>
+                                                </div>
+                                                <div class="option time">
+                                                    <div class="optionLabel">00</div>
+                                                    <select id="richMenuStartUsingTimeHour" name="richMenuStartUsingTimeHour" class="optionSelect">
+                                                        <option th:each="i : ${#numbers.sequence( 0, 23, 1)}"
+                                                            th:with="hour=${i < 10 ? '0' + i : i}"
+                                                            th:value="${hour}"
+                                                            th:text="${hour}" >
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                :
+                                                <div class="option time">
+                                                    <div class="optionLabel">00</div>
+                                                    <select id="richMenuStartUsingTimeMinute" name="richMenuStartUsingTimeMinute" class="optionSelect">
+                                                        <option th:each="i : ${#numbers.sequence( 0, 59, 1)}"
+                                                            th:with="minute=${i < 10 ? '0' + i : i}"
+                                                            th:value="${minute}"
+                                                            th:text="${minute}" >
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </span>
+                                        </div>
                                     </td>
-                            </tr>
+                                </tr>
+                                <tr id="endTimeTr">
+                                    <th>結束時間</th>
+                                    <td colspan="2">
+                                        <label class="mdFRM05Input" style="text-align:left;float:left;">
+                                                <input type="radio" name="useEndTimeScheduler" class="useEndTimeScheduler" value="YES" style="cursor: pointer;">排程
+                                        </label>
+                                        <label class="mdFRM05Input" style="text-align:left;float:left;">
+                                                <input type="radio" name="useEndTimeScheduler" class="useEndTimeScheduler" value="NO" style="cursor: pointer;">無期
+                                        </label>
+
+                                        <div id="endTimeView" style="inline;">
+	                                        <span>
+	                                            <div class="option date">
+	                                                <input type="text" 
+	                                                	class="datepicker" 
+	                                                	id="richMenuEndUsingTime" 
+	                                                	name="richMenuEndUsingTime" 
+	                                                	placeholder="YYYY-MM-DD"/>
+	                                            </div>
+	                                            <div class="option time">
+	                                                <div class="optionLabel">00</div>
+	                                                <select id="richMenuEndUsingTimeHour" name="richMenuEndUsingTimeHour" class="optionSelect">
+													    <option th:each="i : ${#numbers.sequence( 0, 23, 1)}"
+													    	th:with="hour=${i < 10 ? '0' + i : i}"
+													    	th:value="${hour}"
+													    	th:text="${hour}" >
+													    </option>
+	                                                </select>
+	                                            </div>
+	                                            :
+	                                            <div class="option time">
+	                                                <div class="optionLabel">00</div>
+	                                                <select id="richMenuEndUsingTimeMinute" name="richMenuEndUsingTimeMinute" class="optionSelect">
+													    <option th:each="i : ${#numbers.sequence( 0, 59, 1)}"
+													    	th:with="minute=${i < 10 ? '0' + i : i}"
+													    	th:value="${minute}"
+													    	th:text="${minute}" >
+													    </option>
+	                                                </select>
+	                                            </div>
+	                                        </span>
+                                        </div>
+                                    </td>
+                                </tr>
                                 <tr id="queryContent">
                                     <th>群組條件</th>
                                     <td>
-	                                    <input accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/plain"  id="upload_mid_btn" name="file" type="file" style="display:none">
-                        				<input class="btn_add add_rule" style="cursor: pointer;" type="button" value="加入條件">
-                        				<input class="btn_add upload_mid" style="cursor: pointer; margin-right: 3px;" type="button" value="匯入UID">
+                                        <input accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/plain" id="upload_mid_btn" name="file" type="file" style="display:none">
+                                        <input class="btn_add add_rule" style="cursor: pointer;" type="button" value="加入條件">
+                                        <input class="btn_add upload_mid" style="cursor: pointer; margin-right: 3px;" type="button" value="匯入UID">
                                         <table class="subTable" id="tableBody">
                                             <tr>
                                                 <th>欄位</th>
@@ -127,7 +151,7 @@
                                             <tr class="dataTemplate">
                                                 <td>
                                                     <div class="labelField" style="display: none;"></div>
-                                                    
+
                                                     <div class="option">
                                                         <div class="optionLabel">請選擇</div>
                                                         <select class="optionSelect queryField" name="queryField">
@@ -137,7 +161,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="labelOp" style="display: none;"></div>
-                                                    
+
                                                     <div class="option">
                                                         <div class="optionLabel">請選擇</div>
                                                         <select class="optionSelect queryOp" name="queryOp">
@@ -146,25 +170,25 @@
                                                     </div>
                                                 </td>
                                                 <td style="text-align: left;" class='queryValueComponent'>
-                                                
-                                                	<!-- SelectList -->
+
+                                                    <!-- SelectList -->
                                                     <div class="option queryValueComponentSelectList" style="display: none;">
                                                         <div class="optionLabel">請選擇</div>
                                                         <select class="optionSelect queryValue" name="queryValue">
                                                             <option value="">請選擇</option>
                                                         </select>
                                                     </div>
-                                                    
+
                                                     <!-- Input -->
                                                     <div class="queryValueComponentInput" style="display: none;">
-                                                    	<input class="queryValue" type="text" name="queryValue" value="" placeholder="請輸入"/>
+                                                        <input class="queryValue" type="text" name="queryValue" value="" placeholder="請輸入" />
                                                     </div>
-                                                    
+
                                                     <!-- DatePicker -->
                                                     <div class="option date queryValueComponentDatepicker" style="display: none;">
-                                                    	<input class="datepicker queryValue" type="text" name="queryValue" placeholder="YYYY-MM-DD"/>
+                                                        <input class="datepicker queryValue" type="text" name="queryValue" placeholder="YYYY-MM-DD" />
                                                     </div>
-                                                    
+
                                                     <div class="labelValue" style="display: none;"></div>
                                                 </td>
                                                 <td>
@@ -186,7 +210,7 @@
                         <input class="btn_save" style="cursor: pointer;" type="button" value="聯繫">
                         <input class="btn_cancel" style="cursor: pointer;" type="button" value="取消">
                     </div>
-                    <iframe id="downloadReport" style='display:none' ></iframe>
+                    <iframe id="downloadReport" style='display:none'></iframe>
                 </div>
             </form>
         </div>

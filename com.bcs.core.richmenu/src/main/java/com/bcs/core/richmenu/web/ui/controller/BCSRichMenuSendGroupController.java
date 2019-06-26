@@ -91,8 +91,9 @@ public class BCSRichMenuSendGroupController extends BCSBaseController {
 	public ResponseEntity<?> getRichMenuSendGroupList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser) throws IOException {
 		logger.info("getRichMenuSendGroupList");		
-		List<RichMenuSendGroup> result = sendGroupService.generateDefaultGroup();
-		List<RichMenuSendGroup> list = sendGroupService.findAll();
+		//List<RichMenuSendGroup> result = sendGroupService.generateDefaultGroup(
+		List<RichMenuSendGroup> result = sendGroupService.findByGroupType(RichMenuSendGroup.GROUP_TYPE_DEFAULT);
+		List<RichMenuSendGroup> list = sendGroupService.findByGroupType(RichMenuSendGroup.GROUP_TYPE_NORMAL);
 		result.addAll(list);
 		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);

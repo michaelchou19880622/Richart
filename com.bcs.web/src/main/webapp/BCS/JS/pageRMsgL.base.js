@@ -77,7 +77,7 @@ $(function(){
 						groupData.find('.btn_detele').remove();
 					}
 
-					if(o.groupType == 'UNDELETABLE'){
+					if(o.groupType == 'DEFAULT'){
 						groupData.find('.btn_copy').remove();
 						groupData.find('.btn_detele').remove();
 					}

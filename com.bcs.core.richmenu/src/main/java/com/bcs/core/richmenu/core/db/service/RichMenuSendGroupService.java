@@ -38,6 +38,10 @@ public class RichMenuSendGroupService {
 		return sendGroupRepository.findAll();
 	}
 	
+	public List<RichMenuSendGroup> findByGroupType(String groupType){
+		return sendGroupRepository.findByGroupType(groupType);
+	}
+	
 	/**
 	 * Create DefaultGroup
 	 * @return Map<Long, SendGroup>
