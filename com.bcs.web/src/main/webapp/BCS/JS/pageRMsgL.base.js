@@ -59,6 +59,11 @@ $(function(){
 					else{
 						groupData.find('.modifyTime').html('-');
 					}
+					
+					var startUsetime = moment(o.richMenuStartUsingTime).format('YYYY-MM-DD HH:mm:ss'); // new style
+					var endUsetime = moment(o.richMenuEndUsingTime).format('YYYY-MM-DD HH:mm:ss'); // new style
+					groupData.find('.richMenuUseTime').html(startUsetime + " ~ " + endUsetime);
+					
 					groupData.find('.modifyUser').html(o.modifyUser);
 					groupData.find('.richMenuGroupName').html(o.richMenuGroupName);
 		
@@ -71,11 +76,15 @@ $(function(){
 					} else {
 						groupData.find('.btn_detele').remove();
 					}
-					
-					if(o.groupId < 0){
+
+					if(o.groupType == 'UNDELETABLE'){
 						groupData.find('.btn_copy').remove();
 						groupData.find('.btn_detele').remove();
 					}
+//					if(o.groupId < 0){
+//						groupData.find('.btn_copy').remove();
+//						groupData.find('.btn_detele').remove();
+//					}
 		
 					$('#tableBody').append(groupData);
 				}

@@ -5,6 +5,43 @@ $(function(){
 	var sendGroupCondition = null;
 	var btnTarget = ""; // 紀錄 最後按鈕
 	
+	// ----  Date Picker Component---- 
+	
+	// date format
+	var dateFormat = "YYYY-MM-DD HH:mm:ss";
+	$(".datepicker").datepicker({'dateFormat' : 'yy-mm-dd'});
+
+	// 從欄位取得日期(型態是 Moment.js 的 date wraps)
+	var getMomentByElement = function(elementId) {
+		var yearMonthDay = $('#' + elementId).val();
+		var hour = $('#' + elementId + 'Hour').val();
+		var minute = $('#' + elementId + 'Minute').val();		
+		var momentDate = moment(yearMonthDay + ' ' + hour + ':' + minute + ':00', dateFormat);
+		return momentDate;
+	}
+	
+	// 設定日期時間欄位值
+	var setElementDate = function(elementId, timestamp) {
+		if (!timestamp) {
+			return;
+		}
+		var momentDate = moment(timestamp);
+		$('#' + elementId).val(momentDate.format('YYYY-MM-DD'));
+		
+		var hour = momentDate.hour();
+		$('#' + elementId + 'Hour').val(hour < 10 ? '0' + hour : hour).change();
+		
+		var minute = momentDate.minute();
+		$('#' + elementId + 'Minute').val(minute < 10 ? '0' + minute : minute).change();		
+	}
+	
+	var optionSelectChange_func = function(){
+		var selectValue = $(this).find('option:selected').text();
+		$(this).closest('.option').find('.optionLabel').html(selectValue);
+	};
+	
+	$('.changeConditionSelect').change(optionSelectChange_func);
+	$('.optionSelect').change(optionSelectChange_func);
 	
 	// 表單驗證
 	var validator = $('#formSendGroup').validate({
@@ -36,7 +73,51 @@ $(function(){
 			        }
 				},
 				maxlength : 700
-			}
+			},
+			
+			// 使用效期
+			'richMenuStartUsingTime' : {
+				required : true,
+				dateYYYYMMDD : true
+			},
+			
+			'richMenuStartUsingTimeHour' : {
+				required : true
+			},
+			
+			'richMenuStartUsingTimeMinute' : {
+				required : true
+			},
+			
+			'richMenuEndUsingTime' : {
+				required : true,
+				dateYYYYMMDD : true,
+				compareDate : {
+					compareType : 'after',
+					dateFormat : dateFormat,
+					getThisDateStringFunction : function() {
+						var yearMonthDay = $('#richMenuEndUsingTime').val();
+						var hour = $('#richMenuEndUsingTimeHour').val();
+						var minute = $('#richMenuEndUsingTimeMinute').val();		
+						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
+					},
+					getAnotherDateStringFunction : function() {
+						var yearMonthDay = $('#richMenuStartUsingTime').val();
+						var hour = $('#richMenuStartUsingTimeHour').val();
+						var minute = $('#richMenuStartUsingTimeMinute').val();		
+						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
+					},
+					thisDateName : '使用效期結束日期',
+					anotherDateName : '使用效期開始日期'
+				}
+			},
+			'richMenuEndUsingTimeHour' : {
+				required : true
+			},
+			
+			'richMenuEndUsingTimeMinute' : {
+				required : true
+			},
 		}
 	});
 	
@@ -164,14 +245,21 @@ $(function(){
 		var groupIdInt = parseInt(groupIdStr);
 //		console.info("groupId's number: ", typeof groupIdInt === 'number' && isFinite(groupIdInt));
 		
-		var postData = {};
-		postData.groupId = groupId;
-		postData.groupTitle = groupTitle;
-		postData.groupDescription = groupDescription;
-		postData.sendGroupDetail = sendGroupDetail;
-		postData.richMenuGroupId = groupIdInt;
-		postData.richMenuGroupName = groupName;
+        // 使用效期
+        var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
+        var momentRichMenuEndUsingTime = getMomentByElement('richMenuEndUsingTime');
 		
+		var postData = {
+			groupId: groupId,
+			groupTitle: groupTitle,
+			groupType: 'DELETABLE',
+			groupDescription: groupDescription,
+			sendGroupDetail: sendGroupDetail,
+			richMenuGroupId: groupIdInt,
+			richMenuGroupName: groupName,
+            richMenuStartUsingTime : momentRichMenuStartUsingTime.format(dateFormat),
+            richMenuEndUsingTime : momentRichMenuEndUsingTime.format(dateFormat),
+		};
 		console.info('postData', postData);
 		
 		/**
@@ -242,6 +330,7 @@ $(function(){
 		
 		var postData = {};
 		postData.groupTitle = groupTitle;
+		postData.groupType = 'DELETABLE';
 		
 		if(groupId < 0){ // 預設群組不需要設定
 			postData.groupId = groupId;
@@ -524,7 +613,11 @@ $(function(){
 				}).success(function(response){
 					$('.dataTemplate').remove();
 					console.info(response);
-
+					
+					// 使用期間
+					setElementDate('richMenuStartUsingTime', response.richMenuStartUsingTime);
+	            	setElementDate('richMenuEndUsingTime', response.richMenuEndUsingTime);
+					
 					$('#groupTitle').val(response.groupTitle);
 					$('#groupDescription').val(response.groupDescription);
 					

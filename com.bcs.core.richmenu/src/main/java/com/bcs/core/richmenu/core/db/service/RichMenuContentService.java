@@ -517,12 +517,8 @@ public class RichMenuContentService {
         return contentRichMenuRepository.countTotalByLikeName(title);
     }
     
-	public RichMenuContent findByStatusAndCondition(String status, String condition, Date now){
-		return contentRichMenuRepository.findByStatusAndCondition(status, condition, now);
-	}
-    
-	public List<RichMenuContent> findByStatusAndConditionAndUsingTime(String status, String condition, Date richMenuStartUsingTime, Date richMenuEndUsingTime){
-		return contentRichMenuRepository.findByStatusAndConditionAndUsingTime(status, condition, richMenuStartUsingTime, richMenuEndUsingTime);
+	public RichMenuContent findByStatusAndCondition(String status, String condition){
+		return contentRichMenuRepository.findByStatusAndCondition(status, condition);
 	}
     
     @Transactional(rollbackFor=Exception.class, timeout = 30)

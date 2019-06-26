@@ -65,14 +65,6 @@ public class RichMenuContent extends AbstractBcsEntity{
 	
 	@Column(name = "MENU_SIZE", columnDefinition="nvarchar(10)")
 	private String menuSize;
-	
-	@JsonDeserialize(using = CustomDateDeserializer.class)
-	@Column(name = "RICH_MENU_START_USING_TIME")
-	private Date richMenuStartUsingTime;
-
-	@JsonDeserialize(using = CustomDateDeserializer.class)
-	@Column(name = "RICH_MENU_END_USING_TIME")
-	private Date richMenuEndUsingTime;
 
 	public String getRichId() {
 		return richId;
@@ -177,22 +169,6 @@ public class RichMenuContent extends AbstractBcsEntity{
 
 	public void setMenuSize(String menuSize) {
 		this.menuSize = menuSize;
-	}
-	
-	public Date getRichMenuStartUsingTime() {
-		return richMenuStartUsingTime;
-	}
-
-	public void setRichMenuStartUsingTime(Date richMenuStartUsingTime) {
-		this.richMenuStartUsingTime = richMenuStartUsingTime;
-	}
-
-	public Date getRichMenuEndUsingTime() {
-		return richMenuEndUsingTime;
-	}
-
-	public void setRichMenuEndUsingTime(Date richMenuEndUsingTime) {
-		this.richMenuEndUsingTime = richMenuEndUsingTime;
 	}
 }
 

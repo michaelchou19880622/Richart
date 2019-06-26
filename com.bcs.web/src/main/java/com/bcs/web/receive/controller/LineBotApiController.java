@@ -42,14 +42,14 @@ public class LineBotApiController {
 	@RequestMapping(method = RequestMethod.POST, value = "/bot/api/receiving/{ChannelId}/{ChannelName}", 
 			consumes = MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8")
 	public void lineBotApiReceiving(@RequestBody String receivingMsg, @PathVariable String ChannelId, @PathVariable String ChannelName,HttpServletRequest request, HttpServletResponse response) {
-		logger.debug("-------lineBotApiReceiving-------");
+		logger.info("-------lineBotApiReceiving-------");
 		Date start = new Date();
-		logger.debug("receivingMsg:" + receivingMsg);
+		logger.info("receivingMsg:" + receivingMsg);
 		
 		try{
 			// RichMenu
 			if(richMenuReceivingApiService.richMenuMsgValidate(receivingMsg)) {
-				logger.debug("-------RichMenu Receiving Success-------");
+				logger.info("-------RichMenu Receiving Success-------");
 				response.setStatus(200);
 				SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBotApi, LOG_TARGET_ACTION_TYPE.ACTION_Receive, start, 200, receivingMsg, "200");				
 				return;

@@ -14,17 +14,24 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bcs.core.json.AbstractBcsEntity;
+import com.bcs.core.json.CustomDateDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @Entity
 @Table(name = "BCS_RICH_MENU_SEND_GROUP")
 public class RichMenuSendGroup extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
-
+	public static final String GROUP_TYPE_UNDELETABLE = "UNDELETABLE";
+	public static final String GROUP_TYPE_DELETABLE = "DELETABLE";
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "GROUP_ID")
 	private Long groupId;
-
+	
+	@Column(name = "GROUP_TYPE", columnDefinition="nvarchar(20)")
+	private String groupType;
+	
 	@Column(name = "GROUP_TITLE", columnDefinition="nvarchar(50)")
 	private String groupTitle;
 
@@ -43,6 +50,14 @@ public class RichMenuSendGroup extends AbstractBcsEntity{
 	@Column(name = "MODIFY_TIME")
 	private Date modifyTime;
 
+	@JsonDeserialize(using = CustomDateDeserializer.class)
+	@Column(name = "RICH_MENU_START_USING_TIME")
+	private Date richMenuStartUsingTime;
+
+	@JsonDeserialize(using = CustomDateDeserializer.class)
+	@Column(name = "RICH_MENU_END_USING_TIME")
+	private Date richMenuEndUsingTime;
+	
 	@OneToMany(mappedBy="sendGroup",cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	private List<RichMenuSendGroupDetail> sendGroupDetail;
 
@@ -108,5 +123,29 @@ public class RichMenuSendGroup extends AbstractBcsEntity{
 
 	public void setRichMenuGroupName(String richMenuGroupName) {
 		this.richMenuGroupName = richMenuGroupName;
-	}	
+	}
+
+	public String getGroupType() {
+		return groupType;
+	}
+
+	public void setGroupType(String groupType) {
+		this.groupType = groupType;
+	}
+
+	public Date getRichMenuStartUsingTime() {
+		return richMenuStartUsingTime;
+	}
+
+	public void setRichMenuStartUsingTime(Date richMenuStartUsingTime) {
+		this.richMenuStartUsingTime = richMenuStartUsingTime;
+	}
+
+	public Date getRichMenuEndUsingTime() {
+		return richMenuEndUsingTime;
+	}
+
+	public void setRichMenuEndUsingTime(Date richMenuEndUsingTime) {
+		this.richMenuEndUsingTime = richMenuEndUsingTime;
+	}
 }

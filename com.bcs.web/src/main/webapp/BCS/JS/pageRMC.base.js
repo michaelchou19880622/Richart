@@ -36,32 +36,42 @@ $(function(){
 	// ----  Date Picker Component---- 
 	
 	// date format
-	var dateFormat = "YYYY-MM-DD HH:mm:ss";
-	$(".datepicker").datepicker({'dateFormat' : 'yy-mm-dd'});
+//	var dateFormat = "YYYY-MM-DD HH:mm:ss";
+//	$(".datepicker").datepicker({'dateFormat' : 'yy-mm-dd'});
+//
+//	// 從欄位取得日期(型態是 Moment.js 的 date wraps)
+//	var getMomentByElement = function(elementId) {
+//		var yearMonthDay = $('#' + elementId).val();
+//		var hour = $('#' + elementId + 'Hour').val();
+//		var minute = $('#' + elementId + 'Minute').val();		
+//		var momentDate = moment(yearMonthDay + ' ' + hour + ':' + minute + ':00', dateFormat);
+//		return momentDate;
+//	}
+//	
+//	// 設定日期時間欄位值
+//	var setElementDate = function(elementId, timestamp) {
+//		if (!timestamp) {
+//			return;
+//		}
+//		var momentDate = moment(timestamp);
+//		$('#' + elementId).val(momentDate.format('YYYY-MM-DD'));
+//		
+//		var hour = momentDate.hour();
+//		$('#' + elementId + 'Hour').val(hour < 10 ? '0' + hour : hour).change();
+//		
+//		var minute = momentDate.minute();
+//		$('#' + elementId + 'Minute').val(minute < 10 ? '0' + minute : minute).change();		
+//	}
 
-	// 從欄位取得日期(型態是 Moment.js 的 date wraps)
-	var getMomentByElement = function(elementId) {
-		var yearMonthDay = $('#' + elementId).val();
-		var hour = $('#' + elementId + 'Hour').val();
-		var minute = $('#' + elementId + 'Minute').val();		
-		var momentDate = moment(yearMonthDay + ' ' + hour + ':' + minute + ':00', dateFormat);
-		return momentDate;
-	}
 	
-	// 設定日期時間欄位值
-	var setElementDate = function(elementId, timestamp) {
-		if (!timestamp) {
-			return;
-		}
-		var momentDate = moment(timestamp);
-		$('#' + elementId).val(momentDate.format('YYYY-MM-DD'));
-		
-		var hour = momentDate.hour();
-		$('#' + elementId + 'Hour').val(hour < 10 ? '0' + hour : hour).change();
-		
-		var minute = momentDate.minute();
-		$('#' + elementId + 'Minute').val(minute < 10 ? '0' + minute : minute).change();		
-	}
+	// option select change function
+	var optionSelectChange_func = function(){
+		var selectValue = $(this).find('option:selected').text();
+		$(this).closest('.option').find('.optionLabel').html(selectValue);
+	};
+	
+	$('.changeConditionSelect').change(optionSelectChange_func);
+	$('.optionSelect').change(optionSelectChange_func);
 	
 	
 	// ---- Table Validate ----
@@ -115,49 +125,49 @@ $(function(){
 			'titleImage' : {
 				required : '.imgId:blank'
 			},
-			// 使用效期
-			'richMenuStartUsingTime' : {
-				required : true,
-				dateYYYYMMDD : true
-			},
-			
-			'richMenuStartUsingTimeHour' : {
-				required : true
-			},
-			
-			'richMenuStartUsingTimeMinute' : {
-				required : true
-			},
-			
-			'richMenuEndUsingTime' : {
-				required : true,
-				dateYYYYMMDD : true,
-				compareDate : {
-					compareType : 'after',
-					dateFormat : dateFormat,
-					getThisDateStringFunction : function() {
-						var yearMonthDay = $('#richMenuEndUsingTime').val();
-						var hour = $('#richMenuEndUsingTimeHour').val();
-						var minute = $('#richMenuEndUsingTimeMinute').val();		
-						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
-					},
-					getAnotherDateStringFunction : function() {
-						var yearMonthDay = $('#richMenuStartUsingTime').val();
-						var hour = $('#richMenuStartUsingTimeHour').val();
-						var minute = $('#richMenuStartUsingTimeMinute').val();		
-						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
-					},
-					thisDateName : '使用效期結束日期',
-					anotherDateName : '使用效期開始日期'
-				}
-			},
-			'richMenuEndUsingTimeHour' : {
-				required : true
-			},
-			
-			'richMenuEndUsingTimeMinute' : {
-				required : true
-			}
+//			// 使用效期
+//			'richMenuStartUsingTime' : {
+//				required : true,
+//				dateYYYYMMDD : true
+//			},
+//			
+//			'richMenuStartUsingTimeHour' : {
+//				required : true
+//			},
+//			
+//			'richMenuStartUsingTimeMinute' : {
+//				required : true
+//			},
+//			
+//			'richMenuEndUsingTime' : {
+//				required : true,
+//				dateYYYYMMDD : true,
+//				compareDate : {
+//					compareType : 'after',
+//					dateFormat : dateFormat,
+//					getThisDateStringFunction : function() {
+//						var yearMonthDay = $('#richMenuEndUsingTime').val();
+//						var hour = $('#richMenuEndUsingTimeHour').val();
+//						var minute = $('#richMenuEndUsingTimeMinute').val();		
+//						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
+//					},
+//					getAnotherDateStringFunction : function() {
+//						var yearMonthDay = $('#richMenuStartUsingTime').val();
+//						var hour = $('#richMenuStartUsingTimeHour').val();
+//						var minute = $('#richMenuStartUsingTimeMinute').val();		
+//						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
+//					},
+//					thisDateName : '使用效期結束日期',
+//					anotherDateName : '使用效期開始日期'
+//				}
+//			},
+//			'richMenuEndUsingTimeHour' : {
+//				required : true
+//			},
+//			
+//			'richMenuEndUsingTimeMinute' : {
+//				required : true
+//			}
 		}
 	});
 	
@@ -319,8 +329,8 @@ $(function(){
 				$('.mdFRM03Img').find('img').css('width', '100%');
 				
 				// 使用期間
-				setElementDate('richMenuStartUsingTime', valueObj[19]);
-            	setElementDate('richMenuEndUsingTime', valueObj[20]);
+				//setElementDate('richMenuStartUsingTime', valueObj[19]);
+            	//setElementDate('richMenuEndUsingTime', valueObj[20]);
 				
 				var urls = [""];
 				if(valueObj[3]){
@@ -1151,9 +1161,9 @@ $(function(){
 			});
 		}
 		
-		// 使用效期
-		var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
-		var momentRichMenuEndUsingTime = getMomentByElement('richMenuEndUsingTime');
+        // 使用效期
+        //var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
+        //var momentRichMenuEndUsingTime = getMomentByElement('richMenuEndUsingTime');
 		
 		postData = {
 			richType : $('input[name="templateFrameType"]:checked').val(),
@@ -1164,8 +1174,8 @@ $(function(){
 			richMenuShowStatus : $('input[name="richMenuShowStatus"]:checked').val(),
 			changeCondition : $('.changeConditionSelect').val(),
 			menuSize : menuSize,
-			richMenuStartUsingTime : momentRichMenuStartUsingTime.format(dateFormat),
-			richMenuEndUsingTime : momentRichMenuEndUsingTime.format(dateFormat),
+            //richMenuStartUsingTime : momentRichMenuStartUsingTime.format(dateFormat),
+            //richMenuEndUsingTime : momentRichMenuEndUsingTime.format(dateFormat),
 			richMenuGroupId : groupId
 		}
 		console.info(postData);
@@ -1307,14 +1317,7 @@ $(function(){
 		$('#customizeDialog').dialog('close');
 	});
 	
-	var optionSelectChange_func = function(){
-		var selectValue = $(this).find('option:selected').text();
-		$(this).closest('.option').find('.optionLabel').html(selectValue);
-	};
-	
-	$('.changeConditionSelect').change(optionSelectChange_func);
-	$('.optionSelect').change(optionSelectChange_func);
-	
+
 	
 	initTemplate();
 	getDataByRichId();

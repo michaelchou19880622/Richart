@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu Send Group Create Page', '/BCS/JS/pageRMsgC.base.js')">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    th:with="strList = ${ {'/BCS/JS/pageRMsgC.base.js'} }">
+<head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu Send Group Create Page', ${strList})" >
 </head>
 
 <body>
@@ -28,7 +30,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                            	 	<th>圖文選單群組</th>
+                            	 	<th>設計群組</th>
                                     <td style="text-align: left;">
                                         <select name="mainList" id="mainList" style="width: 300px;">
                                             <option value="">請選擇</option>
@@ -43,6 +45,72 @@
                                         </div>
                                     </td>
                                 </tr>
+                                <tr>
+                                <th>使用期間<span style="color: red">*</span></th>
+                                <td colspan="2">
+                                        <span>
+                                            <div class="option date">
+                                                <input type="text" 
+                                                	class="datepicker" 
+                                                	id="richMenuStartUsingTime" 
+                                                	name="richMenuStartUsingTime" 
+                                                	placeholder="YYYY-MM-DD"/>
+                                            </div>
+                                            <div class="option time">
+                                                <div class="optionLabel">00</div>
+                                                <select id="richMenuStartUsingTimeHour" name="richMenuStartUsingTimeHour" class="optionSelect">
+												    <option th:each="i : ${#numbers.sequence( 0, 23, 1)}"
+												    	th:with="hour=${i < 10 ? '0' + i : i}"
+												    	th:value="${hour}"
+												    	th:text="${hour}" >
+												    </option>
+                                                </select>
+                                            </div>
+                                            :
+                                            <div class="option time">
+                                                <div class="optionLabel">00</div>
+                                                <select id="richMenuStartUsingTimeMinute" name="richMenuStartUsingTimeMinute" class="optionSelect">
+												    <option th:each="i : ${#numbers.sequence( 0, 59, 1)}"
+												    	th:with="minute=${i < 10 ? '0' + i : i}"
+												    	th:value="${minute}"
+												    	th:text="${minute}" >
+												    </option>
+                                                </select>
+                                            </div>
+                                        </span>
+                                        ～
+                                        <span>
+                                            <div class="option date">
+                                                <input type="text" 
+                                                	class="datepicker" 
+                                                	id="richMenuEndUsingTime" 
+                                                	name="richMenuEndUsingTime" 
+                                                	placeholder="YYYY-MM-DD"/>
+                                            </div>
+                                            <div class="option time">
+                                                <div class="optionLabel">00</div>
+                                                <select id="richMenuEndUsingTimeHour" name="richMenuEndUsingTimeHour" class="optionSelect">
+												    <option th:each="i : ${#numbers.sequence( 0, 23, 1)}"
+												    	th:with="hour=${i < 10 ? '0' + i : i}"
+												    	th:value="${hour}"
+												    	th:text="${hour}" >
+												    </option>
+                                                </select>
+                                            </div>
+                                            :
+                                            <div class="option time">
+                                                <div class="optionLabel">00</div>
+                                                <select id="richMenuEndUsingTimeMinute" name="richMenuEndUsingTimeMinute" class="optionSelect">
+												    <option th:each="i : ${#numbers.sequence( 0, 59, 1)}"
+												    	th:with="minute=${i < 10 ? '0' + i : i}"
+												    	th:value="${minute}"
+												    	th:text="${minute}" >
+												    </option>
+                                                </select>
+                                            </div>
+                                        </span>
+                                    </td>
+                            </tr>
                                 <tr id="queryContent">
                                     <th>群組條件</th>
                                     <td>

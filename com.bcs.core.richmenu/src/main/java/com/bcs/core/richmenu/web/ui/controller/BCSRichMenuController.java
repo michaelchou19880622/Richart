@@ -247,8 +247,8 @@ public class BCSRichMenuController extends BCSBaseController {
 			contentRichMenu.setModifyUser(adminUserAccount);
 			contentRichMenu.setLevel(createRichMenuModel.getChangeCondition());
 			contentRichMenu.setMenuSize(createRichMenuModel.getMenuSize());
-			contentRichMenu.setRichMenuStartUsingTime(sdf.parse(createRichMenuModel.getRichMenuStartUsingTime()));
-			contentRichMenu.setRichMenuEndUsingTime(sdf.parse(createRichMenuModel.getRichMenuEndUsingTime()));
+			//contentRichMenu.setRichMenuStartUsingTime(sdf.parse(createRichMenuModel.getRichMenuStartUsingTime()));
+			//contentRichMenu.setRichMenuEndUsingTime(sdf.parse(createRichMenuModel.getRichMenuEndUsingTime()));
 			
 			List<RichMenuContentDetail> contentRichMenuDetails = new ArrayList<>();
 			List<RichMenuContentLink> contentLinks = new ArrayList<>();

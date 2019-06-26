@@ -188,9 +188,9 @@ $(function(){
 				richMsgTr.find('.richMsgCreateTime').html(time);
 				richMsgTr.find('.richMsgCreateUser').html(o.modifyUser);
 						
-				var startUsetime = moment(o.richMenuStartUsingTime).format('YYYY-MM-DD HH:mm:ss'); // new style
-				var endUsetime = moment(o.richMenuStartUsingTime).format('YYYY-MM-DD HH:mm:ss'); // new style
-				richMsgTr.find('.richMenuUseTime').html(startUsetime + " ~ " + endUsetime);
+//				var startUsetime = moment(o.richMenuStartUsingTime).format('YYYY-MM-DD HH:mm:ss'); // new style
+//				var endUsetime = moment(o.richMenuStartUsingTime).format('YYYY-MM-DD HH:mm:ss'); // new style
+//				richMsgTr.find('.richMenuUseTime').html(startUsetime + " ~ " + endUsetime);
 				
 				richMsgTr.find('.richMenuStatus').html(o.status);
 				
