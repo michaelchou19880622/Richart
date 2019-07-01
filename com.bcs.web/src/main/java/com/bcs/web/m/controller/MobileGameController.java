@@ -305,9 +305,11 @@ public class MobileGameController {
 	public void validateTracing(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws Exception {
 		logger.info("ScratchCard validateTracing");
-
+		logger.info("request:"+request);
+		logger.info("model:"+model);
 		HttpSession session = request.getSession();
-
+		logger.info("session:"+session);
+		
 		try {
 			String code = request.getParameter("code");
 			logger.info("validateTracing code:" + code);
@@ -328,13 +330,15 @@ public class MobileGameController {
 			/* 設定向 LINE 取得 access token 的 request headers */
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+			logger.info("headers:"+headers);
 			
 			HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = null;
 			String proxyUrl = CoreConfigReader.getString(CONFIG_STR.RICHART_PROXY_URL.toString(), true);    // Proxy Server 的位置
-
+			
 			if (StringUtils.isNotBlank(proxyUrl)) {
 				logger.info("Use proxy and proxy url is: " + proxyUrl);
 				clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().setProxy(new HttpHost(proxyUrl, 80, "http")).build());
+				logger.info("clientHttpRequestFactory:"+clientHttpRequestFactory);
 			}
 
 			/* 設定 request body */
@@ -345,34 +349,47 @@ public class MobileGameController {
 			
 			String ChannelID = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelID.toString(), true);
 		    String ChannelSecret = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelSecret.toString(), true);
+		    logger.info("ChannelID:"+ChannelID);
+		    logger.info("ChannelSecret:"+ChannelSecret);
 		    
 			map.add("client_id", ChannelID);
 			map.add("client_secret", ChannelSecret);
+			logger.info("map:"+map);
 			
 			HttpEntity<MultiValueMap<String, String>> accessTokenEntity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-
+			logger.info("accessTokenEntity:"+accessTokenEntity);
+			
 			/* 以 Post 方式送出 request (如果有需要用 Proxy，便將上面設定好的 clientHttpRequestFactory 加進來) */
 			RestTemplate restTemplate = (clientHttpRequestFactory == null) ? new RestTemplate() : new RestTemplate(clientHttpRequestFactory);
+			logger.info("restTemplate:"+restTemplate);
 			ResponseEntity<String> accessTokenResponse = restTemplate.postForEntity(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_ACCESSTOKEN_V2_1), accessTokenEntity, String.class);
+			logger.info("accessTokenResponse:"+accessTokenResponse);
 			
 			String responseBody = accessTokenResponse.getBody(); // Response 的結果
+			logger.info("responseBody:"+responseBody);
 			
 			JSONObject responseObj = new JSONObject(responseBody);
 			String ID_Token = responseObj.get("id_token").toString(); // 將 id_token 從 response body 中拿出來
+			logger.info("ID_Token:" + ID_Token);
 			
 			String[] parsedJWT = ID_Token.split("[.]");	// 將 id_token 以逗點為基準切成 header、payload、signature 三個部分
+			logger.info("parsedJWT:"+parsedJWT);
 			
 			String header = parsedJWT[0], payload = parsedJWT[1], signature = parsedJWT[2];
+			logger.info("header:"+header+", payload:" + payload + ", signature:" + signature);
+			
 			Base64.Decoder base64Decoder = Base64.getDecoder();
+			logger.info("base64Decoder:"+base64Decoder);
 			
 			/* 驗證接收到的 ID Token 是否為合法的 JWT */
 			if(validateJWT(ChannelSecret, header, payload, signature, ChannelID, null)) {			
 				JSONObject payloadObject = new JSONObject(new String(base64Decoder.decode(payload), "UTF-8"));	// 將 payload 用 base64 解碼後轉為 UTF-8 字串，再轉換成 JSON 物件
-				
+				logger.info("payloadObject:"+payloadObject);
 				String UID = payloadObject.get("sub").toString();	// 從解析出來的 JSON 物件中取得使用者的 UID
-				
+				logger.info("UID:"+UID);
 				session.setAttribute("UID", UID); // 將 UID 存入 session，以便後續的刮刮卡流程使用
 				
+				logger.info("contentGameService.tranferURI(\"BcsPage:ScratchCardPage:\" + state, UID):"+contentGameService.tranferURI("BcsPage:ScratchCardPage:" + state, UID));
 				response.sendRedirect(contentGameService.tranferURI("BcsPage:ScratchCardPage:" + state, UID));
 			} else {
 				throw new Exception("Illegal JWT !");
@@ -400,22 +417,32 @@ public class MobileGameController {
 		logger.info("Validate the ID Token is legal or not.");
 		try {
 			Integer rem = signature.length() % 4;
+			logger.info("rem:"+rem);
 			String message = header + "." + payload;
+			logger.info("message:"+message);
+			
 			Base64.Encoder base64UrlEncoder = Base64.getUrlEncoder();
 			Base64.Decoder base64Decoder = Base64.getDecoder();
 			Mac sha256_HMAC = Mac.getInstance("HmacSHA256");			
 			SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+			logger.info("secret.getBytes():"+secret.getBytes());
+			logger.info("secret_key:"+secret_key);
 			
 			sha256_HMAC.init(secret_key);
 			
 			String generated_signature = base64UrlEncoder.encodeToString(sha256_HMAC.doFinal(message.getBytes()));
+			logger.info("sha256_HMAC.doFinal(message.getBytes()):"+sha256_HMAC.doFinal(message.getBytes()));
+			logger.info("generated_signature:"+generated_signature);
 			
 			if(rem > 0) {
 				for(Integer i = 0; i < (4 - rem); i++)
 					signature += "=";
 			}
-			
+			logger.info("signature:"+signature);
+
 			JSONObject payloadObject = new JSONObject(new String(base64Decoder.decode(payload), "UTF-8"));
+			logger.info("new String(base64Decoder.decode(payload):"+ new String(base64Decoder.decode(payload)) );
+			logger.info("payloadObject:"+ payloadObject);
 			
 			/* 檢查是否為合法的 issuer */
 			if(!payloadObject.get("iss").toString().equals("https://access.line.me"))
@@ -428,16 +455,23 @@ public class MobileGameController {
 			/* 檢查此 JWT 是否在有效期內 */
 			Date expireTime = new Date(Long.valueOf(payloadObject.get("exp").toString()) * 1000);
 			Date now = new Date();
+			logger.info("expireTime:"+expireTime);
+			logger.info("now:"+now);
 			
 			if(now.after(expireTime))
 				return false;
 			
+			logger.info("payloadObject.has(\"nonce\"):"+payloadObject.has("nonce"));
 			/* 如果有 nonce 的話，檢查 nonce 是否合法 */
 			if(payloadObject.has("nonce")) {
+				logger.info("payloadObject.get(\"nonce\").toString():"+payloadObject.get("nonce").toString());
+				logger.info("nonce:"+nonce);
 				if(!payloadObject.get("nonce").toString().equals(nonce))
 					return false;
 			}
 			
+			logger.info("generated_signature:"+generated_signature);
+			logger.info("signature:"+signature);
 			/* 檢查 signature 是否合法 */
 			return generated_signature.equals(signature);
 		} catch (Exception e) {

@@ -39,7 +39,8 @@ public class UrlUtil {
 		try{
 			String prefix = CoreConfigReader.getString(CONFIG_STR.HASH_PREFIX, true);
 			String suffix = CoreConfigReader.getString(CONFIG_STR.HASH_SUFFIX, true);
-			
+			logger.info("prefix:"+prefix);
+			logger.info("suffix:"+suffix);
 			String hashOrg = "";
 
 			if(StringUtils.isNotBlank(MID) && linkUrl.indexOf("{from}") > 0){
@@ -52,6 +53,7 @@ public class UrlUtil {
 
 			if(linkUrl.indexOf("{time}") > 0){
 				Long t = (new Date()).getTime();
+				logger.info("t:"+t);
 				linkUrl = linkUrl.replaceAll("\\{time\\}", t.toString());
 				hashOrg += t.toString();
 			}
@@ -63,13 +65,17 @@ public class UrlUtil {
 			else if(linkUrl.indexOf("{code}") > 0){
 				linkUrl = linkUrl.replaceAll("\\{code\\}", "");
 			}
-
+			logger.info("hashOrg:"+hashOrg);
+			
 			if(linkUrl.indexOf("{hash}") > 0){
 				String hashStr = prefix + hashOrg + suffix;
+				logger.info("hashStr:"+hashStr);
 				String hash = DigestUtils.md5Hex(hashStr);
+				logger.info("hash:"+hash);
 				linkUrl = linkUrl.replaceAll("\\{hash\\}", hash);
 			}
 			
+			logger.info("linkUrl:"+linkUrl);
 			return linkUrl;
 		}
 		catch(Exception e){

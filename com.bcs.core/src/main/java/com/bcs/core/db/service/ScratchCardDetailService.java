@@ -101,6 +101,8 @@ public class ScratchCardDetailService {
      */
     @SuppressWarnings("unchecked")
 	public GameModel getScratchCard(String gameId) {
+    	logger.info("getScratchCard");
+    	logger.info("gameId:"+gameId);
 		try {
 			/*Map<String, List<String>> result = dataCache.get(gameId);
 			if(result != null && result.get(gameId) != null){
@@ -136,6 +138,8 @@ public class ScratchCardDetailService {
     	
     	Query query = entityManager.createNativeQuery(queryString).setParameter(1, gameId);
 		List<Object[]> list = query.getResultList();
+		logger.info("BCS_CONTENT_GAME query.getResultList():" + list);
+		
 		GameModel gameModel = new GameModel();
 		List<CouponModel> couponList = new ArrayList<CouponModel>();
 		Object[] o;
@@ -163,6 +167,8 @@ public class ScratchCardDetailService {
 				query.setParameter(2, gameId);
 				
 				List<Object[]> couponObjectList = query.getResultList();
+				logger.info("BCS_CONTENT_COUPON query.getResultList():" + couponObjectList);
+				
 				Object[] couponObject;
 				for(int index = 0; index < couponObjectList.size(); index++) {
 					CouponModel coupon = new CouponModel();
@@ -184,7 +190,7 @@ public class ScratchCardDetailService {
 		
 		gameModel.setCouponList(couponList);
 		
-    	logger.debug("◎ 刮刮卡物件：" + gameModel);
+    	logger.info("◎ 刮刮卡物件：" + gameModel);
 		/*if(map != null){
 			dataCache.put(gameId, map);
 		}*/

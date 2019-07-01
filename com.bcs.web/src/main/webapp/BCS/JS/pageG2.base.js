@@ -10,6 +10,8 @@ $(function(){
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/getGameList'
 		}).success(function(response){
+			console.info("response:", response);
+			
 			$('.gameTrTemplate').remove();
 
 			for(var i = 0; i<response.length; i++){

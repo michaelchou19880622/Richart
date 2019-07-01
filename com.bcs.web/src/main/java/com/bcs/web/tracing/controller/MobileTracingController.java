@@ -245,9 +245,7 @@ public class MobileTracingController extends BCSBaseController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/validate")
-	public void validateTracing(HttpServletRequest request, 
-			HttpServletResponse response, 
-			Model model) throws Exception {
+	public void validateTracing(HttpServletRequest request,  HttpServletResponse response, Model model) throws Exception {
 		logger.info("validateTracing");
 		
 		try{
@@ -383,8 +381,7 @@ public class MobileTracingController extends BCSBaseController {
 				linkUrl = UriHelper.getRedirectUri(URLEncoder.encode(linkUrl, "UTF-8"));
 				response.sendRedirect(linkUrl);
 				return;
-			}
-			else if(useSwitch){
+			}else if(useSwitch){
 				
 				String targetUrl = this.getTargetUrl(contentLink, contentLinkBinded, sessionMID, false);
 				boolean isBcsPage = UriHelper.checkIsBcsPage(targetUrl);
@@ -397,8 +394,7 @@ public class MobileTracingController extends BCSBaseController {
 					this.callRetrievingAPI(code, sessionMID, request, response, SendCode, SendEvent, contentLink, contentLinkBinded, contentLinkUnMobile, state);
 					return;
 				}
-			}
-			else{
+			}else{
 				String linkUrl =  this.getTargetUrl(contentLink, contentLinkBinded, sessionMID, true);
 				
 				if(UriHelper.checkWithMidReplace(linkUrl)){

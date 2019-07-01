@@ -186,6 +186,7 @@ public class UriHelper {
 	public static String getLinkUriWithType(String id, String MID, String type){
 
 		String result =  baseUrl_Https + pageBcs + resourceLink + id + "?MID={from}" + "&type={code}&time={time}&hash={hash}";
+		logger.info("result1:"+result);
 		result = UrlUtil.encodeAndHash(result, MID, type);
 		return result;
 	}
@@ -531,7 +532,7 @@ public class UriHelper {
 	 */
 	public static String parseBcsPage(String patternUri, String MID){
 
-		logger.debug("parseBcsPage:" + patternUri + "-MID:" + MID);
+		logger.info("parseBcsPage:" + patternUri + "-MID:" + MID);
 		if(StringUtils.isNotBlank(MID)){
 			try{
 					
@@ -599,6 +600,10 @@ public class UriHelper {
 						String resourceId = splits[2];
 						// BcsPage:CouponPage:resourceId
 						if(StringUtils.isNotBlank(resourceId)){
+							logger.info("resourceId:"+resourceId);
+							logger.info("MID:"+MID);
+							logger.info("BCS_PAGE_TYPE.TYPE_SCRACTH_PAGE.toString():"+BCS_PAGE_TYPE.TYPE_SCRACTH_PAGE.toString());
+							logger.info("UriHelper.getLinkUriWithType(resourceId, MID, BCS_PAGE_TYPE.TYPE_SCRACTH_PAGE.toString()):"+UriHelper.getLinkUriWithType(resourceId, MID, BCS_PAGE_TYPE.TYPE_SCRACTH_PAGE.toString()));
 							return UriHelper.getLinkUriWithType(resourceId, MID, BCS_PAGE_TYPE.TYPE_SCRACTH_PAGE.toString());
 						}
 					}
