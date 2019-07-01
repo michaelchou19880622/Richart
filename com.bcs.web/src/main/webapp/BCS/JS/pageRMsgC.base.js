@@ -6,31 +6,31 @@ $(function(){
 	var btnTarget = ""; // 紀錄 最後按鈕
 	
 	// ---------------------
-	$(".useStartTimeScheduler").click(function(e){
-		var selectedUseStartTimeScheduler = e.currentTarget.value;
-		
-		switch(selectedUseStartTimeScheduler){
-			case 'NO' :
-				$("#startTimeView").hide();
-				break;
-			case 'YES' :
-				$("#startTimeView").show();
-				break;
-		}
-	});
-	
-	$(".useEndTimeScheduler").click(function(e){
-		var selectedUseEndTimeScheduler = e.currentTarget.value;
-		
-		switch(selectedUseEndTimeScheduler){
-			case 'NO' :
-				$("#endTimeView").hide();
-				break;
-			case 'YES' :
-				$("#endTimeView").show();
-				break;
-		}
-	});
+//	$(".useStartTimeScheduler").click(function(e){
+//		var selectedUseStartTimeScheduler = e.currentTarget.value;
+//		
+//		switch(selectedUseStartTimeScheduler){
+//			case 'NO' :
+//				$("#startTimeView").hide();
+//				break;
+//			case 'YES' :
+//				$("#startTimeView").show();
+//				break;
+//		}
+//	});
+//	
+//	$(".useEndTimeScheduler").click(function(e){
+//		var selectedUseEndTimeScheduler = e.currentTarget.value;
+//		
+//		switch(selectedUseEndTimeScheduler){
+//			case 'NO' :
+//				$("#endTimeView").hide();
+//				break;
+//			case 'YES' :
+//				$("#endTimeView").show();
+//				break;
+//		}
+//	});
 	
 	// ----  Date Picker Component---- 
 	
@@ -272,12 +272,12 @@ $(function(){
 		var groupIdInt = parseInt(groupIdStr);
 //		console.info("groupId's number: ", typeof groupIdInt === 'number' && isFinite(groupIdInt));
 		
-        // useStartTimeSchedulers
-		var useStartTimeSchedulers = $('.useStartTimeScheduler');
-		var useStartTimeScheduler = useStartTimeSchedulers[0].checked;
-        // useEndTimeSchedulers
-		var useEndTimeSchedulers = $('.useEndTimeScheduler');
-		var useEndTimeScheduler = useEndTimeSchedulers[0].checked;
+//        // useStartTimeSchedulers
+//		var useStartTimeSchedulers = $('.useStartTimeScheduler');
+//		var useStartTimeScheduler = useStartTimeSchedulers[0].checked;
+//        // useEndTimeSchedulers
+//		var useEndTimeSchedulers = $('.useEndTimeScheduler');
+//		var useEndTimeScheduler = useEndTimeSchedulers[0].checked;
 		
 		var postData = {
 			groupId: groupId,
@@ -287,19 +287,19 @@ $(function(){
 			sendGroupDetail: sendGroupDetail,
 			richMenuGroupId: groupIdInt,
 			richMenuGroupName: groupName,
-            useStartTimeScheduler: useStartTimeScheduler,
-            useEndTimeScheduler: useEndTimeScheduler,
+            //useStartTimeScheduler: useStartTimeScheduler,
+            //useEndTimeScheduler: useEndTimeScheduler,
 		};
         
 		// 使用效期
-        if(useStartTimeScheduler){
-        	var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
-        	postData.richMenuStartUsingTime = momentRichMenuStartUsingTime.format(dateFormat);
-        }
-        if(useEndTimeScheduler){
-        	var momentRichMenuEndUsingTime = getMomentByElement('richMenuEndUsingTime');
-        	postData.richMenuEndUsingTime = momentRichMenuEndUsingTime.format(dateFormat);
-        }
+//        if(useStartTimeScheduler){
+//        	var momentRichMenuStartUsingTime = getMomentByElement('richMenuStartUsingTime');
+//        	postData.richMenuStartUsingTime = momentRichMenuStartUsingTime.format(dateFormat);
+//        }
+//        if(useEndTimeScheduler){
+//        	var momentRichMenuEndUsingTime = getMomentByElement('richMenuEndUsingTime');
+//        	postData.richMenuEndUsingTime = momentRichMenuEndUsingTime.format(dateFormat);
+//        }
         
 		console.info('postData', postData);
 		
@@ -656,25 +656,25 @@ $(function(){
 					console.info(response);
 					
 					// useStartTimeScheduler
-					if(response.useStartTimeScheduler == true || response.autoSendPoint == 'true'){
-						$('input[name="useStartTimeScheduler"]')[0].checked = true;
-						$('#startTimeView').show();
-					}else{ 
-						$('input[name="useStartTimeScheduler"]')[1].checked = true;
-						$('#startTimeView').hide();
-					}
-					// useEndTimeScheduler
-					if(response.useEndTimeScheduler == true || response.autoSendPoint == 'true'){
-						$('input[name="useEndTimeScheduler"]')[0].checked = true;
-						$('#endTimeView').show();
-					}else{ 
-						$('input[name="useEndTimeScheduler"]')[1].checked = true;
-						$('#endTimeView').hide();
-					}
-					
-					// StartUsingTime
-					setElementDate('richMenuStartUsingTime', response.richMenuStartUsingTime);
-	            	setElementDate('richMenuEndUsingTime', response.richMenuEndUsingTime);
+//					if(response.useStartTimeScheduler == true || response.autoSendPoint == 'true'){
+//						$('input[name="useStartTimeScheduler"]')[0].checked = true;
+//						$('#startTimeView').show();
+//					}else{ 
+//						$('input[name="useStartTimeScheduler"]')[1].checked = true;
+//						$('#startTimeView').hide();
+//					}
+//					// useEndTimeScheduler
+//					if(response.useEndTimeScheduler == true || response.autoSendPoint == 'true'){
+//						$('input[name="useEndTimeScheduler"]')[0].checked = true;
+//						$('#endTimeView').show();
+//					}else{ 
+//						$('input[name="useEndTimeScheduler"]')[1].checked = true;
+//						$('#endTimeView').hide();
+//					}
+//					
+//					// StartUsingTime
+//					setElementDate('richMenuStartUsingTime', response.richMenuStartUsingTime);
+//	            	setElementDate('richMenuEndUsingTime', response.richMenuEndUsingTime);
 					
 					$('#groupTitle').val(response.groupTitle);
 					$('#groupDescription').val(response.groupDescription);
@@ -715,8 +715,8 @@ $(function(){
 						});
 						
 						if(response.groupType == 'DEFAULT'){
-							$('#startTimeTr').remove();
-							$('#endTimeTr').remove();
+//							$('#startTimeTr').remove();
+//							$('#endTimeTr').remove();
 							$('#queryContent').remove();
 							$('#groupTitle').attr('disabled',true);
 						}
@@ -743,8 +743,8 @@ $(function(){
 				}
 			}else{
 				// Create
-				$('input[name="useStartTimeScheduler"]')[0].checked = true;
-				$('input[name="useEndTimeScheduler"]')[0].checked = true;
+//				$('input[name="useStartTimeScheduler"]')[0].checked = true;
+//				$('input[name="useEndTimeScheduler"]')[0].checked = true;
 			}
 		}).fail(function(response){
 			console.info(response);
