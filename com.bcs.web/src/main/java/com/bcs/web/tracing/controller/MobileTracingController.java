@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -83,9 +84,17 @@ public class MobileTracingController extends BCSBaseController {
 			logger.info("startTracing event:" + event);
 			
 			Long tracingId = Long.parseLong(tracingIdStr);
+			
 			String sessionMID = (String) request.getSession().getAttribute("MID");
 			logger.info("sessionMID:" + sessionMID);
 			
+			/*
+			HttpSession httpSession = request.getSession();
+			logger.info("httpSession:"+httpSession);
+			String sessionMID = (String) httpSession.getAttribute("MID");
+			logger.info("sessionMID:" + sessionMID);
+			// getSessionAttribute(HttpServletRequest request, String name)
+			*/
 			ContentLinkTracing contentLinkTracing = contentLinkTracingService.findOne(tracingId);
 			logger.info("After contentLinkTracing findOne tracingId:" + tracingId );
 			if(contentLinkTracing == null){

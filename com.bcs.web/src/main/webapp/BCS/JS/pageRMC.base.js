@@ -286,9 +286,9 @@ $(function(){
 	var changeText = function(type){
 		imgSize = type;
 		if(type == 'HALF'){			
-			$('.MdTxtNotice01').html('上傳一張依據設計指南所製作的圖片。可支援的規格為2500(固定) x 843(固定)向量，可支援檔案格式為jpg、png。');
+			$('.MdTxtNotice01').html('上傳一張依據設計指南所製作的圖片。可支援的規格為<font size="3" color="red">2500(固定) x 843(固定)</font></th>向量，可支援檔案格式為jpg、png。');
 		}else if(type == 'FULL'){
-			$('.MdTxtNotice01').html('上傳一張依據設計指南所製作的圖片。可支援的規格為2500(固定) x 1686(固定)向量，可支援檔案格式為jpg、png。');
+			$('.MdTxtNotice01').html('上傳一張依據設計指南所製作的圖片。可支援的規格為<font size="3" color="red">2500(固定) x 1686(固定)</font></th>向量，可支援檔案格式為jpg、png。');
 		}
 	}
 	

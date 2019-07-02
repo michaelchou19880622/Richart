@@ -450,7 +450,7 @@ $(function(){
 	$('#downloadReport').load(function () {
         //if the download link return a page
         //load event will be triggered
-		$('.LyMain').unblock();
+		//$('.LyMain').unblock(); // mopack hide
     });
 	
 	// 條件結果按鍵
@@ -630,6 +630,11 @@ $(function(){
 	});
 
 	var loadDataFunc = function(){
+		var richMenuGroupId = "";
+		var groupId = $.urlParam("groupId");
+		if(groupId){
+			$('.LyMain').block($.BCS.blockMsgRead);
+		}
 		
 		// 取得群組條件各個下拉選項值
 		$.ajax({
@@ -644,17 +649,15 @@ $(function(){
 						'<option value="' + queryFieldId + '">' + queryFieldObject.queryFieldName + '</option>');
 			});
 			
-			var groupId = $.urlParam("groupId");
-			
 			if(groupId){
-				
 				$.ajax({
 					type : "GET",
 					url : bcs.bcsContextPath + '/market/getRichMenuSendGroup?groupId=' + groupId
 				}).success(function(response){
 					$('.dataTemplate').remove();
-					console.info(response);
-					
+					console.info('res:', response);
+					richMenuGroupId = response.richMenuGroupId;
+					console.info('richMenuGroupId1:', richMenuGroupId);
 					// useStartTimeScheduler
 //					if(response.useStartTimeScheduler == true || response.autoSendPoint == 'true'){
 //						$('input[name="useStartTimeScheduler"]')[0].checked = true;
@@ -732,6 +735,7 @@ $(function(){
 					console.info(response);
 					$.FailResponse(response);
 				}).done(function(){
+					getGroupList(richMenuGroupId);
 				});
 				
 				var actionType = $.urlParam("actionType");
@@ -745,16 +749,19 @@ $(function(){
 				// Create
 //				$('input[name="useStartTimeScheduler"]')[0].checked = true;
 //				$('input[name="useEndTimeScheduler"]')[0].checked = true;
+				getGroupList("");
 			}
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
 		}).done(function(){
-			getGroupList();
 		});
 	};
 
-	var getGroupList = function(){
+	var getGroupList = function(richMenuGroupId){
+		console.info('richMenuGroupId:', richMenuGroupId);
+		
+		var selectedValue = "";
 		$.ajax({
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/getRichMenuGroupList'
@@ -763,16 +770,22 @@ $(function(){
 
 			var mainList = document.getElementById("mainList");
 			$.each(response, function(i, o){		
-				console.info('getLinePointList o:' + JSON.stringify(o));
+				 console.info('getLinePointList o:' + JSON.stringify(o));
 				 var opt = document.createElement('option');
 				 opt.value = o.richMenuGroupId;
 				 opt.innerHTML = o.richMenuGroupName;	
+				 if(richMenuGroupId != null && o.richMenuGroupId == richMenuGroupId){
+					 selectedValue = opt.value;
+					 console.info("selectedValue", selectedValue);
+				 }
 				mainList.appendChild(opt);
 			});
+			$('#mainList').val(selectedValue);
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
 		}).done(function(){
+			$('.LyMain').unblock();
 		});
 	};
 	
