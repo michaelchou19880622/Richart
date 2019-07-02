@@ -381,6 +381,7 @@ public class MobileGameController {
 			Base64.Decoder base64Decoder = Base64.getDecoder();
 			logger.info("base64Decoder:"+base64Decoder);
 			
+
 			/* 驗證接收到的 ID Token 是否為合法的 JWT */
 			if(validateJWT(ChannelSecret, header, payload, signature, ChannelID, null)) {			
 				JSONObject payloadObject = new JSONObject(new String(base64Decoder.decode(payload), "UTF-8"));	// 將 payload 用 base64 解碼後轉為 UTF-8 字串，再轉換成 JSON 物件
@@ -409,20 +410,83 @@ public class MobileGameController {
 		
 		return new ResponseEntity<>(accouncementUrl, HttpStatus.OK);
 	}
+		
+//	public static void main(String[] args) {
+//		try {
+////			String secret = "fe0ef285472387495f79f441ac7a9321";
+////			String channelId = "1550669403";
+////			String nonce = null;
+////			String header = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
+////			String payload = "eyJpc3MiOiJodHRwczovL2FjY2Vzcy5saW5lLm1lIiwic3ViIjoiVTU4ZmZhZTg3NmQ0OTdhNDg4MTExZDM4YTcwYjVhZWEwIiwiYXVkIjoiMTU1MDY2OTQwMyIsImV4cCI6MTU2MjA1NTczNywiaWF0IjoxNTYyMDUyMTM3LCJhbXIiOlsibGluZXNzbyJdLCJuYW1lIjoi6YKx5Yag5LqOTW9wYWNrIiwicGljdHVyZSI6Imh0dHBzOi8vcHJvZmlsZS5saW5lLXNjZG4ubmV0LzBtMDAxMjIyMTc3MjUxNGI1ODE2YzU4NmY4ODQ2ZTY3ZjY4ZjIwMDdmYjM1NTEifQ";
+////			String signature = "HmRtIpzQtXkFLByd77t_nw2VwCltfiipPtfnyAboN1w";
+//			
+//			String secret = "22bac353338df31469d82c00a10762bc";
+//			String channelId = "1515344613";
+//			String nonce = null;
+//			String header = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
+//			/*
+//			 "eyJpc3MiOiJodHRwczovL2FjY2Vzcy5saW5lLm1lIiwic3ViIjoiVTY0NTk1MjhhMmRkOTBjNmYwMjIyNzdlZml3NWY2OGQzIiwiYXVkIjoiMTUxNTMONDYxMyLsImV4cCI6MTU2MTk3MzA0NSwiaWF0IjoxNTYxOTY5NDQ1LCJhbXIiOlsibGluZXNzbyJdLCJuYW1lIjoi5p6X5L-u54aKIiwicGljdHVyZS6ImhOdHBzOi8vcHJvZmlsZS5saW5lLXNjZG4ubmV0LzBoV0dEVU1DUHpDR2g1TENWQ1BjOTNQMFZwQmdVT0FnNGdBVXBCRDFrc1UxaFdGRVk4RjBwSERWVXFYbGxSR1U1cVFVc1ZERmdsQVFzQiJ9\r\n" + 
+//					"-u54aKIiwicGljdHVyZS6ImhOdHBzOi8vcHJvZmlsZS5saW5lLXNjZG4ubmV0LzBoV0dEVU1DUHpDR2g1TENWQ1BjOTNQMFZwQmdVT0FnNGdBVXBCRDFrc1UxaFdGRVk4RjBwSERWVXFYbGxSR1U1cVFVc1ZERmdsQVFzQiJ9", "Hfyw-Fpn0ucDUzyMo-3bOOXL8NZVMfAfOZmWhh8onQQ" 
+//			 */
+//			//String payload = "eyJpc3MiOiJodHRwczovL2FjY2Vzcy5saW5lLm1lIiwic3ViIjoiVTY0NTk1MjhhMmRkOTBjNmYwMjIyNzdlZml3NWY2OGQzIiwiYXVkIjoiMTUxNTMONDYxMyLsImV4cCI6MTU2MTk3MzA0NSwiaWF0IjoxNTYxOTY5NDQ1LCJhbXIiOlsibGluZXNzbyJdLCJuYW1lIjoi5p6X5L-u54aKIiwicGljdHVyZS6ImhOdHBzOi8vcHJvZmlsZS5saW5lLXNjZG4ubmV0LzBoV0dEVU1DUHpDR2g1TENWQ1BjOTNQMFZwQmdVT0FnNGdBVXBCRDFrc1UxaFdGRVk4RjBwSERWVXFYbGxSR1U1cVFVc1ZERmdsQVFzQiJ9";
+//			String payload = "eyJpc3MiOiJodHRwczovL2FjY2Vzcy5saW5lLm1lIiwic3ViIjoiVWFhNjIwYjY4MTRjZWF1YTZmZjFmODUONDVjOTk3YzJlIiwiYXVkIjoiMTUxNTMONDYxMyIsImV4cCI6MTU2MTk3MzA3OCwiaWF0IjoxNTYxOTY5NDc4LCJhbXIiO1sibGluZXNzbyJdLCJuYW1lIjoi8J-Yg-mZs-m6kumHj_CfmlMiLCJwaWN0dXJlIjoiaHR0cHM6Ly9wcm9maWxlLmxpbmUtc2Nkbi5uZXQvMGhKdUxkRWRUWUZWcHhIVF9yS2p4cURVMVlHemNHTXhNU0NTNE9id1JLVFdzTWVRRmVTaTVaT1ZBW1EyOWNlZ0JiVEN3SmJBUktIejRQIn0-u54aKIiwicGljdHVyZS6ImhOdHBzOi8vcHJvZmlsZS5saW5lLXNjZG4ubmV0LzBoV0dEVU1DUHpDR2g1TENWQ1BjOTNQMFZwQmdVT0FnNGdBVXBCRDFrc1UxaFdGRVk4RjBwSERWVXFYbGxSR1U1cVFVc1ZERmdsQVFzQiJ9";
+//			String signature = "Hfyw-Fpn0ucDUzyMo-3bOOXL8NZVMfAfOZmWhh8onQQ";
+//			
+//			Integer rem = signature.length() % 4;
+//			String message = header + "." + payload;
+//			
+//			Base64.Encoder base64UrlEncoder = Base64.getUrlEncoder();
+//			Base64.Decoder base64Decoder = Base64.getMimeDecoder();
+//			
+//			Mac sha256_HMAC = Mac.getInstance("HmacSHA256");			
+//			SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+//			
+//			sha256_HMAC.init(secret_key);
+//			
+//			String generated_signature = base64UrlEncoder.encodeToString(sha256_HMAC.doFinal(message.getBytes()));
+//			generated_signature = generated_signature.replace('/', '_');
+//			if(rem > 0) {
+//				for(Integer i = 0; i < (4 - rem); i++)
+//					signature += "=";
+//			}
+//			
+//			String payloadString = new String(base64Decoder.decode(payload), "UTF-8");
+//			System.out.println("payloadString:"+payloadString);
+//			int x = payloadString.indexOf("\"amr\"");
+//			payloadString = payloadString.substring(0, x - 1) + "}";
+//			
+//			System.out.println(x);
+//			System.out.println(payloadString.substring(0, x - 1) + "}");
+//			
+//			JSONObject payloadObject = new JSONObject(payloadString);
+//			System.out.println(payloadObject);
+//			
+//			//Boolean validate = validateJWT(secret, header, payload, signature, channelId, nonce);
+//			//System.out.println("validate:"+validate);
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	/*
 	 * 驗證 JWT 是否合法
 	 */
-	private boolean validateJWT(String secret, String header, String payload, String signature, String channelId, String nonce){
+	private static boolean validateJWT(String secret, String header, String payload, String signature, String channelId, String nonce){
 		logger.info("Validate the ID Token is legal or not.");
 		try {
 			Integer rem = signature.length() % 4;
 			logger.info("rem:"+rem);
 			String message = header + "." + payload;
 			logger.info("message:"+message);
+
+			// Original
+			//Base64.Encoder base64UrlEncoder = Base64.getUrlEncoder();
+			//Base64.Decoder base64Decoder = Base64.getDecoder();
 			
 			Base64.Encoder base64UrlEncoder = Base64.getUrlEncoder();
-			Base64.Decoder base64Decoder = Base64.getDecoder();
+			Base64.Decoder base64Decoder = Base64.getMimeDecoder();
+
+			
 			Mac sha256_HMAC = Mac.getInstance("HmacSHA256");			
 			SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
 			logger.info("secret.getBytes():"+secret.getBytes());
@@ -430,9 +494,11 @@ public class MobileGameController {
 			
 			sha256_HMAC.init(secret_key);
 			
+			
 			String generated_signature = base64UrlEncoder.encodeToString(sha256_HMAC.doFinal(message.getBytes()));
-			logger.info("sha256_HMAC.doFinal(message.getBytes()):"+sha256_HMAC.doFinal(message.getBytes()));
-			logger.info("generated_signature:"+generated_signature);
+			logger.info("old generated_signature:"+generated_signature);
+			generated_signature = generated_signature.replace('/', '_');
+			logger.info("new generated_signature:"+generated_signature);
 			
 			if(rem > 0) {
 				for(Integer i = 0; i < (4 - rem); i++)
@@ -440,8 +506,14 @@ public class MobileGameController {
 			}
 			logger.info("signature:"+signature);
 
-			JSONObject payloadObject = new JSONObject(new String(base64Decoder.decode(payload), "UTF-8"));
-			logger.info("new String(base64Decoder.decode(payload):"+ new String(base64Decoder.decode(payload)) );
+			// Add
+			String payloadString = new String(base64Decoder.decode(payload), "UTF-8");
+			logger.info("old payloadString:"+payloadString);
+			int x = payloadString.indexOf("\"amr\"");
+			payloadString = payloadString.substring(0, x - 1) + "}";
+			logger.info("new payloadString:"+payloadString);
+			
+			JSONObject payloadObject = new JSONObject(payloadString);
 			logger.info("payloadObject:"+ payloadObject);
 			
 			/* 檢查是否為合法的 issuer */
