@@ -104,9 +104,14 @@ public class RichMenuGroupService {
 		return richMenuGroupRepository.findAll();
   	}
 
-  	// find Duplicate by Group Name
+  	// find by Group Name
 	public List<RichMenuGroup> findByRichMenuGroupName(String richMenuGroupName) {
 		return richMenuGroupRepository.findByRichMenuGroupName(richMenuGroupName);
+	}
+
+  	// find like Group Name
+	public List<RichMenuGroup> findLikeRichMenuGroupName(String richMenuGroupName) {
+		return richMenuGroupRepository.findLikeRichMenuGroupName(richMenuGroupName);
 	}
 	
   	// save

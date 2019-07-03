@@ -21,6 +21,7 @@ import com.bcs.core.api.msg.MsgGeneratorFactory;
 import com.bcs.core.api.msg.MsgGeneratorSticker;
 import com.bcs.core.api.msg.MsgGeneratorText;
 import com.bcs.core.api.msg.plugins.MsgGeneratorBcsLink;
+import com.bcs.core.richmenu.core.bot.scheduler.handler.ExecuteSendAllRichMenuTask;
 //import com.bcs.core.bot.api.model.SendToBotModel;
 //import com.bcs.core.bot.api.service.LineAccessApiService;
 //import com.bcs.core.bot.enums.SEND_TYPE;
@@ -159,40 +160,51 @@ public class RichMenuSendUIService {
 		String richMenuId = richMenuContent.getRichMenuId();
 		logger.info("richMenuId:"+richMenuId);
 		
-		List<String> mids = null;
-		if(sendGroup.getGroupId() > 0){
-			// 行銷人員設定 群組
-			try{
-				mids =  groupGenerateService.findMIDBySendGroupDetailGroupId(sendGroup.getGroupId());
-				if(mids != null && mids.size() >0){
-					// 設定成功
-				}else{
-					throw new BcsNoticeException("群組設定錯誤:查不到發送目標");
-				}
-			}catch(Exception e){
-				logger.error("SendGroup Send Error");
-				throw new BcsNoticeException("群組設定錯誤:查不到發送目標");
-			}
-		}else{
-			// 預設群祖
-			Long result= richMenuSendGroupService.countDefaultGroupSize(sendGroup.getGroupId());
-			if(result != null){
-				if(result > 0){
-					// 設定成功
-				}else{
+
+		
+		// Handle : IMMEDIATE
+		if(RichMenuSendGroup.GROUP_TYPE_DEFAULT.equals(sendGroup.getGroupType())) {
+			ExecuteSendAllRichMenuRunnable run = new ExecuteSendAllRichMenuRunnable();
+			run.richMenuId = richMenuId;
+			Thread thread = new Thread(run);
+			thread.start();
+		}else {
+			// get mids
+			List<String> mids = null;
+			if(sendGroup.getGroupId() > 0){
+				// 行銷人員設定 群組
+				try{
+					mids =  groupGenerateService.findMIDBySendGroupDetailGroupId(sendGroup.getGroupId());
+					if(mids != null && mids.size() >0){
+						// 設定成功
+					}else{
+						throw new BcsNoticeException("群組設定錯誤:查不到發送目標");
+					}
+				}catch(Exception e){
+					logger.error("SendGroup Send Error");
 					throw new BcsNoticeException("群組設定錯誤:查不到發送目標");
 				}
 			}else{
-				throw new Exception("SendGroup Send Error");
+				// 預設群祖
+				Long result= richMenuSendGroupService.countDefaultGroupSize(sendGroup.getGroupId());
+				if(result != null){
+					if(result > 0){
+						// 設定成功
+					}else{
+						throw new BcsNoticeException("群組設定錯誤:查不到發送目標");
+					}
+				}else{
+					throw new Exception("SendGroup Send Error");
+				}
 			}
+			
+			ExecuteSendRichMenuRunnable run = new ExecuteSendRichMenuRunnable();
+			run.mids = mids;
+			run.richMenuId = richMenuId;
+			Thread thread = new Thread(run);
+			thread.start();			
 		}
-		
-		// Handle : IMMEDIATE
-		ExecuteSendRichMenuRunnable run = new ExecuteSendRichMenuRunnable();
-		run.mids = mids;
-		run.richMenuId = richMenuId;
-		Thread thread = new Thread(run);
-		thread.start();
+
 //		Long msgId = this.saveMessage(sendRichMenuModel, adminUserAccount, MsgMain.MESSAGE_STATUS_SCHEDULED);
 //		ExecuteSendMsgRunnable run = new ExecuteSendMsgRunnable();
 //		run.thisMsgId = msgId;
@@ -232,6 +244,19 @@ public class RichMenuSendUIService {
 					ExecuteSendRichMenuTask task = new ExecuteSendRichMenuTask();
 					task.executeSendMsg(mids, richMenuId);
 				}
+			}catch(Exception e){
+				logger.error(ErrorRecord.recordError(e));
+			}
+		}
+	}
+
+	private static class ExecuteSendAllRichMenuRunnable implements Runnable{
+		public String richMenuId = null;
+		@Override
+		public void run() {
+			try{
+				ExecuteSendAllRichMenuTask task = new ExecuteSendAllRichMenuTask();
+				task.executeSendMsg(richMenuId);
 			}catch(Exception e){
 				logger.error(ErrorRecord.recordError(e));
 			}

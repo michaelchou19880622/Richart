@@ -1,7 +1,7 @@
 $(function() {
 	var originalTr = {};
-	// do Save
-    $('.btn_save').click(function() {
+	// do Create
+    $('#createGroup').click(function() {
         var groupName = $('#groupName').val();
         if (!groupName) {
             alert("群組名稱不可為空");
@@ -33,6 +33,42 @@ $(function() {
             $.FailResponse(response);
         })
     });
+    
+	// do Search
+    $('#searchGroup').click(function() {
+        var richMenuGroupName = $('#searchName').val();
+        if (!richMenuGroupName) {
+            alert("群組名稱不可為空");
+            return;
+        }
+
+        //var postData = {};
+        //postData.richMenuGroupName = groupName;
+        console.info('richMenuGroupName', richMenuGroupName);
+        window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupListPage?richMenuGroupName=' + richMenuGroupName);
+//
+//        $.ajax({
+//            type: "POST",
+//            url: bcs.bcsContextPath + '/edit/createRichMenuGroup',
+//            cache: false,
+//            contentType: 'application/json',
+//            processData: false,
+//            data: richMenuGroupName //JSON.stringify(postData)
+//        }).success(function(response) {
+//            console.info(response);
+//            if(response == 'Duplication'){
+//            	alert('群組名稱不可與其他群組重複');
+//            }else{
+//            	alert('成功建立');
+//                window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupListPage');
+//            }
+//        }).fail(function(response) {
+//            console.info(response);
+//            alert(response);
+//            $.FailResponse(response);
+//        })
+    });
+    
     
     // do Delete
     var btn_deteleFunc = function() {
@@ -68,8 +104,17 @@ $(function() {
     var loadDataFunc = function() {
 		// block
 		$('.LyMain').block($.BCS.blockMsgRead);
+		
+		// get Parameter
+		var richMenuGroupName = $.urlParam("richMenuGroupName");
+		console.info("urlParam richMenuGroupName:", richMenuGroupName);
 		// get data
-		getListData('/edit/getRichMenuGroupList');
+		if(richMenuGroupName){
+			getListData('/edit/searchRichMenuGroupList?richMenuGroupName=' + richMenuGroupName);
+		}else{
+			getListData('/edit/getRichMenuGroupList');
+		}
+		
     };
     
     var getListData = function(url){

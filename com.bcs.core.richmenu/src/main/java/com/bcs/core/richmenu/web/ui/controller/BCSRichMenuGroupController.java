@@ -89,6 +89,30 @@ public class BCSRichMenuGroupController extends BCSBaseController {
 		}
 	}
 
+	// search Active RichMenuGroup List
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/searchRichMenuGroupList")
+	@ResponseBody
+	public ResponseEntity<?> searchRichMenuGroupList(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam String richMenuGroupName) throws IOException {
+		logger.info("searchRichMenuGroupList");
+		logger.info("richMenuGroupName:"+richMenuGroupName);
+		try {
+			List<RichMenuGroup> result = new ArrayList();
+			List<RichMenuGroup> list = richMenuGroupService.findLikeRichMenuGroupName(richMenuGroupName);
+			logger.info("list:" + list);
+			
+			result.addAll(list);
+			logger.info("searchRichMenuGroupList result:" + ObjectUtil.objectToJsonStr(result));
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+			if (e instanceof BcsNoticeException) 
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			else 
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	// create RichMenuGroup
 	@RequestMapping(method = RequestMethod.POST, value = "/edit/createRichMenuGroup", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody

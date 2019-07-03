@@ -16,9 +16,13 @@ public interface RichMenuGroupRepository extends EntityRepository<RichMenuGroup,
     @Query(value = "select x from RichMenuGroup x where x.status = 'ACTIVE' order by x.modifyTime desc")
     List<RichMenuGroup> findAll();
     
-    
-    // get All Active RichMenuGroup by GroupName (searching duplicate)
+    // get All Active RichMenuGroup by GroupName
     @Transactional(readOnly = true, timeout = 30)
-    @Query(value = "select x from RichMenuGroup x where x.richMenuGroupName = ?1 and x.status = 'ACTIVE' ")
+    @Query(value = "select x from RichMenuGroup x where x.richMenuGroupName = ?1 and x.status = 'ACTIVE' order by x.modifyTime desc")
     List<RichMenuGroup> findByRichMenuGroupName(String richMenuGroupName);
+    
+    // get All Active RichMenuGroup like GroupName
+    @Transactional(readOnly = true, timeout = 30)
+    @Query(value = "select x from RichMenuGroup x where x.richMenuGroupName like ('%' + ?1 + '%') and x.status = 'ACTIVE' order by x.modifyTime desc")
+    List<RichMenuGroup> findLikeRichMenuGroupName(String richMenuGroupName);
 }

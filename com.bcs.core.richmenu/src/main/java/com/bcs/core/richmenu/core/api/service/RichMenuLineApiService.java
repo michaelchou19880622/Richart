@@ -207,7 +207,7 @@ public class RichMenuLineApiService {
 	
 	// Set Default Rich Menu
 	public PostLineResponse callLinkRichMenuToAllUserAPI(String richMenuId, int retryCount) throws Exception {
-		logger.debug("callLinkRichMenuToAllUserAPI");
+		logger.info("callLinkRichMenuToAllUserAPI");
 
 		// error log
 		Map<String, String> map = new HashMap<String, String>();
@@ -223,20 +223,20 @@ public class RichMenuLineApiService {
 		    
 			// Initialize Request
 			HttpPost requestPost = new HttpPost(apiUrl);
-			logger.debug("URI : " + requestPost.getURI());
+			logger.info("URI : " + requestPost.getURI());
 			requestPost.addHeader("Authorization", "Bearer " + channelAccessToken);
 	
 			// Execute Call
 			HttpResponse clientResponse = httpclient.execute(requestPost);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
-			logger.debug("clientResponse StatusCode : " + status);
+			logger.info("clientResponse StatusCode : " + status);
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
-			logger.debug("clientResponse result : " + result);
+			logger.info("clientResponse result : " + result);
 			
 			requestPost.releaseConnection();
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_RichMenuApi, LOG_TARGET_ACTION_TYPE.ACTION_LinkRichMenuToUser, start, status, map.toString(), status + "");

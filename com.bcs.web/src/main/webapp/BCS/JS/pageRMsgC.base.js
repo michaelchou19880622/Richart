@@ -4,7 +4,7 @@
 $(function(){
 	var sendGroupCondition = null;
 	var btnTarget = ""; // 紀錄 最後按鈕
-	
+	var thisGroupType = 'NORMAL';
 	// ---------------------
 //	$(".useStartTimeScheduler").click(function(e){
 //		var selectedUseStartTimeScheduler = e.currentTarget.value;
@@ -207,16 +207,18 @@ $(function(){
 	// do Save
 	$('.btn_save').click(function(){
 		var queryDataDoms = $('.dataTemplate');
-		
-		if(queryDataDoms.length == 0){
-			alert('請設定群組條件');
-			return;
+		if(thisGroupType == 'NORMAL'){
+			if(queryDataDoms.length == 0){
+				alert('請設定群組條件');
+				return;
+			}
+			
+			btnTarget = "btn_save";
+			if (!validator.form()) {
+				return;
+			}			
 		}
-		
-		btnTarget = "btn_save";
-		if (!validator.form()) {
-			return;
-		}
+
 		
 		var groupTitle = $('#groupTitle').val();
 		console.info('groupTitle', groupTitle);
@@ -282,7 +284,7 @@ $(function(){
 		var postData = {
 			groupId: groupId,
 			groupTitle: groupTitle,
-			groupType: 'NORMAL', // Not Default
+			groupType: thisGroupType, // Not Default
 			groupDescription: groupDescription,
 			sendGroupDetail: sendGroupDetail,
 			richMenuGroupId: groupIdInt,
@@ -656,6 +658,10 @@ $(function(){
 				}).success(function(response){
 					$('.dataTemplate').remove();
 					console.info('res:', response);
+					if(response.groupType == 'DEFAULT'){
+						thisGroupType = 'DEFAULT';
+						console.info(thisGroupType);
+					}
 					richMenuGroupId = response.richMenuGroupId;
 					console.info('richMenuGroupId1:', richMenuGroupId);
 					// useStartTimeScheduler

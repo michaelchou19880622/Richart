@@ -370,7 +370,13 @@ public class MobileGameController {
 			
 			JSONObject responseObj = new JSONObject(responseBody);
 			String ID_Token = responseObj.get("id_token").toString(); // 將 id_token 從 response body 中拿出來
-			logger.info("ID_Token:" + ID_Token);
+			logger.info("old ID_Token:" + ID_Token);
+
+			// change to URL unfriendly
+			ID_Token = ID_Token.replace('-', '+');
+			ID_Token = ID_Token.replace('_', '/');
+			
+			logger.info("new ID_Token:" + ID_Token);
 			
 			String[] parsedJWT = ID_Token.split("[.]");	// 將 id_token 以逗點為基準切成 header、payload、signature 三個部分
 			logger.info("parsedJWT:"+parsedJWT);
@@ -497,7 +503,8 @@ public class MobileGameController {
 			
 			String generated_signature = base64UrlEncoder.encodeToString(sha256_HMAC.doFinal(message.getBytes()));
 			logger.info("old generated_signature:"+generated_signature);
-			generated_signature = generated_signature.replace('/', '_');
+			generated_signature = generated_signature.replace('_', '/');
+			generated_signature = generated_signature.replace('-', '+');
 			logger.info("new generated_signature:"+generated_signature);
 			
 			if(rem > 0) {
@@ -506,7 +513,7 @@ public class MobileGameController {
 			}
 			logger.info("signature:"+signature);
 
-			// Add
+			// cut useless name & picture link
 			String payloadString = new String(base64Decoder.decode(payload), "UTF-8");
 			logger.info("old payloadString:"+payloadString);
 			int x = payloadString.indexOf("\"amr\"");
@@ -548,6 +555,7 @@ public class MobileGameController {
 			return generated_signature.equals(signature);
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("JWT ERROR:" + e.getMessage());
 			logger.info(ErrorRecord.recordError(e));
 			return false;
 		}
