@@ -54,6 +54,7 @@ import com.bcs.core.model.GameModel;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.resource.UriHelper;
 import com.bcs.core.utils.ErrorRecord;
+import com.bcs.core.utils.LineLoginUtil;
 import com.bcs.core.web.ui.page.enums.MobilePageEnum;
 import com.bcs.web.m.service.MobileCouponService;
 import com.google.common.cache.CacheBuilder;
@@ -361,37 +362,38 @@ public class MobileGameController {
 			
 			/* 以 Post 方式送出 request (如果有需要用 Proxy，便將上面設定好的 clientHttpRequestFactory 加進來) */
 			RestTemplate restTemplate = (clientHttpRequestFactory == null) ? new RestTemplate() : new RestTemplate(clientHttpRequestFactory);
-			logger.info("restTemplate:"+restTemplate);
+			//logger.info("restTemplate:"+restTemplate);
 			ResponseEntity<String> accessTokenResponse = restTemplate.postForEntity(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_ACCESSTOKEN_V2_1), accessTokenEntity, String.class);
-			logger.info("accessTokenResponse:"+accessTokenResponse);
+			//logger.info("accessTokenResponse:"+accessTokenResponse);
 			
 			String responseBody = accessTokenResponse.getBody(); // Response 的結果
-			logger.info("responseBody:"+responseBody);
+			//logger.info("responseBody:"+responseBody);
 			
 			JSONObject responseObj = new JSONObject(responseBody);
 			String ID_Token = responseObj.get("id_token").toString(); // 將 id_token 從 response body 中拿出來
 			logger.info("old ID_Token:" + ID_Token);
 
 			// change to URL unfriendly
-			ID_Token = ID_Token.replace('-', '+');
-			ID_Token = ID_Token.replace('_', '/');
-			
-			logger.info("new ID_Token:" + ID_Token);
+			//ID_Token = ID_Token.replace('-', '+');
+			//ID_Token = ID_Token.replace('_', '/');
+			//logger.info("new ID_Token:" + ID_Token);
 			
 			String[] parsedJWT = ID_Token.split("[.]");	// 將 id_token 以逗點為基準切成 header、payload、signature 三個部分
-			logger.info("parsedJWT:"+parsedJWT);
+			//logger.info("parsedJWT:"+parsedJWT);
 			
 			String header = parsedJWT[0], payload = parsedJWT[1], signature = parsedJWT[2];
-			logger.info("header:"+header+", payload:" + payload + ", signature:" + signature);
+			//logger.info("header:"+header+", payload:" + payload + ", signature:" + signature);
 			
 			Base64.Decoder base64Decoder = Base64.getDecoder();
-			logger.info("base64Decoder:"+base64Decoder);
+			//logger.info("base64Decoder:"+base64Decoder);
 			
 
 			/* 驗證接收到的 ID Token 是否為合法的 JWT */
+			// Original Validate
+			/*
 			if(validateJWT(ChannelSecret, header, payload, signature, ChannelID, null)) {			
 				JSONObject payloadObject = new JSONObject(new String(base64Decoder.decode(payload), "UTF-8"));	// 將 payload 用 base64 解碼後轉為 UTF-8 字串，再轉換成 JSON 物件
-				logger.info("payloadObject:"+payloadObject);
+				//logger.info("payloadObject:"+payloadObject);
 				String UID = payloadObject.get("sub").toString();	// 從解析出來的 JSON 物件中取得使用者的 UID
 				logger.info("UID:"+UID);
 				session.setAttribute("UID", UID); // 將 UID 存入 session，以便後續的刮刮卡流程使用
@@ -400,7 +402,18 @@ public class MobileGameController {
 				response.sendRedirect(contentGameService.tranferURI("BcsPage:ScratchCardPage:" + state, UID));
 			} else {
 				throw new Exception("Illegal JWT !");
-			}			
+			}
+			*/
+			
+			String UID = LineLoginUtil.jwtGetUid(ID_Token, ChannelSecret, "Scratch Card");
+			logger.info("UID:"+UID);
+			if(StringUtils.isNotBlank(UID)) {
+				session.setAttribute("UID", UID); // 將 UID 存入 session，以便後續的刮刮卡流程使用
+				logger.info("contentGameService.tranferURI(\"BcsPage:ScratchCardPage:\" + state, UID):"+contentGameService.tranferURI("BcsPage:ScratchCardPage:" + state, UID));
+				response.sendRedirect(contentGameService.tranferURI("BcsPage:ScratchCardPage:" + state, UID));				
+			}else {
+				logger.error("JWT GET UID ERROR!");
+			}
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 			String linkUrl = UriHelper.bcsMPage;
