@@ -142,6 +142,10 @@ public class RichMenuContentService {
     	return contentRichMenuRepository.findByRichMenuGroupId(richMenuGroupId);
     }
     
+	public List<RichMenuContent> getRichMenuListByRichMenuGroupIdAndLevelAndStatus(Long richMenuGroupId, String level, String status) {
+    	return contentRichMenuRepository.findByRichMenuGroupIdAndLevelAndStatus(richMenuGroupId, level, status);
+    }
+
 	public List<RichMenuContent> getRichMenuListByRichMenuGroupIdAndLevel(Long richMenuGroupId, String level) {
     	return contentRichMenuRepository.findByRichMenuGroupIdAndLevel(richMenuGroupId, level);
     }

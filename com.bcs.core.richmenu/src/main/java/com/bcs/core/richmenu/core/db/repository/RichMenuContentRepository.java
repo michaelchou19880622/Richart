@@ -33,5 +33,6 @@ public interface RichMenuContentRepository extends EntityRepository<RichMenuCont
             + "where x.richMenuGroupId = ?1 and x.status <> 'DELETE' order by x.modifyTime desc ")
     List<RichMenuContent> findByRichMenuGroupId(Long richMenuGroupId);
 
+    List<RichMenuContent> findByRichMenuGroupIdAndLevelAndStatus(Long richMenuGroupId, String level, String status);
     List<RichMenuContent> findByRichMenuGroupIdAndLevel(Long richMenuGroupId, String level);
 }

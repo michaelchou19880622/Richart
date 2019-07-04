@@ -145,10 +145,11 @@ public class RichMenuSendUIService {
 		
 		// get richMenuContents (Main Page)
 		logger.info("richMenuGroupId:"+richMenuGroupId);
-		List<RichMenuContent> richMenuContents = richMenuContentService.getRichMenuListByRichMenuGroupIdAndLevel(richMenuGroupId, RichMenuContent.LEVEL_MAIN);
+		List<RichMenuContent> richMenuContents = richMenuContentService.getRichMenuListByRichMenuGroupIdAndLevelAndStatus(
+				richMenuGroupId, RichMenuContent.LEVEL_MAIN, RichMenuContent.STATUS_ACTIVE);
 		logger.info("richMenuContents:"+richMenuContents);
 		if(richMenuContents.size() != 1) {
-			throw new BcsNoticeException("請設置為一個首頁！ 首頁數量為：" + richMenuContents.size());
+			throw new BcsNoticeException("請設置唯一個Acitve首頁！ 首頁數量為：" + richMenuContents.size());
 		}
 		
 		// check richMenuContent, get richMenuId

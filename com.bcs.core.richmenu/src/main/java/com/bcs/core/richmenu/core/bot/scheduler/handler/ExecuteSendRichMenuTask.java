@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -26,6 +27,8 @@ import com.bcs.core.db.service.MsgSendMainService;
 import com.bcs.core.db.service.SendGroupService;
 import com.bcs.core.enums.API_TYPE;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.richmenu.core.akka.model.RichMenuSendModel;
+import com.bcs.core.richmenu.core.akka.service.RichMenuSendAkkaService;
 import com.bcs.core.richmenu.core.db.entity.RichMenuContent;
 import com.bcs.core.richmenu.core.db.service.RichMenuContentService;
 import com.bcs.core.spring.ApplicationContextProvider;
@@ -37,21 +40,46 @@ public class ExecuteSendRichMenuTask {
 	/** Logger */
 	private static Logger logger = Logger.getLogger(ExecuteSendRichMenuTask.class);
 
+	// New Akka Mode
 	public void executeSendMsg(List<String> uids, String richMenuId) throws Exception{
+		logger.info("[executeSendMsg]");
 		logger.info("uids:" + uids);
 		logger.info("richMenuGroupId" + richMenuId);
 		
-		RichMenuContentUIService richMenuContentUIService = ApplicationContextProvider.getApplicationContext().getBean(RichMenuContentUIService.class);
+		RichMenuSendAkkaService richMenuSendAkkaService = ApplicationContextProvider.getApplicationContext().getBean(RichMenuSendAkkaService.class);
 		
 		try {
-			// Modify
-			for(String uid : uids) {
-				richMenuContentUIService.callLinkRichMenuToUserAPI(richMenuId, uid);			
+			RichMenuSendModel richMenuSendModel = new RichMenuSendModel();
+			
+			JSONArray uid = new JSONArray();
+			for(String u : uids) {
+				uid.put(u);
 			}
+			richMenuSendModel.setUid(uid);
+			richMenuSendModel.setRichMenuId(richMenuId);
+			richMenuSendAkkaService.tell(richMenuSendModel);
 		}catch(Exception e){
 			throw e;
 		}
 	}
+	
+	// Old Runnable Thread Mode (Stable)
+//	public void executeSendMsg(List<String> uids, String richMenuId) throws Exception{
+//		logger.info("uids:" + uids);
+//		logger.info("richMenuGroupId" + richMenuId);
+//		
+//		RichMenuContentUIService richMenuContentUIService = ApplicationContextProvider.getApplicationContext().getBean(RichMenuContentUIService.class);
+//		
+//		try {
+//			// Modify
+//			for(String uid : uids) {
+//				richMenuContentUIService.callLinkRichMenuToUserAPI(richMenuId, uid);			
+//			}
+//		}catch(Exception e){
+//			throw e;
+//		}
+//	}
+	
 	
 //		logger.debug("executeSendMsg msgId ============ :" + msgId);
 //
