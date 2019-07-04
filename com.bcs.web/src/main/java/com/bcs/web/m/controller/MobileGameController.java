@@ -291,6 +291,7 @@ public class MobileGameController {
 
 			startTracingUrl = startTracingUrl.replace("{TracingId}", gameId);
 
+			//startTracingUrl += "%20phone";
 			logger.info("◎ URL: " + startTracingUrl);
 
 			model.addAttribute("lineoauthLink", startTracingUrl);
@@ -362,12 +363,12 @@ public class MobileGameController {
 			
 			/* 以 Post 方式送出 request (如果有需要用 Proxy，便將上面設定好的 clientHttpRequestFactory 加進來) */
 			RestTemplate restTemplate = (clientHttpRequestFactory == null) ? new RestTemplate() : new RestTemplate(clientHttpRequestFactory);
-			//logger.info("restTemplate:"+restTemplate);
+			logger.info("restTemplate:"+restTemplate);
 			ResponseEntity<String> accessTokenResponse = restTemplate.postForEntity(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_ACCESSTOKEN_V2_1), accessTokenEntity, String.class);
-			//logger.info("accessTokenResponse:"+accessTokenResponse);
+			logger.info("accessTokenResponse:"+accessTokenResponse);
 			
 			String responseBody = accessTokenResponse.getBody(); // Response 的結果
-			//logger.info("responseBody:"+responseBody);
+			logger.info("responseBody:"+responseBody);
 			
 			JSONObject responseObj = new JSONObject(responseBody);
 			String ID_Token = responseObj.get("id_token").toString(); // 將 id_token 從 response body 中拿出來
@@ -379,10 +380,10 @@ public class MobileGameController {
 			//logger.info("new ID_Token:" + ID_Token);
 			
 			String[] parsedJWT = ID_Token.split("[.]");	// 將 id_token 以逗點為基準切成 header、payload、signature 三個部分
-			//logger.info("parsedJWT:"+parsedJWT);
+			logger.info("parsedJWT:"+parsedJWT);
 			
 			String header = parsedJWT[0], payload = parsedJWT[1], signature = parsedJWT[2];
-			//logger.info("header:"+header+", payload:" + payload + ", signature:" + signature);
+			logger.info("header:"+header+", payload:" + payload + ", signature:" + signature);
 			
 			Base64.Decoder base64Decoder = Base64.getDecoder();
 			//logger.info("base64Decoder:"+base64Decoder);
