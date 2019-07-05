@@ -41,6 +41,11 @@ public class RichMenuSendGroupService {
 	public List<RichMenuSendGroup> findByGroupType(String groupType){
 		return sendGroupRepository.findByGroupType(groupType);
 	}
+
+	public List<RichMenuSendGroup> findByRichMenuGroupId(Long richMenuGroupId){
+		return sendGroupRepository.findByRichMenuGroupId(richMenuGroupId);
+	}
+	
 	
 	/**
 	 * Create DefaultGroup

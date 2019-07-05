@@ -38,6 +38,9 @@ import com.bcs.core.db.service.MsgSendMainService;
 import com.bcs.core.db.service.MsgSendRecordService;
 import com.bcs.core.db.service.SendGroupService;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.richmenu.core.db.entity.RichMenuGroup;
+import com.bcs.core.richmenu.core.db.entity.RichMenuSendGroup;
+import com.bcs.core.richmenu.core.db.service.RichMenuSendGroupService;
 import com.bcs.core.richmenu.web.ui.model.SendRichMenuModel;
 import com.bcs.core.richmenu.web.ui.service.RichMenuSendUIService;
 import com.bcs.core.utils.ErrorRecord;
@@ -75,6 +78,8 @@ public class BCSRichMenuSendController extends BCSBaseController {
 	private static Logger logger = Logger.getLogger(BCSRichMenuSendController.class);
 	@Autowired
 	private RichMenuSendUIService sendMsgUIService;
+	@Autowired
+	private RichMenuSendGroupService richMenuSendGroupService;
 	
 	@RequestMapping(method = RequestMethod.POST, value ="/edit/sendingRichMenu", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -109,6 +114,30 @@ public class BCSRichMenuSendController extends BCSBaseController {
 		return BcsPageEnum.RichMenuSendMsgCreatePage.toString();
 	}
 	
+	
+	// update RichMenuSendGroup By RichMenuGroupId	
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/updateRichMenuSendGroupByRichMenuGroupId")
+	@ResponseBody
+	public ResponseEntity<?> updateRichMenuSendGroupByRichMenuGroupId(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam Long richMenuGroupId) throws IOException {
+		logger.info("updateRichMenuSendGroupByRichMenuGroupId");
+		logger.info("richMenuGroupId"+richMenuGroupId);
+		try {
+			List<RichMenuSendGroup> richMenuSendGroups = richMenuSendGroupService.findByRichMenuGroupId(richMenuGroupId);
+			logger.info("richMenuSendGroups:"+richMenuSendGroups);
+			for(RichMenuSendGroup richMenuSendGroup : richMenuSendGroups) {
+				logger.info("richMenuSendGroupId:"+richMenuSendGroup.getGroupId());
+				sendMsgUIService.sendByGroupId(richMenuSendGroup.getGroupId());
+			}
+			return new ResponseEntity<>("Success", HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+			if (e instanceof BcsNoticeException) 
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			else 
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 //	/**
 //	 * 建立訊息 導頁
 //	 * 

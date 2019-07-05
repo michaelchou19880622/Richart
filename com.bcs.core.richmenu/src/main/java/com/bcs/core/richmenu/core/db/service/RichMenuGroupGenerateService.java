@@ -29,7 +29,9 @@ public class RichMenuGroupGenerateService {
 
 	public List<String> findMIDBySendGroupDetailGroupId(Long groupId) throws Exception{
 		logger.info("findMIDBySendGroupDetailGroupId");
-		return groupGenerateRepository.findMIDBySendGroupDetailGroupId(groupId);
+		List<String> list = groupGenerateRepository.findMIDBySendGroupDetailGroupId(groupId);
+		logger.info("list:"+list);
+		return list;
 	}
 	
 	public Boolean checkMIDBySendGroupDetailGroupId(Long groupId, String mid) throws Exception{

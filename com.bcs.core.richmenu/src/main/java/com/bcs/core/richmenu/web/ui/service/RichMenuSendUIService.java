@@ -124,6 +124,10 @@ public class RichMenuSendUIService {
 	public void sendMessage(SendRichMenuModel sendRichMenuModel, String adminUserAccount) throws Exception{
 		// check GroupId
 		Long groupId = sendRichMenuModel.getSendGroupId();
+		sendByGroupId(groupId);
+	}
+	
+	public void sendByGroupId(Long groupId) throws Exception {
 		if(groupId == null) {
 			logger.info("SendGroupId Error");
 			throw new BcsNoticeException("SendGroupId Error");
@@ -161,8 +165,6 @@ public class RichMenuSendUIService {
 		String richMenuId = richMenuContent.getRichMenuId();
 		logger.info("richMenuId:"+richMenuId);
 		
-
-		
 		// Handle : IMMEDIATE
 		if(RichMenuSendGroup.GROUP_TYPE_DEFAULT.equals(sendGroup.getGroupType())) {
 			ExecuteSendAllRichMenuRunnable run = new ExecuteSendAllRichMenuRunnable();
@@ -176,6 +178,8 @@ public class RichMenuSendUIService {
 				// 行銷人員設定 群組
 				try{
 					mids =  groupGenerateService.findMIDBySendGroupDetailGroupId(sendGroup.getGroupId());
+					logger.info("mids:"+mids);
+					
 					if(mids != null && mids.size() >0){
 						// 設定成功
 					}else{
@@ -205,7 +209,6 @@ public class RichMenuSendUIService {
 			Thread thread = new Thread(run);
 			thread.start();			
 		}
-
 //		Long msgId = this.saveMessage(sendRichMenuModel, adminUserAccount, MsgMain.MESSAGE_STATUS_SCHEDULED);
 //		ExecuteSendMsgRunnable run = new ExecuteSendMsgRunnable();
 //		run.thisMsgId = msgId;
@@ -233,7 +236,6 @@ public class RichMenuSendUIService {
 //			schedulerService.addMsgSendSchedule(msgId, cronExpression);
 //		}
 	}
-	
 	
 	private static class ExecuteSendRichMenuRunnable implements Runnable{
 		public List<String> mids = null;

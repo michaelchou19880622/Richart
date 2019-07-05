@@ -12,10 +12,10 @@ $(function(){
 	});
 	
 	// to Create Page (new)
-	$('.btn_save').click(function(){
+	$('#createRichMenu').click(function(){
 		window.location.replace(bcs.bcsContextPath +'/edit/richMenuCreatePage?groupId=' + groupId);
 	});
-	
+		
 	// to Create Page (edit)
 	var richMenuSelectEventFunc = function(){
 		var richId = $(this).attr('richId');
@@ -42,7 +42,23 @@ $(function(){
 		
 	}
 	
-
+	// updateSendGroup
+	$('#updateSendGroup').click(function(){
+		$('.LyMain').block($.BCS.blockMsgSave);
+		$.ajax({
+			type : 'GET',
+			url : bcs.bcsContextPath + '/edit/updateRichMenuSendGroupByRichMenuGroupId?richMenuGroupId=' + groupId
+		}).success(function(response){
+			alert("聯繫成功！");
+			window.location.replace(bcs.bcsContextPath + '/edit/richMenuMemberListPage?groupId=' + groupId);
+		}).fail(function(response){
+			console.info(response);
+			$.FailResponse(response);
+			$('.LyMain').unblock();
+		}).done(function(){
+			$('.LyMain').unblock();
+		});
+	});
 	
 	var setActiveBtnEvent = function() {
 		$('.btn_redesign').click(function(e) {

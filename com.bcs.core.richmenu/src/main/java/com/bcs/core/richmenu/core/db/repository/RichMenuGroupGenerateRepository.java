@@ -60,8 +60,9 @@ public class RichMenuGroupGenerateRepository{
 		logger.info("sendGroupDetails:"+sendGroupDetails);
 		Query query = buildFindQuery(sendGroupDetails, "DISTINCT MID");
 		logger.info("query:"+query);
-		logger.info("getResultList:"+query.getResultList());
-		return query.getResultList();
+		List<String> list = query.getResultList();
+		logger.info("getResultList:"+list);
+		return list;
 	}
 	
 	@SuppressWarnings("unchecked")

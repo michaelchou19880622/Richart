@@ -21,4 +21,7 @@ public interface RichMenuSendGroupRepository extends EntityRepository<RichMenuSe
 	@Transactional(timeout = 30)
 	@Query("select x from RichMenuSendGroup x where x.groupType = ?1 order by x.modifyTime desc")
 	public List<RichMenuSendGroup> findByGroupType(String groupType);
+	
+	@Transactional(timeout = 30)
+	public List<RichMenuSendGroup> findByRichMenuGroupId(Long richMenuGroupId);
 }
