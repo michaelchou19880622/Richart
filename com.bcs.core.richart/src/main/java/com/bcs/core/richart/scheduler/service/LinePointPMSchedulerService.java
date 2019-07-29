@@ -22,9 +22,11 @@ import org.springframework.stereotype.Service;
 
 import com.bcs.core.db.entity.ShareCampaign;
 import com.bcs.core.db.entity.ShareCampaignClickTracing;
+import com.bcs.core.db.entity.ShareDonatorRecord;
 import com.bcs.core.db.entity.ShareUserRecord;
 import com.bcs.core.db.service.ShareCampaignClickTracingService;
 import com.bcs.core.db.service.ShareCampaignService;
+import com.bcs.core.db.service.ShareDonatorRecordService;
 import com.bcs.core.db.service.ShareUserRecordService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.resource.CoreConfigReader;
@@ -52,6 +54,8 @@ public class LinePointPMSchedulerService {
 	ShareCampaignClickTracingService shareCampaignClickTracingService;
 	@Autowired
 	ShareCampaignService shareCampaignService;
+	@Autowired
+	ShareDonatorRecordService shareDonatorRecordService;
 	
 	private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledFuture<?> scheduledFuture = null;
@@ -99,12 +103,12 @@ public class LinePointPMSchedulerService {
 		}
 
 		// run every day
-		scheduledFuture = scheduler.scheduleAtFixedRate(new Runnable() {
-			public void run() {
-				logger.debug("LinePointPMSchedulerService startCircle....");
-				pushScheduledLinePoint();
-			}
-		}, delay, 86400, TimeUnit.SECONDS);
+//		scheduledFuture = scheduler.scheduleAtFixedRate(new Runnable() {
+//			public void run() {
+//				logger.info("LinePointPMSchedulerService startCircle....");
+//				pushScheduledLinePoint();
+//			}
+//		}, delay, 86400, TimeUnit.SECONDS);
 	}
 	
 	/**
@@ -126,57 +130,86 @@ public class LinePointPMSchedulerService {
 	
 	public void pushScheduledLinePoint() {
 		// get undoneUser			
-		Map<String, List<String>> undoneUser = shareUserRecordService.findLatelyUndoneUsers();
-		logger.info("undoneUser:"+undoneUser);
+		List<ShareUserRecord> undoneUsers = shareUserRecordService.findLatelyUndoneUsers();
+		logger.info("undoneUsers:"+undoneUsers);
 		
-		for(Map.Entry<String, List<String>> entry : undoneUser.entrySet()) {
-		    String shareUserRecordId = entry.getKey();
-		    List<String> list = entry.getValue();
-		    String campaignId = list.get(0);
-		    String uid = list.get(1);
-		    logger.info("不滿足的人："+uid);
+		for(ShareUserRecord undoneUser : undoneUsers) {
+			logger.info("undoneUser:"+undoneUser);
 		    
-		    // get stateJudgement
-		    ShareCampaign shareCampaign = shareCampaignService.findOne(campaignId);
-		    String judgement = shareCampaign.getJudgement();
-		    String stateJudgement = "";
+		    // get judgment
+		    ShareCampaign shareCampaign = shareCampaignService.findOne(undoneUser.getCampaignId());
+		    String judgment = shareCampaign.getJudgement();
 		    
-		    if(judgement == ShareCampaign.JUDGEMENT_FOLLOW) {
-		    	String dateStr = shareCampaign.getStartTime().toString();
-		    	logger.info("dateStr:"+dateStr);
-		    	stateJudgement = " and status <> 'BLOCK' and createTime >= " + dateStr + " ";
-		    }else if (judgement == ShareCampaign.JUDGEMENT_BINDED) {
-		    	stateJudgement = " and status = 'BINDED' ";
+		    // combine stateJudgment
+		    String stateJudgment = "";
+		    if(judgment == ShareCampaign.JUDGEMENT_FOLLOW) {
+		    	String campaignStartDate = shareCampaign.getStartTime().toString();
+		    	logger.info("campaignStartDate:"+campaignStartDate);
+		    	stateJudgment = " and status <> 'BLOCK' and createTime >= " + campaignStartDate + " ";
+		    }else if (judgment == ShareCampaign.JUDGEMENT_BINDED) {
+		    	stateJudgment = " and status = 'BINDED' ";
 		    }
 
-		    // count checkJudgement
-		    List<ShareCampaignClickTracing> friends =  shareCampaignClickTracingService.findByShareUserRecordId(shareUserRecordId);
-		    Integer count = 0;
+		    // add count
+		    List<ShareCampaignClickTracing> friends =  shareCampaignClickTracingService.findByShareUserRecordId(undoneUser.getShareUserRecordId());
 		    for(ShareCampaignClickTracing shareCampaignClickTracing : friends) {
 		    	String friendUid = shareCampaignClickTracing.getUid();
-		    	if(shareUserRecordService.checkJudgement(friendUid, stateJudgement)) {
-		    		logger.info("他送符合要求的人："+friendUid);
-		    		count++;
+		    	logger.info("friendUid:"+friendUid);
+		    	
+		    	// check Judgment
+		    	if(shareUserRecordService.checkJudgment(friendUid, stateJudgment)) {
+		    		logger.info("friendUid who Satisfied Judgment:"+friendUid);
+		    		
+		    		// check Exclusive
+		    		if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)  ||judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
+				    	// find one row with same donatorUid
+				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUid(friendUid);
+				    	logger.info("pastDonators:"+pastDonators);
+				    	
+				    	// if not duplicated
+				    	if(pastDonators.isEmpty()) {
+				    		logger.info("donator is unique:"+friendUid);
+				    		ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
+				    		shareDonatorRecord.setDonatorUid(friendUid);
+				    		shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
+				    		shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
+				    		shareDonatorRecord.setModifyTime(new Date());
+				    		shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
+				    		shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
+				    		
+				    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
+				    		
+				    		logger.info("shareDonatorRecord for saving:"+shareDonatorRecord);
+				    		logger.info("undoneUser for saving:"+undoneUser);
+				    		
+				    		shareDonatorRecordService.save(shareDonatorRecord);
+				    		shareUserRecordService.save(undoneUser);
+				    	}else {
+				    		logger.info("donator is duplicated:"+friendUid);
+				    	}
+				    }
 		    	}
 		    }
 		    
+		    
 		    // undone -> done
-		    logger.info("符合要求人數:"+count + "/" + shareCampaign.getShareTimes());
-		    if(count >= shareCampaign.getShareTimes()) {
-		    	// change shareUserRecord status
-		    	ShareUserRecord shareUserRecord = shareUserRecordService.findOne(shareUserRecordId);
+		    logger.info("符合要求人數:"+undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());
+		    if(undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
+		    	
+		    	// shareUserRecord.status = done
+		    	ShareUserRecord shareUserRecord = shareUserRecordService.findOne(undoneUser.getShareUserRecordId());
 		    	shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
 		    	shareUserRecordService.save(shareUserRecord);
 		    	
-		    	// change linePointMain status
+		    	// linePointMain.status = scheduled
 		    	String linePointSerialId = shareCampaign.getLinePointSerialId();
 		    	LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
 		    	linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
 		    	linePointMainService.save(linePointMain);
 		    	
-		    	// save linePointScheduledDetail
+		    	// linePointScheduledDetail.status = waiting
 		    	LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
-		    	linePointScheduledDetail.setUid(uid);
+		    	linePointScheduledDetail.setUid(undoneUser.getUid());
 		    	linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
 		    	linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
 		    	linePointScheduledDetail.setModifyTime(new Date());
@@ -184,16 +217,18 @@ public class LinePointPMSchedulerService {
 		    }
 		}
 		
-		// find main.status = Scheduled
+		// find linePointMain.status = scheduled
 		List<LinePointMain> mains = linePointMainService.findByStatus(LinePointMain.STATUS_SCHEDULED);
 		for(LinePointMain main : mains) {
+			logger.info("Scheduled LinePointMainId:"+main.getId());
 			
-			// change main status
+			// linePointMain.status = idle
 			main.setStatus(LinePointMain.STATUS_IDLE);
 			linePointMainService.save(main);
 			
-			// find ScheduledDetails by mainId, input & set them sended
+			// find linePointScheduledDetail.mainId = mainId
 			List<LinePointScheduledDetail> details = linePointScheduledDetailService.findByLinePointMainId(main.getId());
+			
 			JSONArray uid = new JSONArray();
 			for(LinePointScheduledDetail detail : details) {
 				uid.put(detail.getUid());
@@ -202,6 +237,7 @@ public class LinePointPMSchedulerService {
 				detail.setModifyTime(new Date());
 				linePointScheduledDetailService.save(detail);
 			}
+			logger.info("uid (begin to send):"+uid);
 			
 			// push to AkkaService
 			LinePointPushModel linePointPushModel = new LinePointPushModel();

@@ -13,7 +13,7 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.jcodec.common.logging.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,8 @@ import com.bcs.core.db.repository.ShareUserRecordRepository;
 
 @Service
 public class ShareUserRecordService {
-		
+	/** Logger */
+	private static Logger logger = Logger.getLogger(ShareUserRecordService.class);
 	@Autowired
 	private ShareUserRecordRepository shareUserRecordRepository;
 	@PersistenceContext
@@ -66,41 +67,21 @@ public class ShareUserRecordService {
         return shareUserRecordRepository.findUncompletedByModifyTimeAndCampaignId(start, end, campaignId);
     }
     
-    @SuppressWarnings("unchecked")
-    public  Map<String, List<String>> findLatelyUndoneUsers(){
-    	String queryString = 
-    			"select SHARE_USER_RECORD_ID, CAMPAIGN_ID, UID " + 
-    	        		"from BCS_SHARE_USER_RECORD " + 
-    	        		"where COMPLETE_STATUS = 'UNDONE' " + 
-    	        		"and MODIFY_TIME >= DATEADD(day, -1, GETDATE()) and MODIFY_TIME < GETDATE() "; // -1 = yesterday
-    	
-    	Query query = entityManager.createNativeQuery(queryString);
-		List<Object[]> list = query.getResultList();
-
-    	Map<String, List<String>> map = new LinkedHashMap<>();
-		for (Object[] o : list) {
-			for (int i=0, max=o.length; i<max; i++) {
-				if(i==0){
-					map.put(o[0].toString(), new ArrayList<String>());
-					continue;
-				}
-				List<String> dataList = map.get(o[0]);
-				if (o[i] == null) {
-					dataList.add("");
-				} else {
-					dataList.add(o[i].toString());
-				}
-			}
-		}
-		return map;
+    public List<ShareUserRecord> findLatelyUndoneUsers(){
+    	return shareUserRecordRepository.findLatelyUndoneUsers();
     }
 
     @SuppressWarnings("unchecked")
-    public boolean checkJudgement(String uid, String stateJudgement){
+    public boolean checkJudgment(String uid, String stateJudgement){
     	String queryString = 
     			"select count(0) from BCS_LINE_USER where MID = '" + uid + "' " + stateJudgement;
+    	logger.info("[checkJudgement] queryString:"+queryString);
+    	
     	Query query = entityManager.createNativeQuery(queryString);
 		List<Object[]> list = query.getResultList();
+		
+		logger.info("[checkJudgement] check result :"+list.toString());
+		logger.info("[checkJudgement] check bool :"+list.toString().contentEquals("[1]"));
 		return (list.toString().contentEquals("[1]")); // [1] or [0]
     }
 }

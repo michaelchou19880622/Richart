@@ -163,7 +163,9 @@ $(function(){
 	$('.optionSelect').change(optionSelectChange_func);
 
 	// 日期元件
-	$(".datepicker").datepicker({ 'minDate' : 0, 'dateFormat' : 'yy-mm-dd'});
+	$(".datepicker").datepicker({ 'dateFormat' : 'yy-mm-dd'});
+	// Original: must after today
+	//$(".datepicker").datepicker({ 'minDate' : 0, 'dateFormat' : 'yy-mm-dd'});
 	
 	// 取消
 	$('.btn_cancel').click(function(){

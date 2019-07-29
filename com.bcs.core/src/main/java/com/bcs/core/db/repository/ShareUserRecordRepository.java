@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.ShareUserRecord;
 import com.bcs.core.db.persistence.EntityRepository;
 
@@ -57,4 +58,10 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
             + "and (c.ct < b.SHARE_TIMES or c.ct is null) "
             + "order by a.MODIFY_TIME", nativeQuery = true)
     List<Object[]> findUncompletedByModifyTimeAndCampaignId(Date start, Date end, String campaignId);
+    
+    @Transactional(readOnly = true, timeout = 60)
+    @Query(value = "select * from BCS_SHARE_USER_RECORD " +
+    		"where COMPLETE_STATUS = 'UNDONE' " + 
+    		"and MODIFY_TIME >= DATEADD(day, -1, GETDATE()) and MODIFY_TIME < GETDATE() ", nativeQuery = true)
+    List<ShareUserRecord> findLatelyUndoneUsers();
 }

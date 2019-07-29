@@ -38,6 +38,9 @@ public class ShareUserRecord extends AbstractBcsEntity{
 
     @Column(name = "COMPLETE_STATUS", columnDefinition="varchar(20)")
     private String completeStatus;
+
+    @Column(name = "CUMULATIVE_COUNT")
+    private Long cumulativeCount;
     
     public String getShareUserRecordId() {
         return shareUserRecordId;
@@ -78,4 +81,13 @@ public class ShareUserRecord extends AbstractBcsEntity{
 	public void setCompleteStatus(String completeStatus) {
 		this.completeStatus = completeStatus;
 	}
+
+	public Long getCumulativeCount() {
+		return cumulativeCount;
+	}
+
+	public void setCumulativeCount(Long cumulativeCount) {
+		this.cumulativeCount = cumulativeCount;
+	}
+
 }

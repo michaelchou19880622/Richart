@@ -35,7 +35,8 @@ import com.bcs.web.m.controller.MobileUserController;
 @Controller
 @RequestMapping("/c")
 public class MobileMgmClickTracingController extends BCSBaseController {
-
+    /** Logger */
+    private static Logger logger = Logger.getLogger(MobileMgmClickTracingController.class);
     @Autowired
     private MobileUserController mobileUserController;
     @Autowired
@@ -46,21 +47,26 @@ public class MobileMgmClickTracingController extends BCSBaseController {
     private ShareCampaignService shareCampaignService;
     @Autowired
     private LineUserService lineUserService;
-    
-    /** Logger */
-    private static Logger logger = Logger.getLogger(MobileMgmClickTracingController.class);
 
+    @RequestMapping(method = RequestMethod.GET, value = "/m/{tracingIdStr}")
+    public String startMgmTracing(@PathVariable String tracingIdStr, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+        logger.info("startMgmTracing:" + tracingIdStr);
+        try {
+            LineLoginUtil.addLineoauthLinkInModel(model, UriHelper.getMgmOauth(), tracingIdStr);
+            return MobilePageEnum.MgmTracingStartPage.toString();
+        } catch (Exception e) {
+            logger.error(ErrorRecord.recordError(e));
+            return mobileUserController.indexPage(request, response, model);
+        }
+    }
+    
     @RequestMapping(method = RequestMethod.GET, value = "/{tracingIdStr}")
     public String startMgmClickTracing(@PathVariable String tracingIdStr, HttpServletRequest request,
             HttpServletResponse response, Model model) throws Exception {
         logger.info("startMgmClickTracing:" + tracingIdStr);
-
-        try {
-            
+        try {            
             LineLoginUtil.addLineoauthLinkInModel(model, UriHelper.getMgmClickOauth(), tracingIdStr);
-            
             return MobilePageEnum.MgmTracingStartPage.toString();
-
         } catch (Exception e) {
             logger.error(ErrorRecord.recordError(e));
             return mobileUserController.indexPage(request, response, model);
@@ -71,20 +77,15 @@ public class MobileMgmClickTracingController extends BCSBaseController {
     public void validateMgmClickTracing(HttpServletRequest request, HttpServletResponse response, Model model)
             throws Exception {
         logger.info("validateMgmClickTracing");
-
         try {
             String code = request.getParameter("code");
             logger.info("validateMgmClickTracing code:" + code);
-
             String state = request.getParameter("state");
             logger.info("validateMgmClickTracing state:" + state);
-
             String error = request.getParameter("error");
             logger.info("validateMgmClickTracing error:" + error);
-
             String errorCode = request.getParameter("errorCode");
             logger.info("validateMgmClickTracing errorCode:" + errorCode);
-
             String errorMessage = request.getParameter("errorMessage");
             logger.info("validateMgmClickTracing errorMessage:" + errorMessage);
 
@@ -93,13 +94,11 @@ public class MobileMgmClickTracingController extends BCSBaseController {
             }
             
             ShareUserRecord ownerRecord = shareUserRecordService.findOne(state);
-
             if (ownerRecord == null) {
                 throw new Exception("TracingId Error:" + state);
             }
 
 //            if (StringUtils.isNotBlank(error) || StringUtils.isNotBlank(errorCode)) {
-//
 //                String linkUrl = UriHelper.getMgmClickTracingUrl() + state;
 //                response.sendRedirect(linkUrl);
 //                return;
@@ -127,7 +126,9 @@ public class MobileMgmClickTracingController extends BCSBaseController {
             Map<String, String> resultMap = LineLoginUtil.callRetrievingAPI(code, UriHelper.getMgmClickOauth(), state);
             String uid = resultMap.get("UID");
             Boolean friendFlag = Boolean.valueOf(resultMap.get("friendFlag"));
-
+            logger.info("[validateMgmClickTracing] uid:"+uid);
+            logger.info("[validateMgmClickTracing] friendFlag:"+friendFlag);
+            
             if(StringUtils.isNotBlank(uid)) {
                 lineUserService.findByMidAndCreateUnbind(uid);
             }
@@ -135,30 +136,25 @@ public class MobileMgmClickTracingController extends BCSBaseController {
         	ShareCampaignClickTracing clickTracing = shareCampaignClickTracingService.findByUidAndShareUserRecordId(uid, ownerRecord.getShareUserRecordId());
  	
         	if(friendFlag){ // 好友
-        	    
-        	    if(clickTracing == null && !ownerRecord.getUid().equals(uid)) { //未點過、非本人
-        	        
+        	    if(clickTracing == null /*&& !ownerRecord.getUid().equals(uid)*/) { //未點過、非本人
         	        clickTracing = new ShareCampaignClickTracing();
         	        clickTracing.setUid(uid);
         	        clickTracing.setShareUserRecordId(ownerRecord.getShareUserRecordId());
         	        clickTracing.setModifyTime(new Date());
+        	        logger.info("[validateMgmClickTracing] shareCampaignClickTracing for saving:"+clickTracing);
         	        shareCampaignClickTracingService.save(clickTracing);
         	    }
 
                 HttpSession session = request.getSession();
-        	    
                 session.setAttribute("MID", uid);
                 session.setAttribute("campaignId", campaignId);
                 
                 response.sendRedirect(UriHelper.getMgmPage());
                 return;
-            }
-            else { // 非好友
+            }else { // 非好友
                 response.sendRedirect(CoreConfigReader.getString(CONFIG_STR.ADD_LINE_FRIEND_LINK, true));
                 return;
             }
-        	
-
         } catch (Exception e) {
             logger.error(ErrorRecord.recordError(e));
             String linkUrl = UriHelper.bcsMPage;
@@ -167,28 +163,9 @@ public class MobileMgmClickTracingController extends BCSBaseController {
         }
     }
     
-    @RequestMapping(method = RequestMethod.GET, value = "/m/{tracingIdStr}")
-    public String startMgmTracing(@PathVariable String tracingIdStr, HttpServletRequest request,
-            HttpServletResponse response, Model model) throws Exception {
-        logger.info("startMgmTracing:" + tracingIdStr);
-
-        try {
-            
-            LineLoginUtil.addLineoauthLinkInModel(model, UriHelper.getMgmOauth(), tracingIdStr);
-            
-            return MobilePageEnum.MgmTracingStartPage.toString();
-
-        } catch (Exception e) {
-            logger.error(ErrorRecord.recordError(e));
-            return mobileUserController.indexPage(request, response, model);
-        }
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/m/validate")
-    public void validateMgmTracing(HttpServletRequest request, HttpServletResponse response, Model model)
-            throws Exception {
+    public void validateMgmTracing(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
         logger.info("validateMgmTracing");
-
         try {
             String code = request.getParameter("code");
             logger.info("validateMgmTracing code:" + code);
@@ -205,6 +182,7 @@ public class MobileMgmClickTracingController extends BCSBaseController {
             String errorMessage = request.getParameter("errorMessage");
             logger.info("validateMgmTracing errorMessage:" + errorMessage);
 
+            
             if (StringUtils.isBlank(state)) {
                 throw new Exception("TracingId Error:" + state);
             }
@@ -230,7 +208,7 @@ public class MobileMgmClickTracingController extends BCSBaseController {
                 lineUserService.findByMidAndCreateUnbind(uid);
             }
             logger.info("lineUserService.findByMidAndCreateUnbind(uid)===========end" );
-
+	        
             if(friendFlag){ // 好友
             	logger.info("好友");
                 HttpSession session = request.getSession();
@@ -243,15 +221,12 @@ public class MobileMgmClickTracingController extends BCSBaseController {
                 
                 response.sendRedirect(UriHelper.getMgmPage());
                 return;
-            }
-            else { // 非好友
-            	 logger.info("非好友" );
-            	
+            }else { // 非好友
+            	 logger.info("非好友" );	
                 response.sendRedirect(CoreConfigReader.getString(CONFIG_STR.ADD_LINE_FRIEND_LINK, true));
                 logger.info("response.sendRedirect :" +CoreConfigReader.getString(CONFIG_STR.ADD_LINE_FRIEND_LINK, true) );
                 return;
             }
-
         } catch (Exception e) {
             logger.error(ErrorRecord.recordError(e));
             String linkUrl = UriHelper.bcsMPage;

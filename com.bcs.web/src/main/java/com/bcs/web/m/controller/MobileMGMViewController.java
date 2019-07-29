@@ -168,7 +168,7 @@ public class MobileMGMViewController extends BCSBaseController {
             model.addAttribute("descriptionImgUrl", descriptionImgUrl);
             model.addAttribute("actionImgUrlLink", actionImgUrlLink);
             model.addAttribute("descriptionImgUrlLink", descriptionImgUrlLink);
-            return MobilePageEnum.DoMgmPage.toString();//TODO 
+            return MobilePageEnum.DoMgmPage.toString();
         } catch (Exception e) {
             logger.error(ErrorRecord.recordError(e));
 
@@ -203,7 +203,8 @@ public class MobileMGMViewController extends BCSBaseController {
             }
             
             ShareUserRecord shareUserRecord = shareUserRecordService.findByCampaignIdAndUid(campaignId, uid);
-
+            logger.info("[doMgmSharing]shareUserRecord:"+shareUserRecord);
+            
             if (shareUserRecord == null) {
                 
                 shareUserRecord = new ShareUserRecord();
@@ -212,6 +213,7 @@ public class MobileMGMViewController extends BCSBaseController {
                 shareUserRecord.setModifyTime(now);
                 shareUserRecord.setCampaignId(campaignId);
                 shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_UNDONE);
+                shareUserRecord.setCumulativeCount(0L);
                 shareUserRecordService.save(shareUserRecord);
             }
 

@@ -45,56 +45,56 @@ public class MGMTask implements Job {
 		try {
 			logger.info("[MGMTask execute]");
 			
-			// get undoneUser			
-			Map<String, List<String>> undoneUser = shareUserRecordService.findLatelyUndoneUsers();
-			logger.info("undoneUser:"+undoneUser);
-			
-			for(Map.Entry<String, List<String>> entry : undoneUser.entrySet()) {
-			    String shareUserRecordId = entry.getKey();
-			    List<String> list = entry.getValue();
-			    String campaignId = list.get(0);
-			    String uid = list.get(1);
-			    logger.info("不滿足的人："+uid);
-			    
-			    // get stateJudgement
-			    ShareCampaign shareCampaign = shareCampaignService.findOne(campaignId);
-			    String judgement = shareCampaign.getJudgement();
-			    String stateJudgement = "";
-			    if(judgement == ShareCampaign.JUDGEMENT_FOLLOW) stateJudgement = " and status <> 'BLOCK' ";
-			    else if (judgement == ShareCampaign.JUDGEMENT_BINDED) stateJudgement = " and status = 'BINDED' ";
-
-			    // count checkJudgement
-			    List<ShareCampaignClickTracing> friends =  shareCampaignClickTracingService.findByShareUserRecordId(shareUserRecordId);
-			    Integer count = 0;
-			    for(ShareCampaignClickTracing shareCampaignClickTracing : friends) {
-			    	String friendUid = shareCampaignClickTracing.getUid();
-			    	if(shareUserRecordService.checkJudgement(friendUid, stateJudgement)) {
-			    		logger.info("他送符合要求的人："+friendUid);
-			    		count++;
-			    	}
-			    }
-			    
-			    // undone -> done
-			    logger.info("符合要求人數:"+count + "/" + shareCampaign.getShareTimes());
-			    if(count >= shareCampaign.getShareTimes()) {
-			    	// change shareUserRecord status
-			    	ShareUserRecord shareUserRecord = shareUserRecordService.findOne(shareUserRecordId);
-			    	shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
-			    	shareUserRecordService.save(shareUserRecord);
-			    	
-			    	// change linePointMain status
-			    	String linePointSerialId = shareCampaign.getLinePointSerialId();
-			    	LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
-			    	linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
-			    	linePointMainService.save(linePointMain);
-			    	
-			    	// save linePointScheduledDetail
-			    	LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
-			    	linePointScheduledDetail.setUid(uid);
-			    	linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
-			    	linePointScheduledDetailService.save(linePointScheduledDetail);
-			    }
-			}
+//			// get undoneUser			
+//			Map<String, List<String>> undoneUser = shareUserRecordService.findLatelyUndoneUsers();
+//			logger.info("undoneUser:"+undoneUser);
+//			
+//			for(Map.Entry<String, List<String>> entry : undoneUser.entrySet()) {
+//			    String shareUserRecordId = entry.getKey();
+//			    List<String> list = entry.getValue();
+//			    String campaignId = list.get(0);
+//			    String uid = list.get(1);
+//			    logger.info("不滿足的人："+uid);
+//			    
+//			    // get stateJudgement
+//			    ShareCampaign shareCampaign = shareCampaignService.findOne(campaignId);
+//			    String judgement = shareCampaign.getJudgement();
+//			    String stateJudgement = "";
+//			    if(judgement == ShareCampaign.JUDGEMENT_FOLLOW) stateJudgement = " and status <> 'BLOCK' ";
+//			    else if (judgement == ShareCampaign.JUDGEMENT_BINDED) stateJudgement = " and status = 'BINDED' ";
+//
+//			    // count checkJudgement
+//			    List<ShareCampaignClickTracing> friends =  shareCampaignClickTracingService.findByShareUserRecordId(shareUserRecordId);
+//			    Integer count = 0;
+//			    for(ShareCampaignClickTracing shareCampaignClickTracing : friends) {
+//			    	String friendUid = shareCampaignClickTracing.getUid();
+//			    	if(shareUserRecordService.checkJudgement(friendUid, stateJudgement)) {
+//			    		logger.info("他送符合要求的人："+friendUid);
+//			    		count++;
+//			    	}
+//			    }
+//			    
+//			    // undone -> done
+//			    logger.info("符合要求人數:"+count + "/" + shareCampaign.getShareTimes());
+//			    if(count >= shareCampaign.getShareTimes()) {
+//			    	// change shareUserRecord status
+//			    	ShareUserRecord shareUserRecord = shareUserRecordService.findOne(shareUserRecordId);
+//			    	shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+//			    	shareUserRecordService.save(shareUserRecord);
+//			    	
+//			    	// change linePointMain status
+//			    	String linePointSerialId = shareCampaign.getLinePointSerialId();
+//			    	LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+//			    	linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+//			    	linePointMainService.save(linePointMain);
+//			    	
+//			    	// save linePointScheduledDetail
+//			    	LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+//			    	linePointScheduledDetail.setUid(uid);
+//			    	linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+//			    	linePointScheduledDetailService.save(linePointScheduledDetail);
+//			    }
+//			}
 		} catch (Exception e) {
 			String error = ErrorRecord.recordError(e, false);
 			logger.error("MGMTask Error:" + error);
