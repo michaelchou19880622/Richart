@@ -33,6 +33,19 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
             + "order by SUR.UID, SUR.MODIFY_TIME", nativeQuery = true)
     List<Object[]> findByModifyTimeAndCampaignId(Date start, Date end, String campaignId);
     
+    @Transactional(readOnly = true, timeout = 30)
+    @Query(value = "select SUR.UID as SUR_UID, "
+            + "SUR.MODIFY_TIME as SUR_MODIFY_TIME, "
+            + "SCCT.UID as SCCT_UID, "
+            + "SDR.DONATOR_UID as IS_DONATE, "
+            + "SCCT.MODIFY_TIME as SCCT_MODIFY_TIME "
+            + "from BCS_SHARE_USER_RECORD SUR "
+            + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "
+            + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID "
+            + "where SUR.MODIFY_TIME >= ?1 and SUR.MODIFY_TIME < ?2 and SUR.CAMPAIGN_ID = ?3 "
+            + "order by SUR.UID, SUR.MODIFY_TIME", nativeQuery = true)
+    List<Object[]> findByModifyTimeAndCampaignIdWithDonateStatus(Date start, Date end, String campaignId);
+    
     @Transactional(readOnly = true, timeout = 60)
     @Query(value = "select a.UID, "
             + "a.MODIFY_TIME, "

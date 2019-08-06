@@ -49,6 +49,10 @@ public class ShareUserRecordService {
 	public List<Object[]> findByModifyTimeAndCampaignId(Date start, Date end, String campaignId){
 	    return shareUserRecordRepository.findByModifyTimeAndCampaignId(start, end, campaignId);
 	}
+
+	public List<Object[]> findByModifyTimeAndCampaignIdWithDonateStatus(Date start, Date end, String campaignId){
+	    return shareUserRecordRepository.findByModifyTimeAndCampaignIdWithDonateStatus(start, end, campaignId);
+	}
 	
     public String generateShareUserRecordId() {
         String shareUserRecordId = UUID.randomUUID().toString().toLowerCase();

@@ -74,13 +74,14 @@ public class ExportReportForMGM {
         c.add(Calendar.SECOND, -1); //減一秒，因為可能今天新增的發送報告時間是隔天且無設定時與分，會與增加一天的時間重疊，導致可能撈到隔天的資料
         end = c.getTime();
         
-        List<Object[]> resultGet = shareUserRecordService.findByModifyTimeAndCampaignId(start, end, campaignId);
+        List<Object[]> resultGet = shareUserRecordService.findByModifyTimeAndCampaignIdWithDonateStatus(start, end, campaignId);
         
         Row row = sheet.createRow(0); // declare a row object reference
         row.createCell(0).setCellValue("分享者UID");
         row.createCell(1).setCellValue("分享時間");
         row.createCell(2).setCellValue("被分享者UID");
-        row.createCell(3).setCellValue("點擊時間");
+        row.createCell(3).setCellValue("被分享者狀態");
+        row.createCell(4).setCellValue("點擊時間");
         
         if(resultGet.size() != 0){
             int seqNo = 1; //序號
@@ -91,7 +92,8 @@ public class ExportReportForMGM {
                 row1.createCell(0).setCellValue(o[0] == null? "" : o[0].toString());
                 row1.createCell(1).setCellValue(o[1] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[1], sdf2)));
                 row1.createCell(2).setCellValue(o[2] == null? "" : o[2].toString());
-                row1.createCell(3).setCellValue(o[3] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[3], sdf2)));
+                row1.createCell(3).setCellValue(o[2] == null?"":(o[3] == null? "OLD" : "NEW"));
+                row1.createCell(4).setCellValue(o[4] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[4], sdf2)));
                 seqNo++;
             }
         }

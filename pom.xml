@@ -185,7 +185,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.4</version>
+			<version>1.18.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -312,11 +312,11 @@
 			<version>3.14</version>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>com.linecorp.bot</groupId>
 			<artifactId>line-bot-model</artifactId>
 			<version>1.5.0</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- https://mvnrepository.com/artifact/com.linecorp.bot/line-bot-api-client -->
 		<dependency>
