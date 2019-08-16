@@ -32,7 +32,7 @@ $(function(){
 					groupData.find('.uid').html(o.uid);
 
 					if(status == "SUCCESS"){
-						groupData.find('.status').html(o.transactionBalance);
+						groupData.find('.status').html(o.transactionAmount);
 					}else{
 						groupData.find('.status').html(o.description);
 					}
