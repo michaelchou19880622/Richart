@@ -137,9 +137,15 @@ public class LinePointAMSchedulerService {
 		for(ShareUserRecord undoneUser : undoneUsers) {
 			logger.info("undoneUser:"+undoneUser);
 		    
-		    // get judgment
+		    // get autoSendPoint & judgment
 		    ShareCampaign shareCampaign = shareCampaignService.findOne(undoneUser.getCampaignId());
+		    Boolean autoSendPoint = shareCampaign.getAutoSendPoint();
 		    String judgment = shareCampaign.getJudgement();
+		    
+		    // judge autoSendPoint
+		    if(!autoSendPoint) {
+		    	continue;
+		    }
 		    
 		    // combine stateJudgment
 		    String stateJudgment = "";
@@ -152,6 +158,7 @@ public class LinePointAMSchedulerService {
 		    }
 
 		    // add count
+		    Long noJudgementCount = 0L;
 		    List<ShareCampaignClickTracing> friends =  shareCampaignClickTracingService.findByShareUserRecordId(undoneUser.getShareUserRecordId());
 		    for(ShareCampaignClickTracing shareCampaignClickTracing : friends) {
 		    	String friendUid = shareCampaignClickTracing.getUid();
@@ -186,13 +193,19 @@ public class LinePointAMSchedulerService {
 				    		
 				    		shareDonatorRecordService.save(shareDonatorRecord);
 				    		shareUserRecordService.save(undoneUser);
-				    	}else {
+				    	}else{
 				    		logger.info("donator is duplicated:"+friendUid);
 				    	}
+				    }else{
+				    	noJudgementCount += 1L;
 				    }
 		    	}
 		    }
-		    
+		    if(judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)) {
+		    	undoneUser.setCumulativeCount(noJudgementCount);
+		    	logger.info("noJudgementCount for saving:"+noJudgementCount);
+		    	shareUserRecordService.save(undoneUser);
+		    }
 		    
 		    // undone -> done
 		    logger.info("符合要求人數:"+undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());

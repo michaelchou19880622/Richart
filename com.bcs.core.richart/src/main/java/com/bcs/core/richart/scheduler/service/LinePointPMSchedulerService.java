@@ -136,9 +136,15 @@ public class LinePointPMSchedulerService {
 		for(ShareUserRecord undoneUser : undoneUsers) {
 			logger.info("undoneUser:"+undoneUser);
 		    
-		    // get judgment
+		    // get autoSendPoint & judgment
 		    ShareCampaign shareCampaign = shareCampaignService.findOne(undoneUser.getCampaignId());
+		    Boolean autoSendPoint = shareCampaign.getAutoSendPoint();
 		    String judgment = shareCampaign.getJudgement();
+		    
+		    // judge autoSendPoint
+		    if(!autoSendPoint) {
+		    	continue;
+		    }
 		    
 		    // combine stateJudgment
 		    String stateJudgment = "";
@@ -151,6 +157,7 @@ public class LinePointPMSchedulerService {
 		    }
 
 		    // add count
+		    Long noJudgementCount = 0L;
 		    List<ShareCampaignClickTracing> friends =  shareCampaignClickTracingService.findByShareUserRecordId(undoneUser.getShareUserRecordId());
 		    for(ShareCampaignClickTracing shareCampaignClickTracing : friends) {
 		    	String friendUid = shareCampaignClickTracing.getUid();
@@ -161,7 +168,7 @@ public class LinePointPMSchedulerService {
 		    		logger.info("friendUid who Satisfied Judgment:"+friendUid);
 		    		
 		    		// check Exclusive
-		    		if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)  ||judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
+				    if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)  ||judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
 				    	// find one row with same donatorUid
 				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUid(friendUid);
 				    	logger.info("pastDonators:"+pastDonators);
@@ -178,19 +185,26 @@ public class LinePointPMSchedulerService {
 				    		shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
 				    		
 				    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
+				    		undoneUser.setModifyTime(new Date());
 				    		
 				    		logger.info("shareDonatorRecord for saving:"+shareDonatorRecord);
 				    		logger.info("undoneUser for saving:"+undoneUser);
 				    		
 				    		shareDonatorRecordService.save(shareDonatorRecord);
 				    		shareUserRecordService.save(undoneUser);
-				    	}else {
+				    	}else{
 				    		logger.info("donator is duplicated:"+friendUid);
 				    	}
+				    }else{
+				    	noJudgementCount += 1L;
 				    }
 		    	}
 		    }
-		    
+		    if(judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)) {
+		    	undoneUser.setCumulativeCount(noJudgementCount);
+		    	logger.info("noJudgementCount for saving:"+noJudgementCount);
+		    	shareUserRecordService.save(undoneUser);
+		    }
 		    
 		    // undone -> done
 		    logger.info("符合要求人數:"+undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());
