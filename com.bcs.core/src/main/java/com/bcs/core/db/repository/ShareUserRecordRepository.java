@@ -55,20 +55,20 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
             + "join (select SHARE_USER_RECORD_ID, count(*) as ct  from BCS_SHARE_CAMPAIGN_CLICK_TRACING group by SHARE_USER_RECORD_ID) c on c.SHARE_USER_RECORD_ID = a.SHARE_USER_RECORD_ID "
             + "where a.MODIFY_TIME >= ?1 and a.MODIFY_TIME < ?2 "
             + "and a.CAMPAIGN_ID = ?3 "
-            + "and c.ct >= b.SHARE_TIMES "
+            + "and a.CUMULATIVE_COUNT >= b.SHARE_TIMES "
             + "order by a.MODIFY_TIME", nativeQuery = true)
     List<Object[]> findCompletedByModifyTimeAndCampaignId(Date start, Date end, String campaignId);
     
     @Transactional(readOnly = true, timeout = 60)
     @Query(value = "select a.UID, "
             + "a.MODIFY_TIME, "
-            + "case when c.ct is null then 0 else c.ct end "
+            + "case when c.ct is null then 0 else a.CUMULATIVE_COUNT end "
             + "from BCS_SHARE_USER_RECORD a "
             + "join BCS_SHARE_CAMPAIGN b on a.CAMPAIGN_ID = b.CAMPAIGN_ID "
             + "left join (select SHARE_USER_RECORD_ID, count(*) as ct  from BCS_SHARE_CAMPAIGN_CLICK_TRACING group by SHARE_USER_RECORD_ID) c on c.SHARE_USER_RECORD_ID = a.SHARE_USER_RECORD_ID "
             + "where a.MODIFY_TIME >= ?1 and a.MODIFY_TIME < ?2 "
             + "and a.CAMPAIGN_ID = ?3 "
-            + "and (c.ct < b.SHARE_TIMES or c.ct is null) "
+            + "and (a.CUMULATIVE_COUNT < b.SHARE_TIMES or c.ct is null) "
             + "order by a.MODIFY_TIME", nativeQuery = true)
     List<Object[]> findUncompletedByModifyTimeAndCampaignId(Date start, Date end, String campaignId);
     

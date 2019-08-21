@@ -142,11 +142,6 @@ public class LinePointAMSchedulerService {
 		    Boolean autoSendPoint = shareCampaign.getAutoSendPoint();
 		    String judgment = shareCampaign.getJudgement();
 		    
-		    // judge autoSendPoint
-		    if(!autoSendPoint) {
-		    	continue;
-		    }
-		    
 		    // combine stateJudgment
 		    String stateJudgment = "";
 		    if(judgment == ShareCampaign.JUDGEMENT_FOLLOW) {
@@ -210,12 +205,19 @@ public class LinePointAMSchedulerService {
 		    // undone -> done
 		    logger.info("符合要求人數:"+undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());
 		    if(undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
-		    	
+
 		    	// shareUserRecord.status = done
 		    	ShareUserRecord shareUserRecord = shareUserRecordService.findOne(undoneUser.getShareUserRecordId());
 		    	shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
 		    	shareUserRecordService.save(shareUserRecord);
 		    	
+		    	// autoSendPoint
+		    	logger.info("autoSendPoint:"+autoSendPoint);
+		    	if(!autoSendPoint) {
+		    		continue;
+		    	}
+
+		    	logger.info("LinePointMain.STATUS_SCHEDULED Saving");
 		    	// linePointMain.status = scheduled
 		    	String linePointSerialId = shareCampaign.getLinePointSerialId();
 		    	LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
