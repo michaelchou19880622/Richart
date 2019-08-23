@@ -155,7 +155,7 @@ public class ExportToExcelForLinePointPushApiEffects {
 
 				row.createCell(0).setCellValue(detail.getUid());
 				if(status.equals(LinePointDetail.STATUS_SUCCESS)) {
-					row.createCell(1).setCellValue(detail.getTransactionBalance());
+					row.createCell(1).setCellValue(detail.getTransactionAmount());
 				}else {
 					row.createCell(1).setCellValue(detail.getDescription());
 				}
