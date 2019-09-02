@@ -38,6 +38,20 @@ public interface ContentLinkRepository extends EntityRepository<ContentLink, Str
 	public List<Object[]> findAllLinkUrlByLikeTitle(String title);
 	
 	@Transactional(readOnly = true, timeout = 30)
+	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME "
+			+ "FROM BCS_CONTENT_LINK "
+			+ "WHERE MODIFY_TIME BETWEEN ?1 AND  ?2 AND LINK_URL IS NOT NULL AND LINK_URL != '' "
+			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
+	public List<Object[]> findAllLinkUrlByLikeTime(String startTime , String endTime);
+	
+	@Transactional(readOnly = true, timeout = 30)
+	@Query(value = "SELECT BCS_USER_TRACE_LOG.MODIFY_USER ,BCS_CONTENT_LINK.MODIFY_TIME " 
+				 + "FROM BCS_CONTENT_LINK, BCS_USER_TRACE_LOG "
+				 + "WHERE LINK_ID = REFERENCE_ID AND ACTION = 'ClickLink'  and LINK_URL = ?1 "
+				 + "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
+	public List<Object[]> findAllLinkUrlForallUID(String linkUrl);
+	
+	@Transactional(readOnly = true, timeout = 30)
 	public List<ContentLink> findByLinkUrl(String linkUrl);
 
 	@Transactional(readOnly = true, timeout = 30)

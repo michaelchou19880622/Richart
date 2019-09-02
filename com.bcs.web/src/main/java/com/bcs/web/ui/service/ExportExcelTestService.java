@@ -51,7 +51,7 @@ import com.bcs.core.report.export.ExportToExcelForMid;
 import com.bcs.core.report.service.ContentLinkReportService;
 import com.bcs.core.utils.DBResultUtil;
 import com.bcs.core.utils.ErrorRecord;
-import com.bcs.web.ui.model.LinkClickReportModel;
+import com.bcs.core.model.LinkClickReportModel;
 
 @Service
 public class ExportExcelTestService {
