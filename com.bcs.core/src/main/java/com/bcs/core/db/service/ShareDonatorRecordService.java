@@ -42,6 +42,10 @@ public class ShareDonatorRecordService {
 	public List<ShareDonatorRecord> findByDonatorUid(String donatorUid) {
 	    return shareDonatorRecordRepository.findByDonatorUid(donatorUid);
 	}
+
+	public List<ShareDonatorRecord> findByDonatorUidAndDonateLevel(String donatorUid, String donateLevel) {
+	    return shareDonatorRecordRepository.findByDonatorUidAndDonateLevel(donatorUid, donateLevel);
+	}
 	
 	
 //	public ShareUserRecord findByCampaignIdAndUid(String campaignId, String uid) {

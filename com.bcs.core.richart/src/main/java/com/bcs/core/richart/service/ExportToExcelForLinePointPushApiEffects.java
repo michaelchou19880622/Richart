@@ -183,7 +183,7 @@ public class ExportToExcelForLinePointPushApiEffects {
 			// first row
 			Row row = sheet.createRow(0);
 			row.createCell(0).setCellValue("UID");
-			row.createCell(1).setCellValue("狀態 (失敗原因/成功後的點數)");
+			row.createCell(1).setCellValue("狀態 (失敗原因/此人本次活動得到的點數總計)");
 			row.createCell(2).setCellValue("發送時間");
 			
 			sheet.setColumnWidth(0, 35*256);

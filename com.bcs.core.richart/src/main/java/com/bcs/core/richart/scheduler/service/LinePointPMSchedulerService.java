@@ -168,6 +168,70 @@ public class LinePointPMSchedulerService {
 		    		logger.info("friendUid who Satisfied Judgment:"+friendUid);
 		    		
 		    		// check Exclusive
+		    		if(judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)){
+		    			noJudgementCount += 1L;
+		    		}else if(judgment.equals(ShareCampaign.JUDGEMENT_BINDED)){
+				    	// find one row with same donatorUid
+				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUidAndDonateLevel(friendUid, ShareDonatorRecord.DONATE_LEVEL_BINDED);
+				    	logger.info("pastDonators:"+pastDonators);
+				    	
+				    	// if not duplicated
+				    	if(pastDonators.isEmpty()) {
+				    		logger.info("donator is unique:"+friendUid);
+				    		
+				    		// save ShareDonatorRecord
+				    		ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
+				    		shareDonatorRecord.setDonatorUid(friendUid);
+				    		shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
+				    		shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
+				    		shareDonatorRecord.setModifyTime(new Date());
+				    		shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
+				    		shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
+				    		shareDonatorRecord.setDonateLevel(ShareDonatorRecord.DONATE_LEVEL_BINDED);
+				    		shareDonatorRecordService.save(shareDonatorRecord);
+				    		logger.info("shareDonatorRecord for saving:"+shareDonatorRecord);
+				    		
+				    		// save cumulative count
+				    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
+				    		undoneUser.setModifyTime(new Date());
+				    		shareUserRecordService.save(undoneUser);
+				    		logger.info("undoneUser for saving:"+undoneUser);
+				    	}else{
+				    		logger.info("donator is duplicated:"+friendUid);
+				    	}
+				    	
+		    		}else if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)){
+				    	// find one row with same donatorUid
+				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUid(friendUid);
+				    	logger.info("pastDonators:"+pastDonators);
+				    	
+				    	// if not duplicated
+				    	if(pastDonators.isEmpty()) {
+				    		logger.info("donator is unique:"+friendUid);
+				    		
+				    		// save ShareDonatorRecord
+				    		ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
+				    		shareDonatorRecord.setDonatorUid(friendUid);
+				    		shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
+				    		shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
+				    		shareDonatorRecord.setModifyTime(new Date());
+				    		shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
+				    		shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
+				    		shareDonatorRecord.setDonateLevel(ShareDonatorRecord.DONATE_LEVEL_FOLLLOW);
+				    		shareDonatorRecordService.save(shareDonatorRecord);
+				    		logger.info("shareDonatorRecord for saving:"+shareDonatorRecord);
+				    		
+				    		// save cumulative count
+				    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
+				    		undoneUser.setModifyTime(new Date());
+				    		shareUserRecordService.save(undoneUser);
+				    		logger.info("undoneUser for saving:"+undoneUser);
+				    	}else{
+				    		logger.info("donator is duplicated:"+friendUid);
+				    	}
+		    		}
+		    		
+		    		
 				    if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)  ||judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
 				    	// find one row with same donatorUid
 				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUid(friendUid);
@@ -196,7 +260,7 @@ public class LinePointPMSchedulerService {
 				    		logger.info("donator is duplicated:"+friendUid);
 				    	}
 				    }else{
-				    	noJudgementCount += 1L;
+				    	
 				    }
 		    	}
 		    }

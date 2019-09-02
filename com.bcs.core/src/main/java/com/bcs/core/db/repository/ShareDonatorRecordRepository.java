@@ -15,6 +15,9 @@ public interface ShareDonatorRecordRepository extends EntityRepository<ShareDona
 	@Transactional(readOnly = true, timeout = 60)
 	List<ShareDonatorRecord> findByDonatorUid(String donatorUid);
 	
+	@Transactional(readOnly = true, timeout = 60)
+	List<ShareDonatorRecord> findByDonatorUidAndDonateLevel(String donatorUid, String donateLevel);
+	
 //    @Transactional(readOnly = true, timeout = 30)
 //    @Query(value = "select * from BCS_SHARE_USER_RECORD where CAMPAIGN_ID = ?1 and UID = ?2", nativeQuery = true)
 //    ShareUserRecord findByCampaignIdAndUid(String campaignId, String uid);

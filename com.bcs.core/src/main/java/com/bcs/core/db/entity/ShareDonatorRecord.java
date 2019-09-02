@@ -21,6 +21,9 @@ indexes = {
 public class ShareDonatorRecord extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
 
+	public static final String DONATE_LEVEL_FOLLLOW = "FOLLLOW";
+	public static final String DONATE_LEVEL_BINDED = "BINDED";
+	
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "SHARE_DONATOR_RECORD_ID")
@@ -41,58 +44,58 @@ public class ShareDonatorRecord extends AbstractBcsEntity{
     @Column(name = "SHARE_CAMPAIGN_CLICK_TRACING_ID")
     private Long shareCampaignClickTracingId;
 
+    @Column(name = "DONATE_LEVEL", columnDefinition="nvarchar(50)")
+    private String donateLevel;
+    
 	@Column(name = "MODIFY_TIME")
 	private Date modifyTime;
 
 	public Long getShareDonatorRecordId() {
 		return shareDonatorRecordId;
 	}
-
 	public String getDonatorUid() {
 		return donatorUid;
 	}
-
 	public void setDonatorUid(String donatorUid) {
 		this.donatorUid = donatorUid;
 	}
-
 	public String getBenefitedUid() {
 		return benefitedUid;
 	}
-
 	public void setBenefitedUid(String benefitedUid) {
 		this.benefitedUid = benefitedUid;
 	}
-
 	public String getCampaignId() {
 		return campaignId;
 	}
-
 	public void setCampaignId(String campaignId) {
 		this.campaignId = campaignId;
 	}
-
 	public String getShareUserRecordId() {
 		return shareUserRecordId;
 	}
-
 	public void setShareUserRecordId(String shareUserRecordId) {
 		this.shareUserRecordId = shareUserRecordId;
 	}
-
 	public Long getShareCampaignClickTracingId() {
 		return shareCampaignClickTracingId;
 	}
-
 	public void setShareCampaignClickTracingId(Long shareCampaignClickTracingId) {
 		this.shareCampaignClickTracingId = shareCampaignClickTracingId;
 	}
-
 	public Date getModifyTime() {
 		return modifyTime;
 	}
-
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
-	}  
+	}
+	public String getDonateLevel() {
+		return donateLevel;
+	}
+	public void setDonateLevel(String donateLevel) {
+		this.donateLevel = donateLevel;
+	}
+	public void setShareDonatorRecordId(Long shareDonatorRecordId) {
+		this.shareDonatorRecordId = shareDonatorRecordId;
+	}
 }
