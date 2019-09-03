@@ -19,6 +19,7 @@ import com.bcs.core.db.service.ShareCampaignService;
 import com.bcs.core.db.service.ShareUserRecordService;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.SQLDateFormatUtil;
+import org.apache.commons.lang3.StringUtils;
 
 @Service
 public class ExportReportForMGM {
@@ -92,7 +93,7 @@ public class ExportReportForMGM {
                 row1.createCell(0).setCellValue(o[0] == null? "" : o[0].toString());
                 row1.createCell(1).setCellValue(o[1] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[1], sdf2)));
                 row1.createCell(2).setCellValue(o[2] == null? "" : o[2].toString());
-                row1.createCell(3).setCellValue(o[2] == null?"":(o[3] == null? "OLD" : "NEW"));
+                row1.createCell(3).setCellValue(o[2] == null? "" : (o[3].toString().equals("1")?"NEW":"OLD"));
                 row1.createCell(4).setCellValue(o[4] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[4], sdf2)));
                 seqNo++;
             }

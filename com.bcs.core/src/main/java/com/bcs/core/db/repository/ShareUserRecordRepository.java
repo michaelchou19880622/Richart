@@ -37,7 +37,7 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
     @Query(value = "select SUR.UID as SUR_UID, "
             + "SUR.MODIFY_TIME as SUR_MODIFY_TIME, "
             + "SCCT.UID as SCCT_UID, "
-            + "SDR.DONATOR_UID as IS_DONATE, "
+            + "IIF ( SDR.CAMPAIGN_ID = SUR.CAMPAIGN_ID, 1, 0)  as IS_DONATE, "
             + "SCCT.MODIFY_TIME as SCCT_MODIFY_TIME "
             + "from BCS_SHARE_USER_RECORD SUR "
             + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "

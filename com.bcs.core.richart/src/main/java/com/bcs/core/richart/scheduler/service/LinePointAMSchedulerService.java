@@ -166,37 +166,7 @@ public class LinePointAMSchedulerService {
 		    		// check Exclusive
 		    		if(judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)){
 		    			noJudgementCount += 1L;
-		    		}else if(judgment.equals(ShareCampaign.JUDGEMENT_BINDED)){
-				    	// find one row with same donatorUid
-				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUidAndDonateLevel(friendUid, ShareDonatorRecord.DONATE_LEVEL_BINDED);
-				    	logger.info("pastDonators:"+pastDonators);
-				    	
-				    	// if not duplicated
-				    	if(pastDonators.isEmpty()) {
-				    		logger.info("donator is unique:"+friendUid);
-				    		
-				    		// save ShareDonatorRecord
-				    		ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
-				    		shareDonatorRecord.setDonatorUid(friendUid);
-				    		shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
-				    		shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
-				    		shareDonatorRecord.setModifyTime(new Date());
-				    		shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
-				    		shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
-				    		shareDonatorRecord.setDonateLevel(ShareDonatorRecord.DONATE_LEVEL_BINDED);
-				    		shareDonatorRecordService.save(shareDonatorRecord);
-				    		logger.info("shareDonatorRecord for saving:"+shareDonatorRecord);
-				    		
-				    		// save cumulative count
-				    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
-				    		undoneUser.setModifyTime(new Date());
-				    		shareUserRecordService.save(undoneUser);
-				    		logger.info("undoneUser for saving:"+undoneUser);
-				    	}else{
-				    		logger.info("donator is duplicated:"+friendUid);
-				    	}
-				    	
-		    		}else if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)){
+		    		}else{
 				    	// find one row with same donatorUid
 				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUid(friendUid);
 				    	logger.info("pastDonators:"+pastDonators);
@@ -213,7 +183,7 @@ public class LinePointAMSchedulerService {
 				    		shareDonatorRecord.setModifyTime(new Date());
 				    		shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
 				    		shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
-				    		shareDonatorRecord.setDonateLevel(ShareDonatorRecord.DONATE_LEVEL_FOLLLOW);
+				    		shareDonatorRecord.setDonateLevel(judgment);
 				    		shareDonatorRecordService.save(shareDonatorRecord);
 				    		logger.info("shareDonatorRecord for saving:"+shareDonatorRecord);
 				    		
@@ -223,8 +193,19 @@ public class LinePointAMSchedulerService {
 				    		shareUserRecordService.save(undoneUser);
 				    		logger.info("undoneUser for saving:"+undoneUser);
 				    	}else{
+				    		ShareDonatorRecord shareDonatorRecord = pastDonators.get(0);
+				    		if(shareDonatorRecord.getDonateLevel().equals("FOLLOW") && judgment.equals(ShareCampaign.JUDGEMENT_BINDED) ) {
+				    			shareDonatorRecord.setDonateLevel(ShareCampaign.JUDGEMENT_BINDED);
+				    			shareDonatorRecordService.save(shareDonatorRecord);
+
+					    		// save cumulative count
+					    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
+					    		undoneUser.setModifyTime(new Date());
+					    		shareUserRecordService.save(undoneUser);
+				    		}
 				    		logger.info("donator is duplicated:"+friendUid);
 				    	}
+				    	
 		    		}
 		    		
 		    		
@@ -255,8 +236,6 @@ public class LinePointAMSchedulerService {
 				    	}else{
 				    		logger.info("donator is duplicated:"+friendUid);
 				    	}
-				    }else{
-				    	
 				    }
 		    	}
 		    }
@@ -267,7 +246,9 @@ public class LinePointAMSchedulerService {
 		    }
 		    
 		    // undone -> done
-		    logger.info("符合要求人數:"+undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());
+		    if(undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
+		    	logger.info("符合要求人數:"+undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());
+		    }
 		    if(undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
 
 		    	// shareUserRecord.status = done
@@ -277,24 +258,24 @@ public class LinePointAMSchedulerService {
 		    	
 		    	// autoSendPoint
 		    	logger.info("autoSendPoint:"+autoSendPoint);
-		    	if(!autoSendPoint) {
-		    		continue;
+		    	if(autoSendPoint) {
+			    	logger.info("LinePointMain.STATUS_SCHEDULED Saving");
+			    	// linePointMain.status = scheduled
+			    	String linePointSerialId = shareCampaign.getLinePointSerialId();
+			    	LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+			    	linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+			    	linePointMainService.save(linePointMain);
+			    	
+			    	// linePointScheduledDetail.status = waiting
+			    	LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+			    	linePointScheduledDetail.setUid(undoneUser.getUid());
+			    	linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+			    	linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+			    	linePointScheduledDetail.setModifyTime(new Date());
+			    	linePointScheduledDetailService.save(linePointScheduledDetail);	    		
 		    	}
 
-		    	logger.info("LinePointMain.STATUS_SCHEDULED Saving");
-		    	// linePointMain.status = scheduled
-		    	String linePointSerialId = shareCampaign.getLinePointSerialId();
-		    	LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
-		    	linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
-		    	linePointMainService.save(linePointMain);
-		    	
-		    	// linePointScheduledDetail.status = waiting
-		    	LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
-		    	linePointScheduledDetail.setUid(undoneUser.getUid());
-		    	linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
-		    	linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
-		    	linePointScheduledDetail.setModifyTime(new Date());
-		    	linePointScheduledDetailService.save(linePointScheduledDetail);
+
 		    }
 		}
 		
