@@ -1,6 +1,8 @@
 package com.bcs.web.ui.controller;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -52,9 +58,11 @@ import com.bcs.core.web.security.CustomUser;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.MobilePageEnum;
 import com.bcs.web.aop.ControllerLog;
-import com.bcs.web.ui.model.LinkClickReportModel;
+import com.bcs.core.model.LinkClickReportModel;
 import com.bcs.web.ui.model.PageVisitReportModel;
+import com.bcs.web.ui.service.ExportExcelForLinkPageSrevice;
 import com.bcs.web.ui.service.ExportExcelUIService;
+import com.bcs.web.ui.service.LoadFileUIService;
 
 @Controller
 @RequestMapping("/bcs")
@@ -74,11 +82,11 @@ public class BCSLinkPageController extends BCSBaseController {
 	@Autowired
 	private ContentGameService contentGameService;
 	@Autowired
-	private TurntableDetailService turntableDetailService;
+	private ExportExcelForLinkPageSrevice ExportExcelForLinkPageSrevice;
 	
 	/** Logger */
 	private static Logger logger = Logger.getLogger(BCSLinkPageController.class);
-	
+	Map<String, LinkClickReportModel> linkResult = new LinkedHashMap<String, LinkClickReportModel>();
 	/**
 	 * 取得連結列表
 	 */
@@ -132,6 +140,92 @@ public class BCSLinkPageController extends BCSBaseController {
 	}
 	
 	private Map<String, Map<String, Map<String, Long>>> cacheLinkReport = new HashMap<String, Map<String, Map<String, Long>>>();
+	
+	/**
+	 * 使用時間取得連結列表
+	 */
+	@ControllerLog(description="使用時間取得連結列表")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/getLinkUrlfromTime")
+	@ResponseBody
+	public ResponseEntity<?> getLinkUrlfromtime(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@CurrentUser CustomUser customUser) throws IOException {
+		logger.info("getLinkUrlfromtime");
+		
+		Calendar yesterdayCalendar = Calendar.getInstance();
+		yesterdayCalendar.add(Calendar.DATE, -1);
+		
+		Calendar nowCalendar = Calendar.getInstance();
+		
+		Calendar nextCalendar = Calendar.getInstance();
+		nextCalendar.add(Calendar.DATE, 1);
+		
+		try{ 
+			String startTime = request.getParameter("startTime");
+			String endTime = request.getParameter("endTime");
+			logger.info("startTime : " + startTime);
+			logger.info("endTime : " + endTime);
+			
+			//Map<String, LinkClickReportModel> linkResult = new LinkedHashMap<String, LinkClickReportModel>();
+			linkResult.clear();
+			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME
+			
+			result = contentLinkService.findAllLinkUrlByLikeTime(startTime,endTime);
+		
+			for(Object[] link : result){
+				String linkUrl = castToString(link[0]);
+				String linkTitle = castToString(link[1]);
+				String linkId = castToString(link[2]);
+				String linkTime = castToString(link[3]);
+				LinkClickReportModel model = linkResult.get(linkUrl);
+				
+				if(model == null){
+					model = new LinkClickReportModel();
+					model.setLinkUrl(linkUrl);
+					model.setLinkId(linkId);
+					model.setLinkTitle(linkTitle);
+					model.setLinkTime(linkTime);
+					linkResult.put(linkUrl, model);
+				}
+				else{
+					if(StringUtils.isBlank(model.getLinkTitle())){
+						model.setLinkTitle(linkTitle);
+					}
+				}
+			}
+			
+			// Get ContentFlag, setLinkClickCount
+			for(LinkClickReportModel model : linkResult.values()){
+				
+				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
+				model.addFlags(flags);
+				
+				Thread.sleep(200);
+				
+				// setLinkClickCount
+				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
+			}
+			
+			return new ResponseEntity<>(linkResult, HttpStatus.OK);
+		}
+		catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));
+			logger.info( "getLinkUrlfromtime : " + ErrorRecord.recordError(e));
+			if(e instanceof BcsNoticeException){
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			}
+			else{
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
 	/**
 	 * 取得連結列表
 	 */
@@ -155,9 +249,8 @@ public class BCSLinkPageController extends BCSBaseController {
 		try{ 
 			String queryFlag = request.getParameter("queryFlag");
 			String pageStr = request.getParameter("page");
-			
-			Map<String, LinkClickReportModel> linkResult = new LinkedHashMap<String, LinkClickReportModel>();
-
+			//Map<String, LinkClickReportModel> linkResult = new LinkedHashMap<String, LinkClickReportModel>();
+			linkResult.clear();
 			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME
 			if(StringUtils.isNotBlank(pageStr) && StringUtils.isBlank(queryFlag)){
 				
@@ -214,7 +307,6 @@ public class BCSLinkPageController extends BCSBaseController {
 					model.setLinkUrl(linkUrl);
 					model.setLinkId(linkId);
 					model.setLinkTitle(linkTitle);
-					
 					model.setLinkTime(linkTime);
 					
 					linkResult.put(linkUrl, model);
@@ -567,4 +659,35 @@ public class BCSLinkPageController extends BCSBaseController {
 		 }
 		 throw new Exception("資料產生錯誤");
 	}
+	
+	
+	@ControllerLog(description="匯出 成效畫面列表 EXCEL")
+	@RequestMapping(method = RequestMethod.GET, value = "edit/exportToExcelForInterface")
+	@ResponseBody
+	public void exportToExcelForInterface(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@CurrentUser CustomUser customUser
+			) throws IOException{
+		logger.info("----------- exportToExcelForInterface -----------");
+		//Map<String, LinkClickReportModel> linkResult = new LinkedHashMap<String, LinkClickReportModel>();
+		ExportExcelForLinkPageSrevice.exportExcelForInterface(request,response,linkResult);
+		
+	}
+	
+	@ControllerLog(description="匯出 成效畫面列表 總表")
+	@RequestMapping(method = RequestMethod.GET, value = "edit/exportToExcelForSummaryUid")
+	@ResponseBody
+	public void exportToExcelForSummaryUid(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@CurrentUser CustomUser customUser
+			) throws IOException{
+		logger.info("---------- exportToExcelForSummaryUid ------------");
+		
+		ExportExcelForLinkPageSrevice.exportExcelForSummary(request,response,linkResult);
+		
+	}
+	
+	
 }

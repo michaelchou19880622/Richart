@@ -1,4 +1,4 @@
-package com.bcs.web.ui.model;
+package com.bcs.core.model;
 
 import java.util.HashSet;
 import java.util.List;
