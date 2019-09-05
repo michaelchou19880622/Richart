@@ -51,9 +51,10 @@ $(function(){
 				groupData.find('.linkUrl').html(o.linkUrl);
 				
 				var linkFlag = moment(o.linkTime).format("YYYY/MM/DD") + "<br/><br/>";
-				$.each(o.flags, function(i, o){
-					linkFlag += o + "/";
-				});
+				//$.each(o.flags, function(i, o){
+				//	linkFlag += o + "/";
+				//});
+				linkFlag += o.linkFlag;
 				groupData.find('.linkFlag').html(linkFlag);
 				
 				var linkUrl = encodeURIComponent(o.linkUrl);

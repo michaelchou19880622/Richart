@@ -138,6 +138,10 @@ public class ContentLinkService {
 	public List<Object[]> countClickCountByLinkUrlAndTime(String linkUrl, String start, String end){
 		return contentLinkRepository.countClickCountByLinkUrlAndTime(linkUrl, start, end);
 	}
+	// 2019 09 05 Sun 修改成 LINKID 查詢
+	public List<Object[]> countClickCountByLinkUrlAndTime(String linkUrl, String start, String end , String LinkId){
+		return contentLinkRepository.countClickCountByLinkUrlAndTime(linkUrl, start, end , LinkId);
+	}
 	
 	public List<Object[]> countClickCountByLinkUrl(String linkUrl){
 		return contentLinkRepository.countClickCountByLinkUrl(linkUrl);

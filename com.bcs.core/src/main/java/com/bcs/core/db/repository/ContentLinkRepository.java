@@ -10,35 +10,42 @@ import com.bcs.core.db.persistence.EntityRepository;
 
 public interface ContentLinkRepository extends EntityRepository<ContentLink, String>{
 	@Transactional(readOnly = true, timeout = 30)
-	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME "
+	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
 			+ "FROM BCS_CONTENT_LINK "
 			+ "WHERE LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
 	public List<Object[]> findAllLinkUrl();
 
 	@Transactional(readOnly = true, timeout = 30)
-	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME "
+	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
 			+ "FROM BCS_CONTENT_LINK, BCS_CONTENT_FLAG "
 			+ "WHERE CONTENT_TYPE = 'LINK' AND FLAG_VALUE = ?1 AND LINK_ID = REFERENCE_ID AND LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
 	public List<Object[]> findAllLinkUrlByFlag(String flag);
 
+//	@Transactional(readOnly = true, timeout = 30)
+//	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
+//			+ "FROM BCS_CONTENT_LINK, BCS_CONTENT_FLAG "
+//			+ "WHERE CONTENT_TYPE = 'LINK' AND FLAG_VALUE LIKE ?1 AND LINK_ID = REFERENCE_ID AND LINK_URL IS NOT NULL AND LINK_URL != '' "
+//			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
+//	public List<Object[]> findAllLinkUrlByLikeFlag(String flag);
+	
 	@Transactional(readOnly = true, timeout = 30)
-	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME "
-			+ "FROM BCS_CONTENT_LINK, BCS_CONTENT_FLAG "
-			+ "WHERE CONTENT_TYPE = 'LINK' AND FLAG_VALUE LIKE ?1 AND LINK_ID = REFERENCE_ID AND LINK_URL IS NOT NULL AND LINK_URL != '' "
+	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
+			+ "FROM BCS_CONTENT_LINK "
+			+ "WHERE LINK_TAG LIKE ?1  AND LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
 	public List<Object[]> findAllLinkUrlByLikeFlag(String flag);
 
 	@Transactional(readOnly = true, timeout = 30)
-	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME "
+	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
 			+ "FROM BCS_CONTENT_LINK "
 			+ "WHERE LINK_TITLE LIKE ?1 AND LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
 	public List<Object[]> findAllLinkUrlByLikeTitle(String title);
 	
 	@Transactional(readOnly = true, timeout = 30)
-	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME "
+	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG"
 			+ "FROM BCS_CONTENT_LINK "
 			+ "WHERE MODIFY_TIME BETWEEN ?1 AND  ?2 AND LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
@@ -67,6 +74,14 @@ public interface ContentLinkRepository extends EntityRepository<ContentLink, Str
 			+ "WHERE LINK_ID = REFERENCE_ID AND ACTION = 'ClickLink' AND LINK_URL = ?1 AND BCS_USER_TRACE_LOG.MODIFY_DAY >= ?2 AND BCS_USER_TRACE_LOG.MODIFY_DAY < ?3  ", nativeQuery = true)
 	public List<Object[]> countClickCountByLinkUrlAndTime(String linkUrl, String start, String end);
 
+	@Transactional(readOnly = true, timeout = 30)
+	@Query(value = "SELECT "
+			+ "           COUNT('x') AS allCount, "
+			+ "           COUNT(distinct BCS_USER_TRACE_LOG.MODIFY_USER) AS allDistinctCount "
+			+ "FROM BCS_CONTENT_LINK, BCS_USER_TRACE_LOG "
+			+ "WHERE LINK_ID = REFERENCE_ID AND ACTION = 'ClickLink' AND LINK_URL = ?1 AND BCS_USER_TRACE_LOG.MODIFY_DAY >= ?2 AND BCS_USER_TRACE_LOG.MODIFY_DAY < ?3  AND LINK_ID = ?4", nativeQuery = true)
+	public List<Object[]> countClickCountByLinkUrlAndTime(String linkUrl, String start, String end , String LinkId);
+	
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT "
 			+ "      MODIFY_DAY AS Day, "

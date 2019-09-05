@@ -178,6 +178,7 @@ public class BCSLinkPageController extends BCSBaseController {
 				String linkTitle = castToString(link[1]);
 				String linkId = castToString(link[2]);
 				String linkTime = castToString(link[3]);
+				String linkflag = castToString(link[4]);
 				LinkClickReportModel model = linkResult.get(linkUrl);
 				
 				if(model == null){
@@ -186,6 +187,7 @@ public class BCSLinkPageController extends BCSBaseController {
 					model.setLinkId(linkId);
 					model.setLinkTitle(linkTitle);
 					model.setLinkTime(linkTime);
+					model.setLinkFlag(linkflag);
 					linkResult.put(linkUrl, model);
 				}
 				else{
@@ -198,8 +200,9 @@ public class BCSLinkPageController extends BCSBaseController {
 			// Get ContentFlag, setLinkClickCount
 			for(LinkClickReportModel model : linkResult.values()){
 				
-				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
-				model.addFlags(flags);
+//				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
+//				System.out.println("flags : " + flags );
+//				model.addFlags(flags);
 				
 				Thread.sleep(200);
 				
@@ -261,34 +264,34 @@ public class BCSLinkPageController extends BCSBaseController {
 				
 				Sort.Order order = new Sort.Order(Direction.DESC, "modifyTime");
 				Sort sort = new Sort(order);
-				
 				Pageable pageable = new PageRequest(page, size, sort);
 				Page<ContentLink> linkList = contentLinkService.findAll(pageable);
 				for(ContentLink link : linkList.getContent()){
 					if(StringUtils.isBlank(link.getLinkUrl())){
 						continue;
 					}
-					Object[] obj = new Object[4];
+					Object[] obj = new Object[5];
 					obj[0] = link.getLinkUrl();
 					obj[1] = link.getLinkTitle();
 					obj[2] = link.getLinkId();
 					obj[3] = link.getModifyTime();
+					obj[4] = link.getLinkTag();
 					result.add(obj);
 				}
-			}
-			else{
+			}else{
 				if(StringUtils.isNotBlank(queryFlag)){
+					
 					result = contentLinkService.findAllLinkUrlByLikeFlag("%" + queryFlag + "%");
-
-					List<Object[]> links = contentLinkService.findAllLinkUrlByLikeTitle("%" + queryFlag + "%");
-					if(result != null){
-						if(links != null && links.size() > 0){
-							result.addAll(links);
-						}
-					}
-					else{
-						result = links;
-					}
+//改成直接使用LINK ID 查詢
+//					List<Object[]> links = contentLinkService.findAllLinkUrlByLikeTitle("%" + queryFlag + "%");
+//					if(result != null){
+//						if(links != null && links.size() > 0){
+//							result.addAll(links);
+//						}
+//					}
+//					else{
+//						result = links;
+//					}
 				}
 				else{
 					result = contentLinkService.getAllContentLinkUrl();
@@ -300,6 +303,7 @@ public class BCSLinkPageController extends BCSBaseController {
 				String linkTitle = castToString(link[1]);
 				String linkId = castToString(link[2]);
 				String linkTime = castToString(link[3]);
+				String linkflag = castToString(link[4]);
 				LinkClickReportModel model = linkResult.get(linkUrl);
 				
 				if(model == null){
@@ -308,21 +312,22 @@ public class BCSLinkPageController extends BCSBaseController {
 					model.setLinkId(linkId);
 					model.setLinkTitle(linkTitle);
 					model.setLinkTime(linkTime);
-					
+					model.setLinkFlag(linkflag);
 					linkResult.put(linkUrl, model);
 				}
-				else{
-					if(StringUtils.isBlank(model.getLinkTitle())){
-						model.setLinkTitle(linkTitle);
-					}
-				}
+//				else{
+//					if(StringUtils.isBlank(model.getLinkTitle())){
+//						model.setLinkTitle(linkTitle);
+//						model.setLinkFlag(linkflag);
+//					}
+//				}
 			}
 			
 			// Get ContentFlag, setLinkClickCount
 			for(LinkClickReportModel model : linkResult.values()){
 				
-				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
-				model.addFlags(flags);
+				//List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
+				//model.addFlags(flags);
 				
 				Thread.sleep(200);
 				
@@ -334,7 +339,7 @@ public class BCSLinkPageController extends BCSBaseController {
 		}
 		catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
-
+			System.out.println(e);
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
 			}
@@ -379,7 +384,8 @@ public class BCSLinkPageController extends BCSBaseController {
 		}
 		
 		// Get Click Count Today
-		List<Object[]> list = contentLinkService.countClickCountByLinkUrlAndTime(model.getLinkUrl(), sdf.format(nowCalendar.getTime()), sdf.format(nextCalendar.getTime()));
+		//List<Object[]> list = contentLinkService.countClickCountByLinkUrlAndTime(model.getLinkUrl(), sdf.format(nowCalendar.getTime()), sdf.format(nextCalendar.getTime()));
+		List<Object[]> list = contentLinkService.countClickCountByLinkUrlAndTime(model.getLinkUrl(), sdf.format(nowCalendar.getTime()), sdf.format(nextCalendar.getTime()) , model.getLinkId());
 
 		if(list != null){
 			for(Object[] objArray : list){

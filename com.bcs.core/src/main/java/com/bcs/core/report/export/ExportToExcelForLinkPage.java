@@ -108,7 +108,7 @@ public class ExportToExcelForLinkPage {
 			if(StringUtils.isBlank(model.getLinkFlag())) {
 				row1.createCell(2).setCellValue(model.getLinkTime().substring(0, 10));
 			}else {
-				row1.createCell(2).setCellValue(model.getLinkFlag()+model.getLinkTime().substring(0, 10));
+				row1.createCell(2).setCellValue(model.getLinkTime().substring(0, 10)+model.getLinkFlag());
 			}
 			row1.createCell(3).setCellValue(model.getTotalCount().toString());
 			row1.createCell(4).setCellValue(model.getUserCount().toString());
