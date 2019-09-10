@@ -204,7 +204,7 @@ public class BCSLinkPageController extends BCSBaseController {
 //				System.out.println("flags : " + flags );
 //				model.addFlags(flags);
 				
-				Thread.sleep(200);
+//				Thread.sleep(200);
 				
 				// setLinkClickCount
 				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
@@ -329,7 +329,7 @@ public class BCSLinkPageController extends BCSBaseController {
 				//List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
 				//model.addFlags(flags);
 				
-				Thread.sleep(200);
+//				Thread.sleep(200);
 				
 				// setLinkClickCount
 				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
@@ -339,7 +339,6 @@ public class BCSLinkPageController extends BCSBaseController {
 		}
 		catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
-			System.out.println(e);
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
 			}

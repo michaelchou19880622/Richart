@@ -1,4 +1,5 @@
 $(function() {
+
 	var sendType = 'MANUAL';
 	$(".sendType").click(function(e){
 		sendType = e.currentTarget.value;

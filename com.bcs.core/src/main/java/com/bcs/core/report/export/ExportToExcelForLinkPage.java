@@ -59,9 +59,7 @@ public class ExportToExcelForLinkPage {
 		row.createCell(4).setCellValue("點擊UID");
 		int seqNo = 1;
 		for(LinkClickReportModel model : linkResult.values()){
-			System.out.println("model.getLinkUrl() :  " + model.getLinkUrl());
 			List<Object[]> resultUID = contentLinkService.findAllLinkUrlForallUID(model.getLinkUrl());
-			System.out.println("(resultUID.size() : " + resultUID.size());
 			for(Object[] UID : resultUID) {
 				System.out.println(UID[0].toString());
 				Row row1 = sheetLink.createRow(seqNo);

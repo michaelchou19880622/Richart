@@ -128,7 +128,7 @@ public class LinePointPMSchedulerService {
 		}
 	}
 	
-	public void pushScheduledLinePoint() {
+	/*public void pushScheduledLinePoint() {
 		// get undoneUser			
 		List<ShareUserRecord> undoneUsers = shareUserRecordService.findLatelyUndoneUsers();
 		logger.info("undoneUsers:"+undoneUsers);
@@ -334,5 +334,5 @@ public class LinePointPMSchedulerService {
 			linePointPushModel.setTriggerTime(new Date());
 			linePointPushAkkaService.tell(linePointPushModel);
 		}
-	}
+	}*/
 }
