@@ -481,43 +481,55 @@ public class BCSSendGroupController extends BCSBaseController {
 	}
 
 	@ControllerLog(description="uploadMidSendGroup")
-	@RequestMapping(method = RequestMethod.POST, value = "/market/uploadMidSendGroup")
-	@ResponseBody
-	public ResponseEntity<?> uploadMidSendGroup(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestPart MultipartFile filePart,
-			@RequestParam String event
-			) throws IOException {
-		logger.info("uploadMidSendGroup");
+	 @RequestMapping(method = RequestMethod.POST, value = "/market/uploadMidSendGroup")
+	 @ResponseBody
+	 public ResponseEntity<?> uploadMidSendGroup(
+	   HttpServletRequest request, 
+	   HttpServletResponse response,
+	   @CurrentUser CustomUser customUser,
+	   @RequestPart MultipartFile filePart
+	   ) throws IOException {
+	  logger.info("uploadMidSendGroup");
 
-		try{
-					    
-			if(filePart != null){
-				
-				String modifyUser = customUser.getAccount();
-				logger.info("modifyUser:" + modifyUser);
-				
-				Map<String, Object> result = sendGroupUIService.uploadMidSendGroup(event ,filePart, modifyUser, new Date());
-				
-				return new ResponseEntity<>(result, HttpStatus.OK);
-			}
-			else{
-				throw new Exception("Upload Mid SendGroup Null");
-			}
-		}
-		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
+	  try{
+	   if(filePart != null){
+	    
+	    String modifyUser = customUser.getAccount();
+	    logger.info("modifyUser:" + modifyUser);
+	    
+	    Map<String, Object> result = sendGroupUIService.uploadMidSendGroup(filePart, modifyUser, new Date());
+	    logger.info("uploadMidSendGroupResult1:" + result);
+	    
+	    return new ResponseEntity<>(result, HttpStatus.OK);
+	   }
+	   else{
+	    throw new Exception("Upload Mid SendGroup Null");
+	   }
+	  }
+	  catch(Exception e){
 
-			if(e instanceof BcsNoticeException){
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
-	}
+	   logger.info("uploadMidSendGroup Exception : " +  e.getMessage().toString());
+	   if (e.getMessage().contains("RetrySaveUserEventSet"))
+	   {
+	    Map<String, Object> result = sendGroupUIService.RetrySaveUserEventSet();
+	    logger.info("uploadMidSendGroupResult1:" + result);
+	    
+	    return new ResponseEntity<>(result, HttpStatus.OK);
+	   }
+	   else if (e.getMessage().contains("TimeOut")) {
+	    return new ResponseEntity<>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+	   }
+	   
+	   logger.error(ErrorRecord.recordError(e));
+
+	   if(e instanceof BcsNoticeException){
+	    return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+	   }
+	   else{
+	    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	   }
+	  }
+	 }
 	
 	private Map<String, SendGroup> tempSendGroupMap = new HashMap<String, SendGroup>();
 	

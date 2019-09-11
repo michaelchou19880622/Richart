@@ -41,7 +41,7 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
             + "SCCT.MODIFY_TIME as SCCT_MODIFY_TIME "
             + "from BCS_SHARE_USER_RECORD SUR "
             + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "
-            + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID "
+            + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID  and SCCT.SHARE_USER_RECORD_ID = SDR.SHARE_USER_RECORD_ID "
             + "where SUR.MODIFY_TIME >= ?1 and SUR.MODIFY_TIME < ?2 and SUR.CAMPAIGN_ID = ?3 "
             + "order by SUR.UID, SUR.MODIFY_TIME", nativeQuery = true)
     List<Object[]> findByModifyTimeAndCampaignIdWithDonateStatus(Date start, Date end, String campaignId);
