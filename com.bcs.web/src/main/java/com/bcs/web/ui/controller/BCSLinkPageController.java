@@ -125,7 +125,8 @@ public class BCSLinkPageController extends BCSBaseController {
 			for(GameModel game : games){
 
 				ContentLink gamePage = new ContentLink();
-				gamePage.setLinkUrl(UriHelper.getScratchPattern(game.getGameId()));
+				//gamePage.setLinkUrl(UriHelper.getScratchPattern(game.getGameId()));
+				gamePage.setLinkUrl(UriHelper.goScratchCardUri() + "/" + game.getGameId());
 				gamePage.setLinkTitle("遊戲：" + game.getGameName());
 				result.add(gamePage);
 			}
