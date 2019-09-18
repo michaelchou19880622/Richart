@@ -37,9 +37,18 @@ $(function(){
 
 		$('#pageText').html(page+1);
 		
+		var postData = {};
+		postData.flag = queryFlag;
+		postData.page = page;
+		
 		$.ajax({
-			type : "GET",
-			url : bcs.bcsContextPath + '/edit/getLinkUrlReportList?queryFlag=' + queryFlag + '&page=' + page
+			type : "POST",
+//			url : bcs.bcsContextPath + '/edit/getLinkUrlReportList?queryFlag=' + queryFlag + '&page=' + page
+			url : bcs.bcsContextPath + '/edit/getLinkUrlReportList',
+			cache: false,
+            contentType: 'application/json',
+            processData: false,
+			data : JSON.stringify(postData)
 		}).success(function(response){
 			$('.dataTemplate').remove();
 			console.info(response);

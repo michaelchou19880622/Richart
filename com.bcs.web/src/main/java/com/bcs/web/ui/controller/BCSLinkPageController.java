@@ -1,7 +1,11 @@
 package com.bcs.web.ui.controller;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,8 +33,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -59,7 +65,9 @@ import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.MobilePageEnum;
 import com.bcs.web.aop.ControllerLog;
 import com.bcs.core.model.LinkClickReportModel;
+import com.bcs.web.ui.model.LinkPageModel;
 import com.bcs.web.ui.model.PageVisitReportModel;
+import com.bcs.web.ui.model.SendMsgModel;
 import com.bcs.web.ui.service.ExportExcelForLinkPageSrevice;
 import com.bcs.web.ui.service.ExportExcelUIService;
 import com.bcs.web.ui.service.LoadFileUIService;
@@ -234,12 +242,14 @@ public class BCSLinkPageController extends BCSBaseController {
 	 * 取得連結列表
 	 */
 	@ControllerLog(description="取得連結列表")
-	@RequestMapping(method = RequestMethod.GET, value = "/edit/getLinkUrlReportList")
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/getLinkUrlReportList" ,  consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<?> getLinkUrlReportList(
 			HttpServletRequest request, 
 			HttpServletResponse response,
-			@CurrentUser CustomUser customUser) throws IOException {
+			@CurrentUser CustomUser customUser,
+			@RequestBody LinkPageModel linkPageModel
+			) throws IOException {
 		logger.info("getLinkUrlReportList");
 
 		Calendar yesterdayCalendar = Calendar.getInstance();
@@ -250,9 +260,12 @@ public class BCSLinkPageController extends BCSBaseController {
 		Calendar nextCalendar = Calendar.getInstance();
 		nextCalendar.add(Calendar.DATE, 1);
 		
-		try{ 
-			String queryFlag = request.getParameter("queryFlag");
-			String pageStr = request.getParameter("page");
+		try{
+			String pageStr = linkPageModel.getPage();
+			String queryFlag = new String(linkPageModel.getFlag().getBytes("utf-8"),"utf-8");
+			logger.info("queryFlag : " + queryFlag);
+			logger.info("page : " + pageStr);
+			
 			//Map<String, LinkClickReportModel> linkResult = new LinkedHashMap<String, LinkClickReportModel>();
 			linkResult.clear();
 			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME
@@ -339,7 +352,7 @@ public class BCSLinkPageController extends BCSBaseController {
 			return new ResponseEntity<>(linkResult, HttpStatus.OK);
 		}
 		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
+			logger.info(ErrorRecord.recordError(e));
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
 			}
