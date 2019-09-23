@@ -314,8 +314,10 @@ public class LinePointAMSchedulerService {
 			
 			JSONArray uid = new JSONArray();
 			for(LinePointScheduledDetail detail : details) {
-				uid.put(detail.getUid());
-				
+				//這邊應該判定 發過點就不發了
+				if(LinePointScheduledDetail.STATUS_WAITING.equals(detail.getStatus())) {
+					uid.put(detail.getUid());
+				}
 				detail.setStatus(LinePointScheduledDetail.STATUS_SENDED);
 				detail.setModifyTime(new Date());
 				linePointScheduledDetailService.save(detail);

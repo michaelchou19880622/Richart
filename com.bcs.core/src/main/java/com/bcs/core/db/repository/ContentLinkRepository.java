@@ -45,7 +45,7 @@ public interface ContentLinkRepository extends EntityRepository<ContentLink, Str
 	public List<Object[]> findAllLinkUrlByLikeTitle(String title);
 	
 	@Transactional(readOnly = true, timeout = 30)
-	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG"
+	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
 			+ "FROM BCS_CONTENT_LINK "
 			+ "WHERE MODIFY_TIME BETWEEN ?1 AND  ?2 AND LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
