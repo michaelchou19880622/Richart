@@ -62,7 +62,7 @@ public class RichartValidateService {
 		}
 		
 		lineUser.setMid(uid);
-		lineUser.setStatus(lineUser.getStatus().equals(LineUser.STATUS_BLOCK) ? lineUser.getStatus() : model.getStatus());
+		lineUser.setStatus(LineUser.STATUS_BLOCK.equals(lineUser.getStatus()) ? lineUser.getStatus() : model.getStatus());
 		lineUser.setIsBinded(model.getStatus());
 		lineUser.setSoureType(MsgBotReceive.SOURCE_TYPE_USER);
 		lineUser.setModifyTime(date);

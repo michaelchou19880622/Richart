@@ -40,9 +40,9 @@ public class UserStatusUpdateController {
 	@RequestMapping(method = RequestMethod.POST, value = "/userStatusUpdate/{ChannelId}", 
 			consumes = MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8")
 	public ResponseEntity<?> userStatusUpdate(@RequestBody String updateModel, @PathVariable String ChannelId, HttpServletRequest request, HttpServletResponse response) {
-		logger.debug("-------userStatusUpdate-------");
+		logger.info("-------userStatusUpdate-------");
 		Date start = new Date();
-		logger.debug("updateModel:" + updateModel);
+		logger.info("updateModel:" + updateModel);
 		
 		String error = "";
 		
@@ -67,14 +67,14 @@ public class UserStatusUpdateController {
 			
 			richartValidateService.bindedLineUser(model);
 
-			logger.debug("-------userStatusUpdate Success-------");
+			logger.info("-------userStatusUpdate Success-------");
 			response.setStatus(200);
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_BcsApi, LOG_TARGET_ACTION_TYPE.ACTION_BcsApi_UpdateStatus, start, 200, updateModel, "200");
 			return new ResponseEntity<>(createResult(200, "Success"), HttpStatus.OK);
 		}
 		catch(Throwable e){
 			error = e.getMessage();
-			logger.error(ErrorRecord.recordError(e));
+			logger.info(ErrorRecord.recordError(e));
 		}
 		logger.debug("-------userStatusUpdate Fail-------");
 		response.setStatus(500);
