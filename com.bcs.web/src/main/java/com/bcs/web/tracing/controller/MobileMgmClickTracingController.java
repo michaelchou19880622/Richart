@@ -220,11 +220,13 @@ public class MobileMgmClickTracingController extends BCSBaseController {
                 logger.info("session.setAttribute campaignId :" + state);
                 
                 response.sendRedirect(UriHelper.getMgmPage());
+                logger.info("response.sendRedirect :" +UriHelper.getMgmPage() );
                 return;
             }else { // 非好友
-            	 logger.info("非好友" );	
+            	logger.info("非好友" );	
                 response.sendRedirect(CoreConfigReader.getString(CONFIG_STR.ADD_LINE_FRIEND_LINK, true));
                 logger.info("response.sendRedirect :" +CoreConfigReader.getString(CONFIG_STR.ADD_LINE_FRIEND_LINK, true) );
+                //response.sendRedirect(UriHelper.getMgmPage());
                 return;
             }
         } catch (Exception e) {

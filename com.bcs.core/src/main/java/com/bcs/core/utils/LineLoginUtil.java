@@ -40,7 +40,7 @@ public class LineLoginUtil {
         lineoauthLink = lineoauthLink.replace("{RedirectUrl}",
                 URLEncoder.encode(RedirectUrl, "UTF-8"));
         lineoauthLink = lineoauthLink.replace("{TracingId}", tracingIdStr);
-        
+        logger.info("lineoauthLink : " + lineoauthLink);
         model.addAttribute("lineoauthLink", lineoauthLink);
     }
     public static Map<String, String> callRetrievingAPI(String code, String redirectUrl, String state) throws Exception {
