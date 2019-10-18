@@ -60,7 +60,7 @@ public class LineWebLoginApiService {
 		    entity.setContentType("application/x-www-form-urlencoded");
 		    
 			// init Request
-			HttpPost requestPost = new HttpPost(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_ACCESSTOKEN_V2_1));
+			HttpPost requestPost = new HttpPost(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_ACCESSTOKEN));
 			logger.info("URI : " + requestPost.getURI());
 			requestPost.setEntity(entity);
 	

@@ -312,7 +312,14 @@ public class MobileTracingController extends BCSBaseController {
 			}
 			
 			ContentLinkTracing contentLinkTracing = contentLinkTracingService.findOne(tracingId);
-			
+			contentLinkTracing.getLinkId();
+			contentLinkTracing.getLinkIdBinded();
+			contentLinkTracing.getLinkIdUnMobile();
+			contentLinkTracing.getTracingId();
+			logger.info("contentLinkTracing.getLinkId()　：　" +contentLinkTracing.getLinkId());
+			logger.info("contentLinkTracing.getLinkIdBinded()　：" +contentLinkTracing.getLinkIdBinded());
+			logger.info("contentLinkTracing.getLinkIdUnMobile()：　" +contentLinkTracing.getLinkIdUnMobile());
+			logger.info("contentLinkTracing.getTracingId()　：　" +contentLinkTracing.getTracingId());
 			if(contentLinkTracing == null){
 				throw new Exception("TracingId Error:" + tracingId);
 			}
@@ -333,6 +340,8 @@ public class MobileTracingController extends BCSBaseController {
 			}
 			
 			ContentLink contentLink = contentLinkService.findOne(linkId);
+			logger.info("contentLink.getLinkUrl() :"  + contentLink.getLinkUrl());
+			
 			
 			if(contentLink == null){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkId:" + linkId);
@@ -393,6 +402,7 @@ public class MobileTracingController extends BCSBaseController {
 			}else if(useSwitch){
 				
 				String targetUrl = this.getTargetUrl(contentLink, contentLinkBinded, sessionMID, false);
+				logger.info("targetUrl : " + targetUrl);
 				boolean isBcsPage = UriHelper.checkIsBcsPage(targetUrl);
 				
 				if(isBcsPage){
@@ -405,7 +415,7 @@ public class MobileTracingController extends BCSBaseController {
 				}
 			}else{
 				String linkUrl =  this.getTargetUrl(contentLink, contentLinkBinded, sessionMID, true);
-				
+				logger.info("linkUrl : " + linkUrl);
 				if(UriHelper.checkWithMidReplace(linkUrl)){
 					linkUrl = this.getTargetUrl(contentLinkUnMobile);
 					

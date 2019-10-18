@@ -134,7 +134,7 @@ public class BCSLinkPageController extends BCSBaseController {
 
 				ContentLink gamePage = new ContentLink();
 				//gamePage.setLinkUrl(UriHelper.getScratchPattern(game.getGameId()));
-				gamePage.setLinkUrl(UriHelper.goScratchCardUri() + "/" + game.getGameId());
+                gamePage.setLinkUrl(UriHelper.goScratchCardUri() + "/" + game.getGameId());
 				gamePage.setLinkTitle("遊戲：" + game.getGameName());
 				result.add(gamePage);
 			}
@@ -190,30 +190,32 @@ public class BCSLinkPageController extends BCSBaseController {
 				String linkflag = castToString(link[4]);
 				LinkClickReportModel model = linkResult.get(linkUrl);
 				
-				if(model == null){
+				//if(model == null){
 					model = new LinkClickReportModel();
 					model.setLinkUrl(linkUrl);
 					model.setLinkId(linkId);
 					model.setLinkTitle(linkTitle);
 					model.setLinkTime(linkTime);
 					model.setLinkFlag(linkflag);
-					linkResult.put(linkUrl, model);
-				}
-				else{
-					if(StringUtils.isBlank(model.getLinkTitle())){
-						model.setLinkTitle(linkTitle);
-					}
-				}
+					//linkResult.put(linkUrl, model);
+					linkResult.put(linkId, model);
+					
+				//}
+//				else{
+//					if(StringUtils.isBlank(model.getLinkTitle())){
+//						model.setLinkTitle(linkTitle);
+//					}
+//				}
 			}
 			
 			// Get ContentFlag, setLinkClickCount
 			for(LinkClickReportModel model : linkResult.values()){
 				
-//				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
+				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
 //				System.out.println("flags : " + flags );
-//				model.addFlags(flags);
+				model.addFlags(flags);
 				
-//				Thread.sleep(200);
+				Thread.sleep(200);
 				
 				// setLinkClickCount
 				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
@@ -318,17 +320,18 @@ public class BCSLinkPageController extends BCSBaseController {
 				String linkId = castToString(link[2]);
 				String linkTime = castToString(link[3]);
 				String linkflag = castToString(link[4]);
+				
 				LinkClickReportModel model = linkResult.get(linkUrl);
 				
-				if(model == null){
+				//if(model == null){
 					model = new LinkClickReportModel();
 					model.setLinkUrl(linkUrl);
 					model.setLinkId(linkId);
 					model.setLinkTitle(linkTitle);
 					model.setLinkTime(linkTime);
 					model.setLinkFlag(linkflag);
-					linkResult.put(linkUrl, model);
-				}
+					linkResult.put(linkId, model);
+				//}
 //				else{
 //					if(StringUtils.isBlank(model.getLinkTitle())){
 //						model.setLinkTitle(linkTitle);
@@ -340,10 +343,10 @@ public class BCSLinkPageController extends BCSBaseController {
 			// Get ContentFlag, setLinkClickCount
 			for(LinkClickReportModel model : linkResult.values()){
 				
-				//List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
-				//model.addFlags(flags);
+				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
+				model.addFlags(flags);
 				
-//				Thread.sleep(200);
+				Thread.sleep(200);
 				
 				// setLinkClickCount
 				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
@@ -395,9 +398,13 @@ public class BCSLinkPageController extends BCSBaseController {
 				userCount.addAndGet(dataMap.get(RECORD_REPORT_TYPE.DATA_TYPE_LINK_DISTINCT_COUNT.toString()));
 			}
 		}
-		
+		logger.info("systemStartDate" +systemStartDate);
+		logger.info("yesterdayCalendar.getTime()" + yesterdayCalendar.getTime());
 		// Get Click Count Today
 		//List<Object[]> list = contentLinkService.countClickCountByLinkUrlAndTime(model.getLinkUrl(), sdf.format(nowCalendar.getTime()), sdf.format(nextCalendar.getTime()));
+		logger.info("model.getLinkUrl()" + model.getLinkUrl());
+		logger.info("model.getLinkId()" + model.getLinkId());
+		
 		List<Object[]> list = contentLinkService.countClickCountByLinkUrlAndTime(model.getLinkUrl(), sdf.format(nowCalendar.getTime()), sdf.format(nextCalendar.getTime()) , model.getLinkId());
 
 		if(list != null){
