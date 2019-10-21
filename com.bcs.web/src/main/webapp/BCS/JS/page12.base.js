@@ -70,7 +70,7 @@ $(function(){
 		
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath +'/edit/getInteractiveMsgList?type=INTERACTIVE&status=ACTIVE'
+			url : bcs.bcsContextPath +'/edit/getInteractiveMsgList?type=INTERACTIVE&status=ACTIVE&keywordInput=&pushDate='
 		}).success(function(response){
 			$('.dataTemplate').remove();
 			$.BCS.ResourceMap = response.ResourceMap;

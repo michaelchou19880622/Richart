@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bcs</groupId>
-	<artifactId>com.bcs.project</artifactId>
+	<artifactId>com.bcs.project.richart</artifactId>
 	<version>0.0.1.RELEASE</version>
 	<packaging>pom</packaging>
 	<modules>

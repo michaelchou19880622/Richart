@@ -10,83 +10,24 @@ $(function(){
 	$('.btn_add').click(function(){
  		window.location.replace(bcs.bcsContextPath +'/edit/keywordResponseCreatePage?from=keywordResponsePage');
 	});
-	$('#keywordSelector').change(function(){
-		switch($(this).val()){
-		case 'ActiveBtn' :  window.location.replace(bcs.bcsContextPath +'/edit/keywordResponsePage'); break;
-		case 'DisableBtn' : window.location.replace(bcs.bcsContextPath +'/edit/keywordResponseDisablePage'); break; 
-		case 'ExpireBtn' : window.location.replace(bcs.bcsContextPath +'/edit/keywordResponseExpirePage'); break;
-		case 'IneffectiveBtn' : window.location.replace(bcs.bcsContextPath +'/edit/keywordResponseIneffectivePage'); break;
-		}
-	});
 	
-	//條件查詢
-	function search(){
-		var dataTemplates = $('.dataTemplate');
-
-		var keywordInput = $('#keywordInput').val();
-		var pushDate = $('#pushDate').val();
-        var re = /[0-9]{4}-[0-9]{2}-[0-9]{2}/;
-        
-        dataTemplates.each(function(i, v){
-        	$(v).attr('hidden', false);
-        });
-        
-		dataTemplates.each(function(i, v){
-            
-            var timeStr = $(v).find('.timeType').text();
-            
-			if(keywordInput != '' && re.test(pushDate)){
-                if(!$(v).find('.mainKeyword a').text().includes(keywordInput) || timeStr.includes('未設定') || timeStr.includes('一天區間')){
-                	$(v).attr('hidden', true);
-                }
-                if(timeStr.includes('時間區間')){
-                    var pushMs = moment(pushDate).valueOf();
-                    var startTime = moment(timeStr.substr(4,10)).valueOf();
-                    var endTime = moment(timeStr.substr(20,10)).valueOf();
-                    if(!(pushMs >= startTime && pushMs <= endTime)){
-                        $(v).attr('hidden', true);
-                    }
-                }
-			}else if(keywordInput == '' && re.test(pushDate)){
-				if(timeStr.includes('未設定') || timeStr.includes('一天區間')){
-                    $(v).attr('hidden', true);
-                }
-                if(timeStr.includes('時間區間')){
-                    var pushMs = moment(pushDate).valueOf();
-                    var startTime = moment(timeStr.substr(4,10)).valueOf();
-                    var endTime = moment(timeStr.substr(20,10)).valueOf();
-                    if(!(pushMs >= startTime && pushMs <= endTime)){
-                        $(v).attr('hidden', true);
-                    }
-                }
-			}else if(keywordInput != '' && !re.test(pushDate)){
-                if(!($(v).find('.mainKeyword a').text().includes(keywordInput))){
-                    $(v).attr('hidden', true);
-                }
-            }else{
-                $(v).attr('hidden', false);
-            }
-		});
-	}
+	// 下拉選項
+	var optionSelectChange_func = function(){
+		var selectValue = $(this).find('option:selected').text();
+		$(this).closest('.option').find('.optionLabel').html(selectValue);
+	};
 	
-	$('#keywordInput').keyup(function(){
-		search();
-	});
-	
-	$('#keywordInput').mouseout(function(){
-		search();
-	});
-	
-    $('#pushDate').change(function(){
-		search();
-	});
+	$('.optionSelect').change(optionSelectChange_func);
 	
 	//清空查詢
-	$('.query').click(function(){
+	$('.clear').click(function(){
 		$('#keywordInput').val('');
 		$('#pushDate').val('');
-
-		search();
+		$('#keywordSelector').val('').change();
+	});
+	
+	$('.query').click(function(){
+		loadDataFunc();
 	});
 	
 	// 刪除按鈕
@@ -144,7 +85,8 @@ $(function(){
 	// 取得資料列表
 	var loadDataFunc = function(){
 		$('.LyMain').block($.BCS.blockMsgRead);
-
+		var keywordSelector = $('#keywordSelector').val();
+		$('#keywordSelector').val(keywordSelector).change();
 		var groupSetting = {};
 		
 		$.ajax({
@@ -163,9 +105,18 @@ $(function(){
 		}).done(function(){
 		});
 		
+		var postData = {};
+		postData.type = 'KEYWORD';
+		postData.status = $('#keywordSelector').val();
+		postData.keywordInput = $('#keywordInput').val();
+		postData.pushDate = $('#pushDate').val();
 		$.ajax({
-			type : "GET",
-			url : bcs.bcsContextPath +'/edit/getInteractiveMsgList?type=KEYWORD&status=ACTIVE'
+			type : "POST",
+			url : bcs.bcsContextPath +'/edit/getInteractiveMsgList',
+			cache: false,
+            contentType: 'application/json',
+            processData: false,
+			data : JSON.stringify(postData)
 		}).success(function(response){
 			$('.dataTemplate').remove();
 			$.BCS.ResourceMap = response.ResourceMap;

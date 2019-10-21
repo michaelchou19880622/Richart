@@ -81,6 +81,12 @@ $(function(){
 		else if("DISABLE" ==interactiveStatus ){
 			return "取消";
 		}
+		else if("EXPIRE" ==interactiveStatus ){
+			return "已過期";
+		}
+		else if("INEFFECTIVE" ==interactiveStatus ){
+			return "未生效";
+		}
 	}
 	
 	// 設定 順位 中文

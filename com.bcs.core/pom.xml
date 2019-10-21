@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
 	<groupId>com.bcs</groupId>
-	<artifactId>com.bcs.project</artifactId>
+	<artifactId>com.bcs.project.richart</artifactId>
 	<version>0.0.1.RELEASE</version>
   </parent>
-  <artifactId>com.bcs.core</artifactId>
+  <artifactId>com.bcs.core.richart</artifactId>
     <dependencies>
   		<!-- custom library -->
 		<dependency>
