@@ -4,14 +4,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   <modelVersion>4.0.0</modelVersion>
   <parent>
 	<groupId>com.bcs</groupId>
-	<artifactId>com.bcs.project</artifactId>
+	<artifactId>com.bcs.project.richart</artifactId>
 	<version>0.0.1.RELEASE</version>
   </parent>
-  <artifactId>com.bcs.core.bot</artifactId>
+  <artifactId>com.bcs.core.bot.richart</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>com.bcs</groupId>
-			<artifactId>com.bcs.core</artifactId>
+			<artifactId>com.bcs.core.richart</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

@@ -16,13 +16,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.db.entity.MsgDetail;
 import com.bcs.core.db.entity.MsgInteractiveMain;
-import com.bcs.core.db.repository.MsgDetailRepository;
 import com.bcs.core.db.repository.MsgInteractiveMainRepository;
 import com.bcs.core.utils.DataSyncUtil;
 import com.bcs.core.utils.ErrorRecord;
@@ -39,8 +39,6 @@ public class MsgInteractiveMainService {
 	private static Logger logger = Logger.getLogger(MsgInteractiveMainService.class);
 	@Autowired
 	private MsgInteractiveMainRepository msgInteractiveMainRepository;
-	@Autowired
-	private MsgDetailRepository msgDetailRepository;
 
 	protected LoadingCache<Long, MsgInteractiveMain> dataCache;
 	
@@ -201,6 +199,46 @@ public class MsgInteractiveMainService {
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
     	logger.debug(map);
 		
+		return map;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<MsgInteractiveMain, List<MsgDetail>> queryGetMsgInteractiveMainDetailByMultiConditions(String type, String status, String keyword, String pushDate){
+		StringBuilder dataQuerySQL = new StringBuilder();
+		StringBuilder countQuerySQL = new StringBuilder();
+		dataQuerySQL.append("SELECT BCS_MSG_INTERACTIVE_MAIN.MSG_INTERACTIVE_ID, INTERACTIVE_STATUS, INTERACTIVE_TYPE, USER_STATUS, MAIN_KEYWORD, STATUS_NOTICE, INTERACTIVE_INDEX, INTERACTIVE_START_TIME, INTERACTIVE_END_TIME, INTERACTIVE_TIME_TYPE, OTHER_ROLE, SERIAL_ID, SEND_COUNT, MODIFY_USER, MODIFY_TIME, MSG_DETAIL_ID, BCS_MSG_DETAIL.MSG_ID, MSG_TYPE, REFERENCE_ID, TEXT, MSG_PARENT_TYPE, BCS_MSG_DETAIL.EVENT_TYPE FROM BCS_MSG_INTERACTIVE_MAIN LEFT OUTER JOIN BCS_MSG_DETAIL ON BCS_MSG_INTERACTIVE_MAIN.MSG_INTERACTIVE_ID = BCS_MSG_DETAIL.MSG_ID WHERE BCS_MSG_DETAIL.MSG_PARENT_TYPE = 'BCS_MSG_INTERACTIVE_MAIN'");
+		if(StringUtils.isNotBlank(type)) {
+			dataQuerySQL.append(" AND INTERACTIVE_TYPE = :interactiveType");
+		}
+		if(StringUtils.isNotBlank(status)) {
+			if (status.equalsIgnoreCase("EXPIRE")) {
+				status = "ACTIVE";
+			}
+			else if (status.equalsIgnoreCase("INEFFECTIVE")) {
+				status = "DISABLE";
+			}
+			dataQuerySQL.append(" AND INTERACTIVE_STATUS = :status");
+		}
+		if(StringUtils.isNotBlank(keyword)) {
+			dataQuerySQL.append(" AND MAIN_KEYWORD LIKE CONCAT('%', :keyword,'%')");
+		}
+		countQuerySQL.append("SELECT COUNT(*) FROM (" + dataQuerySQL.toString() + ") AS COUNT");
+		dataQuerySQL.append(" ORDER BY CASE WHEN INTERACTIVE_INDEX IS NULL THEN 1 ELSE 0 END, INTERACTIVE_INDEX, MAIN_KEYWORD, USER_STATUS, MODIFY_TIME, MSG_DETAIL_ID ");
+		logger.info("dataQuery=" + dataQuerySQL.toString());
+		Query dataQuery = entityManager.createNativeQuery(dataQuerySQL.toString(), "MsgInteractiveMainDetails");
+		if(StringUtils.isNotBlank(type)) {
+		    dataQuery.setParameter("interactiveType", type);
+		}
+		if(StringUtils.isNotBlank(status)) {
+			dataQuery.setParameter("status", status);
+		}
+		if(StringUtils.isNotBlank(keyword)) {
+			dataQuery.setParameter("keyword", keyword);
+		}
+		dataQuery.setHint("javax.persistence.query.timeout", 30000);
+		List<Object[]> list = dataQuery.getResultList();
+		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
+    	logger.info(map);
 		return map;
 	}
 	

@@ -15,36 +15,33 @@
             <form>
                 <section>
                     <header class="ContentHead">
-                        <h3 class="CHTtl">關鍵字回應 生效</h3>
+                        <h3 class="CHTtl">關鍵字回應</h3>
                         <p class="CHDesc">設定用戶在聊天室輸入特定關鍵字時自動傳送的訊息。</p>
                     </header>
                     <div class="CHBtnSet">
-                        <div style="float:left">
+                        <div class="CHLeft">
                             <span>生效日期：</span>
                             <div class="option date">
-                                <input type="text" 
-                                    class="datepicker" 
-                                    id="pushDate" 
-                                    placeholder="YYYY-MM-DD"/>
+                                <input type="text" class="datepicker" id="pushDate" placeholder="YYYY-MM-DD"/>
                             </div>
-                            
                             <input class="searchInput" type="text" placeholder="請輸入關鍵字(選填)" maxlength="30" id="keywordInput" name="keywordInput">
-                            <input class="btn_save query" type="button" value="清空查詢"  style="cursor: pointer;">
-                        </div>
-                    </div>
-                    <div class="CHBtnSet">
-                        <div class="CHLeft">
 	                        <div class="option">
-	                            <div class="optionLabel">請選擇</div>
+	                            <div class="optionLabel">請選擇狀態</div>
 	                            <select id="keywordSelector" class="optionSelect" name="">
-	                                <option value="ActiveBtn" selected>生效</option>
-	                                <option value="DisableBtn">取消</option>
-	                                <option value="ExpireBtn">已過期</option>
-	                                <option value="IneffectiveBtn">未生效</option>
+	                                <option value="">全部</option>
+	                                <option value="ACTIVE" selected>生效</option>
+	                                <option value="DISABLE">取消</option>
+	                                <option value="EXPIRE">已過期</option>
+	                                <option value="INEFFECTIVE">未生效</option>
 	                            </select>
 	                        </div>
+                            <input class="btn_save query" type="button" value="查詢"  style="cursor: pointer;">
+                            <input class="btn_save clear" type="button" value="清空查詢"  style="cursor: pointer;">
                         </div>
-                        <div class="CHRight"><input class="btn_upload_keywords" style="cursor: pointer;" type="button" value="匯入關鍵字清單">&nbsp;<input class="btn_add" type="button" value="建立回應" style="cursor: pointer;"></div>
+                        <div class="CHRight">
+                            <input class="btn_upload_keywords" style="cursor: pointer;" type="button" value="匯入關鍵字清單">&nbsp;
+                            <input class="btn_add" type="button" value="建立回應" style="cursor: pointer;">
+                        </div>
                         <input accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"  id="upload_keywords" name="file" type="file" style="display:none">
                     </div>
                         <div class="mainFrame">

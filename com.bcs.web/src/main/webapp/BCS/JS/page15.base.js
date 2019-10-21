@@ -263,14 +263,6 @@ $(function(){
 			alert('設定成功');
 			var fromParam = $.urlParam("from");
 			var url = bcs.bcsContextPath +'/edit/keywordResponsePage';
-			
-			if(interactiveStatus == 'DISABLE'){
-				url = bcs.bcsContextPath +'/edit/keywordResponseDisablePage';
-			}
-			else if(interactiveStatus == 'ACTIVE'){
-				url = bcs.bcsContextPath +'/edit/keywordResponsePage';
-			}
-			
 			window.location.replace(url);
 		}).fail(function(response){
 			console.info(response);
@@ -432,15 +424,7 @@ $(function(){
 		}
 		
 		var fromParam = $.urlParam("from");
-		var url = bcs.bcsContextPath +'/edit/keywordResponseDisablePage';
-		
-		if(fromParam == 'keywordResponseDisablePage'){
-			url = bcs.bcsContextPath +'/edit/keywordResponseDisablePage';
-		}
-		else if(fromParam == 'keywordResponsePage'){
-			url = bcs.bcsContextPath +'/edit/keywordResponsePage';
-		}
-		
+		var url = bcs.bcsContextPath +'/edit/keywordResponsePage';
 		window.location.replace(url);
 	});
 	

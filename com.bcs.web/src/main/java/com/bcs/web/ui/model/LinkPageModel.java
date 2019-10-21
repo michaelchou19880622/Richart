@@ -1,13 +1,5 @@
 package com.bcs.web.ui.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
-
-import com.bcs.core.db.entity.ContentCoupon;
-import com.bcs.core.db.entity.ContentGame;
-import com.bcs.core.db.entity.ContentRewardCard;
 import com.bcs.core.json.AbstractBcsEntity;
 
 public class LinkPageModel extends AbstractBcsEntity {
@@ -15,8 +7,7 @@ public class LinkPageModel extends AbstractBcsEntity {
 
 	public String flag;
 	public String page;
-	
-	
+		
 	public String getFlag() {
 		return flag;
 	}
@@ -32,6 +23,5 @@ public class LinkPageModel extends AbstractBcsEntity {
 	public void setPage(String page) {
 		this.page = page;
 	}
-
 }
 

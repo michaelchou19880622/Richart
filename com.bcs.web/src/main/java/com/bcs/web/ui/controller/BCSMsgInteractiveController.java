@@ -54,6 +54,7 @@ import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 import com.bcs.web.aop.ControllerLog;
 import com.bcs.web.ui.model.InteractiveMsgModel;
+import com.bcs.web.ui.model.MsgInteractiveModel;
 import com.bcs.web.ui.service.ExportExcelUIService;
 import com.bcs.web.ui.service.InteractiveMsgUIService;
 import com.bcs.web.ui.service.SendMsgUIService;
@@ -193,25 +194,19 @@ public class BCSMsgInteractiveController extends BCSBaseController {
 			HttpServletResponse response,
     		@CurrentUser CustomUser customUser,
     		@RequestParam String type,
-    		@RequestParam String status) throws IOException {
-		logger.info("getInteractiveMsgList");
-
+    		@RequestParam String status,
+    		@RequestParam String keywordInput,
+    		@RequestParam String pushDate) throws IOException {
+    	String keywordInputUTF8 = (keywordInput != null) ? new String(keywordInput.getBytes("ISO-8859-1"), "UTF-8") : "";
+		logger.info("getInteractiveMsgList, type=" + type + " status=" + status + " keywordInput=" + keywordInput + " keywordInputUTF8=" + keywordInputUTF8 + " pushDate=" + pushDate);
 		try{
 			if(StringUtils.isNotBlank(type)){
-				logger.info("type:" + type);
 				Map<String, Object> result = new LinkedHashMap<String, Object>();
-				
 				Map<MsgInteractiveMain, List<MsgDetail>> map = null;
-				if("EXPIRE".equals(status) || "INEFFECTIVE".equals(status)) {
-				    map = msgInteractiveMainService.queryGetMsgInteractiveMainDetailByType(type);
-				}else {
-				    map = msgInteractiveMainService.queryGetMsgInteractiveMainDetailByTypeAndStatus(type, status);
-				}
-				
+				map = msgInteractiveMainService.queryGetMsgInteractiveMainDetailByMultiConditions(type, status, keywordInputUTF8, pushDate);
 				if(map != null){
 				    //分析是否過期or未生效
 				    map = analyzeMsg(map, status);
-
 					result.put("MsgMain", map);
 
 					/**
@@ -224,7 +219,6 @@ public class BCSMsgInteractiveController extends BCSBaseController {
 					 */
 					try{
 						Map<String, AdminUser> admins = adminUserService.findAllMap();
-//						Map<Long, Long> distinctMap = new HashMap<Long, Long>();
 						Map<String, String> adminMap = new HashMap<String, String>();
 						for(MsgInteractiveMain msg : map.keySet()){
 							Long iMsgId = msg.getiMsgId();
@@ -236,14 +230,10 @@ public class BCSMsgInteractiveController extends BCSBaseController {
 							/**
 							 * Set MsgInteractiveDetail list
 							 */
-							List<MsgInteractiveDetail> list =msgInteractiveDetailService.findByiMsgId(iMsgId);
+							List<MsgInteractiveDetail> list = msgInteractiveDetailService.findByiMsgId(iMsgId);
 							sendMsgUIService.setResourceMap(result, "iMsgId-" + iMsgId, list);
-							
-							// countInteractiveResponseDistinct
-//							distinctMap.put(iMsgId, msgInteractiveMainService.countInteractiveResponseDistinct(iMsgId, true));
 						}
 						result.put("AdminUser", adminMap);
-//						result.put("DistinctMap", distinctMap);
 					}
 					catch(Exception e){
 						logger.error(ErrorRecord.recordError(e));
@@ -258,10 +248,95 @@ public class BCSMsgInteractiveController extends BCSBaseController {
 					
 					return new ResponseEntity<>(result, HttpStatus.OK);
 				}
+				else {
+					return new ResponseEntity<>(result, HttpStatus.OK);
+				}
 			}
-			
-//			throw new Exception("type Null");
-			logger.error("type Null");
+			throw new BcsNoticeException("查詢參數錯誤");
+		}
+		catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));
+
+			if(e instanceof BcsNoticeException){
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			}
+			else{
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+    
+    /**
+	 * 取得 訊息資料列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return Map<String, Object>
+	 * @throws IOException
+	 */
+    @ControllerLog(description="訊息資料列表")
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/getInteractiveMsgList" ,  consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<?> getInteractiveMsgList(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+    		@CurrentUser CustomUser customUser,
+    		@RequestBody MsgInteractiveModel msgInteractiveModel) throws IOException {
+    	String keywordInputUTF8 = new String(msgInteractiveModel.getKeywordInput().getBytes("utf-8"),"utf-8");
+    	logger.info("getInteractiveMsgList, type=" + msgInteractiveModel.getType() + " status=" + msgInteractiveModel.getStatus() + " keywordInput=" + msgInteractiveModel.getKeywordInput() + " keywordInputUTF8=" + keywordInputUTF8 + " pushDate=" + msgInteractiveModel.getPushDate());
+		try{
+			if(StringUtils.isNotBlank(msgInteractiveModel.getType())){
+				Map<String, Object> result = new LinkedHashMap<String, Object>();
+				Map<MsgInteractiveMain, List<MsgDetail>> map = null;
+				map = msgInteractiveMainService.queryGetMsgInteractiveMainDetailByMultiConditions(msgInteractiveModel.getType(), msgInteractiveModel.getStatus(), keywordInputUTF8, msgInteractiveModel.getPushDate());
+				if(map != null){
+				    //分析是否過期or未生效
+				    map = analyzeMsg(map, msgInteractiveModel.getStatus());
+					result.put("MsgMain", map);
+
+					/**
+					 * SendGroup Result
+					 */
+					sendMsgUIService.setGroups(result);
+
+					/**
+					 * AdminUser Result Map
+					 */
+					try{
+						Map<String, AdminUser> admins = adminUserService.findAllMap();
+						Map<String, String> adminMap = new HashMap<String, String>();
+						for(MsgInteractiveMain msg : map.keySet()){
+							Long iMsgId = msg.getiMsgId();
+							String userAccount = msg.getModifyUser();
+							if(admins.containsKey(userAccount)){
+								adminMap.put(userAccount, admins.get(userAccount).getUserName());
+							}
+
+							/**
+							 * Set MsgInteractiveDetail list
+							 */
+							List<MsgInteractiveDetail> list = msgInteractiveDetailService.findByiMsgId(iMsgId);
+							sendMsgUIService.setResourceMap(result, "iMsgId-" + iMsgId, list);
+						}
+						result.put("AdminUser", adminMap);
+					}
+					catch(Exception e){
+						logger.error(ErrorRecord.recordError(e));
+					}
+
+					/**
+					 * Set Detail Content
+					 */
+					for(List<MsgDetail> details : map.values()){
+						sendMsgUIService.setDetailContent(result, details);
+					}
+					
+					return new ResponseEntity<>(result, HttpStatus.OK);
+				}
+				else {
+					return new ResponseEntity<>(result, HttpStatus.OK);
+				}
+			}
 			throw new BcsNoticeException("查詢參數錯誤");
 		}
 		catch(Exception e){
@@ -638,21 +713,16 @@ public class BCSMsgInteractiveController extends BCSBaseController {
 			HttpServletResponse response,
 			@CurrentUser CustomUser customUser,
 			@RequestParam String iMsgId) throws IOException {
-		logger.info("deleteInteractiveMsg");
-		
+		logger.info("deleteInteractiveMsg, iMsgId=" + iMsgId);
 		// Check Delete Right
 		boolean isAdmin = customUser.isAdmin();
 		if(isAdmin){
-			
 			try{
 				if(StringUtils.isNotBlank(iMsgId)){
-					logger.info("iMsgId:" + iMsgId);
 					interactiveMsgUIService.deleteMessageMain(Long.parseLong(iMsgId), customUser.getAccount());
-					
 					return new ResponseEntity<>("Delete Success", HttpStatus.OK);
 				}
 				else{
-//					throw new Exception("iMsgId Null");
 					logger.error("iMsgId Null");
 					throw new BcsNoticeException("請選擇正確的訊息");
 				}
@@ -669,7 +739,6 @@ public class BCSMsgInteractiveController extends BCSBaseController {
 			}
 		}
 		else{
-
 			return new ResponseEntity<>("User No Delete Right", HttpStatus.OK);
 		}
 	}
@@ -899,64 +968,43 @@ public class BCSMsgInteractiveController extends BCSBaseController {
         }
     }
     
-    public Map<MsgInteractiveMain, List<MsgDetail>> analyzeMsg(Map<MsgInteractiveMain, List<MsgDetail>> map, String status){
+    private Map<MsgInteractiveMain, List<MsgDetail>> analyzeMsg(Map<MsgInteractiveMain, List<MsgDetail>> map, String status){
         Calendar calendar = Calendar.getInstance();
-        if(!"EXPIRE".equals(status)) {
-            Iterator<Entry<MsgInteractiveMain, List<MsgDetail>>> iterator = map.entrySet().iterator();
-            while(iterator.hasNext()) {
-                Date endTime = iterator.next().getKey().getInteractiveEndTime();
-                long endLong = 0L;
+        Iterator<Entry<MsgInteractiveMain, List<MsgDetail>>> iterator = map.entrySet().iterator();
+        while(iterator.hasNext()) {
+        	MsgInteractiveMain key = iterator.next().getKey();
+        	if (key.getInteractiveStatus().equals("DELETE")) {
+        		iterator.remove();
+        	}
+        	else {
+                Date endTime = key.getInteractiveEndTime();
                 int year = 0;
                 if(endTime != null) {
-                    endLong = endTime.getTime();
+            	    long endLong = endTime.getTime();
                     calendar.setTime(endTime);
                     year = calendar.get(Calendar.YEAR);
+                    if(year != 1970 && new Date().getTime() > endLong) {
+                	    key.setInteractiveStatus("EXPIRE");
+                    }
                 }
-                if(endTime != null && year != 1970 && endLong < new Date().getTime()) {
-                    iterator.remove();
+                if (!key.getInteractiveStatus().equals("EXPIRE")) {
+                    Date startTime = key.getInteractiveStartTime();
+                    if(startTime != null) {
+                	    long startLong = startTime.getTime();
+                        calendar.setTime(startTime);
+                        year = calendar.get(Calendar.YEAR);
+                        if(year != 1970 && new Date().getTime() < startLong) {
+                	        key.setInteractiveStatus("INEFFECTIVE");
+                        }
+                    }
                 }
-            }
-        }else {
-            Iterator<Entry<MsgInteractiveMain, List<MsgDetail>>> iterator = map.entrySet().iterator();
-            while(iterator.hasNext()) {
-                Date endTime = iterator.next().getKey().getInteractiveEndTime();
-                long endLong = 0L;
-                int year = 0;
-                if(endTime != null) {
-                    endLong = endTime.getTime();
-                    calendar.setTime(endTime);
-                    year = calendar.get(Calendar.YEAR);
-                }
-                if(endTime == null || year == 1970 || endLong > new Date().getTime()) {
-                    iterator.remove();
-                }
-            }
+        	}
         }
-        
-        if(!"INEFFECTIVE".equals(status)) {
-            Iterator<Entry<MsgInteractiveMain, List<MsgDetail>>> iterator = map.entrySet().iterator();
+        if (!status.equals("")) {
+        	iterator = map.entrySet().iterator();
             while(iterator.hasNext()) {
-                Date startTime = iterator.next().getKey().getInteractiveStartTime();
-                long startLong = 0L;
-                if(startTime != null) {
-                    startLong = startTime.getTime();
-                }
-                if(startLong > new Date().getTime()) {
-                    iterator.remove();
-                }
-            }
-        }else {
-            Iterator<Entry<MsgInteractiveMain, List<MsgDetail>>> iterator = map.entrySet().iterator();
-            while(iterator.hasNext()) {
-                Date startTime = iterator.next().getKey().getInteractiveStartTime();
-                long startLong = 0L;
-                int year = 0;
-                if(startTime != null) {
-                    startLong = startTime.getTime();
-                    calendar.setTime(startTime);
-                    year = calendar.get(Calendar.YEAR);
-                }
-                if(startTime == null || year == 1970 || startLong < new Date().getTime()) {
+            	MsgInteractiveMain key = iterator.next().getKey();
+            	if (!key.getInteractiveStatus().equals(status)) {
                     iterator.remove();
                 }
             }
