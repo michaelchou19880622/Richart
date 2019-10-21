@@ -31,7 +31,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bcs.core.db.entity.ContentFlag;
 import com.bcs.core.db.entity.ContentLink;
+import com.bcs.core.db.service.ContentFlagService;
 import com.bcs.core.db.service.ContentGameService;
 import com.bcs.core.db.service.ContentLinkService;
 import com.bcs.core.db.service.UserTraceLogService;
@@ -74,6 +76,8 @@ public class BCSLinkPageController extends BCSBaseController {
 	private ContentGameService contentGameService;
 	@Autowired
 	private ExportExcelForLinkPageSrevice ExportExcelForLinkPageSrevice;
+	@Autowired
+	private ContentFlagService contentFlagService;
 	
 	/** Logger */
 	private static Logger logger = Logger.getLogger(BCSLinkPageController.class);
