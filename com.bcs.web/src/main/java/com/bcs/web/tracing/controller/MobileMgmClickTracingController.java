@@ -124,7 +124,7 @@ public class MobileMgmClickTracingController extends BCSBaseController {
             
             // 取得UID、好友狀態
             Long loginStartTime = System.currentTimeMillis();
-            Map<String, String> resultMap = LineLoginUtil.callRetrievingAPI(code, UriHelper.getMgmClickOauth(), state);
+            Map<String, String> resultMap = LineLoginUtil.callRetrievingAPIfromMGM(code, UriHelper.getMgmClickOauth(), state);
             Long loginEndTime = System.currentTimeMillis();
             logger.info("login Time :"+ (loginEndTime - loginStartTime)/1000 + "秒");
             String uid = resultMap.get("UID");
@@ -200,7 +200,7 @@ public class MobileMgmClickTracingController extends BCSBaseController {
             logger.info("LineLoginUtil.callRetrievingAPI(code, UriHelper.getMgmOauth(), state)" );
             // 取得UID、好友狀態
             Long loginStartTime = System.currentTimeMillis();
-            Map<String, String> resultMap = LineLoginUtil.callRetrievingAPI(code, UriHelper.getMgmOauth(), state);
+            Map<String, String> resultMap = LineLoginUtil.callRetrievingAPIfromMGM(code, UriHelper.getMgmOauth(), state);
             Long loginEndTime = System.currentTimeMillis();
             logger.info("login Time :"+ (loginEndTime - loginStartTime)/1000 + "秒");
             //Map<String, String> resultMap = LineLoginUtil.callRetrievingAPI(code, UriHelper.getMgmOauth(), state);
