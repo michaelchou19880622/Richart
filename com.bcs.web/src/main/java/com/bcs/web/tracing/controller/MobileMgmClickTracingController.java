@@ -139,7 +139,7 @@ public class MobileMgmClickTracingController extends BCSBaseController {
         	ShareCampaignClickTracing clickTracing = shareCampaignClickTracingService.findByUidAndShareUserRecordId(uid, ownerRecord.getShareUserRecordId());
  	
         	if(friendFlag){ // 好友
-        	    if(clickTracing == null /*&& !ownerRecord.getUid().equals(uid)*/) { //未點過、非本人
+        	    if(clickTracing == null && !ownerRecord.getUid().equals(uid)) { //未點過、非本人
         	        clickTracing = new ShareCampaignClickTracing();
         	        clickTracing.setUid(uid);
         	        clickTracing.setShareUserRecordId(ownerRecord.getShareUserRecordId());
