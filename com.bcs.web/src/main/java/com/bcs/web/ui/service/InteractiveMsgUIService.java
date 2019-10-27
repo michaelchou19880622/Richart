@@ -19,8 +19,6 @@ import com.bcs.core.db.entity.MsgDetail;
 import com.bcs.core.db.entity.MsgInteractiveCampaign;
 import com.bcs.core.db.entity.MsgInteractiveDetail;
 import com.bcs.core.db.entity.MsgInteractiveMain;
-import com.bcs.core.db.service.ContentLinkService;
-import com.bcs.core.db.service.ContentStickerService;
 import com.bcs.core.db.service.MsgDetailService;
 import com.bcs.core.db.service.MsgInteractiveCampaignService;
 import com.bcs.core.db.service.MsgInteractiveDetailService;
@@ -39,10 +37,6 @@ public class InteractiveMsgUIService {
     private MsgDetailService msgDetailService;
 	@Autowired
 	private SendMsgUIService sendMsgUIService;
-	@Autowired
-	private ContentStickerService contentStickerService;
-	@Autowired
-	private ContentLinkService contentLinkService;
 	@Autowired
 	private InteractiveService interactiveService;
     @Autowired
