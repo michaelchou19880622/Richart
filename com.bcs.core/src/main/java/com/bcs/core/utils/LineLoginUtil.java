@@ -46,6 +46,9 @@ public class LineLoginUtil {
     public static Map<String, String> callRetrievingAPI(String code, String redirectUrl, String state) throws Exception {
     	return callRetrievingAPI(CONFIG_STR.Default.toString(), code, redirectUrl, state);
     }
+    public static Map<String, String> callRetrievingAPIfromMGM(String code, String redirectUrl, String state) throws Exception {
+    	return callRetrievingAPIfromMGM(CONFIG_STR.Default.toString(), code, redirectUrl, state);
+    }
     
     public static Map<String, String> callRetrievingAPI(String target, String code, String redirectUrl, String state) throws Exception {
 
@@ -107,6 +110,67 @@ public class LineLoginUtil {
         }
 
         return resultMap;
+    }
+    public static Map<String, String> callRetrievingAPIfromMGM(String target, String code, String redirectUrl, String state) throws Exception {
+    	
+    	String ChannelID = CoreConfigReader.getString(target, CONFIG_STR.ChannelID.toString(), true);
+    	String ChannelSecret = CoreConfigReader.getString(target, CONFIG_STR.ChannelSecret.toString(), true);
+    	
+    	Map<String, String> resultMap = new HashMap<String, String>();
+    	ApplicationContext context = ApplicationContextProvider.getApplicationContext();
+    	
+    	ObjectNode result = context.getBean(LineWebLoginApiService.class).callRetrievingAPIfromMGM(ChannelID, ChannelSecret, code,
+    			redirectUrl);
+    	
+    	if (result != null) {
+    		
+    		String UID = null;
+    		
+    		if (result.get("id_token") != null) {
+    			String id_token = result.get("id_token").asText();
+    			
+    			if (StringUtils.isNotBlank(id_token)) {
+    				UID = jwtGetUid(id_token, ChannelSecret, state);
+    				if(StringUtils.isNotBlank(UID)) {
+    					resultMap.put("UID", UID);
+    				}
+    			}
+    		}
+    		
+    		if(result.get("access_token") != null) {
+    			String access_token = result.get("access_token").asText();
+    			
+    			if (StringUtils.isNotBlank(access_token)) {
+    				
+    				if(StringUtils.isBlank(UID)) {
+    					ObjectNode getProfile = context.getBean(LineProfileService.class).callGetProfileAPI(access_token);
+    					
+    					if (getProfile != null && getProfile.get("userId") != null
+    							&& StringUtils.isNotBlank(getProfile.get("userId").asText())) {
+    						resultMap.put("UID", getProfile.get("userId").asText());
+    						UID = getProfile.get("userId").asText();
+    					} 
+    					
+    					UserTraceLogUtil.saveLogTrace(LOG_TARGET_ACTION_TYPE.TARGET_LineLoginUtil, LOG_TARGET_ACTION_TYPE.ACTION_CallGetProfileAPI_API, UID, getProfile, ":callRetrievingAPI:" +state);
+    				}
+    				
+    				// Get FriendShip Status
+    				ObjectNode getFriendShipStatus = context.getBean(LineFriendShipStatusService.class).getFriendShipStatusService(access_token);
+    				if (getFriendShipStatus != null && getFriendShipStatus.get("friendFlag") != null
+    						&& StringUtils.isNotBlank(getFriendShipStatus.get("friendFlag").asText())) {
+    					resultMap.put("friendFlag", getFriendShipStatus.get("friendFlag").asText());
+    				}else{
+    					resultMap.put("friendFlag", "0");
+    				}
+    				
+    				UserTraceLogUtil.saveLogTrace(LOG_TARGET_ACTION_TYPE.TARGET_LineLoginUtil, LOG_TARGET_ACTION_TYPE.ACTION_CallRetrievingAPI, UID, code + "--" + redirectUrl, ":callRetrievingAPI:" +state);
+    				UserTraceLogUtil.saveLogTrace(LOG_TARGET_ACTION_TYPE.TARGET_LineLoginUtil, LOG_TARGET_ACTION_TYPE.ACTION_CallRetrievingAPI_API, UID, result, ":callRetrievingAPI:" +state); 
+    				UserTraceLogUtil.saveLogTrace(LOG_TARGET_ACTION_TYPE.TARGET_LineLoginUtil, LOG_TARGET_ACTION_TYPE.ACTION_GetFriendShipStatus_API, UID, getFriendShipStatus, ":callRetrievingAPI:" +state);
+    			}
+    		}
+    	}
+    	
+    	return resultMap;
     }
     
     public static String jwtGetUid(String id_token, String ChannelSecret, String state) {

@@ -6,6 +6,7 @@
 		<groupId>com.bcs</groupId>
 		<artifactId>com.bcs.project.richart</artifactId>
 		<version>0.0.1.RELEASE</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>com.bcs.web.richart</artifactId>
 	

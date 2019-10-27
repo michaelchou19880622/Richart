@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"  
+      th:with="strList = ${ {'NULL'} }">
+<head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu List Page', ${strList})" >
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageHpiRchmnu')"></div>
+
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+			<form>
+				<section>
+					<header class="ContentHead">
+						<h3 class="CHTtl">群組列表</h3>
+					</header>
+
+					<div style="height: 100%;">
+						<iframe id="IframeContent" src="https://taishin-azure.southeastasia.cloudapp.azure.com/bcsweb/#/RichmenuList"
+							width="100%" height='800px'></iframe>
+					</div>
+
+				</section>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

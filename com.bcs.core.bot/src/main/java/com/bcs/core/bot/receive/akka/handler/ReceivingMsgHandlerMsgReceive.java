@@ -104,13 +104,25 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 
 		boolean recordText = CoreConfigReader.getBoolean(CONFIG_STR.RECORD_RECEIVE_AUTORESPONSE_TEXT, true);
 		
-		String MID = content.getSourceId();
-		String text = content.getText();
-		String replyToken = content.getReplyToken();
+
+		logger.info("content.getChannel():" + content.getChannel());
+		logger.info("content.getEventType():" + content.getEventType());
+		logger.info("content.getMsgId():" + content.getMsgId());
+		logger.info("content.getReferenceId():" + content.getReferenceId());
+		logger.info("content.getUserStatus():" + content.getUserStatus());
+		logger.info("content.getPostbackData():" + content.getPostbackData());
 		
-		logger.debug("ChannelId:" + ChannelId);
-		logger.debug("ApiType:" + ApiType);
-		logger.debug("MID:" + MID);
+		logger.info("ChannelId:" + ChannelId);
+		logger.info("ApiType:" + ApiType);
+		
+		String MID = content.getSourceId();
+		logger.info("MID:" + MID);
+		
+		String text = content.getText();
+		logger.info("text:" + text);
+		
+		String replyToken = content.getReplyToken();
+		logger.info("replyToken:" + replyToken);
 		
 		Map<Long, List<MsgDetail>> result = new HashMap<>();
 		
