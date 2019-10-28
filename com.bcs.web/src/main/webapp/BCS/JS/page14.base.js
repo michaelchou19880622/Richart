@@ -73,7 +73,26 @@ $(function(){
 			url : bcs.bcsContextPath + '/edit/redesignInteractiveMsg?iMsgId=' + iMsgId
 		}).success(function(response){
 			console.info(response);
-			alert("改變成功");
+			alert("取消成功");
+			loadDataFunc();
+		}).fail(function(response){
+			console.info(response);
+			$.FailResponse(response);
+		}).done(function(){
+		});
+	};
+	
+	// 改變狀態按鈕
+	var activateFunc = function(){
+		var iMsgId = $(this).attr('iMsgId');
+		console.info('activateFunc iMsgId:' + iMsgId);
+		
+		$.ajax({
+			type : "GET",
+			url : bcs.bcsContextPath + '/edit/activateInteractiveMsg?iMsgId=' + iMsgId
+		}).success(function(response){
+			console.info(response);
+			alert("生效成功");
 			loadDataFunc();
 		}).fail(function(response){
 			console.info(response);
@@ -268,8 +287,20 @@ $(function(){
 
 				msgData.find('.modifyUser').html(response.AdminUser[keyObj.modifyUser]);
 
-				msgData.find('.btn_redeisgn').attr('iMsgId', iMsgId);
-				msgData.find('.btn_redeisgn').click(redesignFunc);
+				if (keyObj.interactiveStatus == "ACTIVE") {
+					msgData.find('.btn_activate').hide();
+					msgData.find('.btn_redeisgn').click(redesignFunc);
+					msgData.find('.btn_redeisgn').attr('iMsgId', iMsgId);
+				}
+				else if (keyObj.interactiveStatus == "DISABLE") {
+					msgData.find('.btn_redeisgn').hide();
+					msgData.find('.btn_activate').click(activateFunc);
+					msgData.find('.btn_activate').attr('iMsgId', iMsgId);
+				}
+				else {
+					msgData.find('.btn_activate').hide();
+					msgData.find('.btn_redeisgn').hide();
+				}
 				
 				msgData.find('.btn_copy').attr('iMsgId', iMsgId);
 				msgData.find('.btn_copy').click(btn_copyFunc);

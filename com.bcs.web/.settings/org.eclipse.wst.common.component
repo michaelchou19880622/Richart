@@ -11,19 +11,19 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module archiveName="com.bcs.core.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core/com.bcs.core">
+        <dependent-module archiveName="com.bcs.core.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richart/com.bcs.core.richart">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="com.bcs.core.bot.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.bot/com.bcs.core.bot">
+        <dependent-module archiveName="com.bcs.core.bot.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.bot.richart/com.bcs.core.bot.richart">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="com.bcs.core.web.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.web/com.bcs.core.web">
+        <dependent-module archiveName="com.bcs.core.web.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.web.richart/com.bcs.core.web.richart">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="com.bcs.core.richart.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richart/com.bcs.core.richart">
+        <dependent-module archiveName="com.bcs.core.richart.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richart.richart/com.bcs.core.richart.richart">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="com.bcs.core.richmenu.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richmenu/com.bcs.core.richmenu">
+        <dependent-module archiveName="com.bcs.core.richmenu.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richmenu.richart/com.bcs.core.richmenu.richart">
             <dependency-type>uses</dependency-type>
         </dependent-module>
                                                         
