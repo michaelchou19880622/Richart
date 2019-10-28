@@ -48,12 +48,12 @@ public class LineBotApiController {
 		
 		try{
 			// RichMenu
-			if(richMenuReceivingApiService.richMenuMsgValidate(receivingMsg)) {
-				logger.info("-------RichMenu Receiving Success-------");
-				response.setStatus(200);
-				SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBotApi, LOG_TARGET_ACTION_TYPE.ACTION_Receive, start, 200, receivingMsg, "200");				
-				return;
-			}
+//			if(richMenuReceivingApiService.richMenuMsgValidate(receivingMsg)) {
+//				logger.info("-------RichMenu Receiving Success-------");
+//				response.setStatus(200);
+//				SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBotApi, LOG_TARGET_ACTION_TYPE.ACTION_Receive, start, 200, receivingMsg, "200");				
+//				return;
+//			}
 			
 			String channelSignature = request.getHeader(LINE_HEADER.HEADER_BOT_ChannelSignature.toString());
 			
@@ -67,7 +67,7 @@ public class LineBotApiController {
 				}
 			}
 			
-			ReceivedModelOriginal msgs = new ReceivedModelOriginal(receivingMsg, ChannelId,ChannelName, channelSignature, API_TYPE.BOT);
+			ReceivedModelOriginal msgs = new ReceivedModelOriginal(receivingMsg, ChannelId, ChannelName, channelSignature, API_TYPE.BOT);
 
 			akkaBotService.receivingMsgs(msgs);
 			logger.debug("-------lineBotApiReceiving Success-------");
