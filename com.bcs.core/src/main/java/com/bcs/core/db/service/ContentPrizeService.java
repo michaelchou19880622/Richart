@@ -1,6 +1,9 @@
 package com.bcs.core.db.service;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 //import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,18 +42,26 @@ public class ContentPrizeService {
 	 * @throws Exception 
 	 */
 	public String getRandomPrize(String gameId, String mid) throws Exception {
+		logger.info("刮刮卡隨機取的優惠卷");
 		ContentCoupon drewCoupon = null;
-		List<ContentCoupon> contentCouponList = contentCouponRepository.findByEventReferenceAndEventReferenceId(ContentCoupon.EVENT_REFERENCE_SCRATCH_CARD, gameId);
+		List<ContentCoupon> contentCouponList = contentCouponRepository.findByEventReferenceAndEventReferenceIdAndCouponRemain(ContentCoupon.EVENT_REFERENCE_SCRATCH_CARD, gameId);
 		String drewCouponId = null;
 		Random random = new Random();
 		BigDecimal index = new BigDecimal(random.ints(1, 10000).findFirst().getAsInt());
 		BigDecimal accumulation = new BigDecimal("0");
-
+		List<ContentCoupon> UnLimitContentCouponIdList = new ArrayList<ContentCoupon>() ;
 		int prizeCount = contentCouponList.size();
-
+		
+		logger.info("contentCouponList : " + contentCouponList );
+		logger.info("index : " + index );
 		for (int i = 0; i < prizeCount; i++) {
 			accumulation = accumulation.add(contentCouponList.get(i).getProbability());
-
+			logger.info("目前累進的機率 : " + accumulation );
+			//取得所有無上限的優惠卷
+			if(null == contentCouponList.get(i).getCouponGetLimitNumber()) {
+				UnLimitContentCouponIdList.add(contentCouponList.get(i));
+			}
+			
 			/* 判斷此優惠券是否為中獎優惠券 */
 			if (accumulation.multiply(new BigDecimal("100")).compareTo(index) == 1) {
 				drewCoupon = contentCouponList.get(i);
@@ -74,6 +85,30 @@ public class ContentPrizeService {
 					}
 				}
 			}
+		}
+		
+		if(null == drewCouponId &&  UnLimitContentCouponIdList.size() != 0) {
+			logger.info("drewCouponId is null and  UnLimitContentCouponIdList.size() != 0 ");
+			logger.info("UnLimitContentCouponIdList : " + UnLimitContentCouponIdList );
+			
+			if(UnLimitContentCouponIdList.size() == 1) {
+				drewCoupon = UnLimitContentCouponIdList.get(0);
+			}else {
+				int randomUnLimit = random.nextInt(UnLimitContentCouponIdList.size());
+				drewCoupon = UnLimitContentCouponIdList.get(randomUnLimit);
+			}
+			logger.info( "◎ 抽中的優惠券   CouponId  ：" +  UnLimitContentCouponIdList.get(0).getCouponId());
+			logger.info("◎ 抽中的優惠券  ：" + drewCoupon);
+			Date today = new Date();
+				/* 判斷此優惠券是否在可領取的期間，如果是的話，便將 drewCouponId 設為此優惠券 id */
+				if(today.compareTo(drewCoupon.getCouponStartUsingTime()) >= 0 && today.compareTo(drewCoupon.getCouponEndUsingTime()) < 0) {
+					drewCouponId = drewCoupon.getCouponId();
+					Date startUsingDate = drewCoupon.getCouponStartUsingTime();
+					Date endUsingDate = drewCoupon.getCouponEndUsingTime();
+
+					actionUserCouponService.createActionUserCoupon(mid, drewCouponId, startUsingDate, endUsingDate);
+				}
+			
 		}
 
 		return drewCouponId;
