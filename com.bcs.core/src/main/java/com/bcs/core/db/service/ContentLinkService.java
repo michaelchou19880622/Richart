@@ -84,7 +84,7 @@ public class ContentLinkService {
   	}
   	
   	public List<Object[]> findAllLinkUrlByLikeTime(String startTime , String endTime){
-  		return contentLinkRepository.findAllLinkUrlByLikeTime(startTime,endTime);
+  		return contentLinkRepository.findAllLinkUrlByLikeTime(startTime, endTime);
   	}
 	public List<Object[]> findAllLinkUrlForallUID(String linkUrl){
 		return contentLinkRepository.findAllLinkUrlForallUID(linkUrl);
