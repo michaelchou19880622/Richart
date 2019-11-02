@@ -43,7 +43,6 @@ $(function(){
 		
 		$.ajax({
 			type : "POST",
-//			url : bcs.bcsContextPath + '/edit/getLinkUrlReportList?queryFlag=' + queryFlag + '&page=' + page
 			url : bcs.bcsContextPath + '/edit/getLinkUrlReportList',
 			cache: false,
             contentType: 'application/json',
