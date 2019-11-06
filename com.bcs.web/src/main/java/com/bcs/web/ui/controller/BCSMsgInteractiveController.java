@@ -1014,7 +1014,7 @@ public class BCSMsgInteractiveController extends BCSBaseController {
         	if (key.getInteractiveStatus().equals("DELETE")) {
         		iterator.remove();
         	}
-        	else {
+        	else if (key.getInteractiveStatus().equals("ACTIVE")) {
                 Date endTime = key.getInteractiveEndTime();
                 int year = 0;
                 if(endTime != null) {
