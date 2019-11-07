@@ -42,6 +42,9 @@ public class ShareUserRecord extends AbstractBcsEntity{
     @Column(name = "CUMULATIVE_COUNT")
     private Long cumulativeCount;
     
+    @Column(name = "DONE_TIME")
+	private Date doneTime;
+    
     public String getShareUserRecordId() {
         return shareUserRecordId;
     }
@@ -89,5 +92,13 @@ public class ShareUserRecord extends AbstractBcsEntity{
 	public void setCumulativeCount(Long cumulativeCount) {
 		this.cumulativeCount = cumulativeCount;
 	}
+	
+	 public Date getDoneTime() {
+	        return doneTime;
+	    }
+
+	    public void setDoneTime(Date doneTime) {
+	        this.doneTime = doneTime;
+	    }
 
 }
