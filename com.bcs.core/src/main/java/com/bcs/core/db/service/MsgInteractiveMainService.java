@@ -211,11 +211,8 @@ public class MsgInteractiveMainService {
 			dataQuerySQL.append(" AND INTERACTIVE_TYPE = :interactiveType");
 		}
 		if(StringUtils.isNotBlank(status)) {
-			if (status.equalsIgnoreCase("EXPIRE")) {
+			if (!status.equalsIgnoreCase("DISABLE")) {
 				status = "ACTIVE";
-			}
-			else if (status.equalsIgnoreCase("INEFFECTIVE")) {
-				status = "DISABLE";
 			}
 			dataQuerySQL.append(" AND INTERACTIVE_STATUS = :status");
 		}
