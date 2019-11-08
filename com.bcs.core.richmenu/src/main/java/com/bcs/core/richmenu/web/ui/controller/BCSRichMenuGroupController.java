@@ -56,6 +56,13 @@ public class BCSRichMenuGroupController extends BCSBaseController {
 	RichMenuContentUIService richMenuContentUIService;
 	
 	// RichMenuGroupList Page
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/hpiRichMenuListPage")
+	public String hpiRichMenuListPage(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("hpiRichMenuListPage");
+		return BcsPageEnum.HpiRichMenuListPage.toString();
+	}
+	
+	// RichMenuGroupList Page
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMenuGroupListPage")
 	public String richMenuGroupListPage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("richMenuGroupListPage");

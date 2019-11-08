@@ -1,89 +1,75 @@
 package com.bcs.core.richmenu.core.api.service;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.imageio.ImageIO;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.FileEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
+import org.jcodec.containers.mxf.MXFDemuxer.Fast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.bcs.core.api.service.model.PostLineResponse;
-import com.bcs.core.enums.CONFIG_STR;
-import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
 import com.bcs.core.exception.BcsNoticeException;
-import com.bcs.core.log.util.SystemLogUtil;
-import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richmenu.core.db.entity.RichMenuContent;
 import com.bcs.core.richmenu.core.db.repository.RichMenuContentRepository;
 import com.bcs.core.utils.ErrorRecord;
-import com.bcs.core.utils.HttpClientUtil;
-import com.bcs.core.utils.InputStreamUtil;
-import com.linecorp.bot.model.richmenu.RichMenu;
 
 @Service
 public class RichMenuReceivingApiService {
 
 	/** Logger */
 	private static Logger logger = Logger.getLogger(RichMenuReceivingApiService.class);
+	
 	@Autowired
 	private RichMenuLineApiService lineRichMenuApiService;
+	
 	@Autowired
 	private RichMenuContentRepository richMenuContentRepository;
+	
 	// validate
 	public boolean richMenuMsgValidate(String receivingMsg) {
 		try {
-			logger.info("receivingMsg:"+receivingMsg);
-			
+			logger.info("receivingMsg:" + receivingMsg);
+
 			JSONObject recivingObject = new JSONObject(receivingMsg);
-			logger.info("recivingObject:"+recivingObject.toString());
-			
+			logger.info("recivingObject:" + recivingObject.toString());
+
 			JSONArray eventsArray = recivingObject.getJSONArray("events");
 			logger.info("eventsArray:" + eventsArray.toString());
-			
-			Object firstEvent =  eventsArray.get(0);
+
+			Object firstEvent = eventsArray.get(0);
 			logger.info("firstEvent:" + firstEvent.toString());
-			
+
 			JSONObject firstEventObject = (JSONObject) firstEvent;
 			logger.info("firstEventObject:" + firstEventObject.toString());
-			
+
 			// source-uid
 			JSONObject sourceObject = firstEventObject.getJSONObject("source");
 			logger.info("sourceObject:" + sourceObject.toString());
-			
+
 			String uid = sourceObject.getString("userId");
 			logger.info("uid:" + uid);
-			
+
+			// Check is postback message
+			if (!firstEventObject.has("postback")) {
+
+				logger.info("Message not match the Postback event");
+				
+				return false;
+			}
+
 			// postback-data
-			JSONObject postbackObject = firstEventObject.getJSONObject("postback");	
+			JSONObject postbackObject = firstEventObject.getJSONObject("postback");
 			logger.info("postbackObject" + postbackObject);
-			
+
 			String richId = postbackObject.getString("data");
 			logger.info("richId:" + richId);
-			
+
 			RichMenuContent richMenuContent = richMenuContentRepository.findOne(richId);
 			logger.info("richMenuContent:" + richMenuContent);
-			
+
 			String richMenuId = richMenuContent.getRichMenuId();
 			logger.info("richMenuId:" + richMenuId);
+			
 			logger.debug("-------richMenuMsgValidate Success-------");
 			
 			callLinkRichMenuToUserAPI(richMenuId, uid);

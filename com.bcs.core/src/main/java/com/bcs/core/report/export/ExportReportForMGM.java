@@ -81,8 +81,9 @@ public class ExportReportForMGM {
         row.createCell(0).setCellValue("分享者UID");
         row.createCell(1).setCellValue("分享時間");
         row.createCell(2).setCellValue("被分享者UID");
-        row.createCell(3).setCellValue("被分享者狀態");
-        row.createCell(4).setCellValue("點擊時間");
+        row.createCell(3).setCellValue("被分享者加好友");
+        row.createCell(4).setCellValue("被分享者是否完成活動");
+        row.createCell(5).setCellValue("點擊時間");
         
         if(resultGet.size() != 0){
             int seqNo = 1; //序號
@@ -94,7 +95,8 @@ public class ExportReportForMGM {
                 row1.createCell(1).setCellValue(o[1] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[1], sdf2)));
                 row1.createCell(2).setCellValue(o[2] == null? "" : o[2].toString());
                 row1.createCell(3).setCellValue(o[2] == null? "" : (o[3].toString().equals("1")?"NEW":"OLD"));
-                row1.createCell(4).setCellValue(o[4] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[4], sdf2)));
+                row1.createCell(4).setCellValue(o[2] == null? "" : (o[4].toString().equals("1")?"Y":"N"));
+                row1.createCell(5).setCellValue(o[5] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[5], sdf2)));
                 seqNo++;
             }
         }

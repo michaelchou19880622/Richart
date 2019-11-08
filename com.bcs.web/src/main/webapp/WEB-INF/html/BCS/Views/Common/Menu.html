@@ -19,26 +19,26 @@
                     </ul>
                 </li>
                 
-<!--                    <li > -->
-<!--                     <a href="" style="cursor: pointer;"><span>Line Point 活動</span></a> -->
-<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
-<!--                         <li th:classappend="${currentPage == 'LinePointCreatePage'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/market/linePointCreatePage}"><span>建立 Line Point 活動</span></a> -->
-<!--                         </li> -->
-<!--                         <li th:classappend="${currentPage == 'LinePointListPage'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/market/linePointListPage}"><span>Line Point 活動列表</span></a> -->
-<!--                         </li> -->
-<!--                          <li th:classappend="${currentPage == 'LinePointPushPage'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/market/linePointPushPage}"><span>發送 Line Point 活動</span></a> -->
-<!--                         </li> -->
-<!--                         <li th:classappend="${currentPage == 'LinePointReportPage'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/market/linePointReportPage}"><span>Line Point 發送報表</span></a> -->
-<!--                         </li> -->
-<!-- <!--                    <li th:classappend="${currentPage == 'LinePointDetailPage'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/market/linePointDetailPage}"><span>Line Point 活動明細</span></a> -->
-<!--                         </li> -->
-<!--                     </ul> -->
-<!--                 </li> -->
+                   <li >
+                    <a href="" style="cursor: pointer;"><span>Line Point 活動</span></a>
+                    <ul class="MdNonDisp subMenu" style="display:none">
+                        <li th:classappend="${currentPage == 'LinePointCreatePage'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/market/linePointCreatePage}"><span>建立 Line Point 活動</span></a>
+                        </li>
+                        <li th:classappend="${currentPage == 'LinePointListPage'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/market/linePointListPage}"><span>Line Point 活動列表</span></a>
+                        </li>
+                         <li th:classappend="${currentPage == 'LinePointPushPage'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/market/linePointPushPage}"><span>發送 Line Point 活動</span></a>
+                        </li>
+                        <li th:classappend="${currentPage == 'LinePointReportPage'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/market/linePointReportPage}"><span>Line Point 發送報表</span></a>
+                        </li>
+<!--                    <li th:classappend="${currentPage == 'LinePointDetailPage'} ? 'ExSelected'">-->
+ <!--                         	<a th:href="@{/bcs/market/linePointDetailPage}"><span>Line Point 活動明細</span></a>-->
+                        </li>
+                    </ul>
+                </li>
                 
                 <li sec:authorize="hasAnyRole('ROLE_EDIT', 'ROLE_ADMIN')">
                     <a href="" style="cursor: pointer;"><span>訊息</span></a>
@@ -73,6 +73,15 @@
                     </ul>
                 </li>
                 
+                 <li>
+                    <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
+                    <ul class="MdNonDisp subMenu" style="display:none">
+                    	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>選單列表</span></a>
+                        </li>
+                    </ul>
+                </li>
+                
 <!--                 <li> -->
 <!--                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a> -->
 <!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
@@ -100,17 +109,17 @@
 <!--                     </ul> -->
 <!--                 </li> -->
                 
-<!--                 <li sec:authorize="hasAnyRole('ROLE_EDIT', 'ROLE_ADMIN')"> -->
-<!--                     <a href="" style="cursor: pointer;"><span>MGM活動</span></a> -->
-<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
-<!--                         <li th:classappend="${currentPage == 'PageMGM2'} ? 'ExSelected'"> -->
-<!--                             <a th:href="@{/bcs/edit/shareCampaignListPage}"><span>MGM活動列表</span></a> -->
-<!--                         </li> -->
-<!--                         <li th:classappend="${currentPage == 'PageMGM1'} ? 'ExSelected'"> -->
-<!--                             <a th:href="@{/bcs/edit/shareCampaignCreatePage}"><span>建立MGM活動</span></a> -->
-<!--                         </li> -->
-<!--                     </ul> -->
-<!--                 </li> -->
+                <li sec:authorize="hasAnyRole('ROLE_EDIT', 'ROLE_ADMIN')">
+                    <a href="" style="cursor: pointer;"><span>MGM活動</span></a>
+                    <ul class="MdNonDisp subMenu" style="display:none">
+                        <li th:classappend="${currentPage == 'PageMGM2'} ? 'ExSelected'">
+                            <a th:href="@{/bcs/edit/shareCampaignListPage}"><span>MGM活動列表</span></a>
+                        </li>
+                        <li th:classappend="${currentPage == 'PageMGM1'} ? 'ExSelected'">
+                            <a th:href="@{/bcs/edit/shareCampaignCreatePage}"><span>建立MGM活動</span></a>
+                        </li>
+                    </ul>
+                </li>
                 <li sec:authorize="hasAnyRole('NotShowRole')">
                     <a href="" style="cursor: pointer;"><span>活動</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
