@@ -14,9 +14,9 @@
 *.rar
 
 # hidden folders
-.settings
-.classpath
-.project
+*/.settings/
+*/.classpath/
+*/.project/
 
 # target folder
-target
+*/.target/
