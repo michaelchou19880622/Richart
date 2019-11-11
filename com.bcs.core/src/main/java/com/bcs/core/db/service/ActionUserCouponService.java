@@ -2,7 +2,6 @@ package com.bcs.core.db.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import com.bcs.core.db.entity.ContentCouponCode;
 import com.bcs.core.db.repository.ActionUserCouponRepository;
 import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
 import com.bcs.core.log.util.UserTraceLogUtil;
-import com.bcs.core.model.RewardCardModel;
 import com.bcs.core.utils.ErrorRecord;
 
 @Service

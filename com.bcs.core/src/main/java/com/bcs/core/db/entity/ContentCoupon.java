@@ -5,13 +5,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 import com.bcs.core.json.AbstractBcsEntity;
 import com.bcs.core.json.CustomDateDeserializer;
@@ -20,8 +16,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @Entity
 @Table(name = "BCS_CONTENT_COUPON",
 indexes = {
-	       @Index(name = "INDEX_0", columnList = "STATUS"),
-	})
+    @Index(name = "INDEX_0", columnList = "STATUS"),
+})
 public class ContentCoupon extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
 
@@ -130,9 +126,6 @@ public class ContentCoupon extends AbstractBcsEntity{
 
 	@Column(name = "EVENT_REFERENCE", columnDefinition="nvarchar(50)")
 	private String eventReference;
-	
-	/* @Column(name = "EVENT_REFERENCE_ID")
-	private Long eventReferenceId; */
 	
 	@Column(name = "EVENT_REFERENCE_ID")
 	private String eventReferenceId;

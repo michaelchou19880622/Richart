@@ -215,26 +215,24 @@ public class BCSLinkPageController extends BCSBaseController {
 			HttpServletRequest request, 
 			HttpServletResponse response,
 			@CurrentUser CustomUser customUser,
-			@RequestBody LinkPageModel linkPageModel
-			) throws IOException {
-		logger.info("getLinkUrlReportList, flag=" + linkPageModel.getFlag() + " page=" + linkPageModel.getPage());
+			@RequestBody LinkPageModel linkPageModel) throws IOException {
+		String queryFlag = null;
+		if (linkPageModel.getFlag() != null) {
+		    queryFlag = new String(linkPageModel.getFlag().getBytes("utf-8"),"utf-8");
+		}
+		logger.info("getLinkUrlReportList, queryFlag" + linkPageModel.getFlag() + " queryFlagUTF8=" + queryFlag + " page=" + linkPageModel.getPage());
 		Calendar yesterdayCalendar = Calendar.getInstance();
 		yesterdayCalendar.add(Calendar.DATE, -1);
 		Calendar nowCalendar = Calendar.getInstance();
 		Calendar nextCalendar = Calendar.getInstance();
 		nextCalendar.add(Calendar.DATE, 1);
 		try{
-			String queryFlag = new String(linkPageModel.getFlag().getBytes("utf-8"),"utf-8");
-			logger.info("getLinkUrlReportList, queryFlagUTF8=" + queryFlag);
-			
-			//Map<String, LinkClickReportModel> linkResult = new LinkedHashMap<String, LinkClickReportModel>();
 			linkResult.clear();
 			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME
 			if(StringUtils.isNotBlank(linkPageModel.getPage()) && StringUtils.isBlank(queryFlag)){
 				result = new ArrayList<Object[]>();
 				int size = 20;
 				int page = Integer.parseInt(linkPageModel.getPage());
-				
 				Sort.Order order = new Sort.Order(Direction.DESC, "modifyTime");
 				Sort sort = new Sort(order);
 				Pageable pageable = new PageRequest(page, size, sort);
@@ -253,18 +251,7 @@ public class BCSLinkPageController extends BCSBaseController {
 				}
 			}else{
 				if(StringUtils.isNotBlank(queryFlag)){
-					
 					result = contentLinkService.findAllLinkUrlByLikeFlag("%" + queryFlag + "%");
-//改成直接使用LINK ID 查詢
-//					List<Object[]> links = contentLinkService.findAllLinkUrlByLikeTitle("%" + queryFlag + "%");
-//					if(result != null){
-//						if(links != null && links.size() > 0){
-//							result.addAll(links);
-//						}
-//					}
-//					else{
-//						result = links;
-//					}
 				}
 				else{
 					result = contentLinkService.getAllContentLinkUrl();
@@ -279,22 +266,13 @@ public class BCSLinkPageController extends BCSBaseController {
 				String linkflag = castToString(link[4]);
 				
 				LinkClickReportModel model = linkResult.get(linkUrl);
-				
-				//if(model == null){
-					model = new LinkClickReportModel();
-					model.setLinkUrl(linkUrl);
-					model.setLinkId(linkId);
-					model.setLinkTitle(linkTitle);
-					model.setLinkTime(linkTime);
-					model.setLinkFlag(linkflag);
-					linkResult.put(linkId, model);
-				//}
-//				else{
-//					if(StringUtils.isBlank(model.getLinkTitle())){
-//						model.setLinkTitle(linkTitle);
-//						model.setLinkFlag(linkflag);
-//					}
-//				}
+				model = new LinkClickReportModel();
+				model.setLinkUrl(linkUrl);
+				model.setLinkId(linkId);
+				model.setLinkTitle(linkTitle);
+				model.setLinkTime(linkTime);
+				model.setLinkFlag(linkflag);
+				linkResult.put(linkId, model);
 			}
 			
 			// Get ContentFlag, setLinkClickCount
@@ -302,9 +280,7 @@ public class BCSLinkPageController extends BCSBaseController {
 				
 				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
 				model.addFlags(flags);
-				
 				Thread.sleep(10);
-				
 				// setLinkClickCount
 				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
 			}
