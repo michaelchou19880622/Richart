@@ -73,7 +73,7 @@
                     </ul>
                 </li>
                 
-                 <li>
+                <li>
                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
                     	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'">
@@ -120,6 +120,7 @@
                         </li>
                     </ul>
                 </li>
+                
                 <li sec:authorize="hasAnyRole('NotShowRole')">
                     <a href="" style="cursor: pointer;"><span>活動</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
