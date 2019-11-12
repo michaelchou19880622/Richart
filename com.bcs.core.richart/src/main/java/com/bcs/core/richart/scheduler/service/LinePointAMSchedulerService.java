@@ -145,12 +145,14 @@ public class LinePointAMSchedulerService {
 		    
 		    // combine stateJudgment(MGM)
 		    String stateJudgment = "";
-		    if(judgment == ShareCampaign.JUDGEMENT_FOLLOW) {
+		    if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)) {
 		    	String campaignStartDate = shareCampaign.getStartTime().toString();
 		    	logger.info("campaignStartDate:"+campaignStartDate);
-		    	stateJudgment = " and status <> 'BLOCK' and createTime >= " + campaignStartDate + " ";
-		    }else if (judgment == ShareCampaign.JUDGEMENT_BINDED) {
-		    	stateJudgment = " and status = 'BINDED' ";
+		    	stateJudgment = " and status <> 'BLOCK' and create_Time >= '" + campaignStartDate + "' ";
+		    }else if (judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
+		    	String campaignStartDate = shareCampaign.getStartTime().toString();
+		    	logger.info("campaignStartDate:"+campaignStartDate);
+		    	stateJudgment = " and isBinded = 'BINDED' and bind_Time >= '" + campaignStartDate + "' ";
 		    }
 		    // add count
 		    Long noJudgementCount = 0L;
@@ -275,6 +277,7 @@ public class LinePointAMSchedulerService {
 		    	// shareUserRecord.status = done
 		    	ShareUserRecord shareUserRecord = shareUserRecordService.findOne(undoneUser.getShareUserRecordId());
 		    	shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+		    	shareUserRecord.setDoneTime(new Date());
 		    	shareUserRecordService.save(shareUserRecord);
 		    	
 		    	// autoSendPoint
