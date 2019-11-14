@@ -759,17 +759,55 @@ public class BCSMsgInteractiveController extends BCSBaseController {
 			HttpServletResponse response,
 			@CurrentUser CustomUser customUser,
 			@RequestParam String iMsgId) throws IOException {
-		logger.info("redesignInteractiveMsg");
+		logger.info("redesignInteractiveMsg, iMsgId" + iMsgId);
 		
 		try{
 			if(StringUtils.isNotBlank(iMsgId)){
-				logger.info("iMsgId:" + iMsgId);
 				interactiveMsgUIService.switchMessageMainStatus(Long.parseLong(iMsgId), customUser.getAccount());
 				
 				return new ResponseEntity<>("Change Success", HttpStatus.OK);
 			}
 			else{
-				logger.error("iMsgId Null");
+				throw new BcsNoticeException("請選擇正確的訊息");
+			}
+		}
+		catch(Exception e){
+			logger.error(ErrorRecord.recordError(e));
+			
+			if(e instanceof BcsNoticeException){
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			}
+			else{
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+	
+	/**
+	 * 改變訊息
+	 * 
+	 * @param customUser
+	 * @param request
+	 * @param response
+	 * @return String
+	 * @throws IOException
+	 */
+	@RequestMapping(method = RequestMethod.GET, value ="/edit/activateInteractiveMsg")
+	@ResponseBody
+	public ResponseEntity<?> activateInteractiveMsg(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@CurrentUser CustomUser customUser,
+			@RequestParam String iMsgId) throws IOException {
+		logger.info("activateInteractiveMsg, iMsgId=" + iMsgId);
+		
+		try{
+			if(StringUtils.isNotBlank(iMsgId)){
+				interactiveMsgUIService.switchMessageMainStatus(Long.parseLong(iMsgId), customUser.getAccount());
+				
+				return new ResponseEntity<>("Change Success", HttpStatus.OK);
+			}
+			else{
 				throw new BcsNoticeException("請選擇正確的訊息");
 			}
 		}
@@ -976,7 +1014,7 @@ public class BCSMsgInteractiveController extends BCSBaseController {
         	if (key.getInteractiveStatus().equals("DELETE")) {
         		iterator.remove();
         	}
-        	else {
+        	else if (key.getInteractiveStatus().equals("ACTIVE")) {
                 Date endTime = key.getInteractiveEndTime();
                 int year = 0;
                 if(endTime != null) {

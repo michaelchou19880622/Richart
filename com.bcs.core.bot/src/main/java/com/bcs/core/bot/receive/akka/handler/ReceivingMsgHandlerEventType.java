@@ -56,7 +56,6 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 					logger.info("ReceivingMsgHandlerEventType apiType :"+apiType);
 					
 					
-					
 					if (channelName.equals(CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true))) {
 						logger.info("ReceivingMsgHandlerEventType  CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true) :"
 					                 +CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true));

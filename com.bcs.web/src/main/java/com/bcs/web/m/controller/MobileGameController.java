@@ -2,8 +2,6 @@ package com.bcs.web.m.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
@@ -45,7 +43,6 @@ import com.bcs.core.db.service.ContentCouponService;
 import com.bcs.core.db.service.ContentGameService;
 import com.bcs.core.db.service.ContentPrizeService;
 import com.bcs.core.db.service.ScratchCardDetailService;
-// import com.bcs.core.db.service.TurntableDetailService;
 import com.bcs.core.db.service.WinnerListService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.exception.BcsNoticeException;
@@ -60,7 +57,6 @@ import com.bcs.web.m.service.MobileCouponService;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mysql.jdbc.util.Base64Decoder;
 
 @Controller
 @RequestMapping("/m")
@@ -215,23 +211,19 @@ public class MobileGameController {
 	@ResponseBody
 	public ResponseEntity<?> drawCoupon(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable String gameId) throws IOException {
-		logger.info("drawCoupon");
-
+		String sessionMID = (String) request.getSession().getAttribute("MID"); // 取得使用者的 LINE UID			
+		logger.info("drawCoupon, sessionMID=" + sessionMID);
 		try {
-			String sessionMID = (String) request.getSession().getAttribute("MID"); // 取得使用者的 LINE UID
-			
 			if(StringUtils.isBlank(sessionMID)){
 				return new ResponseEntity<>("MID Error", HttpStatus.INTERNAL_SERVER_ERROR);
 			} else {
-				String drewCouponId = contentPrizeService.getRandomPrize(gameId, sessionMID); // 抽一個優惠券，並回傳抽到的優惠券 id
-				ContentCoupon contentCoupon = null;
+				// 抽一個優惠券，並回傳抽到的優惠券
+				ContentCoupon contentCoupon = contentPrizeService.getRandomPrizeNew(gameId, sessionMID);
 				CouponModel drewCoupon = new CouponModel();
 				
 				/* 如果有抽到優惠券，將優惠券內容塞至 drewCouponContent 中 */
-				if (drewCouponId != null) {
-					contentCoupon = contentCouponService.findOne(drewCouponId);
-	
-					drewCoupon.setCouponId(drewCouponId);
+				if (contentCoupon != null) {
+					drewCoupon.setCouponId(contentCoupon.getCouponId());
 					drewCoupon.setCouponTitle(contentCoupon.getCouponTitle());
 					drewCoupon.setCouponImageId(contentCoupon.getCouponImageId());
 					drewCoupon.setCouponDescription(contentCoupon.getCouponDescription());
@@ -240,7 +232,6 @@ public class MobileGameController {
 				} else {
 					drewCoupon = null;
 				}
-	
 				return new ResponseEntity<>(drewCoupon, HttpStatus.OK);
 			}
 		} catch (Exception e) {
@@ -250,7 +241,6 @@ public class MobileGameController {
 			}else{
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-			
 		}
 	}
 
@@ -385,10 +375,8 @@ public class MobileGameController {
 			String header = parsedJWT[0], payload = parsedJWT[1], signature = parsedJWT[2];
 			logger.info("header:"+header+", payload:" + payload + ", signature:" + signature);
 			
-			Base64.Decoder base64Decoder = Base64.getDecoder();
+			//Base64.Decoder base64Decoder = Base64.getDecoder();
 			//logger.info("base64Decoder:"+base64Decoder);
-			
-
 			/* 驗證接收到的 ID Token 是否為合法的 JWT */
 			// Original Validate
 			/*

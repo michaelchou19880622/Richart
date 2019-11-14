@@ -6,6 +6,7 @@
 		<groupId>com.bcs</groupId>
 		<artifactId>com.bcs.project.richart</artifactId>
 		<version>0.0.1.RELEASE</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>com.bcs.web.richart</artifactId>
 	
@@ -96,7 +97,7 @@
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
-				<excludes>
+ 				<excludes>
 					<exclude>test/</exclude>
 					<exclude>richartuat/</exclude>
 					<exclude>richartapi/</exclude>
@@ -137,7 +138,7 @@
 					<!-- web.xml is not mandatory since JavaEE 5 -->
 					<failOnMissingWebXml>true</failOnMissingWebXml>
 					<!-- com.bcs.X jar & log jar �n�]�i�h -->
-					<packagingExcludes>%regex[WEB-INF/lib/(?!line-bot-model-1.12.0.jar)(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]</packagingExcludes> <!-- remove third party jar -->
+					<!--  <packagingExcludes>%regex[WEB-INF/lib/(?!line-bot-model-1.12.0.jar)(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]</packagingExcludes>--> <!-- remove third party jar -->
 					<warName>${rp.build.warname}</warName> <!-- set up war name -->
 				</configuration>
 			</plugin>

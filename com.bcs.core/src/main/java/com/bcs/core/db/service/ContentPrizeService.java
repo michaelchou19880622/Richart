@@ -1,10 +1,7 @@
 package com.bcs.core.db.service;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
-//import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -22,9 +19,6 @@ import com.bcs.core.db.repository.PrizeListRepository;
 
 @Service
 public class ContentPrizeService {
-	// private static final String GET_PRIZE_FLAG = "GET_PRIZE_FLAG";
-
-	// public static final String GET_PRIZE_FLAG = "GET_PRIZE_FLAG";
 	@Autowired
 	private ContentPrizeRepository contentPrizeRepository;
 	@Autowired
@@ -42,7 +36,7 @@ public class ContentPrizeService {
 	 * @throws Exception 
 	 */
 	public String getRandomPrize(String gameId, String mid) throws Exception {
-		logger.info("刮刮卡隨機取的優惠卷");
+		logger.info("getRandomPrize, gameId=" + gameId + " mid=" + mid);
 		ContentCoupon drewCoupon = null;
 		List<ContentCoupon> contentCouponList = contentCouponRepository.findByEventReferenceAndEventReferenceIdAndCouponRemain(ContentCoupon.EVENT_REFERENCE_SCRATCH_CARD, gameId);
 		String drewCouponId = null;
@@ -52,7 +46,7 @@ public class ContentPrizeService {
 		List<ContentCoupon> UnLimitContentCouponIdList = new ArrayList<ContentCoupon>() ;
 		int prizeCount = contentCouponList.size();
 		
-		logger.info("contentCouponList : " + contentCouponList );
+		logger.info("contentCouponList : " + contentCouponList);
 		logger.info("index : " + index );
 		for (int i = 0; i < prizeCount; i++) {
 			accumulation = accumulation.add(contentCouponList.get(i).getProbability());
@@ -78,9 +72,7 @@ public class ContentPrizeService {
 						drewCouponId = drewCoupon.getCouponId();
 						Date startUsingDate = drewCoupon.getCouponStartUsingTime();
 						Date endUsingDate = drewCoupon.getCouponEndUsingTime();
-
 						actionUserCouponService.createActionUserCoupon(mid, drewCouponId, startUsingDate, endUsingDate);
-
 						break;
 					}
 				}
@@ -97,70 +89,67 @@ public class ContentPrizeService {
 				int randomUnLimit = random.nextInt(UnLimitContentCouponIdList.size());
 				drewCoupon = UnLimitContentCouponIdList.get(randomUnLimit);
 			}
-			logger.info( "◎ 抽中的優惠券   CouponId  ：" +  UnLimitContentCouponIdList.get(0).getCouponId());
+			logger.info("◎ 抽中的優惠券   CouponId  ：" +  UnLimitContentCouponIdList.get(0).getCouponId());
 			logger.info("◎ 抽中的優惠券  ：" + drewCoupon);
 			Date today = new Date();
-				/* 判斷此優惠券是否在可領取的期間，如果是的話，便將 drewCouponId 設為此優惠券 id */
-				if(today.compareTo(drewCoupon.getCouponStartUsingTime()) >= 0 && today.compareTo(drewCoupon.getCouponEndUsingTime()) < 0) {
-					drewCouponId = drewCoupon.getCouponId();
-					Date startUsingDate = drewCoupon.getCouponStartUsingTime();
-					Date endUsingDate = drewCoupon.getCouponEndUsingTime();
-
-					actionUserCouponService.createActionUserCoupon(mid, drewCouponId, startUsingDate, endUsingDate);
-				}
-			
+			/* 判斷此優惠券是否在可領取的期間，如果是的話，便將 drewCouponId 設為此優惠券 id */
+			if(today.compareTo(drewCoupon.getCouponStartUsingTime()) >= 0 && today.compareTo(drewCoupon.getCouponEndUsingTime()) < 0) {
+				drewCouponId = drewCoupon.getCouponId();
+				Date startUsingDate = drewCoupon.getCouponStartUsingTime();
+				Date endUsingDate = drewCoupon.getCouponEndUsingTime();
+				actionUserCouponService.createActionUserCoupon(mid, drewCouponId, startUsingDate, endUsingDate);
+			}
 		}
-
 		return drewCouponId;
 	}
-
-	// public Integer getRandomPrize(String gameId, String mid) {
-	// Integer prizeListId = -1;
-	// String prizeId = "";
-	//
-	// List<ContentPrize> prizes = contentPrizeRepository.findByGameId(gameId);
-	//
-	// Random random = new Random();
-	// BigDecimal index = new BigDecimal(random.ints(1,
-	// 10000).findFirst().getAsInt());
-	// BigDecimal accumulation = new BigDecimal("0");
-	//
-	// int prizeCount = prizes.size();
-	// PrizeList prize;
-	//
-	// for(int i = 0; i < prizeCount; i++){
-	// accumulation = accumulation.add(prizes.get(i).getPrizeProbability());
-	//
-	// if(accumulation.multiply(new BigDecimal("100")).compareTo(index)==1){
-	// prizeId = prizes.get(i).getPrizeId();
-	//
-	// synchronized (GET_PRIZE_FLAG) {
-	// prize = prizeListRepository.findNotWinnedOneByPrizeId(prizeId);
-	//
-	// if(prize != null){
-	// prizeListId = prize.getPrizeListId();
-	// prize.setStatus(PrizeList.PRIZE_STATUS_NOT_ACCEPTED);
-	// prize.setModifyTime(new Date());
-	// prize.setMid(mid);
-	// prizeListRepository.save(prize);
-	// }
-	// break;
-	// }
-	// }
-	// }
-	//
-	// if(prizeListId == -1){
-	// for(int i = 0; i < prizeCount; i++){
-	// if(prizes.get(i).getIsConsolationPrize()){
-	// prizeId = prizes.get(i).getPrizeId();
-	// prizeListId =
-	// prizeListRepository.findByPrizeId(prizeId).get(0).getPrizeListId();
-	// }
-	// }
-	// }
-	//
-	// return prizeListId;
-	// }
+	
+	public ContentCoupon getRandomPrizeNew(String gameId, String mid) throws Exception {
+		logger.info("getRandomPrizeNew, gameId=" + gameId + " mid=" + mid);
+		ContentCoupon drewCoupon = null, unDrewLimitCoupon = null;
+		Random random = new Random();
+		BigDecimal index = new BigDecimal(random.ints(1, 10000).findFirst().getAsInt());
+		BigDecimal accumulation = new BigDecimal("0");
+		Date today = new Date();
+		List<ContentCoupon> contentCouponList = contentCouponRepository.findByEventReferenceAndEventReferenceIdAndCouponRemain(ContentCoupon.EVENT_REFERENCE_SCRATCH_CARD, gameId);
+		int prizeCount = 0;
+		if (contentCouponList != null) {
+			prizeCount = contentCouponList.size();
+		}
+		logger.info("getRandomPrizeNew, index=" + index + " contentCouponList=" + contentCouponList);
+		for (int i = 0; i < prizeCount; i++) {
+		    ContentCoupon coupon = contentCouponList.get(i);
+    		// 取得無上限且在領取期間且領取數目最少的優惠卷
+	    	if (coupon.getCouponGetLimitNumber() == null &&
+		   		(today.compareTo(coupon.getCouponStartUsingTime()) >= 0 && today.compareTo(coupon.getCouponEndUsingTime()) < 0)) {
+	    		if (unDrewLimitCoupon == null || coupon.getCouponGetNumber() < unDrewLimitCoupon.getCouponGetNumber()) {
+	    			unDrewLimitCoupon = coupon;
+	    		}
+		    }
+    		accumulation = accumulation.add(coupon.getProbability());
+	    	logger.info("getRandomPrizeNew, accumulation =" + accumulation);
+		   	// 判斷此優惠券是否為中獎優惠券
+		    if (accumulation.multiply(new BigDecimal("100")).compareTo(index) == 1) {
+			    logger.info("getRandomPrizeNew, randomCoupon=" + coupon);
+		   		// 判斷此優惠券無數量限制或是還有剩餘的數量
+		    	if (coupon.getCouponGetLimitNumber() == null || 
+			    	(coupon.getCouponGetLimitNumber() - coupon.getCouponGetNumber()) > 0) {
+		    		// 判斷此優惠券是否在可領取的期間，如果是的話此優惠券被抽取
+			    	if (today.compareTo(coupon.getCouponStartUsingTime()) >= 0 && today.compareTo(coupon.getCouponEndUsingTime()) < 0) {
+				    	drewCoupon = coupon;
+				    	logger.info("getRandomPrizeNew, drewCouponId=" + drewCoupon.getCouponId());
+					    actionUserCouponService.createActionUserCoupon(mid, drewCoupon.getCouponId(), drewCoupon.getCouponStartUsingTime(), drewCoupon.getCouponEndUsingTime());
+					    break;
+				    }
+			    }
+		   	}
+		}
+		if (drewCoupon == null && unDrewLimitCoupon != null) {
+			drewCoupon = unDrewLimitCoupon;
+			logger.info("getRandomPrizeNew, drewCouponId=" + drewCoupon.getCouponId());
+			actionUserCouponService.createActionUserCoupon(mid, drewCoupon.getCouponId(), drewCoupon.getCouponStartUsingTime(), drewCoupon.getCouponEndUsingTime());
+		}
+		return drewCoupon;
+	}
 
 	/**
 	 * 

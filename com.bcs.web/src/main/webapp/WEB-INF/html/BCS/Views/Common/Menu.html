@@ -73,6 +73,15 @@
                     </ul>
                 </li>
                 
+                <li>
+                    <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
+                    <ul class="MdNonDisp subMenu" style="display:none">
+                    	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>選單列表</span></a>
+                        </li>
+                    </ul>
+                </li>
+                
 <!--                 <li> -->
 <!--                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a> -->
 <!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
@@ -111,6 +120,7 @@
                         </li>
                     </ul>
                 </li>
+                
                 <li sec:authorize="hasAnyRole('NotShowRole')">
                     <a href="" style="cursor: pointer;"><span>活動</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">

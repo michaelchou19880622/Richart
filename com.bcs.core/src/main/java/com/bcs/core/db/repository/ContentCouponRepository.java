@@ -31,7 +31,7 @@ public interface ContentCouponRepository extends EntityRepository<ContentCoupon,
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = " SELECT * FROM BCS_CONTENT_COUPON "
 			+ " WHERE EVENT_REFERENCE = ?1 AND EVENT_REFERENCE_ID = ?2 AND STATUS = 'ACTIVE' "
-			+ " AND (COUPON_GET_LIMIT_NUMBER is null or  COUPON_GET_NUMBER < COUPON_GET_LIMIT_NUMBER)", nativeQuery = true)
+			+ " AND (COUPON_GET_LIMIT_NUMBER is null or COUPON_GET_NUMBER < COUPON_GET_LIMIT_NUMBER)", nativeQuery = true)
 	public List<ContentCoupon> findByEventReferenceAndEventReferenceIdAndCouponRemain(String eventReference, String eventReferenceId);
 
 	@Transactional(readOnly = true, timeout = 30)

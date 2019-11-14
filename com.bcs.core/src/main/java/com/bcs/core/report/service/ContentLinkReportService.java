@@ -42,9 +42,7 @@ public class ContentLinkReportService {
 	 * @throws Exception
 	 */
 	public Map<String, Map<String, Long>> getLinkUrlReport(String startDate, String endDate, String linkUrl) throws Exception {
-
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		
 		Date fisrtTime = new Date();
 		
 		// Validate
@@ -85,29 +83,20 @@ public class ContentLinkReportService {
 
 			// Query By linkUrl
 			String CONTENT_TYPE_LINK_URL = RECORD_REPORT_TYPE.CONTENT_TYPE_LINK_URL.toString();
-			Map<String, Map<String, Long>> countLinkUrlList = recordReportService
-					.findRecordReportListByContentType(linkUrl,
+			Map<String, Map<String, Long>> countLinkUrlList = recordReportService.findRecordReportListByContentType(linkUrl,
 							CONTENT_TYPE_LINK_URL, startDate, endDate);
-			
 			Map<String, Map<String, Long>> result = new LinkedHashMap<String, Map<String, Long>>();
-
 			Date timeBreak = sdf.parse(startDate);
 			Calendar calendarBreak = Calendar.getInstance();
 			calendarBreak.setTime(timeBreak);
-			
 			Map<String, Long> clickMapCount = null;
 			
 			while(true){
 				if(calendarStart.compareTo(calendarEnd)  < 0){
 					calendarBreak.add(Calendar.DATE, 1);
-
 					String startTimeStr = sdf.format(calendarStart.getTime());
-//					String breakTimeStr = sdf.format(calendarBreak.getTime());
-
 					Map<String, Long> countMap = new HashMap<String, Long>();
-					
 					Map<String, Long> mapLinkUrl = countLinkUrlList.get(startTimeStr);
-
 					Long count = null; 
 					Long distinctCount = null; 
 
@@ -116,19 +105,9 @@ public class ContentLinkReportService {
 						distinctCount = mapLinkUrl.get(RECORD_REPORT_TYPE.DATA_TYPE_LINK_DISTINCT_COUNT.toString());
 					}
 					if(count == null || distinctCount == null){
-//						List<Object[]> list = contentLinkService.countClickCountByLinkUrlAndTime(linkUrl, startTimeStr, breakTimeStr);
-//
-//						for(Object[] objArray : list){
-//							count = DBResultUtil.caseCountResult(objArray[0], false).longValue();
-//							distinctCount = DBResultUtil.caseCountResult(objArray[1], false).longValue();
-//						}
-						
 						if(calendarStart.getTime().getTime() >= fisrtTime.getTime()){
-
 							if(clickMapCount == null){ 
-
 								Thread.sleep(100);
-								
 								logger.info("countClickCountByLinkId queryTime:" + sdf.format(calendarStart.getTime()));
 								List<Object[]> listCountDistinct = contentLinkService.countClickCountByLinkUrl(linkUrl, sdf.format(calendarStart.getTime()));
 								clickMapCount = new HashMap<String, Long>();
@@ -138,7 +117,6 @@ public class ContentLinkReportService {
 									clickMapCount.put(timeDay + "CountDistinct", DBResultUtil.caseCountResult(objArray[2], false).longValue()) ;
 								}
 							}
-							
 							count = clickMapCount.get(startTimeStr + "Count");
 							distinctCount = clickMapCount.get(startTimeStr + "CountDistinct");
 						}
@@ -151,16 +129,13 @@ public class ContentLinkReportService {
 						}
 
 						if(calendarStart.getTime().getTime() >= fisrtTime.getTime()){
-							recordReportService
-									.saveByReferenceIdAndContentTypeAndDataTypeAndRecordTime(
+							recordReportService.saveByReferenceIdAndContentTypeAndDataTypeAndRecordTime(
 											startTimeStr,
 											linkUrl,
 											CONTENT_TYPE_LINK_URL,
 											RECORD_REPORT_TYPE.DATA_TYPE_LINK_COUNT.toString(),
 											count);
-							
-							recordReportService
-									.saveByReferenceIdAndContentTypeAndDataTypeAndRecordTime(
+							recordReportService.saveByReferenceIdAndContentTypeAndDataTypeAndRecordTime(
 											startTimeStr,
 											linkUrl,
 											CONTENT_TYPE_LINK_URL,
@@ -168,23 +143,17 @@ public class ContentLinkReportService {
 											distinctCount);
 						}
 					}
-					
 					countMap.put(RECORD_REPORT_TYPE.DATA_TYPE_LINK_COUNT.toString(), count);
 					countMap.put(RECORD_REPORT_TYPE.DATA_TYPE_LINK_DISTINCT_COUNT.toString(), distinctCount);
-					
 					result.put(sdf.format(calendarStart.getTime()), countMap);
-
 					calendarStart.add(Calendar.DATE, 1);
 				}
 				else{
-				
 					break;
 				}
 			}
-			
 			return result;
 		}
-		
 		return null;
 	}
 	
