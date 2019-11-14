@@ -7,8 +7,12 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.jcodec.common.StringUtils;
 import org.springframework.stereotype.Service;
@@ -39,6 +43,8 @@ public class LineWebLoginApiService {
 
 		int status = 0;
 		try{
+						
+			
 			HttpClient httpClient = HttpClientUtil.generateClient();
 	
 			List<String> list = new ArrayList<String>();
@@ -108,8 +114,20 @@ public class LineWebLoginApiService {
 
 		int status = 0;
 		try{
-			HttpClient httpClient = HttpClientUtil.generateClient();
-	
+			//HttpClient httpClient = HttpClientUtil.generateClient();
+			
+			RequestConfig config = RequestConfig.custom()
+					  .setConnectTimeout(5000)
+					  .setConnectionRequestTimeout(5000)
+					  .setSocketTimeout(5000).build();
+
+			
+			
+			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+			
+			
+			CloseableHttpClient closeableHttpClient = httpClientBuilder.setDefaultRequestConfig(config).build();
+			
 			List<String> list = new ArrayList<String>();
 			list.add("grant_type=authorization_code");
 			list.add("client_id=" + client_id);
@@ -137,7 +155,8 @@ public class LineWebLoginApiService {
 			logger.info("postMsg : " + postMsg);
 	
 			// execute Call
-			HttpResponse clientResponse = httpClient.execute(requestPost);
+			//HttpResponse clientResponse = httpClient.execute(requestPost);
+			HttpResponse clientResponse = closeableHttpClient.execute(requestPost);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
 			logger.info("clientResponse StatusCode : " + status);
