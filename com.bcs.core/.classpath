@@ -24,5 +24,8 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/PatrickNi/仁大資訊/Projects/台新金/Taishin-Richart-LineBC-New/com.bcs.web/src/main/webapp/WEB-INF/lib/barcode4j-light.jar"/>
+	<classpathentry kind="lib" path="D:/PatrickNi/仁大資訊/Projects/台新金/Taishin-Richart-LineBC-New/com.bcs.web/src/main/webapp/WEB-INF/lib/TSIB.jar"/>
+	<classpathentry kind="lib" path="D:/PatrickNi/仁大資訊/Projects/台新金/Taishin-Richart-LineBC-New/com.bcs.web/src/main/webapp/WEB-INF/lib/line-bot-model-1.5.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

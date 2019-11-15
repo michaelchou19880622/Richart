@@ -11,21 +11,6 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module archiveName="com.bcs.core.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core/com.bcs.core">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="com.bcs.core.bot.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.bot/com.bcs.core.bot">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="com.bcs.core.web.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.web/com.bcs.core.web">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="com.bcs.core.richart.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richart/com.bcs.core.richart">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="com.bcs.core.richmenu.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richmenu/com.bcs.core.richmenu">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
                                                         
         
         
@@ -40,7 +25,7 @@
         
         
         <property name="java-output-path" value="/com.bcs.web/target/classes"/>
-        <property name="component.exclusion.patterns"/>
+        <property name="component.exclusion.patterns" value="%regex[WEB-INF/lib/(?!line-bot-model-1.12.0.jar)(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]"/>
                                                     
     
     

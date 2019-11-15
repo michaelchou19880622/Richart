@@ -109,9 +109,9 @@ public class HttpClientUtil {
 		pm.setDefaultMaxPerRoute(300);
 		
 		RequestConfig.Builder builder = RequestConfig.custom();
-		builder.setSocketTimeout(timeout  * 5000)
-			    .setConnectTimeout(timeout  * 5000)
-			    .setConnectionRequestTimeout(timeout  * 5000);
+		builder.setSocketTimeout(timeout  * 20000)
+			    .setConnectTimeout(timeout  * 20000)
+			    .setConnectionRequestTimeout(timeout  * 20000);
 
 		try {
 			String proxyUrl = CoreConfigReader.getString(CONFIG_STR.RICHART_PROXY_URL.toString(), true);
