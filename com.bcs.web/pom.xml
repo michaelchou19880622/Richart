@@ -139,6 +139,10 @@
 					<failOnMissingWebXml>true</failOnMissingWebXml>
 					<!-- com.bcs.X jar & log jar �n�]�i�h -->
 					<!--  <packagingExcludes>%regex[WEB-INF/lib/(?!line-bot-model-1.12.0.jar)(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]</packagingExcludes>--> <!-- remove third party jar -->
+					<packagingExcludes>
+						WEB-INF/lib/*pwd.jar,
+						WEB-INF/lib/*TSIB.jar
+					</packagingExcludes>
 					<warName>${rp.build.warname}</warName> <!-- set up war name -->
 				</configuration>
 			</plugin>

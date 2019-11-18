@@ -40,7 +40,7 @@
         
         
         <property name="java-output-path" value="/com.bcs.web/target/classes"/>
-        <property name="component.exclusion.patterns"/>
+        <property name="component.exclusion.patterns" value="WEB-INF/lib/*pwd.jar,WEB-INF/lib/*TSIB.jar"/>
                                                     
     
     
