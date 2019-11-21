@@ -135,6 +135,7 @@ $(function(){
 			function(response){
 			console.info(response);
 			alert('傳送成功');
+			window.location.reload(); //重新整理頁面
 			}).fail(function(response){
 			 alert("fail");
 			console.info(response);
