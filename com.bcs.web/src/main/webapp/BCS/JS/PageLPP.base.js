@@ -90,6 +90,7 @@ $(function(){
 		if (r) {
 			// confirm true
 		} else {
+			window.location.reload(); //重新整理頁面
 		    return;
 		}
 
@@ -150,13 +151,10 @@ $(function(){
 
 	// 傳送
 	$('.btn_save').click(function(){
+		
 		sendingMsgFunc("SendMsg");
 	});
 
-	// 傳送
-	$('.btn_add').click(function(){
-		sendingMsgFunc("SendMsg");
-	});
 
 
 	// 取消
