@@ -1,12 +1,17 @@
 package com.bcs.core.db.service;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Proxy.Type;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,7 +54,28 @@ public class RichMenuService {
 		
 		// Step 2. 如果有的話，才進行更換動作
 		if (null != richMenuList) {
-			restTemplate = new RestTemplate();
+			boolean isUseProxy = CoreConfigReader.getBoolean(CONFIG_STR.SYSTEM_USE_PROXY.toString(), true);
+			logger.info("isUseProxy = " + isUseProxy);
+
+			String proxyUrl = CoreConfigReader.getString(CONFIG_STR.RICHART_PROXY_URL.toString(), true);
+			logger.info("proxyUrl = " + proxyUrl);
+			
+			if (isUseProxy && StringUtils.isNotBlank(proxyUrl)) {
+				SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+				
+				String richart_proxy_Url = CoreConfigReader.getString(CONFIG_STR.RICHART_PROXY_URL.toString(), true);
+				logger.info("richart_proxy_Url = " + richart_proxy_Url);
+
+				Proxy proxy = new Proxy(Type.HTTP, new InetSocketAddress(richart_proxy_Url, 80));
+				requestFactory.setProxy(proxy);
+				
+				logger.info("createRichMenuList : proxy = " + proxy);
+
+				restTemplate = new RestTemplate(requestFactory);
+			}
+			else {
+				restTemplate = new RestTemplate();
+			}
 			
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
