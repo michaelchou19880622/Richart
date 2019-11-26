@@ -546,7 +546,7 @@ div.btn_delete {
     font-size: 13px;
     color: #000;
 }
-.MdFRM01Input input[type="text"], .MdFRM01Input input[type="password"], .MdFRM01Input textarea {
+.MdFRM01Input input[type="text"], .MdFRMWLInput input[type="text"], .MdFRM01Input input[type="password"], .MdFRM01Input textarea {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -761,7 +761,7 @@ div.btn_delete {
     height: 100%;
     font-size: 27px;
 }
-.mainFrame td .MdFRM01Input {
+.mainFrame td .MdFRM01Input{
     box-shadow: none;
     padding: 7px 9px 6px;
     box-sizing: border-box;
@@ -770,6 +770,22 @@ div.btn_delete {
     position: relative;
     display: inline-block;
     width: 50%;
+    height: 34px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    border-radius: 4px;
+}
+
+.mainFrame td .MdFRMWLInput {
+    box-shadow: none;
+    padding: 7px 9px 6px;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #ced2db;
+    position: relative;
+    display: inline-block;
+    width: 85%;
     height: 34px;
     font-size: 14px;
     line-height: 1.42857143;
@@ -803,7 +819,7 @@ div.btn_delete {
     padding: 5px;
 }
 
-.mainFrame td .MdFRM01Input input[type="text"], .mainFrame td .MdFRM01Input input[type="password"] {
+.mainFrame td .MdFRM01Input input[type="text"], .MdFRM01Input input[type="text"], .mainFrame td .MdFRM01Input input[type="password"]{
     width: 100%;
 }
 .mainFrame td .MdFRM01Input p {

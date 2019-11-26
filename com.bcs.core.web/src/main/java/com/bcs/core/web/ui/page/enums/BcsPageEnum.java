@@ -154,7 +154,10 @@ public enum BcsPageEnum {
     ShareCampaignListDisablePage("/BCS/Views/PageMGM3"),
     ShareCampaignReportPage("/BCS/Views/PageMGM4"),
 	
-	CampaignVIPNightIndexPage("/BCS/Campaigns/VIPNight/IndexPage")
+	CampaignVIPNightIndexPage("/BCS/Campaigns/VIPNight/IndexPage"),
+	
+	// Winning Letter
+    WinningLetterCreatePage("/BCS/Views/PageWinningLetter")
 	;
 
     private final String str;
