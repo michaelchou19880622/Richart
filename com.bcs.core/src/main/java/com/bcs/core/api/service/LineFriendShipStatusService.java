@@ -2,10 +2,15 @@ package com.bcs.core.api.service;
 
 import java.util.Date;
 
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
+import org.jcodec.common.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.enums.CONFIG_STR;
@@ -34,7 +39,44 @@ public class LineFriendShipStatusService {
 		
 		try{
 			
-			HttpClient httpClient = HttpClientUtil.generateClient();
+			//HttpClient httpClient = HttpClientUtil.generateClient();
+			
+			RequestConfig config = RequestConfig.custom().build();
+			try {
+				String proxyUrl = CoreConfigReader.getString(CONFIG_STR.RICHART_PROXY_URL.toString(), true);
+				logger.info("callRetrievingAPIforMGM proxyUrl : " + proxyUrl);
+//				logger.info("callRetrievingAPIforMGM proxy : " + proxy);
+				if(!StringUtils.isEmpty(proxyUrl)){
+		            HttpHost proxy = new HttpHost(proxyUrl, 80, "http");
+		            config = RequestConfig.custom()
+							  .setConnectTimeout(5000)
+							  .setConnectionRequestTimeout(5000)
+							  .setSocketTimeout(5000)
+							  .setProxy(proxy)
+							  .build();
+				}else {
+					 config = RequestConfig.custom()
+							  .setConnectTimeout(5000)
+							  .setConnectionRequestTimeout(5000)
+							  .setSocketTimeout(5000)
+							  .build();
+				}
+			} catch (Exception e) {
+				logger.info("callRetrievingAPIforMGM proxyUrl : " + e);
+				  config = RequestConfig.custom()
+						  .setConnectTimeout(5000)
+						  .setConnectionRequestTimeout(5000)
+						  .setSocketTimeout(5000)
+						  .build();
+			}
+			
+			
+			
+			
+			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+			
+			
+			CloseableHttpClient closeableHttpClient = httpClientBuilder.setDefaultRequestConfig(config).build();
 			
 			String uri = CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_FRIENDSHIP_STATUS);
 			
@@ -45,7 +87,7 @@ public class LineFriendShipStatusService {
 			logger.info("Authorization : Bearer " + access_token);
 			
 			// execute Call
-			HttpResponse clientResponse = httpClient.execute(requestGet);
+			HttpResponse clientResponse = closeableHttpClient.execute(requestGet);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
 			logger.info("clientResponse StatusCode : " + status);

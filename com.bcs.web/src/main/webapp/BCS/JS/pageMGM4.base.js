@@ -9,7 +9,10 @@ $(function(){
 		'maxDate' : 0, //最多只能選至今天
 		'dateFormat' : 'yy-mm-dd'
 	});
+	var nowDate = moment(); //取得現在時間
 	
+	$('#reportStartDate').val(nowDate.format('YYYY-MM-DD'));
+	$('#reportEndDate').val(nowDate.format('YYYY-MM-DD'));
 	
 	var validateTimeRange = function() {
 		var startDate = moment($('#reportStartDate').val(), "YYYY-MM-DD");
