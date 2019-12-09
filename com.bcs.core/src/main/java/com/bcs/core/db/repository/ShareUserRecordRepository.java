@@ -37,15 +37,22 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
     @Query(value = "select SUR.UID as SUR_UID, "
             + "SUR.MODIFY_TIME as SUR_MODIFY_TIME, "
             + "SCCT.UID as SCCT_UID, "
-            //測試
+            //測試  SUN 新增是否為新的好友
 			+ "IIF ( SLU.CREATE_TIME > BSC.START_TIME, 1, 0)  as IS_NEWUSER, "
+			+ "IIF ( SLU.BIND_TIME > BSC.START_TIME, 1, 0) AS IS_BIND, "
+			+ "IIF ( SLU.BIND_TIME is null, 0, 1 ) as BINEISNULL, "
 			
             + "IIF ( SDR.CAMPAIGN_ID = SUR.CAMPAIGN_ID, 1, 0)  as IS_DONATE, "
-            + "SCCT.MODIFY_TIME as SCCT_MODIFY_TIME "
+            + "SCCT.MODIFY_TIME as SCCT_MODIFY_TIME, "
+            // sun 新增
+            + "SLU.CREATE_TIME as CREATE_TIME, "
+            + "SLU.BIND_TIME as BINE_TIME, "
+            + "BSC.JUDGEMENT as JUDGEMENT "
+            
             + "from BCS_SHARE_USER_RECORD SUR "
             + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "
             + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID  and SCCT.SHARE_USER_RECORD_ID = SDR.SHARE_USER_RECORD_ID "
-            //測試
+            //測試	SUN 新增
 			+ "left join BCS_LINE_USER SLU on  SCCT.UID =  SLU.MID "
 			+ "left join BCS_SHARE_CAMPAIGN BSC on BSC.CAMPAIGN_ID = SUR.CAMPAIGN_ID "
 			
@@ -56,7 +63,9 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
     @Transactional(readOnly = true, timeout = 60)
     @Query(value = "select a.UID, "
             + "a.MODIFY_TIME, "
-            + "c.ct "
+            + "c.ct, "
+            //  2019/11/6 sun 新增完成時間
+            + "a.DONE_TIME "
             + "from BCS_SHARE_USER_RECORD a "
             + "join BCS_SHARE_CAMPAIGN b on a.CAMPAIGN_ID = b.CAMPAIGN_ID "
             + "join (select SHARE_USER_RECORD_ID, count(*) as ct  from BCS_SHARE_CAMPAIGN_CLICK_TRACING group by SHARE_USER_RECORD_ID) c on c.SHARE_USER_RECORD_ID = a.SHARE_USER_RECORD_ID "

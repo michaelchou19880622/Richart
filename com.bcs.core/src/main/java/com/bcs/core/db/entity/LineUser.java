@@ -72,6 +72,9 @@ public class LineUser extends AbstractBcsEntity{
 	@Column(name = "ISBINDED", columnDefinition="nvarchar(50)")
 	private String isBinded;
 	
+	@Column(name = "BIND_TIME")
+	private Date bindTime;
+	
 	public LineUser(){
 		
 	}
@@ -206,6 +209,14 @@ public class LineUser extends AbstractBcsEntity{
 
 	public void setIsBinded(String isBinded) {
 		this.isBinded = isBinded;
+	}
+	
+	public Date getBindTime() {
+		return bindTime;
+	}
+
+	public void setBindTime(Date bindTime) {
+		this.bindTime = bindTime;
 	}
 	
 }

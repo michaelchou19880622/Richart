@@ -15,11 +15,25 @@
 		<div class="LyMain" role="main">
 			<form>
 				<section>
+				
 					<div style="height: 100%;">
-						<iframe id="IframeContent" src="https://ai.taishinbank.com.tw/bcsweb/#/RichmenuList"
+						<iframe id="IframeContent" src=""
 							width="100%" height='800px'></iframe>
 					</div>
+				
+					<script>
+							
+						function getLocationOriginRichmenuListPage() {
+							$('#IframeContent').attr("src", window.location.origin + "/bcsweb/#/RichmenuList");
+							return window.location.origin + "/bcsweb/#/RichmenuList";
+						}
 
+						var locationOrigin = getLocationOriginRichmenuListPage()
+						console.info("locationOrigin = " + locationOrigin);
+						
+						$('#IframeContent').attr("src", getLocationOriginRichmenuListPage);
+						
+					</script>
 				</section>
 			</form>
 		</div>
