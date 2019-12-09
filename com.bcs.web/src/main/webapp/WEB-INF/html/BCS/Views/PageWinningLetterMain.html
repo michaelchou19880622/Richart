@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-	th:with="jsList = ${ {'/BCS/JS/pageWinningLetterCreate.base.js'} }">
-<head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter Create Page', ${jsList})">
+	th:with="jsList = ${ {'/BCS/JS/pageWinningLetterMain.base.js'} }">
+<head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter Main Page', ${jsList})">
 </head>
 
 <body>
 	<header th:replace="/BCS/Views/Common/Header :: header"></header>
 
 	<div class="LyContents">
-		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageWinningLetterCreate')"></div>
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageWinningLetterMain')"></div>
 
 		<!-- Right Content -->
 		<div class="LyMain" role="main">
@@ -87,7 +87,7 @@
 				</section>
 				<div class="BtnSet">
 					<div>
-						<input id="btn_create_save" class="btn_save" style="cursor: pointer;" type="button" value="儲存"> 
+						<input id="btn_create_save" class="btn_save" style="cursor: pointer;" type="button" value="建立"> 
 						<input id="btn_cancel" class="btn_cancel" style="cursor: pointer;" type="button" value="取消" >
 					</div>
 				</div>

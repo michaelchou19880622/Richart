@@ -225,7 +225,15 @@ $(function() {
 
 		$("#btn_cancel").click(function() {
 
-			alert('取消測試123');
+			var confirmRslt = confirm('是否確定取消?');
+			
+			if (!confirmRslt) {
+				return;
+			}
+			
+			// If confirmed, do cancle and return the previous page
+			alert('取消確認123')
+			
 		});
 	});
 

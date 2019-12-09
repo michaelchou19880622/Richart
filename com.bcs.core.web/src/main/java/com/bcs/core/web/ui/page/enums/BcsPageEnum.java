@@ -157,7 +157,10 @@ public enum BcsPageEnum {
 	CampaignVIPNightIndexPage("/BCS/Campaigns/VIPNight/IndexPage"),
 	
 	// Winning Letter
-    WinningLetterPage("/BCS/Views/PageWinningLetterCreate")
+    WinningLetterMainPage("/BCS/Views/PageWinningLetterMain"),
+    WinningLetterListPage("/BCS/Views/PageWinningLetterList"),
+    WinningLetterReplyPage("/BCS/Views/PageWinningLetterReply"),
+    WinningLetterSignaturePage("/BCS/Views/PageWinningLetterSignature")
 	;
 
     private final String str;

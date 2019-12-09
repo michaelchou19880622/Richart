@@ -20,9 +20,14 @@
 	<!-- 使用 Controller 取得 Resource -->
 	<http pattern="/bcs/getResource/**" security="none"/>
 	<http pattern="/bcs/getLink/**" security="none"/>
-    
+	
 	<http auto-config="true">
+	
+		<!-- Winning Letter Reply -->
+		<intercept-url pattern="/bcs/admin/winningLetterReplyPage" access="permitAll"/>
+	
 		<intercept-url pattern="/init/**" access="permitAll"/>
+		
 		<!-- Mobile Controller -->
 		<intercept-url pattern="/m/**" access="permitAll"/>
 

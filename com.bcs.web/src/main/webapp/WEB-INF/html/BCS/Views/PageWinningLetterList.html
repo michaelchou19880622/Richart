@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:th="http://www.thymeleaf.org"
+	th:with="jsList = ${ {'/BCS/JS/MsgFragment/MsgList.base.js', '/BCS/JS/pageMGM2.base.js'} }">
+<head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter List Page', ${jsList})">
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageWinningLetterList')"></div>
+
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+			<form>
+				<section>
+					<header class="ContentHead">
+						<h3 class="CHTtl">中獎回函列表</h3>
+					</header>
+					<div class="CHBtnSet">
+						<input class="searchInput_winningLetterName" type="text" placeholder="請輸入欲查詢之中獎回函名稱" maxlength="50" id="keywordInput" name="keywordInput">
+                       	<input class="btn_name_query" type="button" value="查詢"  style="cursor: pointer;">
+						<div class="CHLeft">
+							<ul>
+								<li class="CHLeftBtn ExSelected"><input class="ActiveBtn" type="button" value="生效" style="cursor: pointer;"></li>
+								<li class="CHLeftBtn"><input class="DisableBtn" type="button" value="取消" style="cursor: pointer;"></li>
+							</ul>
+						</div>
+						<div class="CHRight">
+							<input class="btn_add" style="cursor: pointer;" type="button" value="匯出EXCEL">
+						</div>
+					</div>
+					<div class="mainFrame">
+						<table border="1" id="tableBody">
+							<colgroup>
+								<col width="120"> <!-- 名稱 -->
+								<col width="70"> <!-- 狀態 -->
+								<col width="70"> <!-- 填寫人數 -->
+								<col width="120"> <!-- 中獎回函網址 -->
+								<col width="120"> <!-- 回覆到期時間 -->
+								<col width="100"> <!-- 修改時間 -->
+								<col width="100"> <!-- 修改人員 -->
+								<col width="100"> <!-- 建立時間 -->
+								<col width="100"> <!-- 建立人員 -->
+								<col width="70"> <!-- 複製/刪除 -->
+							</colgroup>
+							<tr>
+								<th>名稱</th>
+								<th>狀態</th>
+								<th>填寫人數</th>
+								<th>中獎回函網址</th>
+								<th>回覆到期時間</th>
+								<th>修改時間</th>
+								<th>修改人員</th>
+								<th>建立時間</th>
+								<th>建立人員</th>
+								<th>複製/刪除</th>
+<!-- 								<th>判別</th> -->
+<!-- 								<th>自動送點</th> -->
+<!-- 								<th>活動標題圖片網址</th> -->
+<!-- 								<th>說明圖片網址</th> -->
+<!-- 								<th>Lint Points活動代碼</th> -->
+							</tr>
+							<tr class="dataTemplate">
+								<td class="campaignTitle"><a href=""></a></td>
+								<td class="status"><span></span> <br /> <input class="btn_status" type="button" value="取消" style="cursor: pointer;"></td>
+								<td class="campaignShareNumber"><a></a></td>
+								<td><input class="btn_css" style="cursor: pointer;" type="button" value="網址"></td>
+								<td class="campaignTime"></td>
+								<td class="modifyUser"></td>
+								<td class="modifyUser"></td>
+								<td class="modifyUser"></td>
+								<td class="modifyUser"></td>
+								<td>
+									<input class="btn_copy" style="cursor: pointer;" type="button" value="複製"> 
+									<input class="btn_detele" style="cursor: pointer;" type="button" value="刪除">
+								</td>
+<!-- 								<td class="autoSendPoint"></td> -->
+<!-- 								<td class="actionImgUrl"></td> -->
+<!-- 								<td class="descriptionImgUrl"></td> -->
+<!-- 								<td class="linePointSerialId"></td> -->
+							</tr>
+						</table>
+					</div>
+
+				</section>
+			</form>
+
+			<div id="linkDialog" style="display: none;" title="MGM網址">
+				<div class="mainFrame">
+					<table id="dialogTable">
+						<colgroup>
+							<col width="50">
+							<col width="100">
+						</colgroup>
+						<tr>
+							<th>標題</th>
+							<th>網址</th>
+						</tr>
+						<tr>
+							<td id="dialogTitle">
+								<div style="text-align: center;"></div>
+							</td>
+							<td id="dialogUrl">
+								<div style="text-align: center;"></div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<input id="mgmTracingUrlPre" type="hidden" th:value="${mgmTracingUrlPre}" />
+</body>
+
+</html>

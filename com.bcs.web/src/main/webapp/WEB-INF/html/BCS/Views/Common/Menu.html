@@ -264,15 +264,15 @@
                 <li class="fnMenu" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a href="" style="cursor: pointer;"><span>數位中獎回函</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'PageWinningLetterCreate'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/winningLetterCreatePage}"><span>建立中獎回函</span></a>
+                        <li th:classappend="${currentPage == 'PageWinningLetterMain'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/admin/winningLetterMainPage}"><span>建立中獎回函</span></a>
                         </li>
-<!--                         <li th:classappend="${currentPage == 'PageWinningLetterCreate'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/admin/lineUserUploadPage}"><span>中獎回函列表</span></a> -->
-<!--                         </li> -->
-<!--                         <li th:classappend="${currentPage == 'PageWinningLetterCreate'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/admin/lineUserUploadPage}"><span>中獎回函報表</span></a> -->
-<!--                         </li> -->
+                        <li th:classappend="${currentPage == 'PageWinningLetterList'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/admin/winningLetterListPage}"><span>中獎回函列表</span></a>
+                        </li>
+                        <li th:classappend="${currentPage == 'PageWinningLetterSignature'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/admin/winningLetterSignaturePage}"><span>中獎回函簽名測試</span></a>
+                        </li>
                     </ul>
                 </li>
                 <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')">

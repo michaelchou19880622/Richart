@@ -36,13 +36,39 @@ public class BCSWinningLetterController extends BCSBaseController {
 	@Autowired
 	private WinningLetterService winningLetterService;
 
-	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterPage")
-	public String winningLetterPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.info("winningLetterPage");
+	/** WinningLetter Main Page **/
+	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterMainPage")
+	public String winningLetterMainPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.info("winningLetterMainPage");
 
-		return BcsPageEnum.WinningLetterPage.toString();
+		return BcsPageEnum.WinningLetterMainPage.toString();
 	}
 
+	/** WinningLetter List Page **/
+	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterListPage")
+	public String winningLetterListPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.info("winningLetterListPage");
+
+		return BcsPageEnum.WinningLetterListPage.toString();
+	}
+
+	/** WinningLetter List Page **/
+	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterSignaturePage")
+	public String winningLetterSignaturePage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.info("winningLetterSignaturePage");
+
+		return BcsPageEnum.WinningLetterSignaturePage.toString();
+	}
+	
+	/** WinningLetter Reply Page **/
+	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterReplyPage")
+	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.info("winningLetterReplyPage");
+
+		return BcsPageEnum.WinningLetterReplyPage.toString();
+	}
+
+	/** Create WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/api/createWinningLetter", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<?> createWinningLetter(HttpServletRequest request, HttpServletResponse response,
@@ -50,20 +76,21 @@ public class BCSWinningLetterController extends BCSBaseController {
 		
 		logger.info("createWinningLetter");
 		
+		logger.info("RequestBody : winningLetterContent = {}", winningLetterContent);
+
+		// Get the currently logged in user.
 		String currentUser = customUser.getAccount();
 		logger.info("customUser = {}", currentUser);
 		
-		logger.info("RequestBody : winningLetterContent = {}", winningLetterContent);
-		
 		WinningLetterModel winningLetterModel = ObjectUtil.jsonStrToObject(winningLetterContent, WinningLetterModel.class);
 		logger.info("winningLetterModel.toString() = {}", winningLetterModel.toString());
-		
-		// 檢查是否中獎名稱已經存在?
-		WinningLetter winningLetter = winningLetterService.findByName(winningLetterModel.getName());
-		logger.info("winningLetter = {}", winningLetter);
-		
+
 		Date currentDateTime = new Date();
 		logger.info("currentDateTime = {}", currentDateTime);
+		
+		// Check is the winning letter name already exist?
+		WinningLetter winningLetter = winningLetterService.findByName(winningLetterModel.getName());
+		logger.info("winningLetter = {}", winningLetter);
 		
 		if (winningLetter != null) {
 			return new ResponseEntity<>("中獎回函名稱已重複，請重新輸入。", HttpStatus.BAD_REQUEST);
@@ -79,10 +106,12 @@ public class BCSWinningLetterController extends BCSBaseController {
 		winningLetter.setCreateUser(currentUser);
 		
 		Long winningLetterId = winningLetterService.save(winningLetter);
+		logger.info("winningLetterId = {}", winningLetterId);
 
 		return new ResponseEntity<>(String.format("The winningletter (id : %d) is created", winningLetterId), HttpStatus.OK);
 	}
 
+	/** Edit WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/api/editWinningLetter", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<?> editWinningLetter(HttpServletRequest request, HttpServletResponse response,
@@ -90,20 +119,21 @@ public class BCSWinningLetterController extends BCSBaseController {
 		
 		logger.info("editWinningLetter");
 		
+		logger.info("RequestBody : winningLetterContent = {}", winningLetterContent);
+
+		// Get the currently logged in user.
 		String currentUser = customUser.getAccount();
 		logger.info("customUser = {}", currentUser);
-		
-		logger.info("RequestBody : winningLetterContent = {}", winningLetterContent);
 
 		WinningLetterModel winningLetterModel = ObjectUtil.jsonStrToObject(winningLetterContent, WinningLetterModel.class);
 		logger.info("winningLetterModel = {}", winningLetterModel.toString());
 		
-		// 檢查是否中獎名稱已經存在?
-		WinningLetter winningLetter = winningLetterService.findByName(winningLetterModel.getName());
-		logger.info("winningLetter = {}", winningLetter);
-		
 		Date currentDateTime = new Date();
 		logger.info("currentDateTime = {}", currentDateTime);
+
+		// Check is the winning letter name already exist?
+		WinningLetter winningLetter = winningLetterService.findByName(winningLetterModel.getName());
+		logger.info("winningLetter = {}", winningLetter);
 		
 		if (winningLetter == null) {
 			
@@ -119,6 +149,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 		winningLetter.setModifyUser(currentUser);
 		
 		Long winningLetterId = winningLetterService.save(winningLetter);
+		logger.info("winningLetterId = {}", winningLetterId);
 
 		return new ResponseEntity<>(String.format("The winningletter (id : %d) is updated", winningLetterId), HttpStatus.OK);
 	}
