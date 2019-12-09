@@ -24,7 +24,7 @@
 	<http auto-config="true">
 	
 		<!-- Winning Letter Reply -->
-		<intercept-url pattern="/bcs/admin/winningLetterReplyPage" access="permitAll"/>
+		<intercept-url pattern="/bcs/wl/winningLetterReplyPage" access="permitAll"/>
 	
 		<intercept-url pattern="/init/**" access="permitAll"/>
 		

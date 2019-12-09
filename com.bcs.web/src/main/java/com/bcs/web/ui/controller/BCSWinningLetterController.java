@@ -61,7 +61,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 	}
 	
 	/** WinningLetter Reply Page **/
-	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterReplyPage")
+	@RequestMapping(method = RequestMethod.GET, value = "/wl/winningLetterReplyPage")
 	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		logger.info("winningLetterReplyPage");
 
