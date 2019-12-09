@@ -23,7 +23,6 @@ import com.bcs.core.db.entity.ContentCoupon;
 import com.bcs.core.db.service.ActionUserCouponService;
 import com.bcs.core.db.service.ContentCouponService;
 import com.bcs.core.utils.ErrorRecord;
-import com.bcs.web.ui.controller.BCSMsgSendController;
 
 @Controller
 @RequestMapping("/m")
@@ -49,8 +48,12 @@ public class mobileTestController {
 		   }
 		   String sessionMID = UUID.randomUUID().toString();
 		   Date now = new Date();
-		   actionUserCouponService.createActionUserCoupon(sessionMID,couponId, now, now);
-		   return new ResponseEntity<>(sessionMID, HttpStatus.OK);
+		   if (actionUserCouponService.createActionUserCoupon(sessionMID,couponId, now, now)) {
+		       return new ResponseEntity<>(sessionMID, HttpStatus.OK);
+		   }
+		   else {
+			   return new ResponseEntity<>("優惠券已領完", HttpStatus.INTERNAL_SERVER_ERROR);
+		   }
 	  } catch (Exception e) {
 		   logger.error(ErrorRecord.recordError(e));
 		   return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -18,12 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.bcs.core.db.entity.ActionUserCoupon;
-import com.bcs.core.db.entity.ActionUserRewardCard;
 import com.bcs.core.db.entity.ContentCoupon;
-import com.bcs.core.db.entity.ContentCouponCode;
 import com.bcs.core.db.entity.WinnerList;
-import com.bcs.core.db.service.ActionUserRewardCardPointDetailService;
-import com.bcs.core.db.service.ContentCouponCodeService;
 import com.bcs.core.db.service.ContentCouponService;
 import com.bcs.core.db.service.GroupGenerateService;
 import com.bcs.core.db.service.SendGroupService;
@@ -36,7 +32,6 @@ import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.web.m.service.MobilePageService;
 import com.bcs.core.web.ui.page.enums.MobilePageEnum;
 import com.bcs.web.ui.service.ActionUserCouponUIService;
-import com.bcs.web.ui.service.ActionUserRewardCardUIService;
 
 @Service
 public class MobileCouponService {
@@ -52,12 +47,6 @@ public class MobileCouponService {
 	private GroupGenerateService groupGenerateService;
 	@Autowired
 	private SendGroupService sendGroupService;
-	@Autowired
-	private ContentCouponCodeService contentCouponCodeService;
-	@Autowired
-	private ActionUserRewardCardUIService actionUserRewardCardUIService;
-	@Autowired
-	private ActionUserRewardCardPointDetailService actionUserRewardCardPointDetailService;
 	
 	/** Logger */
 	private static Logger logger = Logger.getLogger(MobileCouponService.class);
@@ -83,8 +72,6 @@ public class MobileCouponService {
 		if(contentCoupon == null){
 			return this.indexPage(request, response, model);
 		}
-		
-		
 		
 		// 驗證 Status
 		if(ContentCoupon.COUPON_STATUS_DELETE.equals(contentCoupon.getStatus())){
@@ -121,7 +108,7 @@ public class MobileCouponService {
 					return this.msgPage(model, sessionMID, contentCoupon, errorMessage);
 				}
 				
-				/* 優惠券設定PRIVATE*/
+				/* 優惠券設定PRIVATE */
 				if(ContentCoupon.COUPON_FLAG_PRIVATE.equals(contentCoupon.getCouponFlag())){
 					errorMessage = "couponPrivateError";
 					return this.msgPage(model, sessionMID, contentCoupon, errorMessage);
@@ -139,14 +126,14 @@ public class MobileCouponService {
 				winnerList = winnerListService.findOne(actionUserCoupon.getWinnerListId());
 
 			if((winnerList == null) && contentCoupon.getIsFillIn().equals(ContentCoupon.IS_COUPON_FILLIN_TRUE)){		
-					ContentCoupon coupon = contentCouponService.findOne(couponId);		
-					model.addAttribute("contentCoupon", coupon);
-					model.addAttribute("imageSource", "../bcs/getResource/IMAGE/" + coupon.getCouponImageId());
-					model.addAttribute("couponStartUsingTime", coupon.getCouponStartUsingTime());
-					model.addAttribute("couponEndUsingTime", coupon.getCouponEndUsingTime());
+				ContentCoupon coupon = contentCouponService.findOne(couponId);		
+				model.addAttribute("contentCoupon", coupon);
+				model.addAttribute("imageSource", "../bcs/getResource/IMAGE/" + coupon.getCouponImageId());
+				model.addAttribute("couponStartUsingTime", coupon.getCouponStartUsingTime());
+				model.addAttribute("couponEndUsingTime", coupon.getCouponEndUsingTime());
 					
-					// 導頁至資料填寫頁面
-					return MobilePageEnum.UserCouponFillOutInfoPage.toString();
+				// 導頁至資料填寫頁面
+				return MobilePageEnum.UserCouponFillOutInfoPage.toString();
 			}
 		}
 
@@ -200,11 +187,6 @@ public class MobileCouponService {
 		
 		/* 優惠劵是否有效期間內不限次數 ,註解：會有兩個畫面，此畫面不使用*/
 		boolean unlimited = ContentCoupon.COUPON_USING_LIMIT_UNLIMITED.equalsIgnoreCase(contentCoupon.getCouponUsingLimit());
-//		if(unlimited && unlimitedRedirect){
-//			String errorMessage = "unlimited";
-//			return this.msgPage(model, sessionMID, contentCoupon, errorMessage);
-//		}
-		
 		// 優惠劵序號
 		String couponSerialNumber = actionUserCouponUIService.generateCouponSerialNumber(contentCoupon, sessionMID, couponId);
 

@@ -23,9 +23,8 @@ $(function(){
 	});
 
 	$('.query').click(function(){
-		
 		var queryFlag = $("#queryByFlag").val();
-		
+		page = 0;
 		loadDataFunc(queryFlag);
 	});
 	
@@ -51,17 +50,14 @@ $(function(){
 		}).success(function(response){
 			$('.dataTemplate').remove();
 			console.info(response);
-	
-			$.each(response, function(i, o){
+			var contentLinkTracingList = response.ContentLinkTracingList;
+			var tracingUrlPre = response.TracingUrlPre;
+			$.each(contentLinkTracingList, function(i, o){
 				var groupData = templateBody.clone(true);
-				
 				groupData.find('.linkTitle').html(o.linkTitle);
 				groupData.find('.linkUrl').html(o.linkUrl);
-				
+				groupData.find('.tracingLink').html(tracingUrlPre + o.tracingLink);
 				var linkFlag = moment(o.linkTime).format("YYYY/MM/DD") + "<br/><br/>";
-				//$.each(o.flags, function(i, o){
-				//	linkFlag += o + "/";
-				//});
 				linkFlag += o.linkFlag;
 				groupData.find('.linkFlag').html(linkFlag);
 				
