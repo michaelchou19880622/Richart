@@ -2,11 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
 	xmlns:th="http://www.thymeleaf.org" 
 	th:with="jsList = ${{'/BCS/JS/pageWinningLetterReply.base.js'}}">
-<head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter Reply Page', ${jsList})">
-
-<!--     <title>demo</title> -->
-<!--     <script src="js/jquery-1.9.0.min.js"></script> -->
-
+<head th:replace="/BCS/Views/Common/HeadForWinningLetter :: head ('Winning Letter Reply Page', ${jsList})">
 </head>
 
 <body>
@@ -18,7 +14,7 @@
 			border="1" width="100%">
 			<tbody>
 				<tr style="height: 22px;">
-					<td style="width: 588px; height: 22px; text-align: center;"><strong>SIGNATURE</strong></td>
+					<td style="width: 588px; height: 22px; text-align: left;"><strong>Please Signature Here</strong></td>
 				</tr>
 				<tr style="height: 92px;">
 					<td style="width: 588px; height: 92px;">&nbsp;</td>
