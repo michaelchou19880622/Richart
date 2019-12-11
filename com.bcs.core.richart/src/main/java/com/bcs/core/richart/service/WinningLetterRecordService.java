@@ -1,5 +1,7 @@
 package com.bcs.core.richart.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,20 +35,20 @@ public class WinningLetterRecordService {
 //		logger.info("createWinningLetter : ELAPSED TIME = {}\n", (endTime - startTime) / 1_000_000_000);
 //	}
 	
-//	public List<WinningLetter> findAll() {
-//		long startTime = System.nanoTime();
-//		logger.info("[ findAll ] Start Time : {}", startTime);
-//		
-//		List<WinningLetter> lst_WinningLetters = winningLetterRepository.findAll();
-//
-//		long endTime = System.nanoTime();
-//		logger.info("[ findAll ] End Time : {}", endTime);
-//		logger.info("[ findAll ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-//
-//		logger.info("[ findAll ] lst_WinningLetters = {}", lst_WinningLetters);
-//		
-//		return lst_WinningLetters;
-//	}
+	public List<WinningLetterRecord> findAll() {
+		long startTime = System.nanoTime();
+		logger.info("[ findAll ] Start Time : {}", startTime);
+		
+		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAll();
+
+		long endTime = System.nanoTime();
+		logger.info("[ findAll ] End Time : {}", endTime);
+		logger.info("[ findAll ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ findAll ] lst_WinningLetterRecord = {}", lst_WinningLetterRecord);
+		
+		return lst_WinningLetterRecord;
+	}
 //	
 //	public WinningLetter findById(Long id) {
 //		long startTime = System.nanoTime();

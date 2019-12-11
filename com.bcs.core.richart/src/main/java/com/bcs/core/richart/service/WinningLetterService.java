@@ -39,15 +39,15 @@ public class WinningLetterService {
 		long startTime = System.nanoTime();
 		logger.info("[ findAll ] Start Time : {}", startTime);
 		
-		List<WinningLetter> lst_WinningLetters = winningLetterRepository.findAll();
+		List<WinningLetter> lst_WinningLetter = winningLetterRepository.findAll();
 
 		long endTime = System.nanoTime();
 		logger.info("[ findAll ] End Time : {}", endTime);
 		logger.info("[ findAll ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 
-		logger.info("[ findAll ] lst_WinningLetters = {}", lst_WinningLetters);
+		logger.info("[ findAll ] lst_WinningLetter = {}", lst_WinningLetter);
 		
-		return lst_WinningLetters;
+		return lst_WinningLetter;
 	}
 	
 	public WinningLetter findById(Long id) {

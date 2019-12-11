@@ -214,6 +214,8 @@ $(function() {
 				
 				alert((actionType == 'Create')? '中獎回函建立完成' : '中獎回函已更新');
 				$('.LyMain').unblock();
+				
+				window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage');
 
 			}).fail(function(response){
 				console.info('response = ' + response.responseText);

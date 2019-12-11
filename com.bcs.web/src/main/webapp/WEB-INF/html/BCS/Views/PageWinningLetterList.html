@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
 	xmlns:th="http://www.thymeleaf.org"
-	th:with="jsList = ${ {'/BCS/JS/MsgFragment/MsgList.base.js', '/BCS/JS/pageWinningLetterList.base.js'} }">
+	th:with="jsList = ${{'/BCS/JS/pageWinningLetterList.base.js'}}">
 <head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter List Page', ${jsList})">
 </head>
 
@@ -34,15 +34,15 @@
 					<div class="mainFrame">
 						<table border="1" id="tableBody">
 							<colgroup>
-								<col width="120"> <!-- 名稱 -->
+								<col width="110"> <!-- 名稱 -->
 								<col width="70"> <!-- 狀態 -->
-								<col width="70"> <!-- 填寫人數 -->
+								<col width="80"> <!-- 填寫人數 -->
 								<col width="120"> <!-- 中獎回函網址 -->
 								<col width="100"> <!-- 回覆到期時間 -->
-								<col width="100"> <!-- 修改時間 -->
-								<col width="100"> <!-- 修改人員 -->
 								<col width="100"> <!-- 建立時間 -->
 								<col width="100"> <!-- 建立人員 -->
+								<col width="100"> <!-- 修改時間 -->
+								<col width="100"> <!-- 修改人員 -->
 								<col width="90"> <!-- 複製/刪除 -->
 							</colgroup>
 							<tr>
@@ -51,21 +51,21 @@
 								<th>填寫人數</th>
 								<th>中獎回函網址</th>
 								<th>回覆到期時間</th>
-								<th>修改時間</th>
-								<th>修改人員</th>
 								<th>建立時間</th>
 								<th>建立人員</th>
+								<th>修改時間</th>
+								<th>修改人員</th>
 								<th>複製/刪除</th>
 							</tr>
 							<tr class="dataTemplate">
-								<td class="campaignTitle"><a href=""></a></td>
-								<td class="status"><span></span> <br /> <input class="btn_status" type="button" value="取消" style="cursor: pointer;"></td>
-								<td class="campaignShareNumber"><a></a></td>
+								<td class="winningLetterName"><a href=""></a></td>
+								<td class="winningLetterStatus"><span></span> <br /> <input class="btn_status" type="button" value="取消" style="cursor: pointer;"></td>
+								<td class="replyPeople"><a></a></td>
 								<td><input class="btn_css" style="cursor: pointer;" type="button" value="網址"></td>
-								<td class="campaignTime"></td>
-								<td class="modifyUser"></td>
-								<td class="modifyUser"></td>
-								<td class="modifyUser"></td>
+								<td class="winningLetterEndTime"></td>
+								<td class="createTime"></td>
+								<td class="createUser"></td>
+								<td class="modifyTime"></td>
 								<td class="modifyUser"></td>
 								<td>
 									<input class="btn_copy" style="cursor: pointer;" type="button" value="複製"> 
