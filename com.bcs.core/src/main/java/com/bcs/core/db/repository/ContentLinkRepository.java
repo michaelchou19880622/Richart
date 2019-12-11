@@ -63,6 +63,13 @@ public interface ContentLinkRepository extends EntityRepository<ContentLink, Str
 	public List<Object[]> findAllLinkUrlByLikeTime(String startTime , String endTime);
 	
 	@Transactional(readOnly = true, timeout = 30)
+	@Query(value = "SELECT BCS_CONTENT_LINK.LINK_URL, BCS_CONTENT_LINK.LINK_TITLE, BCS_CONTENT_LINK.LINK_ID, BCS_CONTENT_LINK.MODIFY_TIME, BCS_CONTENT_LINK.LINK_TAG, BCS_CONTENT_LINK_TRACING.TRACING_ID "
+			+ "FROM BCS_CONTENT_LINK INNER JOIN BCS_CONTENT_LINK_TRACING ON BCS_CONTENT_LINK.LINK_ID = BCS_CONTENT_LINK_TRACING.LINK_ID "
+			+ "WHERE BCS_CONTENT_LINK.MODIFY_TIME BETWEEN ?1 AND ?2 AND BCS_CONTENT_LINK.LINK_URL IS NOT NULL AND LINK_URL != '' "
+			+ "ORDER BY MODIFY_TIME DESC ", nativeQuery = true)
+	public List<Object[]> findAllLinkUrlWithTracingIdByLikeTime(String startTime , String endTime);
+	
+	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT BCS_USER_TRACE_LOG.MODIFY_USER ,BCS_CONTENT_LINK.MODIFY_TIME " 
 				 + "FROM BCS_CONTENT_LINK, BCS_USER_TRACE_LOG "
 				 + "WHERE LINK_ID = REFERENCE_ID AND ACTION = 'ClickLink'  and LINK_URL = ?1 "
