@@ -73,6 +73,11 @@ public class UriHelper {
     public static String getMgmTracingUrl(){
         return baseUrl_Https + "c/m/";
     }
+    
+    public static String getWinningLetterTracingUrl(){
+        return baseUrl_Https + "wl/";
+    }
+    
     public static String getMgmPage(){
         return baseUrl_Https + pageMobile + "mgmPage";
     }

@@ -4,25 +4,30 @@
 $(function() {
 	console.info('bcs.bcsContextPath:' + bcs.bcsContextPath);
 
+	/* < Button > 匯出EXCEL */
 	$('.btn_export').click(function() {
 		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignCreatePage?actionType=Create&from=active');
 	});
 
+	/* < Button > 狀態 = '生效' */
 	$('.ActiveBtn').click(function() {
 		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignListPage');
 	});
 
+	/* < Button > 狀態 = '取消' */
 	$('.DisableBtn').click(function() {
 		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignListDisablePage');
 	});
 
-	var btn_copyFunc = function() {
+	/* < Function > 複製 */
+	var func_copyWinningLetter = function() {
 		var campaignId = $(this).attr('campaignId');
 		console.info('btn_copyFunc campaignId:' + campaignId);
 		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignCreatePage?campaignId=' + campaignId + '&actionType=Copy&from=active');
 	};
 
-	var btn_deteleFunc = function() {
+	/* < Function > 刪除 */
+	var func_deteleWinningLetter = function() {
 		var campaignId = $(this).attr('campaignId');
 		console.info('btn_deteleFunc campaignId:' + campaignId);
 
@@ -44,7 +49,7 @@ $(function() {
 		});
 	};
 
-	// 改變狀態按鈕
+	/* 更新狀態按鈕 */
 	var redesignFunc = function() {
 		var campaignId = $(this).attr('campaignId');
 		console.info('redesignFunc campaignId:' + campaignId);
@@ -67,6 +72,7 @@ $(function() {
 		});
 	};
 
+	/* Initial */
 	var loadDataFunc = function() {
 		console.info("loadDataFunc start");
 
@@ -117,11 +123,11 @@ $(function() {
 				queryBody.find('.descriptionImgUrl').html(o.descriptionImgUrl);
 				queryBody.find('.linePointSerialId').html(o.linePointSerialId);
 
-				queryBody.find('.btn_copy').attr('campaignId', o.campaignId).click(btn_copyFunc);
+				queryBody.find('.btn_copy').attr('campaignId', o.campaignId).click(func_copyWinningLetter);
 
-				queryBody.find('.btn_detele').attr('campaignId', o.campaignId).click(btn_deteleFunc);
+				queryBody.find('.btn_detele').attr('campaignId', o.campaignId).click(func_deteleWinningLetter);
 
-				queryBody.find('.btn_css').attr('campaignId', o.campaignId).attr('campaignName', o.campaignName).click(dialogFunc);
+				queryBody.find('.btn_css').attr('campaignId', o.campaignId).attr('campaignName', o.campaignName).click(func_showUrlModel);
 
 				$('#tableBody').append(queryBody);
 			});
@@ -133,6 +139,7 @@ $(function() {
 		console.info("loadDataFunc end");
 	};
 
+	/* 計算填寫人數 */
 	var countUserRecord = function(queryBody, campaignId) {
 
 		$.ajax({
@@ -154,50 +161,38 @@ $(function() {
 	templateBody = $('.dataTemplate').clone(true);
 	$('.dataTemplate').remove();
 
-	$('#linkDialog').dialog({
-		autoOpen : false, // 初始化不會是open
-		resizable : false, // 不可縮放
-		modal : true, // 畫面遮罩
-		draggable : false, // 不可拖曳
-		minWidth : 500,
-		position : {
-			my : "top",
-			at : "top",
-			of : window
-		}
-	});
+	/* Get parent URL */
+	var winningLetterTracingUrlPre = $('#winninLetterTracingUrlPre').val();
 
-	// 開啓優惠券連結視窗按鈕
-	var mgmTracingUrlPre = $('#mgmTracingUrlPre').val();
-
+	/* 彈出視窗Model */
 	var modal = document.getElementById("myModal");
 
-	// Get the <span> element that closes the modal
-	var span = document.getElementsByClassName("close")[0];
+	/* URL */
+	var modelUrl = document.getElementById("modelUrl");
 
-//	// When the user clicks on <span> (x), close the modal
-//	span.onclick = function() {
-//		modal.style.display = "none";
-//	}
-
-	// When the user clicks anywhere outside of the modal, close it
+	/* When the user clicks anywhere outside of the modal, close the model */
 	window.onclick = function(event) {
 		if (event.target == modal) {
 			modal.style.display = "none";
 		}
 	}
 
-	var dialogFunc = function() {
+	/* When the user ESC, close the model */
+	$(document).keyup(function(e) {
+		if (e.key === "Escape") {
+			if (modal.style.display === "block") {
+				modal.style.display = "none";
+			}
+		}
+	});
+
+	var func_showUrlModel = function() {
 		var campaignId = $(this).attr('campaignId');
-//
-//		$('#dialogTitle').find('div').text($(this).attr('campaignName'));
-//
-		$('#dialogUrl').find('div').text(mgmTracingUrlPre + campaignId);
-//
-//		$('#linkDialog').dialog('open');
+		
+		modelUrl.innerHTML = winningLetterTracingUrlPre + campaignId;
+		modelUrl.setAttribute('href', winningLetterTracingUrlPre + campaignId);
 
 		modal.style.display = "block";
-
 	};
 
 	loadDataFunc();

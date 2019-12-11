@@ -38,12 +38,12 @@
 								<col width="70"> <!-- 狀態 -->
 								<col width="70"> <!-- 填寫人數 -->
 								<col width="120"> <!-- 中獎回函網址 -->
-								<col width="120"> <!-- 回覆到期時間 -->
+								<col width="100"> <!-- 回覆到期時間 -->
 								<col width="100"> <!-- 修改時間 -->
 								<col width="100"> <!-- 修改人員 -->
 								<col width="100"> <!-- 建立時間 -->
 								<col width="100"> <!-- 建立人員 -->
-								<col width="70"> <!-- 複製/刪除 -->
+								<col width="90"> <!-- 複製/刪除 -->
 							</colgroup>
 							<tr>
 								<th>名稱</th>
@@ -83,40 +83,13 @@
 
 				<!-- Modal content -->
 				<div class="modal-content">
-<!-- 					<span class="close">&times;</span> -->
-<!-- 					<p>Some text in the Modal..</p> -->
-					<td id="dialogUrl">
-						<div style="text-align: center;"></div>
-					</td>
-				</div>
-
-			</div>
-
-			<div id="linkDialog" style="display: none;" title="MGM網址">
-				<div class="mainFrame">
-					<table id="dialogTable">
-						<colgroup>
-							<col width="50">
-							<col width="100">
-						</colgroup>
-						<tr>
-							<th>標題</th>
-							<th>網址</th>
-						</tr>
-						<tr>
-							<td id="dialogTitle">
-								<div style="text-align: center;"></div>
-							</td>
-							<td id="dialogUrl">
-								<div style="text-align: center;"></div>
-							</td>
-						</tr>
-					</table>
+<!-- 				<a href="http://www.stopsweats.org" id="logo"></a> -->
+					<a id="modelUrl" style="text-align: center;" href=""></a>
 				</div>
 			</div>
 		</div>
 	</div>
-	<input id="mgmTracingUrlPre" type="hidden" th:value="${mgmTracingUrlPre}" />
+	<input id="winninLetterTracingUrlPre" type="hidden" th:value="${winninLetterTracingUrlPre}" />
 </body>
 
 </html>

@@ -12,12 +12,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.entity.WinningLetter;
+import com.bcs.core.resource.UriHelper;
 import com.bcs.core.richart.api.model.WinningLetterModel;
 import com.bcs.core.richart.service.WinningLetterService;
 import com.bcs.core.utils.ObjectUtil;
@@ -46,8 +48,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 	/** WinningLetter List Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterListPage")
-	public String winningLetterListPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String winningLetterListPage(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		logger.info("winningLetterListPage");
+
+		model.addAttribute("winninLetterTracingUrlPre", UriHelper.getWinningLetterTracingUrl());
 
 		return BcsPageEnum.WinningLetterListPage.toString();
 	}
