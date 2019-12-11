@@ -102,12 +102,6 @@ $(function() {
 
 				countUserRecord(queryBody, o.campaignId);
 
-				// queryBody.find('.campaignClickNumber a').attr('href',
-				// bcs.bcsContextPath +'/edit/couponReportPage?couponId=' +
-				// o.couponId);
-				// queryBody.find('.campaignClickNumber
-				// a').html($.BCS.formatNumber(o.couponUsingNumber,0));
-
 				queryBody.find('.btn_redeisgn').attr('campaignId', o.campaignId);
 				queryBody.find('.btn_redeisgn').click(redesignFunc);
 
@@ -119,7 +113,6 @@ $(function() {
 					queryBody.find('.autoSendPoint').html('否');
 
 				queryBody.find('.actionImgUrl').html(o.actionImgUrl);
-				// queryBody.find('.shareImgUrl').html(o.shareImgUrl);
 				queryBody.find('.descriptionImgUrl').html(o.descriptionImgUrl);
 				queryBody.find('.linePointSerialId').html(o.linePointSerialId);
 

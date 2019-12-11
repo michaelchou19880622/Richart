@@ -1111,6 +1111,8 @@ form input.error {
 	border-radius: 15px;
 }
 
+/******** Winning Letter Url Model ********/
+
 /* The Modal (background) */
 .modal {
 	display: none; /* Hidden by default */
@@ -1127,16 +1129,17 @@ form input.error {
 	border: 1px solid #fff;
 }
 
-/******** Winning Letter Url Model ********/
 /* Modal Content */
 .modal-content {
 	background-color: #fefefe;
 	margin: auto;
 	padding: 20px;
 	border: 2px solid #fff;
-	width: 70%;
+	width: 60%;
 	text-align: center;
 	color: blue;
+	font-size: 22px;
+	font-weight: bold;
 	-webkit-border-radius: 15px;
 	-moz-border-radius: 15px;
 	-o-border-radius: 15px;

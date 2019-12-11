@@ -55,8 +55,16 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 		return BcsPageEnum.WinningLetterListPage.toString();
 	}
+	
+	/** WinningLetter get winning list data **/
+	@RequestMapping(method = RequestMethod.GET, value = "/admin/getWinningLetterListData")
+	public String getWinningLetterListData(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.info("winningLetterListPage");
 
-	/** WinningLetter List Page **/
+		return BcsPageEnum.WinningLetterListPage.toString();
+	}
+
+	/** WinningLetter Signature Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterSignaturePage")
 	public String winningLetterSignaturePage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		logger.info("winningLetterSignaturePage");
