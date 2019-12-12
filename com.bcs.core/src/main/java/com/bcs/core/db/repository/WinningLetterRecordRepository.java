@@ -1,5 +1,6 @@
 package com.bcs.core.db.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bcs.core.db.entity.WinningLetterRecord;
@@ -9,4 +10,8 @@ public interface WinningLetterRecordRepository extends EntityRepository<WinningL
 
 	@Transactional(readOnly = true, timeout = 30)
 	WinningLetterRecord findById(Long id);
+
+	@Transactional(readOnly = true, timeout = 300)
+	@Query(value = "SELECT COUNT(*) AS REPLY_PEOPLE_COUNT FROM BCS_WINNING_LETTER_RECORD_TEST WHERE WINNING_LETTER_ID = ?1", nativeQuery = true)
+	Integer countByWinningLetterId(String winningLetterId);
 }

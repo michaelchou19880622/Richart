@@ -94,4 +94,8 @@ public class WinningLetterRecordService {
 		
 		return winningLetterRecord.getId();
 	}
+	
+	public Integer countByWinningLetterId(String winningLetterId){
+	    return winningLetterRecordRepository.countByWinningLetterId(winningLetterId);
+	}
 }

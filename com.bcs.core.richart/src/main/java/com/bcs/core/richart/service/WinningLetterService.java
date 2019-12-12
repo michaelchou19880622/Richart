@@ -19,22 +19,6 @@ public class WinningLetterService {
 	@Autowired
 	private WinningLetterRepository winningLetterRepository;
 
-//	@Transactional(rollbackFor = Exception.class, timeout = 30)
-//	public void createWinningLetter(WinningLetterModel winningLetterModel) throws Exception {
-//		logger.info("WinningLetterService - createWinningLetter");
-//		
-//		long startTime = System.nanoTime();
-//		logger.info("createWinningLetter : START TIME = {}", startTime);
-//		
-//		logger.info("winningLetterModel = {}", winningLetterModel.toString());
-//		
-//		
-//
-//		long endTime = System.nanoTime();
-//		logger.info("createWinningLetter : END TIME = {}", endTime);
-//		logger.info("createWinningLetter : ELAPSED TIME = {}\n", (endTime - startTime) / 1_000_000_000);
-//	}
-	
 	public List<WinningLetter> findAll() {
 		long startTime = System.nanoTime();
 		logger.info("[ findAll ] Start Time : {}", startTime);
@@ -46,6 +30,21 @@ public class WinningLetterService {
 		logger.info("[ findAll ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 
 		logger.info("[ findAll ] lst_WinningLetter = {}", lst_WinningLetter);
+		
+		return lst_WinningLetter;
+	}
+	
+	public List<WinningLetter> findAllByStatus(String status) {
+		long startTime = System.nanoTime();
+		logger.info("[ findAllByStatus ] Start Time : {}", startTime);
+		
+		List<WinningLetter> lst_WinningLetter = winningLetterRepository.findAllByStatus(status);
+
+		long endTime = System.nanoTime();
+		logger.info("[ findAllByStatus ] End Time : {}", endTime);
+		logger.info("[ findAllByStatus ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ findAllByStatus ] lst_WinningLetter = {}", lst_WinningLetter);
 		
 		return lst_WinningLetter;
 	}
@@ -91,6 +90,21 @@ public class WinningLetterService {
 		logger.info("[ save ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 
 		logger.info("[ save ] winningLetter = {}", winningLetter);
+		
+		return winningLetter.getId();
+	}
+
+	public Long saveWithUserAccount(WinningLetter winningLetterSrc, String adminUserAccount) {
+		long startTime = System.nanoTime();
+		logger.info("[ saveWithUserAccount ] Start Time : {}", startTime);
+		
+		WinningLetter winningLetter = winningLetterRepository.save(winningLetterSrc);
+
+		long endTime = System.nanoTime();
+		logger.info("[ saveWithUserAccount ] End Time : {}", endTime);
+		logger.info("[ saveWithUserAccount ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ saveWithUserAccount ] winningLetter = {}", winningLetter);
 		
 		return winningLetter.getId();
 	}

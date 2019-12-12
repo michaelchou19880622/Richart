@@ -258,7 +258,9 @@ $(function(){
 	$.BCS.blockMsgUpload = { "message" : "上傳資料中...."};
 	$.BCS.blockMsgSave = { "message" : "儲存資料中...."};
 
-	$.BCS.blockWinningLetterCreating = { "message" : "中獎回函建立中...."};
+	$.BCS.blockWinningLetterCreating = { "message" : "中獎回函資料建立中...."};
+	$.BCS.blockWinningLetterUpdating = { "message" : "中獎回函資料更新中...."};
+	$.BCS.blockWinningLetterLoading = { "message" : "中獎回函內容載入中...."};
 	
 	$.BCS.formatNumber = function(number, size){
 

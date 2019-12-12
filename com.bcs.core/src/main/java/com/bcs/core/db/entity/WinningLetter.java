@@ -18,6 +18,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @Table(name = "BCS_WINNING_LETTER_TEST", indexes = { @Index(name = "INDEX_0", columnList = "ID") })
 public class WinningLetter extends AbstractBcsEntity {
 	private static final long serialVersionUID = 1L;
+	
+    public static final String STATUS_ACTIVE = "Active";
+    public static final String STATUS_INACTIVE = "Inactive";
+    public static final String STATUS_DELETED = "Deleted";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

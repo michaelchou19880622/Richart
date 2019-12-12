@@ -3,37 +3,55 @@
  */
 $(function() {
 	console.info('bcs.bcsContextPath:' + bcs.bcsContextPath);
+
+	var pageStatus = $.urlParam("status") || 'Active';
+	console.info('pageStatus = ', pageStatus);
 	
 	var templateBody = {};
 	templateBody = $('.dataTemplate').clone(true);
 	$('.dataTemplate').remove();
+	
+	var activeButton = document.getElementById("ActiveBtn");
+	var disableButton = document.getElementById("DisableBtn");
 
 	/* < Button > 匯出EXCEL */
 	$('.btn_export').click(function() {
-		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignCreatePage?actionType=Create&from=active');
+//		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignCreatePage?actionType=Create&from=active');
 	});
 
 	/* < Button > 狀態 = '生效' */
 	$('.ActiveBtn').click(function() {
-		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignListPage');
+		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage?status=Active');
+		$(this).parent().addClass("btn btn-primary done xxx");
+		activeButton.classList.add('CHLeftBtn ExSelected');
+		activeButton.classList.remove('CHLeftBtn')
+		
+		disableButton.classList.add('CHLeftBtn');
+		disableButton.classList.remove('CHLeftBtn ExSelected')
 	});
 
 	/* < Button > 狀態 = '取消' */
 	$('.DisableBtn').click(function() {
-		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignListDisablePage');
+		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage?status=Inactive');
+		activeButton.classList.add('CHLeftBtn');
+		activeButton.classList.remove('CHLeftBtn ExSelected')
+		
+		disableButton.classList.add('CHLeftBtn ExSelected');
+		disableButton.classList.remove('CHLeftBtn')
 	});
 
 	/* < Function > 複製 */
 	var func_copyWinningLetter = function() {
 		var winningLetterId = $(this).attr('winningLetterId');
-		console.info('btn_copyFunc winningLetterId:' + winningLetterId);
-		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignCreatePage?winningLetterId=' + winningLetterId + '&actionType=Copy&from=active');
+		console.info('func_copyWinningLetter winningLetterId = ' + winningLetterId);
+		
+		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterMainPage?id=' + winningLetterId + '&actionType=Copy&isExpired=False');
 	};
 
 	/* < Function > 刪除 */
 	var func_deteleWinningLetter = function() {
-		var winningLetterID = $(this).attr('winningLetterId');
-		console.info('btn_deteleFunc winningLetterId:' + winningLetterID);
+		var winningLetterId = $(this).attr('winningLetterId');
+		console.info('func_deteleWinningLetter winningLetterId = ' + winningLetterId);
 
 		if (!confirm('請確認是否刪除')) {
 			return false;
@@ -41,7 +59,7 @@ $(function() {
 
 		$.ajax({
 			type : "DELETE",
-			url : bcs.bcsContextPath + '/admin/deleteShareCampaign?winningLetterId=' + winningLetterID
+			url : bcs.bcsContextPath + '/admin/deleteWinningLetter?winningLetterId=' + winningLetterId
 		}).done(function(response) {
 			console.info(response);
 			alert("刪除成功");
@@ -57,13 +75,15 @@ $(function() {
 		var winningLetterId = $(this).attr('winningLetterId');
 		console.info('redesignFunc winningLetterId:' + winningLetterId);
 
-		if (!confirm('請確認是否取消')) {
+		if (!confirm((pageStatus == 'Active') ? '請確認是否取消' : '請確認是否生效')) {
 			return false;
 		}
+		
+		var ajax_Url = (pageStatus == 'Active') ? 'inactiveWinningLetter?' : 'activeWinningLetter?';
 
 		$.ajax({
-			type : "DELETE",
-			url : bcs.bcsContextPath + '/edit/redesignShareCampaign?winningLetterId=' + winningLetterId
+			type : "POST",
+			url : bcs.bcsContextPath + '/admin/' + ajax_Url + 'winningLetterId=' + winningLetterId
 		}).done(function(response) {
 			console.info(response);
 			alert("改變成功");
@@ -74,12 +94,25 @@ $(function() {
 		})
 	};
 
-	/* 設定狀態文字 */
-	var func_parseStatus = function(status) {
-		if ("Active" == status) {
+	/* 設定狀態顯示文字 */
+	var func_parseStatus = function(winningLetterStatus) {
+		
+		if ("Active" == winningLetterStatus) {
 			return "生效";
-		} else if ("Inactive" == status) {
+		} else if ("Inactive" == winningLetterStatus) {
 			return "取消";
+		}
+	}
+
+	/* 設定狀態按鈕文字 */
+	var func_parseButtonStatus = function(pageStatus) {
+
+		console.info('pageStatus = ' + pageStatus);
+		
+		if ("Active" == pageStatus) {
+			return "取消";
+		} else if ("Inactive" == pageStatus) {
+			return "生效";
 		}
 	}
 	
@@ -106,16 +139,27 @@ $(function() {
 
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/edit/countShareUserRecord?winningLetterId=' + winningLetterId
+			url : bcs.bcsContextPath + '/edit/countWinningLetterReplyPeople?winningLetterId=' + winningLetterId
 		}).done(function(response) {
-
 			console.info(response);
-			dataTemplateBody.find('.campaignShareNumber a').html($.BCS.formatNumber(response, 0));
+			dataTemplateBody.find('.replyPeople a').html($.BCS.formatNumber(response, 0));
 
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
 		})
+	}
+	
+	/* 檢查活動時間是否到期 */
+	var func_checkIsExpired = function(datetime) {
+		
+		var currentDateTime = new Date();
+		
+		if (currentDateTime > datetime) {
+			return 'True';
+		} else {
+			return 'False';
+		}
 	}
 
 	/* Get parent URL */
@@ -145,12 +189,24 @@ $(function() {
 
 	/* Defined the popup model for URL */
 	var func_showUrlModel = function() {
-		var winningLetterId = $(this).attr('winningLetterId');
 
-		modelUrl.innerHTML = winningLetterTracingUrlPre + winningLetterId;
-		modelUrl.setAttribute('href', winningLetterTracingUrlPre + winningLetterId);
+		var isExpired = $(this).attr('isExpired');
+		
+		if (isExpired == 'True') {
+			modelUrl.innerHTML = "*** 活動已逾期 *** ";
+			modelUrl.style.color = "#FF0000";
+			modelUrl.removeAttribute('href');
 
-		modal.style.display = "block";
+			modal.style.display = "block";
+		} else {
+			var winningLetterId = $(this).attr('winningLetterId');
+
+			modelUrl.innerHTML = winningLetterTracingUrlPre + winningLetterId;
+			modelUrl.style.color = "#0000FF";
+			modelUrl.setAttribute('href', winningLetterTracingUrlPre + winningLetterId);
+
+			modal.style.display = "block";
+		}
 	};
 
 	/* Load data */
@@ -159,7 +215,7 @@ $(function() {
 
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/edit/getWinningLetterList'
+			url : bcs.bcsContextPath + '/edit/getWinningLetterList?status=' + pageStatus
 		}).done(function(response) {
 			$('.dataTemplate').remove();
 			console.info(response);
@@ -167,25 +223,29 @@ $(function() {
 			$.each(response, function(i, o) {
 				var dataTemplateBody = templateBody.clone(true);
 
-				var msgContent = "";
-
-				msgContent += o.campaignName;
+				var isExpired = func_checkIsExpired(o.endTime);
 
 				// 名稱
-				dataTemplateBody.find('.winningLetterName a').attr('href', bcs.bcsContextPath + '/api/editWinningLetter?winningLetterId=' + o.id + '&actionType=Edit').html(o.name);
+				dataTemplateBody.find('.winningLetterName a')
+								.attr('href', bcs.bcsContextPath + '/admin/winningLetterMainPage?id=' + o.id + '&actionType=Edit' + '&isExpired=' + isExpired)
+								.html(o.name);
 
 				// 狀態:生效
 				dataTemplateBody.find('.winningLetterStatus span').html(func_parseStatus(o.status));
 
 				// 按鈕:取消
+				dataTemplateBody.find('.btn_status').val(func_parseButtonStatus(pageStatus));
 				dataTemplateBody.find('.btn_status').attr('winningLetterId', o.id);
 				dataTemplateBody.find('.btn_status').click(func_updateStatusButton);
 
 				// 填寫人數
-//				func_countReplyPeople(dataTemplateBody, o.id);
+				func_countReplyPeople(dataTemplateBody, o.id);
+//				dataTemplateBody.find('.replyPeople a').attr('href', bcs.bcsContextPath +'/edit/couponReportPage?couponId=' + o.winningLetterId);
 				
 				// 中獎回函網址
-				dataTemplateBody.find('.btn_css').attr('winningLetterId', o.id).click(func_showUrlModel);
+				dataTemplateBody.find('.btn_css').attr('winningLetterId', o.id);
+				dataTemplateBody.find('.btn_css').attr('isExpired', isExpired);
+				dataTemplateBody.find('.btn_css').click(func_showUrlModel);
 
 				// 回覆到期時間
 				dataTemplateBody.find('.winningLetterEndTime').html(func_parseDateTime(o.endTime));

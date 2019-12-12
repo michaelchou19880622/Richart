@@ -2,7 +2,9 @@
  * 
  */
 $(function() {
-	
+	var winningLetterId = $.urlParam("id");
+	console.info('winningLetterId = ', winningLetterId);
+
 	var isExpired = $.urlParam("isExpired") || 'False';
 	console.info('isExpired = ', isExpired);
 
@@ -10,20 +12,20 @@ $(function() {
 	console.info('actionType = ', actionType);
 
 	var btn_create_save = document.getElementById('btn_create_save');
-	btn_create_save.value = (actionType == 'Create' ? '建立' : '儲存');
-	
-	title.innerText = (actionType == 'Create' ? '建立中獎回函' : '編輯中獎回函')
-	subTitle.innerText = (actionType == 'Create' ? '請輸入中獎回函內容。' : (isExpired == 'True' ? "該中獎回函已過期，無法重新進行編輯。" : "請重新修改中獎回函內容，修改完畢後請確認儲存。"))
-	subTitle.style.color = (isExpired == 'True' ? "red" : "gray")
-	
+	btn_create_save.value = ((actionType == 'Edit') ? '儲存' : '建立');
+	btn_create_save.style.visibility = ((isExpired == 'True') ? 'hidden' : 'visible');
+
+	var btn_cancel = document.getElementById('btn_cancel');
+	btn_cancel.style.visibility = ((actionType == 'Create') ? 'hidden' : 'visible');
+	btn_cancel.value = ((isExpired == 'True') ? '返回' : '取消');
+
+	title.innerText = ((actionType == 'Create') ? '建立中獎回函' : ((actionType == 'Copy') ? '建立中獎回函 ( 複製 )' : '編輯中獎回函'))
+	subTitle.innerText = ((actionType == 'Create' || actionType == 'Copy') ? '請輸入中獎回函內容。' : ((isExpired == 'True') ? "該中獎回函活動已逾期，無法重新進行編輯。" : "請重新修改中獎回函內容 ( 名稱無法修改 )，修改完畢後請確認儲存。"))
+	subTitle.innerText = ((actionType != 'Copy') ? subTitle.innerText : "請輸入中獎回函內容。")
+	subTitle.style.color = ((actionType == 'Copy') ? "gray" : ((isExpired == 'True') ? "red" : "gray"))
+
 	var winningLetterName = document.getElementById('winningLetterName');
 	var winningLetterGifts = document.getElementById('winningLetterGifts');
-	
-	var winningLetterNameValue = $.urlParam("winningLetterNameValue") || '';
-	console.info('winningLetterNameValue = ', winningLetterNameValue);
-	
-	var winningLetterGiftsValue = $.urlParam("winningLetterGiftsValue") || '';
-	console.info('winningLetterGiftsValue = ', winningLetterGiftsValue);
 
 	var dateFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -52,26 +54,32 @@ $(function() {
 			// 回覆到期時間-結束日期
 			'winningLetterEndTime' : {
 				required : true,
-				dateYYYYMMDD : true,
-				compareDate : {
-					compareType : 'after',
-					dateFormat : dateFormat,
-					getThisDateStringFunction : function() {
-						var yearMonthDay = $('#winningLetterEndTime').val();
-						var hour = $('#winningLetterEndTimeHour').val();
-						var minute = $('#winningLetterEndTimeMinute').val();
-						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
-					},
-					getAnotherDateStringFunction : function() {
-						var yearMonthDay = $('#winningLetterStartTime').val();
-						var hour = $('#winningLetterStartTimeHour').val();
-						var minute = $('#winningLetterStartTimeMinute').val();
-						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
-					},
-					thisDateName : '回覆到期結束時間',
-					anotherDateName : '回覆到期開始時間'
-				}
+				dateYYYYMMDD : true
 			}
+
+//			// 回覆到期時間-結束日期
+//			'winningLetterEndTime' : {
+//				required : true,
+//				dateYYYYMMDD : true,
+//				compareDate : {
+//					compareType : 'after',
+//					dateFormat : dateFormat,
+//					getThisDateStringFunction : function() {
+//						var yearMonthDay = $('#winningLetterEndTime').val();
+//						var hour = $('#winningLetterEndTimeHour').val();
+//						var minute = $('#winningLetterEndTimeMinute').val();
+//						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
+//					},
+//					getAnotherDateStringFunction : function() {
+//						var yearMonthDay = $('#winningLetterStartTime').val();
+//						var hour = $('#winningLetterStartTimeHour').val();
+//						var minute = $('#winningLetterStartTimeMinute').val();
+//						return yearMonthDay + ' ' + hour + ':' + minute + ':00';
+//					},
+//					thisDateName : '填寫結束時間',
+//					anotherDateName : '填寫開始時間'
+//				}
+//			}
 		}
 	});
 
@@ -142,6 +150,57 @@ $(function() {
 		'dateFormat' : 'yy-mm-dd'
 	});
 
+	/* 設定日期時間欄位值 */
+	var func_setElementDateTime = function(elementId, timestamp) {
+		if (!timestamp) {
+			return;
+		}
+
+		var momentDate = moment(timestamp);
+		$('#' + elementId).val(momentDate.format('YYYY-MM-DD'));
+
+		var hour = momentDate.hour();
+		$('#' + elementId + 'Hour').val(hour < 10 ? '0' + hour : hour).change();
+
+		var minute = momentDate.minute();
+		$('#' + elementId + 'Minute').val(minute < 10 ? '0' + minute : minute).change();
+	}
+
+	/* 設定日期時間欄位是否禁用 */
+	var func_setElementDateTimeDisabled = function(elementId, isDisable) {
+		document.getElementById(elementId).disabled = isDisable;
+		document.getElementById(elementId + 'Hour').disabled = isDisable;
+		document.getElementById(elementId + 'Minute').disabled = isDisable;
+	}
+
+	/* 設定時間 */
+	var func_parseDateTime = function(datetime) {
+		if (null == datetime) {
+			return "-";
+		} 
+		
+		return moment(datetime).format('YYYY-MM-DD HH:mm');
+	}
+
+	/* 檢查活動時間是否有效 */
+	var func_checkIsActiveTimeValid = function(datetime) {
+		console.info("datetime = ", datetime);
+		
+		var currentDateTime = new Date();
+		console.info("currentDateTime = ", currentDateTime);
+		
+		currentDateTime = func_parseDateTime(currentDateTime);
+		console.info("formated currentDateTime = ", currentDateTime);
+				
+		if (moment(currentDateTime).format(dateFormat) > datetime) {
+			console.info("Active time is invalid");
+			return 'False';
+		} else {
+			console.info("Active time is valid");
+			return 'True';
+		}
+	}
+
 	var getWinningLetterData = function() {
 
 		if (!validator.form()) {
@@ -179,14 +238,14 @@ $(function() {
 				alert("The winning letter is expired, can not edit anymore.");
 				return;
 			}
-
+			
 			if (!validator.form()) {
 				return;
 			}
 
 			var postData = getWinningLetterData();
 			console.info('postData = ', postData);
-			
+
 			console.info('name = ', postData['name']);
 			console.info('startTime = ', postData['startTime']);
 			console.info('endTime = ', postData['endTime']);
@@ -194,32 +253,49 @@ $(function() {
 			console.info('status = ', postData['status']);
 
 			console.info('JSON.stringify(postData) = ', JSON.stringify(postData));
-
-			if (!confirm(actionType == 'Create' ? '請確認是否建立' : '請確認是否儲存')) {
+			
+			var isActiveStartTimeValid = func_checkIsActiveTimeValid(postData['startTime']);
+			if (isActiveStartTimeValid == 'False') {
+				alert("時間設定錯誤，中獎回函填寫「開始時間」必須大於「當前時間」。");
 				return false;
 			}
 			
-			var apiUrl = (actionType == 'Create')? "/api/createWinningLetter" : "/api/editWinningLetter";
+			if (postData['endTime'] <= postData['startTime']) {
+				alert("時間設定錯誤，中獎回函填寫「結束時間」必須大於「開始時間」。");
+				return false;
+			}
 
-			$('.LyMain').block($.BCS.blockWinningLetterCreating);
+			if (!confirm((actionType == 'Create' || actionType == 'Copy') ? '請確認是否建立' : '請確認是否儲存')) {
+				return false;
+			}
+
+			var apiUrl = (actionType == 'Create' || actionType == 'Copy') ? "/api/createWinningLetter" : "/api/editWinningLetter";
+
+			if (actionType == 'Create'){
+				$('.LyMain').block($.BCS.blockWinningLetterCreating);
+			}
+			else{
+				$('.LyMain').block($.BCS.blockWinningLetterUpdating);
+			}
+			
 			$.ajax({
 				type : "POST",
 				url : bcs.bcsContextPath + apiUrl,
-	            cache: false,
-	            contentType: 'application/json',
-	            processData: false,
+				cache : false,
+				contentType : 'application/json',
+				processData : false,
 				data : JSON.stringify(postData)
-			}).done(function(response){
+			}).done(function(response) {
 				console.info('response = ' + response);
-				
-				alert((actionType == 'Create')? '中獎回函建立完成' : '中獎回函已更新');
+
+				alert((actionType == 'Create') ? '中獎回函建立完成' : '中獎回函已更新');
 				$('.LyMain').unblock();
-				
+
 				window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage');
 
-			}).fail(function(response){
+			}).fail(function(response) {
 				console.info('response = ' + response.responseText);
-				
+
 				alert(response.responseText);
 				$('.LyMain').unblock();
 			})
@@ -227,37 +303,64 @@ $(function() {
 
 		$("#btn_cancel").click(function() {
 
-			var confirmRslt = confirm('是否確定取消?');
-			
+			var confirmRslt = confirm('是否確定' + btn_cancel.value + '?');
+
 			if (!confirmRslt) {
 				return;
 			}
-			
+
 			// If confirmed, do cancle and return the previous page
-			alert('取消確認123')
-			
+			window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage');
+
 		});
 	});
 
 	var loadDataFunc = function() {
 		console.info('loadDataFunc --- start');
 
-		winningLetterName.disabled = (actionType == 'Edit')? true : false;
-		winningLetterName.style.color = (actionType == 'Edit')? 'silver' : 'black';
-		
+		winningLetterName.disabled = (actionType == 'Edit') ? true : false;
+		winningLetterName.style.color = (actionType == 'Edit') ? 'silver' : 'black';
+
 		if (isExpired == 'True') {
 			winningLetterGifts.disabled = true;
-			btn_create_save.className = "btn_cancel";
+			btn_create_save.style.visibility = 'hidden';
 			winningLetterGifts.style.color = 'silver';
+			func_setElementDateTimeDisabled('winningLetterStartTime', true);
+			func_setElementDateTimeDisabled('winningLetterEndTime', true);
 		} else {
 			winningLetterGifts.disabled = false;
-			btn_create_save.className = "btn_save";
+			btn_create_save.style.visibility = 'visible';
 			winningLetterGifts.style.color = 'black';
+			func_setElementDateTimeDisabled('winningLetterStartTime', false);
+			func_setElementDateTimeDisabled('winningLetterEndTime', false);
 		}
-		
-		winningLetterName.value = winningLetterNameValue;
-		winningLetterGifts.value = winningLetterGiftsValue;
-		
+
+		if (winningLetterId) {
+
+			$('.LyMain').block($.BCS.blockWinningLetterLoading);
+			$.ajax({
+				type : "GET",
+				url : bcs.bcsContextPath + "/edit/getWinningLetter?winningLetterId=" + winningLetterId
+			}).done(function(response) {
+				console.info(response);
+
+				winningLetterName.value = response.name;
+				winningLetterGifts.value = response.gift;
+
+				func_setElementDateTime('winningLetterStartTime', response.startTime);
+				func_setElementDateTime('winningLetterEndTime', response.endTime);
+
+				$('#winningLetterName').keyup();
+				$('#winningLetterGifts').keyup();
+				$('.LyMain').unblock();
+
+			}).fail(function(response) {
+				console.info(response);
+				alert(response.responseText);
+				$('.LyMain').unblock();
+			})
+		}
+
 		console.info('loadDataFunc --- end');
 	};
 
