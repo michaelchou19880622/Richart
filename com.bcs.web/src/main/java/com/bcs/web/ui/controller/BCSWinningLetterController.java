@@ -1,8 +1,11 @@
 package com.bcs.web.ui.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,8 +26,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.resource.UriHelper;
 import com.bcs.core.richart.api.model.WinningLetterModel;
+import com.bcs.core.richart.service.ExportToExcelForWinningLetterService;
 import com.bcs.core.richart.service.WinningLetterRecordService;
 import com.bcs.core.richart.service.WinningLetterService;
 import com.bcs.core.utils.ErrorRecord;
@@ -33,12 +38,14 @@ import com.bcs.core.web.security.CurrentUser;
 import com.bcs.core.web.security.CustomUser;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
+import com.bcs.web.aop.ControllerLog;
+import com.bcs.web.ui.service.LoadFileUIService;
 
 @Controller
 @RequestMapping("/bcs")
 public class BCSWinningLetterController extends BCSBaseController {
 
-	/** Logger */
+	/** Logger **/
 	private static Logger logger = LoggerFactory.getLogger(BCSWinningLetterController.class);
 
 	@Autowired
@@ -46,6 +53,9 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 	@Autowired
 	private WinningLetterRecordService winningLetterRecordService;
+	
+	@Autowired
+	private ExportToExcelForWinningLetterService exportToExcelForWinningLetterService;
 
 	/** WinningLetter Main Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterMainPage")
@@ -254,7 +264,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Delete WinningLetter **/
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> deleteWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser) throws IOException {
+	public ResponseEntity<?> deleteWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+			throws IOException {
 		logger.info("deleteWinningLetter");
 
 		logger.info("winningLetterId = {}", winningLetterId);
@@ -262,10 +273,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 		// Get the currently logged in user.
 		String currentUser = customUser.getAccount();
 		logger.info("customUser = {}", currentUser);
-		
+
 		Date currentDateTime = new Date();
 		logger.info("currentDateTime = {}", currentDateTime);
-		
+
 		try {
 			if (winningLetterId != null) {
 				WinningLetter winningLetter = winningLetterService.findById(Long.valueOf(winningLetterId));
@@ -278,7 +289,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 				if (winningLetter != null) {
 					Long winningLetterEffectRowId = winningLetterService.saveWithUserAccount(winningLetter, customUser.getAccount());
 					logger.info("winningLetterEffectRowId = {}", winningLetterEffectRowId);
-					
+
 					return new ResponseEntity<>(winningLetterEffectRowId, HttpStatus.OK);
 				}
 			}
@@ -298,7 +309,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Active WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/activeWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> activeWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser) throws IOException {
+	public ResponseEntity<?> activeWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+			throws IOException {
 		logger.info("activeWinningLetter");
 
 		logger.info("winningLetterId = {}", winningLetterId);
@@ -306,10 +318,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 		// Get the currently logged in user.
 		String currentUser = customUser.getAccount();
 		logger.info("customUser = {}", currentUser);
-		
+
 		Date currentDateTime = new Date();
 		logger.info("currentDateTime = {}", currentDateTime);
-		
+
 		try {
 			if (winningLetterId != null) {
 				WinningLetter winningLetter = winningLetterService.findById(Long.valueOf(winningLetterId));
@@ -322,7 +334,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 				if (winningLetter != null) {
 					Long winningLetterEffectRowId = winningLetterService.saveWithUserAccount(winningLetter, customUser.getAccount());
 					logger.info("winningLetterEffectRowId = {}", winningLetterEffectRowId);
-					
+
 					return new ResponseEntity<>(winningLetterEffectRowId, HttpStatus.OK);
 				}
 			}
@@ -342,7 +354,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Inactive WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/inactiveWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> inactiveWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser) throws IOException {
+	public ResponseEntity<?> inactiveWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+			throws IOException {
 		logger.info("inactiveWinningLetter");
 
 		logger.info("winningLetterId = {}", winningLetterId);
@@ -350,10 +363,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 		// Get the currently logged in user.
 		String currentUser = customUser.getAccount();
 		logger.info("customUser = {}", currentUser);
-		
+
 		Date currentDateTime = new Date();
 		logger.info("currentDateTime = {}", currentDateTime);
-		
+
 		try {
 			if (winningLetterId != null) {
 				WinningLetter winningLetter = winningLetterService.findById(Long.valueOf(winningLetterId));
@@ -366,7 +379,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 				if (winningLetter != null) {
 					Long winningLetterEffectRowId = winningLetterService.saveWithUserAccount(winningLetter, customUser.getAccount());
 					logger.info("winningLetterEffectRowId = {}", winningLetterEffectRowId);
-					
+
 					return new ResponseEntity<>(winningLetterEffectRowId, HttpStatus.OK);
 				}
 			}
@@ -381,5 +394,39 @@ public class BCSWinningLetterController extends BCSBaseController {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
+	}
+
+	/** Export winning letter list to excel **/
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportToExcelForWinningLetter")
+	@ResponseBody
+	public void exportToExcelForWinningLetter(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam String name, @RequestParam String status)
+			throws IOException {
+
+		logger.info("name = {}", name);
+		logger.info("status = {}", status);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+		
+		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+		logger.info("filePath = {}", filePath);
+		
+		Date date = new Date();
+		
+		String fileName = "WinningLetterList_" + sdf.format(date) + ".xlsx";
+		logger.info("fileName = {}", fileName);
+		
+		try {
+			File folder = new File(filePath);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+
+			exportToExcelForWinningLetterService.exportToExcelForWinningListByLikeNameAndStatus(filePath, fileName, name, status);
+
+		} catch (Exception e) {
+			logger.error("Exception : ", e);
+		}
+
+		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
 	}
 }

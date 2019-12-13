@@ -20,7 +20,7 @@ $(function() {
 	btn_cancel.value = ((isExpired == 'True') ? '返回' : '取消');
 
 	title.innerText = ((actionType == 'Create') ? '建立中獎回函' : ((actionType == 'Copy') ? '建立中獎回函 ( 複製 )' : '編輯中獎回函'))
-	subTitle.innerText = ((actionType == 'Create' || actionType == 'Copy') ? '請輸入中獎回函內容。' : ((isExpired == 'True') ? "該中獎回函活動已逾期，無法重新進行編輯。" : "請重新修改中獎回函內容 ( 名稱無法修改 )，修改完畢後請確認儲存。"))
+	subTitle.innerText = ((actionType == 'Create' || actionType == 'Copy') ? '請輸入中獎回函內容。' : ((isExpired == 'True') ? "該中獎回函活動已逾期，無法重新進行編輯。" : "請重新修改中獎回函內容 ( 「名稱」無法修改 )，若活動需延期，請在填寫時間截止前修改「結束時間」，修改完畢後請確認儲存。"))
 	subTitle.innerText = ((actionType != 'Copy') ? subTitle.innerText : "請輸入中獎回函內容。")
 	subTitle.style.color = ((actionType == 'Copy') ? "gray" : ((isExpired == 'True') ? "red" : "gray"))
 
@@ -232,8 +232,6 @@ $(function() {
 
 	$(document).ready(function() {
 		$("#btn_create_save").click(function() {
-			console.info('btn_create_save.className = ', btn_create_save.className);
-
 			if (isExpired == 'True') {
 				alert("The winning letter is expired, can not edit anymore.");
 				return;
@@ -271,7 +269,7 @@ $(function() {
 
 			var apiUrl = (actionType == 'Create' || actionType == 'Copy') ? "/api/createWinningLetter" : "/api/editWinningLetter";
 
-			if (actionType == 'Create'){
+			if (actionType == 'Create' || actionType == 'Copy'){
 				$('.LyMain').block($.BCS.blockWinningLetterCreating);
 			}
 			else{
@@ -288,7 +286,7 @@ $(function() {
 			}).done(function(response) {
 				console.info('response = ' + response);
 
-				alert((actionType == 'Create') ? '中獎回函建立完成' : '中獎回函已更新');
+				alert((actionType == 'Create' || actionType == 'Copy') ? '中獎回函建立完成' : '中獎回函已更新');
 				$('.LyMain').unblock();
 
 				window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage');

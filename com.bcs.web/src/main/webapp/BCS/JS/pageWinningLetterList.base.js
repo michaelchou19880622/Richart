@@ -10,34 +10,31 @@ $(function() {
 	var templateBody = {};
 	templateBody = $('.dataTemplate').clone(true);
 	$('.dataTemplate').remove();
-	
-	var activeButton = document.getElementById("ActiveBtn");
-	var disableButton = document.getElementById("DisableBtn");
 
+	var keywordInput = document.getElementById('keywordInput');
+	console.info('keywordInput.value = ', keywordInput.value);
+	
+	var activeButton_li = document.getElementById('ActiveBtn_li');
+	var disableButton_li = document.getElementById('DisableBtn_li');
+
+	/* < Button > 查詢 */
+	$('.btn_name_query').click(function() {
+		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value +'&status=' + pageStatus);
+	});
+	
 	/* < Button > 匯出EXCEL */
 	$('.btn_export').click(function() {
-//		window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignCreatePage?actionType=Create&from=active');
+		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value +'&status=' + pageStatus);
 	});
 
 	/* < Button > 狀態 = '生效' */
 	$('.ActiveBtn').click(function() {
 		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage?status=Active');
-		$(this).parent().addClass("btn btn-primary done xxx");
-		activeButton.classList.add('CHLeftBtn ExSelected');
-		activeButton.classList.remove('CHLeftBtn')
-		
-		disableButton.classList.add('CHLeftBtn');
-		disableButton.classList.remove('CHLeftBtn ExSelected')
 	});
 
 	/* < Button > 狀態 = '取消' */
 	$('.DisableBtn').click(function() {
 		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage?status=Inactive');
-		activeButton.classList.add('CHLeftBtn');
-		activeButton.classList.remove('CHLeftBtn ExSelected')
-		
-		disableButton.classList.add('CHLeftBtn ExSelected');
-		disableButton.classList.remove('CHLeftBtn')
 	});
 
 	/* < Function > 複製 */
@@ -57,16 +54,20 @@ $(function() {
 			return false;
 		}
 
+		$('.LyMain').block($.BCS.blockWinningLetterDeleting);
+
 		$.ajax({
 			type : "DELETE",
 			url : bcs.bcsContextPath + '/admin/deleteWinningLetter?winningLetterId=' + winningLetterId
 		}).done(function(response) {
 			console.info(response);
 			alert("刪除成功");
+			$('.LyMain').unblock();
 			loadDataFunc();
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
+			$('.LyMain').unblock();
 		})
 	};
 
@@ -78,6 +79,8 @@ $(function() {
 		if (!confirm((pageStatus == 'Active') ? '請確認是否取消' : '請確認是否生效')) {
 			return false;
 		}
+
+		$('.LyMain').block($.BCS.blockWinningLetterStatusUpdating);
 		
 		var ajax_Url = (pageStatus == 'Active') ? 'inactiveWinningLetter?' : 'activeWinningLetter?';
 
@@ -86,11 +89,13 @@ $(function() {
 			url : bcs.bcsContextPath + '/admin/' + ajax_Url + 'winningLetterId=' + winningLetterId
 		}).done(function(response) {
 			console.info(response);
-			alert("改變成功");
+			alert("狀態已更新");
+			$('.LyMain').unblock();
 			loadDataFunc();
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
+			$('.LyMain').unblock();
 		})
 	};
 
@@ -143,7 +148,6 @@ $(function() {
 		}).done(function(response) {
 			console.info(response);
 			dataTemplateBody.find('.replyPeople a').html($.BCS.formatNumber(response, 0));
-
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
@@ -212,6 +216,10 @@ $(function() {
 	/* Load data */
 	var loadDataFunc = function() {
 		console.info("loadDataFunc start");
+		
+		(pageStatus == 'Active')? activeButton_li.classList.add("ExSelected") : disableButton_li.classList.add("ExSelected");
+		
+		$('.LyMain').block($.BCS.blockWinningLetterListLoading);
 
 		$.ajax({
 			type : "GET",
@@ -225,6 +233,9 @@ $(function() {
 
 				var isExpired = func_checkIsExpired(o.endTime);
 
+				// 填寫人數
+				func_countReplyPeople(dataTemplateBody, o.id);
+
 				// 名稱
 				dataTemplateBody.find('.winningLetterName a')
 								.attr('href', bcs.bcsContextPath + '/admin/winningLetterMainPage?id=' + o.id + '&actionType=Edit' + '&isExpired=' + isExpired)
@@ -237,10 +248,6 @@ $(function() {
 				dataTemplateBody.find('.btn_status').val(func_parseButtonStatus(pageStatus));
 				dataTemplateBody.find('.btn_status').attr('winningLetterId', o.id);
 				dataTemplateBody.find('.btn_status').click(func_updateStatusButton);
-
-				// 填寫人數
-				func_countReplyPeople(dataTemplateBody, o.id);
-//				dataTemplateBody.find('.replyPeople a').attr('href', bcs.bcsContextPath +'/edit/couponReportPage?couponId=' + o.winningLetterId);
 				
 				// 中獎回函網址
 				dataTemplateBody.find('.btn_css').attr('winningLetterId', o.id);
@@ -269,10 +276,14 @@ $(function() {
 				dataTemplateBody.find('.btn_detele').attr('winningLetterId', o.id).click(func_deteleWinningLetter);
 
 				$('#tableBody').append(dataTemplateBody);
+
+				$('.LyMain').unblock();
 			});
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
+
+			$('.LyMain').unblock();
 		})
 
 		console.info("loadDataFunc end");
