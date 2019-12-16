@@ -1,15 +1,18 @@
 package com.bcs.web.ui.controller;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.entity.WinningLetter;
+import com.bcs.core.db.entity.WinningLetterRecord;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.resource.UriHelper;
@@ -32,13 +36,11 @@ import com.bcs.core.richart.api.model.WinningLetterModel;
 import com.bcs.core.richart.service.ExportToExcelForWinningLetterService;
 import com.bcs.core.richart.service.WinningLetterRecordService;
 import com.bcs.core.richart.service.WinningLetterService;
-import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.web.security.CurrentUser;
 import com.bcs.core.web.security.CustomUser;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
-import com.bcs.web.aop.ControllerLog;
 import com.bcs.web.ui.service.LoadFileUIService;
 
 @Controller
@@ -75,6 +77,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 		return BcsPageEnum.WinningLetterListPage.toString();
 	}
 
+	/** WinningLetter Reply List Page **/
+	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterReplyListPage")
+	public String winningLetterReplyListPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.info("winningLetterReplyListPage");
+
+		return BcsPageEnum.WinningLetterReplyListPage.toString();
+	}
+
 	/** WinningLetter Signature Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterSignaturePage")
 	public String winningLetterSignaturePage(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -94,13 +104,27 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Get winning letter list data **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterList")
 	@ResponseBody
-	public ResponseEntity<?> getWinningLetterList(HttpServletRequest request, HttpServletResponse response, @RequestParam String status) throws Exception {
+	public ResponseEntity<?> getWinningLetterList(HttpServletRequest request, HttpServletResponse response, @RequestParam String name, @RequestParam String status) throws Exception {
 		logger.info("getWinningLetterList");
 
+		logger.info("name = {}", name);
 		logger.info("status = {}", status);
+		
+		// 檢查name是否包含'%' 如果有責替換成其他的字符
 
 		try {
-			List<WinningLetter> list_WinningLetter = winningLetterService.findAllByStatus(status);
+			List<WinningLetter> list_WinningLetter = new ArrayList<>();
+			
+			if (StringUtils.isBlank(name)) {
+				list_WinningLetter = winningLetterService.findAllByStatus(status);
+			}
+			else if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(status)) {
+				list_WinningLetter = winningLetterService.findAllByNameContainingAndStatus(name, status);
+			}
+			else {
+				list_WinningLetter = winningLetterService.findAllByStatus(WinningLetter.STATUS_ACTIVE);
+			}
+			
 			logger.info("list_WinningLetter = {}", list_WinningLetter);
 
 			return new ResponseEntity<>(list_WinningLetter, HttpStatus.OK);
@@ -420,7 +444,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 			if (!folder.exists()) {
 				folder.mkdirs();
 			}
-
+			
 			exportToExcelForWinningLetterService.exportToExcelForWinningListByLikeNameAndStatus(filePath, fileName, name, status);
 
 		} catch (Exception e) {
@@ -428,5 +452,41 @@ public class BCSWinningLetterController extends BCSBaseController {
 		}
 
 		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
+	}
+
+	/** Get winning letter reply list data by winning letter id **/
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterReplyList")
+	@ResponseBody
+	public ResponseEntity<?> getWinningLetterReplyList(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @RequestParam String winnerName) throws Exception {
+		logger.info("getWinningLetterReplyList");
+
+		logger.info("winningLetterId = {}", winningLetterId);
+		logger.info("winnerName = {}", winnerName);
+		
+		// 檢查name是否包含'%' 如果有責替換成其他的字符
+
+		try {
+			List<WinningLetterRecord> list_WinningLetterRecords = null;
+			
+			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
+				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterId(winnerName, Long.valueOf(winningLetterId));
+			}
+			else {
+				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId));
+			}
+			
+			
+			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
+
+			return new ResponseEntity<>(list_WinningLetterRecords, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Exception : ", e);
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 	}
 }

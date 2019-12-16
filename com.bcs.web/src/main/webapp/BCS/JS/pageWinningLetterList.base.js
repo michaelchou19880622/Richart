@@ -2,24 +2,39 @@
  * 
  */
 $(function() {
-	console.info('bcs.bcsContextPath:' + bcs.bcsContextPath);
-
+	/* To prevent form refresh from press 'Enter' key */
+	$("form").submit(function() {
+		return false;
+	});
+	
 	var pageStatus = $.urlParam("status") || 'Active';
-	console.info('pageStatus = ', pageStatus);
 	
 	var templateBody = {};
 	templateBody = $('.dataTemplate').clone(true);
 	$('.dataTemplate').remove();
 
 	var keywordInput = document.getElementById('keywordInput');
-	console.info('keywordInput.value = ', keywordInput.value);
 	
 	var activeButton_li = document.getElementById('ActiveBtn_li');
 	var disableButton_li = document.getElementById('DisableBtn_li');
 
+	/* < TextInput > 查詢 */
+	$('.searchInput_winningLetterName').keypress(function(event) {
+		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		
+		if (keycode == '13') {
+			/* To prevent page refresh from press 'Enter' key */
+			event.preventDefault();
+			
+			loadDataFunc();
+		}
+	});
+
 	/* < Button > 查詢 */
 	$('.btn_name_query').click(function() {
-		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value +'&status=' + pageStatus);
+		
+		loadDataFunc();
 	});
 	
 	/* < Button > 匯出EXCEL */
@@ -36,11 +51,10 @@ $(function() {
 	$('.DisableBtn').click(function() {
 		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage?status=Inactive');
 	});
-
+	
 	/* < Function > 複製 */
 	var func_copyWinningLetter = function() {
 		var winningLetterId = $(this).attr('winningLetterId');
-		console.info('func_copyWinningLetter winningLetterId = ' + winningLetterId);
 		
 		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterMainPage?id=' + winningLetterId + '&actionType=Copy&isExpired=False');
 	};
@@ -48,7 +62,6 @@ $(function() {
 	/* < Function > 刪除 */
 	var func_deteleWinningLetter = function() {
 		var winningLetterId = $(this).attr('winningLetterId');
-		console.info('func_deteleWinningLetter winningLetterId = ' + winningLetterId);
 
 		if (!confirm('請確認是否刪除')) {
 			return false;
@@ -60,7 +73,6 @@ $(function() {
 			type : "DELETE",
 			url : bcs.bcsContextPath + '/admin/deleteWinningLetter?winningLetterId=' + winningLetterId
 		}).done(function(response) {
-			console.info(response);
 			alert("刪除成功");
 			$('.LyMain').unblock();
 			loadDataFunc();
@@ -74,7 +86,6 @@ $(function() {
 	/* 更新狀態按鈕 */
 	var func_updateStatusButton = function() {
 		var winningLetterId = $(this).attr('winningLetterId');
-		console.info('redesignFunc winningLetterId:' + winningLetterId);
 
 		if (!confirm((pageStatus == 'Active') ? '請確認是否取消' : '請確認是否生效')) {
 			return false;
@@ -88,7 +99,6 @@ $(function() {
 			type : "POST",
 			url : bcs.bcsContextPath + '/admin/' + ajax_Url + 'winningLetterId=' + winningLetterId
 		}).done(function(response) {
-			console.info(response);
 			alert("狀態已更新");
 			$('.LyMain').unblock();
 			loadDataFunc();
@@ -112,8 +122,6 @@ $(function() {
 	/* 設定狀態按鈕文字 */
 	var func_parseButtonStatus = function(pageStatus) {
 
-		console.info('pageStatus = ' + pageStatus);
-		
 		if ("Active" == pageStatus) {
 			return "取消";
 		} else if ("Inactive" == pageStatus) {
@@ -146,8 +154,9 @@ $(function() {
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/countWinningLetterReplyPeople?winningLetterId=' + winningLetterId
 		}).done(function(response) {
-			console.info(response);
-			dataTemplateBody.find('.replyPeople a').html($.BCS.formatNumber(response, 0));
+			dataTemplateBody.find('.replyPeople a')
+			.attr('href', bcs.bcsContextPath + '/admin/winningLetterReplyListPage?wlId=' + winningLetterId)
+			.html($.BCS.formatNumber(response, 0));
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
@@ -197,7 +206,7 @@ $(function() {
 		var isExpired = $(this).attr('isExpired');
 		
 		if (isExpired == 'True') {
-			modelUrl.innerHTML = "*** 活動已逾期 *** ";
+			modelUrl.innerHTML = "*** 活動已逾期；若活動需延期，請在回覆到期時間截止前修改到期時間 *** ";
 			modelUrl.style.color = "#FF0000";
 			modelUrl.removeAttribute('href');
 
@@ -215,39 +224,61 @@ $(function() {
 
 	/* Load data */
 	var loadDataFunc = function() {
-		console.info("loadDataFunc start");
-		
 		(pageStatus == 'Active')? activeButton_li.classList.add("ExSelected") : disableButton_li.classList.add("ExSelected");
 		
 		$('.LyMain').block($.BCS.blockWinningLetterListLoading);
 
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/edit/getWinningLetterList?status=' + pageStatus
+			url : bcs.bcsContextPath + '/edit/getWinningLetterList?name=' + keywordInput.value + '&status=' + pageStatus
 		}).done(function(response) {
 			$('.dataTemplate').remove();
-			console.info(response);
 
 			$.each(response, function(i, o) {
 				var dataTemplateBody = templateBody.clone(true);
 
 				var isExpired = func_checkIsExpired(o.endTime);
-
-				// 填寫人數
-				func_countReplyPeople(dataTemplateBody, o.id);
+				console.info("isExpired = " + isExpired);
 
 				// 名稱
 				dataTemplateBody.find('.winningLetterName a')
 								.attr('href', bcs.bcsContextPath + '/admin/winningLetterMainPage?id=' + o.id + '&actionType=Edit' + '&isExpired=' + isExpired)
 								.html(o.name);
+				
+				if (isExpired == 'True') {
+					// 狀態文字:生效 or 取消
+					dataTemplateBody.find('.winningLetterStatus span').html(func_parseStatus(o.status));
+					
+					// 狀態文字:已逾期
+					dataTemplateBody.find('.winningLetterStatus span2').html("(已逾期)");
+					dataTemplateBody.find('.winningLetterStatus span2').css('color','red');
+					
+					// <br2 />
+					dataTemplateBody.find('.winningLetterStatus br2').remove();
 
-				// 狀態:生效
-				dataTemplateBody.find('.winningLetterStatus span').html(func_parseStatus(o.status));
+					// 狀態按鈕:取消
+					dataTemplateBody.find('.btn_status').remove();
+				} else {
+					// 狀態文字:生效 or 取消
+					dataTemplateBody.find('.winningLetterStatus span').html(func_parseStatus(o.status));
+					
+					// 狀態文字:已逾期
+					dataTemplateBody.find('.winningLetterStatus span2').remove();
 
-				// 按鈕:取消
-				dataTemplateBody.find('.btn_status').val(func_parseButtonStatus(pageStatus));
-				dataTemplateBody.find('.btn_status').attr('winningLetterId', o.id);
-				dataTemplateBody.find('.btn_status').click(func_updateStatusButton);
+					// 狀態按鈕:取消
+					dataTemplateBody.find('.btn_status').val(func_parseButtonStatus(pageStatus));
+					dataTemplateBody.find('.btn_status').attr('winningLetterId', o.id);
+					dataTemplateBody.find('.btn_status').click(func_updateStatusButton);
+				}
+				
+				if (o.stats == 'Inactive') {
+					// 狀態按鈕:取消
+					dataTemplateBody.find('.btn_status').remove();
+					
+				}
+
+				// 填寫人數
+				func_countReplyPeople(dataTemplateBody, o.id);
 				
 				// 中獎回函網址
 				dataTemplateBody.find('.btn_css').attr('winningLetterId', o.id);
@@ -272,21 +303,22 @@ $(function() {
 				// 複製
 				dataTemplateBody.find('.btn_copy').attr('winningLetterId', o.id).click(func_copyWinningLetter);
 				
-				//刪除
+				// 刪除
 				dataTemplateBody.find('.btn_detele').attr('winningLetterId', o.id).click(func_deteleWinningLetter);
 
 				$('#tableBody').append(dataTemplateBody);
 
-				$('.LyMain').unblock();
 			});
+			
+			keywordInput.value = keywordInput.value;
+
+			$('.LyMain').unblock();
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
 
 			$('.LyMain').unblock();
 		})
-
-		console.info("loadDataFunc end");
 	};
 
 	loadDataFunc();

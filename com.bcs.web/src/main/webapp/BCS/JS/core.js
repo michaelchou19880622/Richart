@@ -260,7 +260,7 @@ $(function(){
 
 	$.BCS.blockWinningLetterCreating = { "message" : "中獎回函資料建立中...."};
 	$.BCS.blockWinningLetterUpdating = { "message" : "中獎回函資料更新中...."};
-	$.BCS.blockWinningLetterListLoading = { "message" : "中獎回函列表載入中...."};
+	$.BCS.blockWinningLetterListLoading = { "message" : "中獎回函資料讀取中...."};
 	$.BCS.blockWinningLetterStatusUpdating = { "message" : "狀態更新中...."};
 	$.BCS.blockWinningLetterDeleting = { "message" : "中獎回函資料刪除中...."};
 	$.BCS.blockWinningLetterLoading = { "message" : "中獎回函內容載入中...."};

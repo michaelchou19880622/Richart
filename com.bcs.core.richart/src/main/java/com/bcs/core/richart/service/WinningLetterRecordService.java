@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.entity.WinningLetterRecord;
 import com.bcs.core.db.repository.WinningLetterRecordRepository;
 
@@ -19,22 +20,6 @@ public class WinningLetterRecordService {
 	@Autowired
 	private WinningLetterRecordRepository winningLetterRecordRepository;
 
-//	@Transactional(rollbackFor = Exception.class, timeout = 30)
-//	public void createWinningLetter(WinningLetterModel winningLetterModel) throws Exception {
-//		logger.info("WinningLetterService - createWinningLetter");
-//		
-//		long startTime = System.nanoTime();
-//		logger.info("createWinningLetter : START TIME = {}", startTime);
-//		
-//		logger.info("winningLetterModel = {}", winningLetterModel.toString());
-//		
-//		
-//
-//		long endTime = System.nanoTime();
-//		logger.info("createWinningLetter : END TIME = {}", endTime);
-//		logger.info("createWinningLetter : ELAPSED TIME = {}\n", (endTime - startTime) / 1_000_000_000);
-//	}
-	
 	public List<WinningLetterRecord> findAll() {
 		long startTime = System.nanoTime();
 		logger.info("[ findAll ] Start Time : {}", startTime);
@@ -49,7 +34,37 @@ public class WinningLetterRecordService {
 		
 		return lst_WinningLetterRecord;
 	}
-//	
+	
+	public List<WinningLetterRecord> findAllByWinningLetterId(Long winningLetterId) {
+		long startTime = System.nanoTime();
+		logger.info("[ findAllByWinningLetterId ] Start Time : {}", startTime);
+		
+		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterId(winningLetterId);
+
+		long endTime = System.nanoTime();
+		logger.info("[ findAllByWinningLetterId ] End Time : {}", endTime);
+		logger.info("[ findAllByWinningLetterId ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ findAllByWinningLetterId ] lst_WinningLetterRecord = {}", lst_WinningLetterRecord);
+		
+		return lst_WinningLetterRecord;
+	}
+	
+	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterId(String name, Long winningLetterId) {
+		long startTime = System.nanoTime();
+		logger.info("[ findAllByNameContainingAndWinningLetterId ] Start Time : {}", startTime);
+		
+		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterId(name, winningLetterId);
+
+		long endTime = System.nanoTime();
+		logger.info("[ findAllByNameContainingAndWinningLetterId ] End Time : {}", endTime);
+		logger.info("[ findAllByNameContainingAndWinningLetterId ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ findAllByNameContainingAndWinningLetterId ] lst_WinningLetter = {}", lst_WinningLetterRecord);
+		
+		return lst_WinningLetterRecord;
+	}
+	
 //	public WinningLetter findById(Long id) {
 //		long startTime = System.nanoTime();
 //		logger.info("[ findById ] Start Time : {}", startTime);
@@ -64,7 +79,7 @@ public class WinningLetterRecordService {
 //		
 //		return winningLetter;
 //	}
-//	
+
 //	public WinningLetter findByName(String name) {
 //		long startTime = System.nanoTime();
 //		logger.info("[ findByName ] Start Time : {}", startTime);

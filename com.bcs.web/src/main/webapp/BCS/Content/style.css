@@ -483,13 +483,13 @@ div.btn_delete {
 	background: #005AA9;
 }
 
-.btn_name_query {
+.btn_name_query, .btn_export_pdf, .btn_export_excel {
 	color: #fff;
 	padding: 10px 10px;
 	margin-bottom: 10px;
 	box-shadow: none;
 	border: 0;
-	height: 40px;
+	height: 36px;
 	min-width: 60px;
 	background: #005AA9;
 }
@@ -947,6 +947,21 @@ div.btn_delete {
 	color: #555;
 }
 
+.searchInput_winnerName {
+	box-shadow: none;
+	padding: 10px 10px;
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid #ced2db;
+	position: relative;
+	display: inline-block;
+	width: 45%;
+	height: 36px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+}
+
 .mainFrame div  .tagInput {
 	display: inline-block;
 	width: 50%;
@@ -1162,3 +1177,14 @@ form input.error {
 	text-decoration: none;
 	cursor: pointer;
 }
+
+input[type="checkbox"]{
+	transform : scale(1.3);
+    vertical-align: middle;
+}
+
+/* input.customCheckbox { */
+/* /* 	width: 20px; */ */
+/* /* 	height: 20px; */ */
+/* 	transform : scale(1.2); */
+/* } */

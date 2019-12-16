@@ -36,7 +36,8 @@ public class ExportToExcelForWinningLetterService {
 			long startTime = System.nanoTime();
 			logger.info("[ findByNameAndStatus ] Start Time : {}", startTime);
 			
-			List<Object[]> lst_winningLetterSummaryReport = winningLetterReportRepository.findSummaryReportByLikeNameAndStatus("%" + wlName + "%", wlStatus);
+//			List<Object[]> lst_winningLetterSummaryReport = winningLetterReportRepository.findSummaryReportByLikeNameAndStatus("%" + wlName + "%", wlStatus);
+			List<Object[]> lst_winningLetterSummaryReport = winningLetterReportRepository.findSummaryReportByLikeNameAndStatus(wlName, wlStatus);
 			logger.info("lst_winningLetterSummaryReport = {}", lst_winningLetterSummaryReport);
 			
 			long endTime = System.nanoTime();

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:th="http://www.thymeleaf.org"
+	th:with="jsList = ${{'/BCS/JS/pageWinningLetterReplyList.base.js'}}">
+<head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter Reply List Page', ${jsList})">
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageWinningLetterReplyList')"></div>
+
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+			<form>
+				<section>
+					<header class="ContentHead">
+						<h3 class="CHTtl">中獎回函名單</h3>
+					</header>
+					<div class="CHBtnSet">
+                        <div class="CHLeft">
+							<input class="searchInput_winnerName" id="keywordInput" type="text" placeholder="請輸入欲查詢之中獎者名稱" maxlength="50" name="keywordInput">
+	                       	<input class="btn_name_query" type="button" value="查詢"  style="cursor: pointer;">
+						</div>
+                        <div class="CHRight">
+                            <input class="btn_export_pdf" id="btn_export_pdf" type="button" value="PDF檔"  style="cursor: pointer;">&nbsp;
+                            <input class="btn_export_excel" id="btn_export_excel" type="button" value="Excel明細檔"  style="cursor: pointer;">
+                        </div>
+					</div>
+					<div class="mainFrame">
+						<table border="1" id="tableBody">
+							<colgroup>
+								<col width="90"> <!-- 勾選 -->
+								<col width="110"> <!-- 中獎者名稱 -->
+								<col width="80"> <!-- 連絡電話 -->
+								<col width="100"> <!-- 身分證字號 -->
+								<col width="120"> <!-- 檢視(身分證正反面) -->
+								<col width="100"> <!-- 檢視(簽名檔) -->
+								<col width="100"> <!-- 回覆時間 -->
+							</colgroup>
+							<tr>
+								<th>
+									<label>
+										<input class="cbxSelectAll" type="checkbox" id="cbxSelectAll">勾選
+									</label>
+								</th>
+								<th>中獎者名稱</th>
+								<th>連絡電話</th>
+								<th>身分證字號</th>
+								<th>檢視(身分證正反面)</th>
+								<th>檢視(簽名檔)</th>
+								<th>回覆時間</th>
+							</tr>
+							<tr class="dataTemplate">
+								<td>
+									<input class="checkBox2" type="checkbox" name="checkBoxChilds" id="checkBoxChilds">
+								</td>
+								<td class="winnerName"><a></a></td>
+								<td class="winnerContact"><a></a></td>
+								<td class="winnerIdCardNumber"><a></a></td>
+								<td>
+									<input class="btn_css" style="cursor: pointer;" type="button" value="檢視(身分證)">
+								</td>
+								<td>
+									<input class="btn_css" style="cursor: pointer;" type="button" value="檢視(簽名檔)">
+								</td>
+								<td class="recordTime"></td>
+							</tr>
+						</table>
+					</div>
+
+				</section>
+			</form>
+
+			<!-- The Modal -->
+			<div class="modal" id="myModal">
+
+				<!-- Modal content -->
+				<div class="modal-content">
+					<a id="modelUrl" style="text-align: center;" href=""></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<input id="winninLetterTracingUrlPre" type="hidden" th:value="${winninLetterTracingUrlPre}" />
+</body>
+
+</html>

@@ -1,5 +1,6 @@
 package com.bcs.core.db.entity;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -90,8 +91,83 @@ public class WinningLetterRecord extends AbstractBcsEntity {
 		this.recordTime = recordTime;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPhonenumber() {
+		return phonenumber;
+	}
+
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
+	}
+
+	public String getId_card_number() {
+		return id_card_number;
+	}
+
+	public void setId_card_number(String id_card_number) {
+		this.id_card_number = id_card_number;
+	}
+
+	public String getResident_address() {
+		return resident_address;
+	}
+
+	public void setResident_address(String resident_address) {
+		this.resident_address = resident_address;
+	}
+
+	public String getMailing_address() {
+		return mailing_address;
+	}
+
+	public void setMailing_address(String mailing_address) {
+		this.mailing_address = mailing_address;
+	}
+
 	@Override
 	public String toString() {
-		return "WinningLetterRecord [id=" + id + ", winningLetterId=" + winningLetterId + ", uid=" + uid + ", recordTime=" + recordTime + "]";
+		return "WinningLetterRecord [id=" + id + ", winningLetterId=" + winningLetterId + ", uid=" + uid + ", name=" + name + ", phonenumber=" + phonenumber + ", id_card_number=" + id_card_number
+				+ ", resident_address=" + resident_address + ", mailing_address=" + mailing_address + ", recordTime=" + recordTime + "]";
 	}
+
+//	public byte[] getId_card_copy_front() {
+//		return id_card_copy_front;
+//	}
+//
+//	public void setId_card_copy_front(byte[] id_card_copy_front) {
+//		this.id_card_copy_front = id_card_copy_front;
+//	}
+//
+//	public byte[] getId_card_copy_back() {
+//		return id_card_copy_back;
+//	}
+//
+//	public void setId_card_copy_back(byte[] id_card_copy_back) {
+//		this.id_card_copy_back = id_card_copy_back;
+//	}
+//
+//	public byte[] getE_signature() {
+//		return e_signature;
+//	}
+//
+//	public void setE_signature(byte[] e_signature) {
+//		this.e_signature = e_signature;
+//	}
+
+//	@Override
+//	public String toString() {
+//		return "WinningLetterRecord [id=" + id + ", winningLetterId=" + winningLetterId + ", uid=" + uid + ", name=" + name + ", phonenumber=" + phonenumber + ", id_card_number=" + id_card_number
+//				+ ", resident_address=" + resident_address + ", mailing_address=" + mailing_address + ", id_card_copy_front=" + Arrays.toString(id_card_copy_front) + ", id_card_copy_back="
+//				+ Arrays.toString(id_card_copy_back) + ", e_signature=" + Arrays.toString(e_signature) + ", recordTime=" + recordTime + "]";
+//	}
+
+	
+	
 }

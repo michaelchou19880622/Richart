@@ -49,6 +49,21 @@ public class WinningLetterService {
 		return lst_WinningLetter;
 	}
 	
+	public List<WinningLetter> findAllByNameContainingAndStatus(String name, String status) {
+		long startTime = System.nanoTime();
+		logger.info("[ findAllByNameContainingAndStatus ] Start Time : {}", startTime);
+		
+		List<WinningLetter> lst_WinningLetter = winningLetterRepository.findAllByNameContainingAndStatus(name, status);
+
+		long endTime = System.nanoTime();
+		logger.info("[ findAllByNameContainingAndStatus ] End Time : {}", endTime);
+		logger.info("[ findAllByNameContainingAndStatus ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ findAllByNameContainingAndStatus ] lst_WinningLetter = {}", lst_WinningLetter);
+		
+		return lst_WinningLetter;
+	}
+	
 	public WinningLetter findById(Long id) {
 		long startTime = System.nanoTime();
 		logger.info("[ findById ] Start Time : {}", startTime);
