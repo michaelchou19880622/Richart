@@ -29,7 +29,7 @@ $(function() {
 		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		
-		if (keycode == '13') {
+		if (keycode == 13) {
 			/* To prevent page refresh from press 'Enter' key */
 			event.preventDefault();
 			
@@ -107,9 +107,15 @@ $(function() {
 	/* Toggle parent checkboxe to select/unselect all child checkboxs */
 	var func_toggleCheckbox = function(srcCheckBox) {
 		checkboxes = document.getElementsByName('checkBoxChilds');
-		
-		for (let checkbox of checkboxes){
-			checkbox.checked = srcCheckBox.checked;
+
+		// Not support on IE browser
+//		for (let checkbox of checkboxes){
+//			checkbox.checked = srcCheckBox.checked;
+//		}
+
+		// Support on IE browser
+		for (var i = 0, n = checkboxes.length; i < n; i++) {
+			checkboxes[i].checked = srcCheckBox.checked;
 		}
 		
 		if (srcCheckBox.checked) {
@@ -141,12 +147,25 @@ $(function() {
 		
 		var numOfCheckedBox = 0;
 		
-		for (let checkbox of checkboxes){
-			if (checkbox.checked) {
+		// Not support on IE browser
+//		for (let checkbox of checkboxes){
+//			if (checkbox.checked) {
+//				numOfCheckedBox++;
+//			}
+//			
+//			if (!checkbox.checked) {
+//				parentCheckbox.checked = false;
+//				continue;
+//			}
+//		}
+
+		// Support on IE browser
+		for (var i = 0, n = checkboxes.length; i < n; i++) {
+			if (checkboxes[i].checked) {
 				numOfCheckedBox++;
 			}
 			
-			if (!checkbox.checked) {
+			if (!checkboxes[i].checked) {
 				parentCheckbox.checked = false;
 				continue;
 			}
@@ -169,7 +188,7 @@ $(function() {
 		btn_export_pdf.style.visibility = 'hidden';
 	}
 	
-	/* 彈出視窗Model */
+	/* 彈出視窗 Image Model */
 	var model = document.getElementById("myModel");
 
 	/* Model Image 1 */
@@ -187,7 +206,10 @@ $(function() {
 
 	/* When the user click 'ESC', close the model */
 	$(document).keyup(function(e) {
-		if (e.key === "Escape") {
+		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
+		var keycode = (e.keyCode ? e.keyCode : e.which);
+		
+		if (keycode == 27) {
 			if (model.style.display === "block") {
 				model.style.display = "none";
 			}
@@ -202,6 +224,40 @@ $(function() {
 		model.style.display = "block";
 	};
 	
+	
+	/* 彈出視窗 E-Signature Model */
+	var modelSignature = document.getElementById("mySignModel");
+
+	/* Model Image */
+	var signatureImage = document.getElementById("signature_image");
+
+	/* When the user clicks anywhere outside of the model, close the model */
+	window.onclick = function(event) {
+		if (event.target == modelSignature) {
+			modelSignature.style.display = "none";
+		}
+	}
+
+	/* When the user click 'ESC', close the model */
+	$(document).keyup(function(e) {
+		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
+		var keycode = (e.keyCode ? e.keyCode : e.which);
+		
+		if (keycode == 27) {
+			if (modelSignature.style.display === "block") {
+				modelSignature.style.display = "none";
+			}
+		}
+	});
+	
+	/* Defined the popup model for URL */
+	var func_showSignatureModel = function() {
+		signatureImage.src = $(this).attr('img1');
+
+		modelSignature.style.display = "block";
+	};
+	
+	
 	/* Defined the popup model for URL */
 	var func_encryptedString = function(srcString) {
 		return srcString.replace(/^(.{4})(?:\d+)(.{4})$/,"$1******$2");
@@ -214,7 +270,7 @@ $(function() {
 
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordInput.value + '&winningLetterId=' + pageWinningLetterId
+			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordInput.value + '&winningLetterId=' + pageWinningLetterId)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
 
@@ -237,14 +293,13 @@ $(function() {
 				dataTemplateBody.find('.winnerIdCardNumber').html(func_encryptedString(o.id_card_number));
 				
 				// 檢視身分證正反面
-
 				dataTemplateBody.find('.btn_check_id_card').attr('img1', o.id_card_copy_front);
 				dataTemplateBody.find('.btn_check_id_card').attr('img2', o.id_card_copy_back);
 				dataTemplateBody.find('.btn_check_id_card').click(func_showIdCardModel);
-//				dataTemplateBody.find('.btn_check_id_card').click(func_showIdCardModel(o.id_card_copy_front, o.id_card_copy_back));
-//				dataTemplateBody.find('.btn_check_id_card').click = function() {
-//					func_showIdCardModel(o.id_card_copy_front, o.id_card_copy_back);
-//			    };
+				
+				// 檢視簽名檔
+				dataTemplateBody.find('.btn_check_e_signature').attr('img1', o.e_signature);
+				dataTemplateBody.find('.btn_check_e_signature').click(func_showSignatureModel);
 				
 				// 回覆時間
 				dataTemplateBody.find('.recordTime').html(func_parseDateTime(o.recordTime));

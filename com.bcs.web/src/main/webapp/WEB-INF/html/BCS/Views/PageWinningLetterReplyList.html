@@ -48,8 +48,8 @@
 								<th>中獎者名稱</th>
 								<th>連絡電話</th>
 								<th>身分證字號</th>
-								<th>檢視(身分證正反面)</th>
-								<th>檢視(簽名檔)</th>
+								<th>身分證正反面</th>
+								<th>簽名檔</th>
 								<th>回覆時間</th>
 							</tr>
 							<tr class="dataTemplate">
@@ -60,10 +60,10 @@
 								<td class="winnerContact"><a></a></td>
 								<td class="winnerIdCardNumber"><a></a></td>
 								<td>
-									<input class="btn_check_id_card" style="cursor: pointer;" type="button" value="檢視(身分證)">
+									<input class="btn_check_id_card" style="cursor: pointer;" type="button" value="檢視">
 								</td>
 								<td>
-									<input class="btn_check_e_signature" style="cursor: pointer;" type="button" value="檢視(簽名檔)">
+									<input class="btn_check_e_signature" style="cursor: pointer;" type="button" value="檢視">
 								</td>
 								<td class="recordTime"></td>
 							</tr>
@@ -73,15 +73,23 @@
 				</section>
 			</form>
 
-			<!-- The Model -->
+			<!-- The Image Model -->
 			<div class="model" id="myModel">
-
 				<!-- Model content -->
 				<div class="image-model-content">
 					<img id="model_image1"/>&nbsp;
 					<img id="model_image2"/>
 				</div>
 			</div>
+			
+			<!-- The E-Signature Model -->
+			<div class="model" id="mySignModel">
+				<!-- Model content -->
+				<div class="signature-model-content">
+					<img id="signature_image"/>
+				</div>
+			</div>
+			
 		</div>
 	</div>
 </body>
