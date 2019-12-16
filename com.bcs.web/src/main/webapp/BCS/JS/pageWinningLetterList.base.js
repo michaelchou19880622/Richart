@@ -148,15 +148,17 @@ $(function() {
 	}
 	
 	/* 計算填寫人數 */
-	var func_countReplyPeople = function(dataTemplateBody, winningLetterId) {
+	var func_countReplyPeople = function(dataTemplateBody, winningLetterId, winningLetterName) {
 
 		$.ajax({
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/countWinningLetterReplyPeople?winningLetterId=' + winningLetterId
 		}).done(function(response) {
+			replyCount = $.BCS.formatNumber(response, 0);
+			
 			dataTemplateBody.find('.replyPeople a')
-			.attr('href', bcs.bcsContextPath + '/admin/winningLetterReplyListPage?wlId=' + winningLetterId)
-			.html($.BCS.formatNumber(response, 0));
+			.attr('href', bcs.bcsContextPath + '/admin/winningLetterReplyListPage?wlId=' + winningLetterId + '&wlName=' + winningLetterName + '&wlReplyCount=' + replyCount)
+			.html(replyCount);
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
@@ -238,7 +240,6 @@ $(function() {
 				var dataTemplateBody = templateBody.clone(true);
 
 				var isExpired = func_checkIsExpired(o.endTime);
-				console.info("isExpired = " + isExpired);
 
 				// 名稱
 				dataTemplateBody.find('.winningLetterName a')
@@ -278,7 +279,7 @@ $(function() {
 				}
 
 				// 填寫人數
-				func_countReplyPeople(dataTemplateBody, o.id);
+				func_countReplyPeople(dataTemplateBody, o.id, o.name);
 				
 				// 中獎回函網址
 				dataTemplateBody.find('.btn_css').attr('winningLetterId', o.id);

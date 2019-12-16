@@ -7,8 +7,15 @@ $(function() {
 		return false;
 	});
 	
+	var isInitial = true;
+	
 	var pageWinningLetterId = $.urlParam("wlId");
-	console.info("pageWinningLetterId = " + pageWinningLetterId);
+	
+	var pageWinningLetterName = $.urlParam("wlName");
+	
+	var pageWinningLetterReplyCount = $.urlParam("wlReplyCount");
+
+	title.innerText += ' ( 中獎回函名稱 = ' + decodeURI(pageWinningLetterName) + ',  填寫人數 = ' + pageWinningLetterReplyCount + ' )';
 	
 	var templateBody = {};
 	templateBody = $('.dataTemplate').clone(true);
@@ -44,7 +51,8 @@ $(function() {
 	
 	/* < Button > PDF檔 */
 	$('.btn_export').click(function() {
-		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value +'&status=' + pageStatus);
+//		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value +'&status=' + pageStatus);
+		alert("功能開發中..");
 	});
 	
 	/* < Button > Excel檔 */
@@ -98,34 +106,65 @@ $(function() {
 
 	/* Toggle parent checkboxe to select/unselect all child checkboxs */
 	var func_toggleCheckbox = function(srcCheckBox) {
-		console.info("srcCheckBox.checked = " + srcCheckBox.checked);
-		
 		checkboxes = document.getElementsByName('checkBoxChilds');
 		
 		for (let checkbox of checkboxes){
 			checkbox.checked = srcCheckBox.checked;
 		}
 		
-		btn_export_pdf.style.visibility = (srcCheckBox.checked) ? 'hidden' : 'visible';
+		if (srcCheckBox.checked) {
+			btn_export_pdf.style.visibility = (checkboxes.length == 1) ? 'visible' : "hidden";
+		} else if (checkboxes.length == 1){
+			btn_export_pdf.style.visibility = 'hidden';
+		}
 	}
 
 	/* Toggle child checkboxes to select/unselect the parent checkbox */
 	var func_toggleChildCheckbox = function() {
+		if (isInitial) {
+			return;
+		}
+		
 		parentCheckbox = document.getElementById("cbxSelectAll");
 		
 		checkboxes = document.getElementsByName('checkBoxChilds');
 		
+		if (checkboxes.length == 1) {
+			checkbox = checkboxes[0];
+			
+			parentCheckbox.checked = checkbox.checked;
+			
+			btn_export_pdf.style.visibility = (checkbox.checked) ? 'visible' : 'hidden';
+			
+			return
+		}
+		
+		var numOfCheckedBox = 0;
+		
 		for (let checkbox of checkboxes){
-			if (checkbox.checked == false) {
+			if (checkbox.checked) {
+				numOfCheckedBox++;
+			}
+			
+			if (!checkbox.checked) {
 				parentCheckbox.checked = false;
-				
-				btn_export_pdf.style.visibility = 'visible';
-				
-				return;
+				continue;
 			}
 		}
+		
+		if (numOfCheckedBox == 0){
+			btn_export_pdf.style.visibility = 'hidden';
+			return;
+		}
+		
+		if (numOfCheckedBox == checkboxes.length) {
+			parentCheckbox.checked = true;
+		}
 
-		parentCheckbox.checked = true;
+		if (numOfCheckedBox == 1) {
+			btn_export_pdf.style.visibility = 'visible';
+			return;
+		}
 
 		btn_export_pdf.style.visibility = 'hidden';
 	}
@@ -190,9 +229,9 @@ $(function() {
 		}).done(function(response) {
 			$('.dataTemplate').remove();
 
+			isInitial = true;
+
 			$.each(response, function(i, o) {
-				console.info(response);
-				
 				var dataTemplateBody = templateBody.clone(true);
 
 				dataTemplateBody.find('.checkBox2').click(func_toggleChildCheckbox);
@@ -214,6 +253,8 @@ $(function() {
 				$('#tableBody').append(dataTemplateBody);
 
 			});
+			
+			isInitial = false;
 			
 			keywordInput.value = keywordInput.value;
 

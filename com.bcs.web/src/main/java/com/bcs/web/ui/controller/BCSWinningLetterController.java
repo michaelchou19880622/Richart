@@ -489,4 +489,37 @@ public class BCSWinningLetterController extends BCSBaseController {
 			}
 		}
 	}
+	
+	/** Export winner reply list to excel **/
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportToExcelForWinnerReplyList")
+	@ResponseBody
+	public void exportToExcelForWinnerReplyList(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam String winningLetterId)
+			throws IOException {
+
+		logger.info("winningLetterId = {}", winningLetterId);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+		
+		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+		logger.info("filePath = {}", filePath);
+		
+		Date date = new Date();
+		
+		String fileName = "WinningLetterList_" + sdf.format(date) + ".xlsx";
+		logger.info("fileName = {}", fileName);
+		
+		try {
+			File folder = new File(filePath);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			
+//			exportToExcelForWinningLetterService.exportToExcelForWinningListByLikeNameAndStatus(filePath, fileName, name, status);
+
+		} catch (Exception e) {
+			logger.error("Exception : ", e);
+		}
+
+		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
+	}
 }
