@@ -505,7 +505,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 		
 		Date date = new Date();
 		
-		String fileName = "WinningLetterList_" + sdf.format(date) + ".xlsx";
+		String fileName = "WinnerReplyDetailList_" + sdf.format(date) + ".xlsx";
 		logger.info("fileName = {}", fileName);
 		
 		try {
@@ -514,7 +514,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 				folder.mkdirs();
 			}
 			
-//			exportToExcelForWinningLetterService.exportToExcelForWinningListByLikeNameAndStatus(filePath, fileName, name, status);
+			exportToExcelForWinningLetterService.exportToExcelForWinnerReplyListByWinningLetterId(filePath, fileName, winningLetterId);
 
 		} catch (Exception e) {
 			logger.error("Exception : ", e);

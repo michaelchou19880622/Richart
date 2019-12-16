@@ -50,14 +50,14 @@ $(function() {
 	});
 	
 	/* < Button > PDF檔 */
-	$('.btn_export').click(function() {
+	$('.btn_export_pdf').click(function() {
 //		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value +'&status=' + pageStatus);
 		alert("功能開發中..");
 	});
 	
 	/* < Button > Excel檔 */
-	$('.btn_export').click(function() {
-		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value +'&status=' + pageStatus);
+	$('.btn_export_excel').click(function() {
+		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinnerReplyList?winningLetterId=' + pageWinningLetterId);
 	});
 
 	/* 更新狀態按鈕 */
@@ -170,47 +170,36 @@ $(function() {
 	}
 	
 	/* 彈出視窗Model */
-	var modal = document.getElementById("myModal");
+	var model = document.getElementById("myModel");
 
-	/* URL */
-	var modelUrl = document.getElementById("modelUrl");
+	/* Model Image 1 */
+	var modelImage1 = document.getElementById("model_image1");
 
-	/* When the user clicks anywhere outside of the modal, close the model */
+	/* Model Image 2 */
+	var modelImage2 = document.getElementById("model_image2");
+
+	/* When the user clicks anywhere outside of the model, close the model */
 	window.onclick = function(event) {
-		if (event.target == modal) {
-			modal.style.display = "none";
+		if (event.target == model) {
+			model.style.display = "none";
 		}
 	}
 
 	/* When the user click 'ESC', close the model */
 	$(document).keyup(function(e) {
 		if (e.key === "Escape") {
-			if (modal.style.display === "block") {
-				modal.style.display = "none";
+			if (model.style.display === "block") {
+				model.style.display = "none";
 			}
 		}
 	});
 	
 	/* Defined the popup model for URL */
-	var func_showUrlModel = function() {
+	var func_showIdCardModel = function() {
+		modelImage1.src = $(this).attr('img1');
+		modelImage2.src = $(this).attr('img2');
 
-		var isExpired = $(this).attr('isExpired');
-		
-		if (isExpired == 'True') {
-			modelUrl.innerHTML = "*** 活動已逾期；若活動需延期，請在回覆到期時間截止前修改到期時間 *** ";
-			modelUrl.style.color = "#FF0000";
-			modelUrl.removeAttribute('href');
-
-			modal.style.display = "block";
-		} else {
-			var winningLetterId = $(this).attr('winningLetterId');
-
-			modelUrl.innerHTML = winningLetterTracingUrlPre + winningLetterId;
-			modelUrl.style.color = "#0000FF";
-			modelUrl.setAttribute('href', winningLetterTracingUrlPre + winningLetterId);
-
-			modal.style.display = "block";
-		}
+		model.style.display = "block";
 	};
 	
 	/* Defined the popup model for URL */
@@ -246,6 +235,16 @@ $(function() {
 
 				// 身分證字號
 				dataTemplateBody.find('.winnerIdCardNumber').html(func_encryptedString(o.id_card_number));
+				
+				// 檢視身分證正反面
+
+				dataTemplateBody.find('.btn_check_id_card').attr('img1', o.id_card_copy_front);
+				dataTemplateBody.find('.btn_check_id_card').attr('img2', o.id_card_copy_back);
+				dataTemplateBody.find('.btn_check_id_card').click(func_showIdCardModel);
+//				dataTemplateBody.find('.btn_check_id_card').click(func_showIdCardModel(o.id_card_copy_front, o.id_card_copy_back));
+//				dataTemplateBody.find('.btn_check_id_card').click = function() {
+//					func_showIdCardModel(o.id_card_copy_front, o.id_card_copy_back);
+//			    };
 				
 				// 回覆時間
 				dataTemplateBody.find('.recordTime').html(func_parseDateTime(o.recordTime));

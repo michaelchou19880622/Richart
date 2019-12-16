@@ -1,6 +1,5 @@
 package com.bcs.core.db.entity;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -46,14 +45,24 @@ public class WinningLetterRecord extends AbstractBcsEntity {
 	@Column(name = "MAILING_ADDRESS", columnDefinition = "nvarchar(200)")
 	private String mailing_address;
 
-	@Column(name = "ID_CARD_COPY_FRONT", columnDefinition = "varbinary(max)")
-	private byte[] id_card_copy_front;
+//	@Column(name = "ID_CARD_COPY_FRONT", columnDefinition = "varbinary(max)")
+//	private byte[] id_card_copy_front;
+//	
+//	@Column(name = "ID_CARD_COPY_BACK", columnDefinition = "varbinary(max)")
+//	private byte[] id_card_copy_back;
+//	
+//	@Column(name = "E_SIGNATURE", columnDefinition = "varbinary(max)")
+//	private byte[] e_signature;
 	
-	@Column(name = "ID_CARD_COPY_BACK", columnDefinition = "varbinary(max)")
-	private byte[] id_card_copy_back;
+	@Column(name = "ID_CARD_COPY_FRONT", columnDefinition = "nvarchar(2083)")
+	private String id_card_copy_front;
 	
-	@Column(name = "E_SIGNATURE", columnDefinition = "varbinary(max)")
-	private byte[] e_signature;
+	@Column(name = "ID_CARD_COPY_BACK", columnDefinition = "nvarchar(2083)")
+	private String id_card_copy_back;
+	
+	@Column(name = "E_SIGNATURE", columnDefinition = "nvarchar(2083)")
+	private String e_signature;
+	
 
 	@JsonDeserialize(using = CustomDateDeserializer.class)
 	@Column(name = "RECORD_TIME")
@@ -131,43 +140,35 @@ public class WinningLetterRecord extends AbstractBcsEntity {
 		this.mailing_address = mailing_address;
 	}
 
+	public String getId_card_copy_front() {
+		return id_card_copy_front;
+	}
+
+	public void setId_card_copy_front(String id_card_copy_front) {
+		this.id_card_copy_front = id_card_copy_front;
+	}
+
+	public String getId_card_copy_back() {
+		return id_card_copy_back;
+	}
+
+	public void setId_card_copy_back(String id_card_copy_back) {
+		this.id_card_copy_back = id_card_copy_back;
+	}
+
+	public String getE_signature() {
+		return e_signature;
+	}
+
+	public void setE_signature(String e_signature) {
+		this.e_signature = e_signature;
+	}
+
 	@Override
 	public String toString() {
 		return "WinningLetterRecord [id=" + id + ", winningLetterId=" + winningLetterId + ", uid=" + uid + ", name=" + name + ", phonenumber=" + phonenumber + ", id_card_number=" + id_card_number
-				+ ", resident_address=" + resident_address + ", mailing_address=" + mailing_address + ", recordTime=" + recordTime + "]";
+				+ ", resident_address=" + resident_address + ", mailing_address=" + mailing_address + ", id_card_copy_front=" + id_card_copy_front + ", id_card_copy_back=" + id_card_copy_back
+				+ ", e_signature=" + e_signature + ", recordTime=" + recordTime + "]";
 	}
-
-//	public byte[] getId_card_copy_front() {
-//		return id_card_copy_front;
-//	}
-//
-//	public void setId_card_copy_front(byte[] id_card_copy_front) {
-//		this.id_card_copy_front = id_card_copy_front;
-//	}
-//
-//	public byte[] getId_card_copy_back() {
-//		return id_card_copy_back;
-//	}
-//
-//	public void setId_card_copy_back(byte[] id_card_copy_back) {
-//		this.id_card_copy_back = id_card_copy_back;
-//	}
-//
-//	public byte[] getE_signature() {
-//		return e_signature;
-//	}
-//
-//	public void setE_signature(byte[] e_signature) {
-//		this.e_signature = e_signature;
-//	}
-
-//	@Override
-//	public String toString() {
-//		return "WinningLetterRecord [id=" + id + ", winningLetterId=" + winningLetterId + ", uid=" + uid + ", name=" + name + ", phonenumber=" + phonenumber + ", id_card_number=" + id_card_number
-//				+ ", resident_address=" + resident_address + ", mailing_address=" + mailing_address + ", id_card_copy_front=" + Arrays.toString(id_card_copy_front) + ", id_card_copy_back="
-//				+ Arrays.toString(id_card_copy_back) + ", e_signature=" + Arrays.toString(e_signature) + ", recordTime=" + recordTime + "]";
-//	}
-
-	
 	
 }

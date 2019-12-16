@@ -181,23 +181,23 @@ $(function() {
 	var winningLetterTracingUrlPre = $('#winninLetterTracingUrlPre').val();
 
 	/* 彈出視窗Model */
-	var modal = document.getElementById("myModal");
+	var model = document.getElementById("myModel");
 
 	/* URL */
 	var modelUrl = document.getElementById("modelUrl");
 
-	/* When the user clicks anywhere outside of the modal, close the model */
+	/* When the user clicks anywhere outside of the model, close the model */
 	window.onclick = function(event) {
-		if (event.target == modal) {
-			modal.style.display = "none";
+		if (event.target == model) {
+			model.style.display = "none";
 		}
 	}
 
 	/* When the user click 'ESC', close the model */
 	$(document).keyup(function(e) {
 		if (e.key === "Escape") {
-			if (modal.style.display === "block") {
-				modal.style.display = "none";
+			if (model.style.display === "block") {
+				model.style.display = "none";
 			}
 		}
 	});
@@ -212,7 +212,7 @@ $(function() {
 			modelUrl.style.color = "#FF0000";
 			modelUrl.removeAttribute('href');
 
-			modal.style.display = "block";
+			model.style.display = "block";
 		} else {
 			var winningLetterId = $(this).attr('winningLetterId');
 
@@ -220,7 +220,7 @@ $(function() {
 			modelUrl.style.color = "#0000FF";
 			modelUrl.setAttribute('href', winningLetterTracingUrlPre + winningLetterId);
 
-			modal.style.display = "block";
+			model.style.display = "block";
 		}
 	};
 
