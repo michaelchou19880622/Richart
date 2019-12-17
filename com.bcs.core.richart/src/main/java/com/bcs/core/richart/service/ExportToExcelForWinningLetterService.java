@@ -2,9 +2,11 @@ package com.bcs.core.richart.service;
 
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -46,8 +48,14 @@ public class ExportToExcelForWinningLetterService {
 			long startTime = System.nanoTime();
 			logger.info("[ findByNameAndStatus ] Start Time : {}", startTime);
 			
-//			List<Object[]> lst_winningLetterSummaryReport = winningLetterReportRepository.findSummaryReportByLikeNameAndStatus("%" + wlName + "%", wlStatus);
-			List<Object[]> lst_winningLetterSummaryReport = winningLetterReportRepository.findSummaryReportByLikeNameAndStatus(wlName, wlStatus);
+			List<Object[]> lst_winningLetterSummaryReport = new ArrayList<Object[]>();
+			
+			if (StringUtils.isBlank(wlName)) {
+				lst_winningLetterSummaryReport = winningLetterReportRepository.findSummaryReportByStatus(wlStatus);
+			} else {
+				lst_winningLetterSummaryReport = winningLetterReportRepository.findSummaryReportByLikeNameAndStatus(wlName, wlStatus);
+			}
+			
 			logger.info("lst_winningLetterSummaryReport = {}", lst_winningLetterSummaryReport);
 			
 			long endTime = System.nanoTime();
