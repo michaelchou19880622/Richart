@@ -489,7 +489,7 @@ $(function(){
 			$(this).contents().find('.bang_size_31-50 li').css({'width': '23px', 'height': '23px'});
 			
 			/* 集點卡中使用期限的區塊 */
-			$(this).contents().find('.bang_date').css({'font-size': '10px', 'padding-top': '8px'});
+//			$(this).contents().find('.bang_date').css({'font-size': '10px', 'padding-top': '8px'});
 			
 			/* 集點卡列表區塊 */
 			$(this).contents().find('.wrapper').css('border-bottom', '12px solid #9C9E9C');

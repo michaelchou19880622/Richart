@@ -168,7 +168,7 @@ $(function(){
 			$.each(couponList, function(i, couponData){
 				var couponBody = templateBody.clone(true);
 				var couponTitle="";
-				couponTitle+= "可獲得點數："+ couponData.requirePoint;
+				couponTitle+= "兌換獎項點數："+ couponData.requirePoint;
 				couponTitle+= "<br>" + couponData.couponTitle;
 				couponTitle+= "<br>" + COUPON_STATUS[couponData.status].status;
 				couponBody.find('.coupon_title').html(couponTitle);
