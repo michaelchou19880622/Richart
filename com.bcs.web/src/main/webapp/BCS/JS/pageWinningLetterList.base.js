@@ -14,6 +14,8 @@ $(function() {
 	$('.dataTemplate').remove();
 
 	var keywordInput = document.getElementById('keywordInput');
+	
+	var keywordValue = "";
 
 	var activeButton_li = document.getElementById('ActiveBtn_li');
 	var disableButton_li = document.getElementById('DisableBtn_li');
@@ -35,12 +37,14 @@ $(function() {
 	/* < Button > 查詢 */
 	$('.btn_name_query').click(function() {
 
+		keywordValue = keywordInput.value;
+		
 		loadDataFunc();
 	});
 
 	/* < Button > 匯出EXCEL */
 	$('.btn_export').click(function() {
-		window.location.replace(encodeURI(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value + '&status=' + pageStatus));
+		window.location.replace(encodeURI(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordValue + '&status=' + pageStatus));
 	});
 
 	/* < Button > 狀態 = '生效' */
@@ -233,7 +237,7 @@ $(function() {
 
 		$.ajax({
 			type : "GET",
-			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterList?name=' + keywordInput.value + '&status=' + pageStatus)
+			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterList?name=' + keywordValue + '&status=' + pageStatus)
 		}).done(
 				function(response) {
 					$('.dataTemplate').remove();
@@ -312,7 +316,7 @@ $(function() {
 
 					});
 
-					keywordInput.value = keywordInput.value;
+					keywordInput.value = keywordValue;
 
 					$('.LyMain').unblock();
 				}).fail(function(response) {

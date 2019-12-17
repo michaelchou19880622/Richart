@@ -22,7 +22,7 @@ public interface WinningLetterReportRepository extends EntityRepository<WinningL
 			+ "bwlt.CREATE_USER, "
 			+ "bwlt.MODIFY_TIME, "
 			+ "bwlt.MODIFY_USER "
-			+ "FROM BCS_WINNING_LETTER_TEST bwlt WHERE bwlt.NAME LIKE '%:name%' AND bwlt.STATUS = :status", nativeQuery = true)
+			+ "FROM BCS_WINNING_LETTER_TEST bwlt WHERE bwlt.NAME LIKE %:name% AND bwlt.STATUS = :status", nativeQuery = true)
 	List<Object[]> findSummaryReportByLikeNameAndStatus(@Param("name") String name, @Param("status") String status);
 	
 	@Transactional(readOnly = true, timeout = 30)
