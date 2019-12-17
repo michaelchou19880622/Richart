@@ -2,6 +2,16 @@
  * 
  */
 $(function() {
+	/* Get URL Referrer */
+	var urlRef = $('#urlReferrer').val();
+	console.info('urlRef = ', urlRef);
+
+	if (urlRef == null || urlRef.length == 0) {
+		alert("對不起，您不能直接更改URL來訪問網頁，你的操作非法。");
+		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterMainPage');
+		return
+	}
+	
 	var winningLetterId = $.urlParam("id");
 	console.info('winningLetterId = ', winningLetterId);
 
@@ -13,7 +23,13 @@ $(function() {
 
 	var btn_create_save = document.getElementById('btn_create_save');
 	btn_create_save.value = ((actionType == 'Edit') ? '儲存' : '建立');
-	btn_create_save.style.visibility = ((isExpired == 'True') ? 'hidden' : 'visible');
+	
+	var desc_btn = document.getElementById('desc_btn');
+	
+	if (isExpired == 'True') {
+		btn_create_save.remove();
+		desc_btn.remove();
+	}
 
 	var btn_cancel = document.getElementById('btn_cancel');
 	btn_cancel.style.visibility = ((actionType == 'Create') ? 'hidden' : 'visible');
@@ -201,6 +217,18 @@ $(function() {
 		}
 	}
 
+	/* 檢查活動時間是否到期 */
+	var func_checkIsExpired = function(datetime) {
+
+		var currentDateTime = new Date();
+
+		if (currentDateTime > datetime) {
+			return 'True';
+		} else {
+			return 'False';
+		}
+	}
+
 	var getWinningLetterData = function() {
 
 		if (!validator.form()) {
@@ -332,7 +360,7 @@ $(function() {
 			func_setElementDateTimeDisabled('winningLetterStartTime', false);
 			func_setElementDateTimeDisabled('winningLetterEndTime', false);
 		}
-
+		
 		if (winningLetterId) {
 
 			$('.LyMain').block($.BCS.blockWinningLetterLoading);
@@ -361,6 +389,7 @@ $(function() {
 
 		console.info('loadDataFunc --- end');
 	};
-
+	
+	
 	loadDataFunc();
 });

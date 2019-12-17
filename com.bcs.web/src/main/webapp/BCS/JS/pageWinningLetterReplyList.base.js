@@ -7,6 +7,29 @@ $(function() {
 		return false;
 	});
 	
+	/* < TextInput > 查詢 */	
+	$('.searchInput_winnerName').keypress(function(event) {
+		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		
+		if (keycode == 13) {
+			/* To prevent page refresh from press 'Enter' key */
+			event.preventDefault();
+			
+			loadDataFunc();
+		}
+	});
+	
+	/* Get URL Referrer */
+	var urlRef = $('#urlReferrer').val();
+	console.info('urlRef = ', urlRef);
+
+	if (urlRef == null || urlRef.length == 0) {
+		alert("對不起，您不能直接更改URL來訪問網頁，你的操作非法。");
+		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage?status=Active');
+		return
+	}
+	
 	var isInitial = true;
 	
 	var pageWinningLetterId = $.urlParam("wlId");
@@ -24,18 +47,6 @@ $(function() {
 	var keywordInput = document.getElementById('keywordInput');
 	
 	var btn_export_pdf = document.getElementById('btn_export_pdf');
-	
-	$('.searchInput_winnerName').keypress(function(event) {
-		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
-		var keycode = (event.keyCode ? event.keyCode : event.which);
-		
-		if (keycode == 13) {
-			/* To prevent page refresh from press 'Enter' key */
-			event.preventDefault();
-			
-			loadDataFunc();
-		}
-	});
 	
 	/* < CheckBox > Select All */
 	$('.cbxSelectAll').click(function() {

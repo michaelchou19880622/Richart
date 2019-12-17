@@ -1,7 +1,5 @@
 package com.bcs.web.ui.controller;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -61,8 +59,13 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 	/** WinningLetter Main Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterMainPage")
-	public String winningLetterMainPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String winningLetterMainPage(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		logger.info("winningLetterMainPage");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		return BcsPageEnum.WinningLetterMainPage.toString();
 	}
@@ -71,7 +74,11 @@ public class BCSWinningLetterController extends BCSBaseController {
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterListPage")
 	public String winningLetterListPage(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		logger.info("winningLetterListPage");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
 
+		model.addAttribute("urlReferrer", urlReferrer);
 		model.addAttribute("winninLetterTracingUrlPre", UriHelper.getWinningLetterTracingUrl());
 
 		return BcsPageEnum.WinningLetterListPage.toString();
@@ -79,24 +86,39 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 	/** WinningLetter Reply List Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterReplyListPage")
-	public String winningLetterReplyListPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String winningLetterReplyListPage(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		logger.info("winningLetterReplyListPage");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		return BcsPageEnum.WinningLetterReplyListPage.toString();
 	}
 
 	/** WinningLetter Signature Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterSignaturePage")
-	public String winningLetterSignaturePage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String winningLetterSignaturePage(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		logger.info("winningLetterSignaturePage");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		return BcsPageEnum.WinningLetterSignaturePage.toString();
 	}
 
 	/** WinningLetter Reply Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/wl/winningLetterReplyPage")
-	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		logger.info("winningLetterReplyPage");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		return BcsPageEnum.WinningLetterReplyPage.toString();
 	}
@@ -104,8 +126,13 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Get winning letter list data **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterList")
 	@ResponseBody
-	public ResponseEntity<?> getWinningLetterList(HttpServletRequest request, HttpServletResponse response, @RequestParam String name, @RequestParam String status) throws Exception {
+	public ResponseEntity<?> getWinningLetterList(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String name, @RequestParam String status) throws Exception {
 		logger.info("getWinningLetterList");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("name = {}", name);
 		logger.info("status = {}", status);
@@ -142,8 +169,13 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Get winning letter data **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> getWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId) throws IOException {
+	public ResponseEntity<?> getWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId) throws IOException {
 		logger.info("getWinningLetter");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("winningLetterId = {}", winningLetterId);
 
@@ -172,8 +204,13 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Count reply people **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/countWinningLetterReplyPeople")
 	@ResponseBody
-	public ResponseEntity<?> countWinningLetterReplyPeople(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId) throws IOException {
+	public ResponseEntity<?> countWinningLetterReplyPeople(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId) throws IOException {
 		logger.info("countWinningLetterReplyPeople");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("winningLetterId = {}", winningLetterId);
 
@@ -202,10 +239,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Create WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/api/createWinningLetter", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> createWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestBody String winningLetterContent, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> createWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestBody String winningLetterContent, @CurrentUser CustomUser customUser)
 			throws Exception {
-
 		logger.info("createWinningLetter");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("RequestBody : winningLetterContent = {}", winningLetterContent);
 
@@ -245,10 +286,15 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Edit WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/api/editWinningLetter", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> editWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestBody String winningLetterContent, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> editWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestBody String winningLetterContent, @CurrentUser CustomUser customUser)
 			throws Exception {
 
 		logger.info("editWinningLetter");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("RequestBody : winningLetterContent = {}", winningLetterContent);
 
@@ -288,9 +334,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Delete WinningLetter **/
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> deleteWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> deleteWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
 			throws IOException {
 		logger.info("deleteWinningLetter");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("winningLetterId = {}", winningLetterId);
 
@@ -333,9 +384,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Active WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/activeWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> activeWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> activeWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
 			throws IOException {
 		logger.info("activeWinningLetter");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("winningLetterId = {}", winningLetterId);
 
@@ -378,9 +434,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Inactive WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/inactiveWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> inactiveWinningLetter(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> inactiveWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
 			throws IOException {
 		logger.info("inactiveWinningLetter");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("winningLetterId = {}", winningLetterId);
 
@@ -423,8 +484,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Export winning letter list to excel **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportToExcelForWinningLetter")
 	@ResponseBody
-	public void exportToExcelForWinningLetter(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam String name, @RequestParam String status)
+	public void exportToExcelForWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser, @RequestParam String name, @RequestParam String status)
 			throws IOException {
+		logger.info("exportToExcelForWinningLetter");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("name = {}", name);
 		logger.info("status = {}", status);
@@ -457,9 +524,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Get winning letter reply list data by winning letter id **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterReplyList")
 	@ResponseBody
-	public ResponseEntity<?> getWinningLetterReplyList(HttpServletRequest request, HttpServletResponse response, @RequestParam String winningLetterId, @RequestParam String winnerName) throws Exception {
+	public ResponseEntity<?> getWinningLetterReplyList(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @RequestParam String winnerName) throws Exception {
 		logger.info("getWinningLetterReplyList");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
 
+		model.addAttribute("urlReferrer", urlReferrer);
+		
 		logger.info("winningLetterId = {}", winningLetterId);
 		logger.info("winnerName = {}", winnerName);
 		
@@ -491,8 +563,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Export winner reply list to excel **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportToExcelForWinnerReplyList")
 	@ResponseBody
-	public void exportToExcelForWinnerReplyList(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam String winningLetterId)
+	public void exportToExcelForWinnerReplyList(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser, @RequestParam String winningLetterId)
 			throws IOException {
+		logger.info("exportToExcelForWinnerReplyList");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("winningLetterId = {}", winningLetterId);
 
