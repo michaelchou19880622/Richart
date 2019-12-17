@@ -463,8 +463,6 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("winningLetterId = {}", winningLetterId);
 		logger.info("winnerName = {}", winnerName);
 		
-		// 檢查name是否包含'%' 如果有責替換成其他的字符
-
 		try {
 			List<WinningLetterRecord> list_WinningLetterRecords = null;
 			
