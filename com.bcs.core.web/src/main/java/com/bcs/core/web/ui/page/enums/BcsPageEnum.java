@@ -160,7 +160,7 @@ public enum BcsPageEnum {
     WinningLetterMainPage("/BCS/Views/PageWinningLetterMain"),
     WinningLetterListPage("/BCS/Views/PageWinningLetterList"),
     WinningLetterReplyListPage("/BCS/Views/PageWinningLetterReplyList"),
-    WinningLetterReplyPage("/BCS/Views/PageWinningLetterReply"),
+    WinningLetterReplyPage("/BCS/Views/PageWinningLetterReply_ClickUpload"),
     WinningLetterSignaturePage("/BCS/Views/PageWinningLetterSignature")
 	;
 

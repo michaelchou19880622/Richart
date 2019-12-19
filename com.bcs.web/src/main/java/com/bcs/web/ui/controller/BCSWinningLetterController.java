@@ -137,8 +137,6 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("name = {}", name);
 		logger.info("status = {}", status);
 		
-		// 檢查name是否包含'%' 如果有責替換成其他的字符
-
 		try {
 			List<WinningLetter> list_WinningLetter = new ArrayList<>();
 			

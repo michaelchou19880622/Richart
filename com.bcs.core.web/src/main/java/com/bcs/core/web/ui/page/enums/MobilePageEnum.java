@@ -76,6 +76,9 @@ public enum MobilePageEnum {
 	WinPrizePage("/Mobile/Game/WinPrizePage", "已領獎頁面"),
 	PrizeAcceptedPage("/Mobile/Game/PrizeAcceptedPage", "已領獎頁面"),
 //	AcceptPrizePage_Invoice("/Mobile/Game/AcceptPrizePage_Invoice", "領獎頁面"),
+	
+	// 中獎回函
+    WinningLetterReplyPage("/Mobile/WinningLetterReply/MobilePageWinningLetterReply", "中獎回函用戶資料填寫頁面")
 	;
 
     private final String str;

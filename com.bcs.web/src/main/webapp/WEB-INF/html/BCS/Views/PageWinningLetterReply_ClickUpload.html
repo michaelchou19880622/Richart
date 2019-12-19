@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:th="http://www.thymeleaf.org" th:with="jsList = ${{'/BCS/JS/pageWinningLetterReply_ClickUpload.base.js'}}">
+<head th:replace="/BCS/Views/Common/HeadForWinningLetter :: head ('Winning Letter Reply Page', ${jsList})">
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageWinningLetterReply_ClickUpload')"></div>
+
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+			<div class="container">
+				<header class="ContentHead">
+					<h3 class="CHTtl">中獎回函資料填寫(測試)</h3>
+				</header>
+
+				<div class="row">
+					<div class="columnUploadImage">
+						<div class="wrapperUploadImage">
+							<div class="imgZoneBox">
+								<div id="imgZone">
+									<img id="myImg">
+								</div>
+							</div>
+							<div class="CHBtnSet">
+								<div class="CHLeft">
+									<input type="file" name="filepond" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

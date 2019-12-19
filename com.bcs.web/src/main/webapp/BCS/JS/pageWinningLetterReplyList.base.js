@@ -2,6 +2,10 @@
  * 
  */
 $(function() {
+	var keywordInput = document.getElementById('keywordInput');
+	
+	var keywordValue = "";
+	
 	/* To prevent form refresh from press 'Enter' key */
 	$("form").submit(function() {
 		return false;
@@ -15,6 +19,8 @@ $(function() {
 		if (keycode == 13) {
 			/* To prevent page refresh from press 'Enter' key */
 			event.preventDefault();
+			
+			keywordValue = keywordInput.value;
 			
 			loadDataFunc();
 		}
@@ -57,12 +63,14 @@ $(function() {
 	/* < Button > 查詢 */
 	$('.btn_name_query').click(function() {
 		
+		keywordValue = keywordInput.value;
+		
 		loadDataFunc();
 	});
 	
 	/* < Button > PDF檔 */
 	$('.btn_export_pdf').click(function() {
-//		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordInput.value +'&status=' + pageStatus);
+//		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordValue +'&status=' + pageStatus);
 		alert("功能開發中..");
 	});
 	
@@ -199,6 +207,17 @@ $(function() {
 		btn_export_pdf.style.visibility = 'hidden';
 	}
 	
+//	function terms_change(checkbox){
+//	    //If it is checked.
+//	    if(checkbox.checked){
+//	        alert('Checkbox has been ticked!');
+//	    }
+//	    //If it has been unchecked.
+//	    else{
+//	        alert('Checkbox has been unticked!');
+//	    }
+//	}
+	
 	/* 彈出視窗 Image Model */
 	var model = document.getElementById("myModel");
 
@@ -281,7 +300,7 @@ $(function() {
 
 		$.ajax({
 			type : "GET",
-			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordInput.value + '&winningLetterId=' + pageWinningLetterId)
+			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
 
@@ -321,7 +340,7 @@ $(function() {
 			
 			isInitial = false;
 			
-			keywordInput.value = keywordInput.value;
+			keywordInput.value = keywordValue;
 
 			$('.LyMain').unblock();
 		}).fail(function(response) {
