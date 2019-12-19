@@ -53,7 +53,6 @@ import com.bcs.core.web.m.service.MobilePageService;
 import com.bcs.core.web.security.CurrentUser;
 import com.bcs.core.web.security.CustomUser;
 import com.bcs.core.web.ui.page.enums.MobilePageEnum;
-import com.bcs.web.m.service.MobileCouponService;
 import com.bcs.web.m.service.MobileRewardCardService;
 import com.bcs.web.ui.model.ContentRewardCardModel;
 import com.bcs.web.ui.service.ActionUserCouponUIService;
@@ -169,34 +168,10 @@ public class MobileRewardCardViewController {
 		}
 	}
 
-//	/**
-//	 * 取得集點卡
-//	 * 
-//	 * @param referenceId
-//	 * @param model
-//	 * @param request
-//	 * @param response
-//	 * @return
-//	 */
-//	@RequestMapping(method = RequestMethod.GET, value = "/userRewardCardSelectStorePage")
-//	public String userCouponSelectStorePage(@RequestParam(value = "referenceId", required = false) String referenceId,
-//			Model model, HttpServletRequest request, HttpServletResponse response) {
-//		logger.info("userCouponSelectStorePage referenceId : " + referenceId);
-//		try {
-//			return this.rewardCardContentPage(referenceId, model, request, response,
-//					MobilePageEnum.UserCouponSelectStorePage, true);
-//		} catch (Exception e) {
-//			logger.error(ErrorRecord.recordError(e));
-//			return mobileUserController.indexPage(request, response, model);
-//		}
-//	}
-
 	private String rewardCardContentPreviewPage(String referenceId, Model model, HttpServletRequest request,
 			HttpServletResponse response, MobilePageEnum successPage, boolean fromCache) {
-
 		ContentRewardCardModel contentRewardCardModel = null;
 		ContentRewardCard contentRewardCard = new ContentRewardCard();
-
 		/* 撈集點卡資料。如果 formCache 為 true，便從 cache 找，否則從 Database 撈 */
 		if (fromCache) {
 			try {
@@ -421,12 +396,10 @@ public class MobileRewardCardViewController {
 		}
 
 		// 計算已經獲得的點數
-//		ActionUserRewardCard actionUserRewardCard = actionUserRewardCardUIService.findByMidAndRewardCardIdAndActionType(sessionMID, rewardCardId);
-		int havePoint = actionUserRewardCardPointDetailService.sumActionUserRewardCardGetPoint(actionUserRewardCardForGet.getId());
+        int havePoint = actionUserRewardCardPointDetailService.sumActionUserRewardCardGetPoint(actionUserRewardCardForGet.getId());
 
 		// ChangeRewardCardDescription
 		actionUserRewardCardUIService.changeRewardCardDescription(contentRewardCard);
-
 		model.addAttribute("contentRewardCard", contentRewardCard);
 		model.addAttribute("actionUserRewardCardId", actionUserRewardCardForGet.getId());
 		model.addAttribute("rewardCardStartUsingTime", rewardCardStartUsingTime);
@@ -745,7 +718,7 @@ public class MobileRewardCardViewController {
 			HttpServletResponse response) throws Exception {
 		try {
 			String sessionMID = (String) request.getSession().getAttribute("MID");
-			logger.info("createActionUserCouponForGetApi:" + actionUserCoupon);
+			logger.info("createActionUserCouponForGetApi, mid=" + sessionMID + " obj=" + actionUserCoupon);
 			Boolean canGetCoupon = true;
 			String couponId = actionUserCoupon.getCouponId();
 			
@@ -763,16 +736,18 @@ public class MobileRewardCardViewController {
 				Boolean isSameCouponGroupIdIsGet = actionUserCouponUIService.findSameGroupIdActionUserCouponIsGet(sessionMID,couponGroupId);
 				//是否有領過同點數優惠券
 				if(isSameCouponGroupIdIsGet)
-					canGetCoupon=  false;
+					canGetCoupon = false;
 			}else{
-				canGetCoupon=  false;
+				canGetCoupon = false;
 			}
 			
 			if(canGetCoupon){
 				Date startUsingDate = contentCoupon.getCouponStartUsingTime();
 				Date endUsingDate = contentCoupon.getCouponEndUsingTime();
-				actionUserCouponService.createActionUserCoupon(sessionMID, couponId, startUsingDate, endUsingDate);
-				return new ResponseEntity<>(couponId, HttpStatus.OK);
+				if (actionUserCouponService.createActionUserCoupon(sessionMID, couponId, startUsingDate, endUsingDate))
+				    return new ResponseEntity<>(couponId, HttpStatus.OK);
+				else
+					throw new BcsNoticeException("優惠券已被領取完畢");
 			}else{
 				throw new BcsNoticeException("不能領取優惠券");
 			}
@@ -784,8 +759,6 @@ public class MobileRewardCardViewController {
 				return new ResponseEntity<>("不能領取優惠券", HttpStatus.NOT_IMPLEMENTED); 
 			}
 		}
-		
-		
 	}
 
 	/**
@@ -797,10 +770,8 @@ public class MobileRewardCardViewController {
 	private void getRewardCardListFromDB(String sessionMID, Map<String, ContentRewardCard> contentRewardCards) {
 
 		// Get BCS Reward Card REWARDCARD_STATUS_ACTIVE
-		List<ContentRewardCard> bcsRewardCards = contentRewardCardService
-				.findByStatus(ContentRewardCard.REWARD_CARD_STATUS_ACTIVE);
+		List<ContentRewardCard> bcsRewardCards = contentRewardCardService.findByStatus(ContentRewardCard.REWARD_CARD_STATUS_ACTIVE);
 		if (bcsRewardCards != null && bcsRewardCards.size() > 0) {
-
 			for (ContentRewardCard contentRewardCard : bcsRewardCards) {
 				boolean okRewardCard = true;
 				boolean isGotRewardCard = actionUserRewardCardUIService.isGetRewardCard(sessionMID, contentRewardCard.getRewardCardId());

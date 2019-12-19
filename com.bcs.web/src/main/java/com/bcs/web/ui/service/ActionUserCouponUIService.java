@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bcs.core.db.connection.BcsHikariConfig;
 import com.bcs.core.db.entity.ActionUserCoupon;
 import com.bcs.core.db.entity.ContentCoupon;
 import com.bcs.core.db.entity.ContentCouponCode;

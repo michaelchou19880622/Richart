@@ -75,8 +75,16 @@ public class ContentLinkService {
   		return contentLinkRepository.findAllLinkUrlByFlag(flag);
   	}
   	
+  	public List<Object[]> findAllLinkUrlWithTracingIdByFlag(String flag) {
+        return contentLinkRepository.findAllLinkUrlWithTracingIdByFlag(flag);
+    }
+  	
   	public List<Object[]> findAllLinkUrlByLikeFlag(String flag){
   		return contentLinkRepository.findAllLinkUrlByLikeFlag(flag);
+  	}
+  	
+  	public List<Object[]> findAllLinkUrlWithTracingIdByLikeTag(String flag){
+  		return contentLinkRepository.findAllLinkUrlWithTracingIdByLikeTag(flag);
   	}
   	
   	public List<Object[]> findAllLinkUrlByLikeTitle(String title){
@@ -86,12 +94,21 @@ public class ContentLinkService {
   	public List<Object[]> findAllLinkUrlByLikeTime(String startTime , String endTime){
   		return contentLinkRepository.findAllLinkUrlByLikeTime(startTime, endTime);
   	}
+  	
+  	public List<Object[]> findAllLinkUrlWithTracingIdByLikeTime(String startTime , String endTime){
+  		return contentLinkRepository.findAllLinkUrlWithTracingIdByLikeTime(startTime, endTime);
+  	}
+  	
 	public List<Object[]> findAllLinkUrlForallUID(String linkUrl){
 		return contentLinkRepository.findAllLinkUrlForallUID(linkUrl);
 	}
 
   	public List<ContentLink> findAll(){
 		return contentLinkRepository.findAll();
+    }
+  	
+  	public List<Object[]> findAllWithTracingId() {
+        return contentLinkRepository.findAllWithTracingId();
     }
 
   	public Page<ContentLink> findAll(Pageable pageable){

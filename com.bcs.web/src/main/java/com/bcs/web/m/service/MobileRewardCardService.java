@@ -21,11 +21,8 @@ import com.bcs.core.db.entity.ActionUserCoupon;
 import com.bcs.core.db.entity.ActionUserRewardCard;
 import com.bcs.core.db.entity.ActionUserRewardCardPointDetail;
 import com.bcs.core.db.entity.ContentCoupon;
-import com.bcs.core.db.entity.ContentCouponCode;
 import com.bcs.core.db.entity.ContentRewardCard;
 import com.bcs.core.db.service.ActionUserRewardCardPointDetailService;
-import com.bcs.core.db.service.ActionUserRewardCardService;
-import com.bcs.core.db.service.ContentCouponCodeService;
 import com.bcs.core.db.service.ContentCouponService;
 import com.bcs.core.db.service.ContentRewardCardService;
 import com.bcs.core.enums.CONFIG_STR;
@@ -50,8 +47,6 @@ public class MobileRewardCardService {
 	private ActionUserRewardCardUIService actionUserRewardCardUIService;
 	@Autowired
 	private ActionUserRewardCardPointDetailService actionUserRewardCardPointDetailService;
-	@Autowired
-	private ContentCouponCodeService contentCouponCodeService;
 	/**
 	 * 新增使用(USE)集點卡 取得點數記錄
 	 * 
@@ -63,11 +58,9 @@ public class MobileRewardCardService {
 	 * @throws BcsNoticeException 
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public String createActionUserRewardCardForUse( String sessionMID, String rewardCardId,	int getPointAmount) throws BcsNoticeException {
-		logger.info("MobileRewardCardService createActionUserRewardCardForUse");
-		
+	public String createActionUserRewardCardForUse(String sessionMID, String rewardCardId, int getPointAmount) throws BcsNoticeException {
+		logger.info("Request to get points, mid=" + sessionMID + " rewardCardId=" + rewardCardId + " getPointAmount=" + getPointAmount);
 		Date now = new Date();
-		
 		// 驗證 mid 已綁訂
 		if(StringUtils.isBlank(sessionMID)) {
 			throw new BcsNoticeException("使用者錯誤");
@@ -102,20 +95,18 @@ public class MobileRewardCardService {
 			}
 		}
 		else{
-			inUsingTime = actionUserRewardCardUIService.isInUsingTime(contentRewardCard);			}
-			
-		String successStr = "";
+			inUsingTime = actionUserRewardCardUIService.isInUsingTime(contentRewardCard);
+		}
 		
+		String successStr = "";
 		if (!inUsingTime) {
 			//throw new BcsNoticeException("集點卡不在使用期間");
 		    successStr = "集點卡不在使用期間";
 		}
-			
 		//防止不當使用設定
 		if(now.compareTo(getRecord.getNextGetPointTime()) < 0){
 			return "此集點卡，在" + contentRewardCard.getLimitGetTime() + "小時內無法領取";
 		}
-		
         Long limitGetTime = contentRewardCard.getLimitGetTime();
         boolean isLimitNumber = false;
         if(limitGetTime < 24L && limitGetTime != 0L) {
@@ -134,28 +125,14 @@ public class MobileRewardCardService {
                 isLimitNumber = true;
             }  
         }
-        
         if(isLimitNumber) {
             return "此集點卡在" + contentRewardCard.getLimitGetTime() + "小時內, 只能集" + contentRewardCard.getLimitGetNumber() + "點";
         }
-		
 		//新增取點紀錄
 		actionUserRewardCardUIService.createFromUIForUse(sessionMID, getRecord, getPointAmount);
 		//修改下次可取點時間
 		actionUserRewardCardUIService.modifyGetPointTime(sessionMID, getRecord, contentRewardCard);
-			
-		/*// 計算已經獲得的點數
-		int havePoint = this.getHavePoint(sessionMID, rewardCardId);
-			
-		if(havePoint >= contentRewardCard.getRequirePoint()){
-			//收集完畢，將集點卡改為已使用狀態
-			//actionUserRewardCardUIService.modifyRewardCardActionType(sessionMID, rewardCardId, getRecord);
-			
-			ContentCoupon contentCoupon = contentCouponService.findOne(contentRewardCard.getCouponId());
-			// 新增領用(GET)優惠劵記錄
-			actionUserCouponUIService.createFromUIForGet(sessionMID, contentCoupon.getCouponId(), contentCoupon.getCouponStartUsingTime(), contentCoupon.getCouponEndUsingTime());
-		}*/
-		
+		logger.info("Got points successfully, mid=" + sessionMID + " rewardCardId=" + rewardCardId + " getPointAmount=" + getPointAmount);
 		return successStr;
 	}
 	
@@ -177,8 +154,8 @@ public class MobileRewardCardService {
 				String status = "";
 				
 				if(!ContentCoupon.EVENT_REFERENCE_REWARD_CARD.equals(contentCoupon.getEventReference()) || !contentCoupon.getEventReferenceId().equals(rewardCardId)){  //不屬於此 rewardCardId
-						okCoupon = false;
-						continue;
+					okCoupon = false;
+					continue;
 				}
 				
 				// 驗證領用
@@ -220,60 +197,56 @@ public class MobileRewardCardService {
 					continue;
 				}
 				
-				
-				
 				//集點卡優惠券狀態
 				if(okCoupon){
-					 if(havePoint <contentCoupon.getRequirePoint()){
-						 	okGetCoupon = false;
-						 	status=COUPON_STATUS.STATUS_CANNOT_GET.getStatusCode();
+					if(havePoint < contentCoupon.getRequirePoint()){
+					 	okGetCoupon = false;
+					 	status = COUPON_STATUS.STATUS_CANNOT_GET.getStatusCode();
 					}
 
 					//用couponId去尋找是否領取過
 					ActionUserCoupon gottenActionUserCoupon = actionUserCouponUIService.findByMidAndCouponIdAndActionType(sessionMID, contentCoupon.getCouponId(), ActionUserCoupon.ACTION_TYPE_GET);
 					
 					if(gottenActionUserCoupon!=null){
-							//若領取過取得此已領取過的coupon的couponGroupId
-							logger.info("contentCoupon.getCouponGroupId():"+contentCoupon.getCouponGroupId());
-							couponGroupIds.add(contentCoupon.getCouponGroupId());
-							logger.info("couponGroupIds:"+couponGroupIds);
-							okGetCoupon = false;
+						//若領取過取得此已領取過的coupon的couponGroupId
+						logger.info("contentCoupon.getCouponGroupId():"+contentCoupon.getCouponGroupId());
+						couponGroupIds.add(contentCoupon.getCouponGroupId());
+						logger.info("couponGroupIds:"+couponGroupIds);
+						okGetCoupon = false;
 							
-							//重複檢測 contentCoupons 同點數的優惠券,必須更改狀態
-							for(Entry<String, ContentCoupon> entry : contentCoupons.entrySet()){
-								ContentCoupon comparedContentCoupon = entry.getValue();
-								if(comparedContentCoupon.getEventReference().equals(contentCoupon.getEventReference()) && 
-								   comparedContentCoupon.getEventReferenceId().equals(contentCoupon.getEventReferenceId()) &&
-								   comparedContentCoupon.getCouponGroupId().equals(contentCoupon.getCouponGroupId())){
-									entry.getValue().setStatus(COUPON_STATUS.STATUS_GOTTEN_SAME_POINT.getStatusCode());
-								}
+						//重複檢測 contentCoupons 同點數的優惠券,必須更改狀態
+						for(Entry<String, ContentCoupon> entry : contentCoupons.entrySet()){
+							ContentCoupon comparedContentCoupon = entry.getValue();
+							if(comparedContentCoupon.getEventReference().equals(contentCoupon.getEventReference()) && 
+							   comparedContentCoupon.getEventReferenceId().equals(contentCoupon.getEventReferenceId()) &&
+							   comparedContentCoupon.getCouponGroupId().equals(contentCoupon.getCouponGroupId())){
+								entry.getValue().setStatus(COUPON_STATUS.STATUS_GOTTEN_SAME_POINT.getStatusCode());
 							}
+						}
 							
-							ActionUserCoupon usedActionUserCoupon = actionUserCouponUIService.findByMidAndCouponIdAndActionType(sessionMID, contentCoupon.getCouponId(),ActionUserCoupon.ACTION_TYPE_USE);
+						ActionUserCoupon usedActionUserCoupon = actionUserCouponUIService.findByMidAndCouponIdAndActionType(sessionMID, contentCoupon.getCouponId(),ActionUserCoupon.ACTION_TYPE_USE);
 							
-							if(usedActionUserCoupon!=null)//有領取優惠券但還未但判斷是否填寫資料
-								status= COUPON_STATUS.STATUS_USED.getStatusCode();
-							else if(contentCoupon.getIsFillIn().equals(ContentCoupon.IS_COUPON_FILLIN_TRUE)){
-								if(gottenActionUserCoupon.getWinnerListId()!=null)
-									status= COUPON_STATUS.STATUS_GOTTEN.getStatusCode();
-								else
-									status= COUPON_STATUS.STATUS_CAN_GET.getStatusCode();								
-							}
+						if(usedActionUserCoupon!=null)//有領取優惠券但還未但判斷是否填寫資料
+							status= COUPON_STATUS.STATUS_USED.getStatusCode();
+						else if(contentCoupon.getIsFillIn().equals(ContentCoupon.IS_COUPON_FILLIN_TRUE)){
+							if(gottenActionUserCoupon.getWinnerListId()!=null)
+								status= COUPON_STATUS.STATUS_GOTTEN.getStatusCode();
 							else
-								status= COUPON_STATUS.STATUS_GOTTEN.getStatusCode();	
-
+								status= COUPON_STATUS.STATUS_CAN_GET.getStatusCode();								
+						}
+						else
+							status= COUPON_STATUS.STATUS_GOTTEN.getStatusCode();	
 					}else{
 						//判斷目前優惠券是否已領取完畢，有就不能顯示
 						if(contentCoupon.getCouponGetLimitNumber()!=null && contentCoupon.getCouponGetLimitNumber()<= contentCoupon.getCouponGetNumber()){
 							okGetCoupon = false;
-							status=COUPON_STATUS.STATUS_CANNOT_GET_AMOUNT_ZERO.getStatusCode();
+							status = COUPON_STATUS.STATUS_CANNOT_GET_AMOUNT_ZERO.getStatusCode();
 						}else{
 							for(String couponGroupId :couponGroupIds){
-								logger.info("couponGroupId:"+couponGroupId);
-								logger.info("actionUserCoupon.getCouponGroupId():"+contentCoupon.getCouponGroupId());
+								logger.info("couponGroupId=" + couponGroupId + " actionUserCouponGroupId=" + contentCoupon.getCouponGroupId());
 								if(couponGroupId.equals(contentCoupon.getCouponGroupId())){//同群組的優惠券不得再領取x
 									okGetCoupon = false;
-									status=COUPON_STATUS.STATUS_GOTTEN_SAME_POINT.getStatusCode();
+									status = COUPON_STATUS.STATUS_GOTTEN_SAME_POINT.getStatusCode();
 								}
 							}
 						}						
@@ -281,32 +254,23 @@ public class MobileRewardCardService {
 				}
 				
 				if(okCoupon){
-					
 					// 設定 Coupon Image Id to Resource URL
 					String imageListId = contentCoupon.getCouponListImageId();
 					contentCoupon.setCouponListImageId(actionUserCouponUIService.settingCouponImage(imageListId));
-					
 					// 設定 Coupon Image Id to Resource URL
 					String imageId = contentCoupon.getCouponImageId();
 					contentCoupon.setCouponImageId(actionUserCouponUIService.settingCouponImage(imageId));
-
 					// User Status Show
 					String couponUserStatus="";
 					if(okGetCoupon)
 						couponUserStatus = COUPON_STATUS.STATUS_CAN_GET.getStatusCode();
 					else
-						 couponUserStatus = status;
-					logger.info("before contentCoupon.getStatus():"+contentCoupon.getStatus());
-					logger.info("contentCoupon.getCouponId():"+contentCoupon.getCouponId());
-					logger.info("couponUserStatus:"+couponUserStatus);
+					    couponUserStatus = status;
 					contentCoupon.setStatus(couponUserStatus);
-					logger.info("after contentCoupon.getStatus():"+contentCoupon.getStatus());
-					
 					if(contentCoupons.get(contentCoupon.getCouponId()) == null){
 						logger.info(contentCoupon);
 						contentCoupons.put(contentCoupon.getCouponId(), contentCoupon);
 					}
-					
 				}
 			}
 		}

@@ -17,11 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -149,39 +144,60 @@ public class BCSLinkPageController extends BCSBaseController {
 			@CurrentUser CustomUser customUser) throws IOException {
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
-		String page = request.getParameter("page");
+		String pageStr = request.getParameter("page");
 		if (startTime != null) {
 			startTime += " 00:00:00";
 		}
 		if (endTime != null) {
 			endTime += " 23:59:59";
 		}
-		logger.info("getLinkUrlfromTime, startTime=" + startTime + " endTime=" + endTime + " page=" + page);
+		logger.info("getLinkUrlfromTime, startTime=" + startTime + " endTime=" + endTime + " page=" + pageStr);
 		Calendar yesterdayCalendar = Calendar.getInstance();
 		yesterdayCalendar.add(Calendar.DATE, -1);
 		Calendar nowCalendar = Calendar.getInstance();
 		Calendar nextCalendar = Calendar.getInstance();
 		nextCalendar.add(Calendar.DATE, 1);
+		Map<String, Object> tracingResult = new HashMap<String, Object>();
 		try{ 
 			linkResult.clear();
-			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME
-			result = contentLinkService.findAllLinkUrlByLikeTime(startTime, endTime);
-		
-			for(Object[] link : result){
-				String linkUrl = castToString(link[0]);
-				String linkTitle = castToString(link[1]);
-				String linkId = castToString(link[2]);
-				String linkTime = castToString(link[3]);
-				String linkflag = castToString(link[4]);
-				LinkClickReportModel model = linkResult.get(linkUrl);
-				model = new LinkClickReportModel();
-				model.setLinkUrl(linkUrl);
-				model.setLinkId(linkId);
-				model.setLinkTitle(linkTitle);
-				model.setLinkTime(linkTime);
-				model.setLinkFlag(linkflag);
-				linkResult.put(linkId, model);
-			}
+			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME, LINK_TAG, TRACING_ID
+			int page = 0;
+            if (StringUtils.isNotBlank(pageStr)) {
+                page = Integer.parseInt(pageStr);
+            }
+			result = contentLinkService.findAllLinkUrlWithTracingIdByLikeTime(startTime, endTime);
+			String tracingUrlPre = UriHelper.getTracingUrlPre();
+            tracingResult.put("TracingUrlPre", tracingUrlPre);
+            int rowNum = 0, rowStart = page * 20, rowEnd = rowStart + 20;
+            for (Object[] link : result) {
+                if (rowNum >= rowStart && rowNum < rowEnd) {
+                    String linkUrl = castToString(link[0]);
+                    String linkTitle = castToString(link[1]);
+                    String linkId = castToString(link[2]);
+                    String linkTime = castToString(link[3]);
+                    String linkFlag = castToString(link[4]);
+                    String tracingLink = castToString(link[5]);
+                    LinkClickReportModel model = linkResult.get(tracingLink);
+                    if (model == null) {
+                        model = new LinkClickReportModel();
+                        model.setLinkUrl(linkUrl);
+                        model.setLinkId(linkId);
+                        model.setLinkTitle(linkTitle);
+                        model.setLinkTime(linkTime);
+                        model.setLinkFlag(linkFlag);
+                        model.setTracingLink(tracingLink);
+                        linkResult.put(tracingLink, model);
+                    } else {
+                        if (StringUtils.isBlank(model.getLinkTitle())) {
+                            model.setLinkTitle(linkTitle);
+                        }
+                        if (StringUtils.isBlank(model.getLinkUrl())) {
+                            model.setLinkUrl(linkUrl);
+                        }
+                    }
+                }
+                rowNum++;
+            }
 			
 			// Get ContentFlag, setLinkClickCount
 			for(LinkClickReportModel model : linkResult.values()){				
@@ -191,7 +207,9 @@ public class BCSLinkPageController extends BCSBaseController {
 				// setLinkClickCount
 				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
 			}
-			return new ResponseEntity<>(linkResult, HttpStatus.OK);
+			tracingResult.put("ContentLinkTracingList", linkResult);
+            logger.info("getLinkUrlfromTime, tracingUrlPre=" + tracingUrlPre + " sizeOfList=" + linkResult.size());
+            return new ResponseEntity<>(tracingResult, HttpStatus.OK);
 		}
 		catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
@@ -208,6 +226,7 @@ public class BCSLinkPageController extends BCSBaseController {
 	/**
 	 * 取得連結列表
 	 */
+	
 	@ControllerLog(description="取得連結列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/edit/getLinkUrlReportList" ,  consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -220,83 +239,78 @@ public class BCSLinkPageController extends BCSBaseController {
 		if (linkPageModel.getFlag() != null) {
 		    queryFlag = new String(linkPageModel.getFlag().getBytes("utf-8"),"utf-8");
 		}
-		logger.info("getLinkUrlReportList, queryFlag" + linkPageModel.getFlag() + " queryFlagUTF8=" + queryFlag + " page=" + linkPageModel.getPage());
-		Calendar yesterdayCalendar = Calendar.getInstance();
-		yesterdayCalendar.add(Calendar.DATE, -1);
-		Calendar nowCalendar = Calendar.getInstance();
-		Calendar nextCalendar = Calendar.getInstance();
-		nextCalendar.add(Calendar.DATE, 1);
-		try{
-			linkResult.clear();
-			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME
-			if(StringUtils.isNotBlank(linkPageModel.getPage()) && StringUtils.isBlank(queryFlag)){
-				result = new ArrayList<Object[]>();
-				int size = 20;
-				int page = Integer.parseInt(linkPageModel.getPage());
-				Sort.Order order = new Sort.Order(Direction.DESC, "modifyTime");
-				Sort sort = new Sort(order);
-				Pageable pageable = new PageRequest(page, size, sort);
-				Page<ContentLink> linkList = contentLinkService.findAll(pageable);
-				for(ContentLink link : linkList.getContent()){
-					if(StringUtils.isBlank(link.getLinkUrl())){
-						continue;
-					}
-					Object[] obj = new Object[5];
-					obj[0] = link.getLinkUrl();
-					obj[1] = link.getLinkTitle();
-					obj[2] = link.getLinkId();
-					obj[3] = link.getModifyTime();
-					obj[4] = link.getLinkTag();
-					result.add(obj);
-				}
-			}else{
-				if(StringUtils.isNotBlank(queryFlag)){
-					result = contentLinkService.findAllLinkUrlByLikeFlag("%" + queryFlag + "%");
-				}
-				else{
-					result = contentLinkService.getAllContentLinkUrl();
-				}
-			}
-			
-			for(Object[] link : result){
-				String linkUrl = castToString(link[0]);
-				String linkTitle = castToString(link[1]);
-				String linkId = castToString(link[2]);
-				String linkTime = castToString(link[3]);
-				String linkflag = castToString(link[4]);
-				
-				LinkClickReportModel model = linkResult.get(linkUrl);
-				model = new LinkClickReportModel();
-				model.setLinkUrl(linkUrl);
-				model.setLinkId(linkId);
-				model.setLinkTitle(linkTitle);
-				model.setLinkTime(linkTime);
-				model.setLinkFlag(linkflag);
-				linkResult.put(linkId, model);
-			}
-			
-			// Get ContentFlag, setLinkClickCount
-			for(LinkClickReportModel model : linkResult.values()){
-				
-				List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
-				model.addFlags(flags);
-				Thread.sleep(10);
-				// setLinkClickCount
-				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
-			}
-
-			return new ResponseEntity<>(linkResult, HttpStatus.OK);
-		}
-		catch(Exception e){
-			logger.info(ErrorRecord.recordError(e));
-			if(e instanceof BcsNoticeException){
+		logger.info("getLinkUrlReportList, queryFlag=" + linkPageModel.getFlag() + " queryFlagUTF8=" + queryFlag + " page=" + linkPageModel.getPage());
+        Calendar yesterdayCalendar = Calendar.getInstance();
+        yesterdayCalendar.add(Calendar.DATE, -1);
+        Calendar nowCalendar = Calendar.getInstance();
+        Calendar nextCalendar = Calendar.getInstance();
+        nextCalendar.add(Calendar.DATE, 1);
+        Map<String, Object> tracingResult = new HashMap<String, Object>();
+        try {
+        	linkResult.clear();
+            List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME, LINK_TAG, TRACING_ID
+            int page = 0;
+            if (StringUtils.isNotBlank(linkPageModel.getPage())) {
+                page = Integer.parseInt(linkPageModel.getPage());
+            }
+            if (StringUtils.isNotBlank(queryFlag)) {
+                result = contentLinkService.findAllLinkUrlWithTracingIdByLikeTag("%" + queryFlag + "%");
+            } else {
+                result = contentLinkService.findAllWithTracingId();
+            }
+            String tracingUrlPre = UriHelper.getTracingUrlPre();
+            tracingResult.put("TracingUrlPre", tracingUrlPre);
+            int rowNum = 0, rowStart = page * 20, rowEnd = rowStart + 20;
+            for (Object[] link : result) {
+                if (rowNum >= rowStart && rowNum < rowEnd) {
+                    String linkUrl = castToString(link[0]);
+                    String linkTitle = castToString(link[1]);
+                    String linkId = castToString(link[2]);
+                    String linkTime = castToString(link[3]);
+                    String linkFlag = castToString(link[4]);
+                    String tracingLink = castToString(link[5]);
+                    LinkClickReportModel model = linkResult.get(tracingLink);
+                    if (model == null) {
+                        model = new LinkClickReportModel();
+                        model.setLinkUrl(linkUrl);
+                        model.setLinkId(linkId);
+                        model.setLinkTitle(linkTitle);
+                        model.setLinkTime(linkTime);
+                        model.setLinkFlag(linkFlag);
+                        model.setTracingLink(tracingLink);
+                        linkResult.put(tracingLink, model);
+                    } else {
+                        if (StringUtils.isBlank(model.getLinkTitle())) {
+                            model.setLinkTitle(linkTitle);
+                        }
+                        if (StringUtils.isBlank(model.getLinkUrl())) {
+                            model.setLinkUrl(linkUrl);
+                        }
+                    }
+                }
+                rowNum++;
+            }
+            // Get ContentFlag, setLinkClickCount
+            for (LinkClickReportModel model : linkResult.values()) {
+                List<String> flags = contentFlagService.findFlagValueByReferenceIdAndContentTypeOrderByFlagValueAsc(model.getLinkId(), ContentFlag.CONTENT_TYPE_LINK);
+                model.addFlags(flags);
+                Thread.sleep(10);
+                // setLinkClickCount
+                this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
+            }
+            tracingResult.put("ContentLinkTracingList", linkResult);
+            logger.info("getLinkUrlReportList, tracingUrlPre=" + tracingUrlPre + " sizeOfList=" + linkResult.size());
+            return new ResponseEntity<>(tracingResult, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error(ErrorRecord.recordError(e));
+            if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
 			}
 			else{
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}
-	}
+        }
+    }
 	
 	private String castToString(Object obj){
 		if(obj != null){
@@ -309,7 +323,7 @@ public class BCSLinkPageController extends BCSBaseController {
 		String systemStartDate = CoreConfigReader.getString(CONFIG_STR.SYSTEM_START_DATE);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String nowDateKey = model.getLinkUrl() + sdf.format(nowCalendar.getTime());
-		logger.info("nowDateKey:" + nowDateKey);
+		logger.info("nowDateKey=" + nowDateKey + " tracingLink=" + model.getTracingLink() + " linkId=" + model.getLinkId() + " linkUrl=" + model.getLinkUrl() + " systemStartDate=" + systemStartDate + " yesterdayCalendarTime=" + sdf.format(yesterdayCalendar.getTime()));
 		// Get Link Click Count
 		Map<String, Map<String, Long>> mapResult = cacheLinkReport.get(nowDateKey);
 		if(mapResult == null){
@@ -325,12 +339,8 @@ public class BCSLinkPageController extends BCSBaseController {
 				userCount.addAndGet(dataMap.get(RECORD_REPORT_TYPE.DATA_TYPE_LINK_DISTINCT_COUNT.toString()));
 			}
 		}
-		logger.info("systemStartDate" + systemStartDate);
-		logger.info("yesterdayCalendar.getTime()" + yesterdayCalendar.getTime());
 		// Get Click Count Today
-		logger.info("model.getLinkUrl()" + model.getLinkUrl());
-		logger.info("model.getLinkId()" + model.getLinkId());
-		List<Object[]> list = contentLinkService.countClickCountByLinkUrlAndTime(model.getLinkUrl(), sdf.format(nowCalendar.getTime()), sdf.format(nextCalendar.getTime()) , model.getLinkId());
+		List<Object[]> list = contentLinkService.countClickCountByLinkUrlAndTime(model.getLinkUrl(), sdf.format(nowCalendar.getTime()), sdf.format(nextCalendar.getTime()), model.getLinkId());
 
 		if(list != null){
 			for(Object[] objArray : list){
@@ -340,6 +350,7 @@ public class BCSLinkPageController extends BCSBaseController {
 		}		
 		model.setTotalCount(totalCount.longValue());
 		model.setUserCount(userCount.longValue());
+		logger.info("linkId=" + model.getLinkId() + " totalCount=" + totalCount.longValue() + " userCount=" + userCount.longValue());
 	}
 	
 	private Map<String, Map<String, Map<String, Long>>> cachePageVisitReport = new HashMap<String, Map<String, Map<String, Long>>>();

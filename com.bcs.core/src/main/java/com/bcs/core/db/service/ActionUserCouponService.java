@@ -184,47 +184,56 @@ public class ActionUserCouponService {
 	 * @param couponId
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public void createActionUserCoupon(String mid, String couponId, Date sdate, Date edate)  throws Exception{
+	public boolean createActionUserCoupon(String mid, String couponId, Date sdate, Date edate)  throws Exception{
+		boolean rt = false;
 		try {
-			ActionUserCoupon actionUserCoupon = this.findByMidAndCouponIdAndActionType(mid, couponId,ActionUserCoupon.ACTION_TYPE_GET);
-			if (actionUserCoupon == null) {
-				ContentCoupon contentCoupon = contentCouponService.findOne(couponId);
-				ContentCouponCode notUsedContentCouponCode = null;
-				actionUserCoupon = new ActionUserCoupon();
-				actionUserCoupon.setMid(mid);
-				actionUserCoupon.setCouponId(couponId);
-				actionUserCoupon.setActionType(ActionUserCoupon.ACTION_TYPE_GET);
-				actionUserCoupon.setActionTime(new Date());
-				actionUserCoupon.setCouponStartUsingTime(sdate);
-				actionUserCoupon.setCouponEndUsingTime(edate);
-	
-				if (contentCoupon.getIsCouponCode().equals(ContentCoupon.IS_COUPON_CODE_TRUE)) {
-					notUsedContentCouponCode = contentCouponCodeService.findNotUsedCouponCodeAndLock(couponId,ContentCouponCode.COUPON_CODE_IS_NOT_USE,0);
-					actionUserCoupon.setCouponCodeId(notUsedContentCouponCode.getCouponCodeId());
-				}
-	
-				Long maxCouponSIndex = this.findMaxCouponSIndexByCouponId(couponId);
-				actionUserCoupon.setCouponSIndex(maxCouponSIndex == null ? 1 : maxCouponSIndex + 1);
-	
-				this.save(actionUserCoupon);
-	
-				if (contentCoupon.getIsCouponCode().equals(ContentCoupon.IS_COUPON_CODE_TRUE)) {
-					notUsedContentCouponCode.setActionUserCouponId(actionUserCoupon.getId());
-					notUsedContentCouponCode.setStatus(ContentCouponCode.COUPON_CODE_IS_USED);
-					contentCouponCodeService.save(notUsedContentCouponCode);
-				}
-	
-				UserTraceLogUtil.saveLogTrace(LOG_TARGET_ACTION_TYPE.TARGET_COUPON, LOG_TARGET_ACTION_TYPE.ACTION_CouponGet,mid, actionUserCoupon, couponId.toString());
-	
-				// 優惠劵的領用次數 + 1
-				contentCouponService.increaseCouponGetNumberByCouponId(actionUserCoupon.getCouponId());
+			logger.info("Start transaction, mid=" + mid + " couponId=" + couponId);
+			synchronized (this) {
+			    ContentCoupon contentCoupon = contentCouponService.findOne(couponId);
+    			if (contentCoupon == null) {
+	    			logger.info("The coupon is invalid, mid=" + mid + " couponId=" + couponId);
+		    	}
+			    else if (contentCoupon.getCouponGetLimitNumber() == null || contentCoupon.getCouponGetNumber() < contentCoupon.getCouponGetLimitNumber()) {
+				    logger.info("Redeemed the coupon successfully, mid=" + mid + " couponId=" + couponId + " numOfLimit=" + contentCoupon.getCouponGetLimitNumber() + " numOfRedeem=" + contentCoupon.getCouponGetNumber());
+        			ActionUserCoupon actionUserCoupon = this.findByMidAndCouponIdAndActionType(mid, couponId,ActionUserCoupon.ACTION_TYPE_GET);
+	        		if (actionUserCoupon == null) {
+	        			// 優惠劵的領用次數 + 1
+	    	    		contentCouponService.increaseCouponGetNumberByCouponId(couponId);
+		    	    	ContentCouponCode notUsedContentCouponCode = null;
+			    	    actionUserCoupon = new ActionUserCoupon();
+    				    actionUserCoupon.setMid(mid);
+        				actionUserCoupon.setCouponId(couponId);
+	        			actionUserCoupon.setActionType(ActionUserCoupon.ACTION_TYPE_GET);
+		        		actionUserCoupon.setActionTime(new Date());
+			        	actionUserCoupon.setCouponStartUsingTime(sdate);
+				        actionUserCoupon.setCouponEndUsingTime(edate);
+    				    if (contentCoupon.getIsCouponCode().equals(ContentCoupon.IS_COUPON_CODE_TRUE)) {
+	    				    notUsedContentCouponCode = contentCouponCodeService.findNotUsedCouponCodeAndLock(couponId,ContentCouponCode.COUPON_CODE_IS_NOT_USE,0);
+		    			    actionUserCoupon.setCouponCodeId(notUsedContentCouponCode.getCouponCodeId());
+			    	    }
+				        Long maxCouponSIndex = this.findMaxCouponSIndexByCouponId(couponId);
+	    			    actionUserCoupon.setCouponSIndex(maxCouponSIndex == null ? 1 : maxCouponSIndex + 1);
+    	    			this.save(actionUserCoupon);
+    		    		if (contentCoupon.getIsCouponCode().equals(ContentCoupon.IS_COUPON_CODE_TRUE)) {
+	    		    		notUsedContentCouponCode.setActionUserCouponId(actionUserCoupon.getId());
+		    		    	notUsedContentCouponCode.setStatus(ContentCouponCode.COUPON_CODE_IS_USED);
+			    		    contentCouponCodeService.save(notUsedContentCouponCode);
+				        }
+        				UserTraceLogUtil.saveLogTrace(LOG_TARGET_ACTION_TYPE.TARGET_COUPON, LOG_TARGET_ACTION_TYPE.ACTION_CouponGet,mid, actionUserCoupon, couponId.toString());
+	    	    	}
+	        		rt = true;
+			    }
+			    else {
+				    logger.info("The coupon is redeemed out, mid=" + mid + " couponId=" + couponId + " numOfLimit=" + contentCoupon.getCouponGetLimitNumber() + " numOfRedeem=" + contentCoupon.getCouponGetNumber());
+			    }
 			}
-			logger.info("end transaction commit");
+			logger.info("end transaction, couponId=" + couponId);
 		} catch (Exception e) {
 			String error = ErrorRecord.recordError(e, false);
 			logger.error(error);
 			throw e;
 		}
+		return rt;
 	}
 	
 	@Test
