@@ -7,27 +7,46 @@
 	<div class="row">
 		<div class="columnUploadImage">
 			<div class="wrapperUploadImage">
+				<!-- 身分證正面 -->
 				<div class="imgZoneBox">
 					<div id="imgZone">
-						<img id="myImg">
+						<img id="myImgFront">
 					</div>
 				</div>
 				<div class="CHBtnSet">
 					<div class="CHLeft">
-						<input type="file" name="filepond" />
+  						<label for="filepondFront" class="btn_upload">選擇上傳身分證正面</label>
+						<input id="filepondFront" type="file" name="filepond" style="visibility:hidden;"/>
 					</div>
 				</div>
+				
+				<!-- 身分證反面 -->
+				<div class="imgZoneBox">
+					<div id="imgZone">
+						<img id="myImgBack">
+					</div>
+				</div>
+				<div class="CHBtnSet">
+					<div class="CHLeft">
+  						<label for="filepondBack" class="btn_upload">選擇上傳身分證反面</label>
+						<input id="filepondBack" type="file" name="filepond" style="visibility:hidden;"/>
+					</div>
+				</div>
+				
+				<!-- 電子簽名 -->
 				<div class="row">
 					<div class="col-md-12">
-				 		<canvas class="sig-canvas" id="sig-canvas" width="620" height="160">
+				 		<canvas class="sig-canvas" id="sig-canvas">
 				 			The browser not supported, get a better browser, bro.
 				 		</canvas>
 				 	</div>
 				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<input class="btn_save" id="sig-submitBtn" style="cursor: pointer;" type="button" value="提交簽名"> 
-						<input class="btn_save" id="sig-clearBtn" style="cursor: pointer;" type="button" value="清除簽名">
+				<div class="CHBtnSet">
+					<div class="CHLeft">
+  						<label for="sig-submitBtn" class="btn_submitSignature">確認簽名</label>&nbsp;
+						<input id="sig-submitBtn" type="button" style="visibility:hidden;"/>
+  						<label for="sig-clearBtn" class="btn_clearSignature">重新簽名</label>
+						<input id="sig-clearBtn" type="button" style="visibility:hidden;"/>
 					</div>
 				</div>
 			</div>

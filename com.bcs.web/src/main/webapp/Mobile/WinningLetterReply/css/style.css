@@ -71,10 +71,24 @@ input:focus, textarea:focus {
 	text-decoration: none;
 }
 
+.btn_save {
+	color: #fff;
+	padding: 10px 15px;
+	margin-bottom: 10px;
+	box-shadow: none;
+	border: 0;
+	min-width: 80px;
+	background: darkgrey;
+}
+
+.btn_save {
+	background: #005AA9;
+}
+
 /* 子選項 */
 .CHBtnSet {
 	text-align: left;
-	margin: 15px 0 14px;
+	margin: 4px 0px 10px 0px;
 }
 
 .CHBtnSet .CHLeft {
@@ -126,11 +140,24 @@ input:focus, textarea:focus {
 	color: #fff;
 }
 
+.CHLeft>.btn_submitSignature .CHLeft>.btn_clearSignature {
+	float: none;
+	margin: 0;
+}
+
 /* Canvas for signature */
+.sigZoneBox {
+	background-color: rgba(255, 255, 255, .4);
+	border: 1px solid rgba(64, 64, 64, .5);
+	padding: 16px;
+}
+
 .sig-canvas {
 	border: 2px dotted #CCCCCC;
 	border-radius: 15px;
 	cursor: crosshair;
+	width: 100%;
+	height: 150px;
 }
 
 .sig-image {
@@ -186,7 +213,6 @@ input:focus, textarea:focus {
 }
 
 #imgZone {
-	border: 2px dashed #808080;
 	background-color: rgba(255, 255, 255, .95);
 	color: rgba(0, 0, 0, .5);
 	font-family: Helvetica Neue;
@@ -205,9 +231,9 @@ input:focus, textarea:focus {
 	background-size: 50% 50%;
 }
 
-#imgZone:after {
-	content: "身分證正面";
-}
+/* #imgZone:after { */
+/* 	content: "身分證正面"; */
+/* } */
 
 .columnUploadImage {
 	display: inline-block;
@@ -219,7 +245,66 @@ input:focus, textarea:focus {
 	padding: 4px;
 }
 
-#myImg {
+#myImgFront {
+	border: 2px dashed #808080;
 	width: 100%;
 	height: 150px;
 }
+
+#myImgBack {
+	border: 2px dashed #808080;
+	width: 100%;
+	height: 150px;
+}
+
+.btn_upload {
+	float: left;
+	color: #fff;
+	background: #005AA9;
+	border: 1px solid #005AA9;
+	border-left: 1px solid #005AA9;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	font-size: 14px;
+	font-weight: normal;
+	text-shadow: none !important;
+	line-height: 33px;
+	padding: 0 12px;
+	margin-bottom: 5px;
+	min-width: 30px;
+}
+
+.btn_submitSignature {
+	float: left;
+	color: #fff;
+	background: #005AA9;
+	border: 1px solid #005AA9;
+	border-left: 1px solid #005AA9;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	font-size: 14px;
+	font-weight: normal;
+	text-shadow: none !important;
+	line-height: 33px;
+	padding: 0 12px;
+	min-width: 30px;
+	margin-right: 4px;
+}
+
+.btn_clearSignature {
+	float: left;
+	color: #fff;
+	background: #005AA9;
+	border: 1px solid #005AA9;
+	border-left: 1px solid #005AA9;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	font-size: 14px;
+	font-weight: normal;
+	text-shadow: none !important;
+	line-height: 33px;
+	padding: 0 12px;
+	min-width: 30px;
+	margin-left: 4px;
+}
+

@@ -1,10 +1,19 @@
 $(function() {
 	window.addEventListener('load', function() {
-		document.querySelector('input[type="file"]').addEventListener('change', function() {
+		document.querySelector('input[id="filepondFront"]').addEventListener('change', function() {
 			if (this.files && this.files[0]) {
-				var img = document.querySelector('img'); // $('img')[0]
+				var img = document.querySelector('img[id="myImgFront"]'); // $('img')[0]
 				img.src = URL.createObjectURL(this.files[0]); // set src to
-				// blob url
+
+				img.onload = imageIsLoaded;
+			}
+		});
+
+		document.querySelector('input[id="filepondBack"]').addEventListener('change', function() {
+			if (this.files && this.files[0]) {
+				var img = document.querySelector('img[id="myImgBack"]'); // $('img')[0]
+				img.src = URL.createObjectURL(this.files[0]); // set src to
+
 				img.onload = imageIsLoaded;
 			}
 		});

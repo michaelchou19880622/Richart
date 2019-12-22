@@ -112,14 +112,9 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 	/** WinningLetter Reply Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/wl/winningLetterReplyPage")
-	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		logger.info("winningLetterReplyPage");
 		
-		String urlReferrer = request.getHeader("referer");
-		logger.info("urlReferrer = {}", urlReferrer);
-
-		model.addAttribute("urlReferrer", urlReferrer);
-
 		return BcsPageEnum.WinningLetterReplyPage.toString();
 	}
 

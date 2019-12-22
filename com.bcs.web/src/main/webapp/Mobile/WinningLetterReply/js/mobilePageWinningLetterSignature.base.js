@@ -11,6 +11,10 @@ $(function() {
 	ctx.strokeStyle = "#222222";
 	ctx.lineWidth = 4;
 
+	window.onresize = function(event) {
+		ctx.canvas.width = window.innerWidth;
+	};
+
 	var drawing = false;
 	var mousePos = {
 		x : 0,
@@ -116,7 +120,7 @@ $(function() {
 	var sigImage = document.getElementById("sig-image");
 	var clearBtn = document.getElementById("sig-clearBtn");
 	var submitBtn = document.getElementById("sig-submitBtn");
-	
+
 	clearBtn.addEventListener("click", function(e) {
 		clearCanvas();
 		sigText.innerHTML = "Data URL for the signature will show here!";
@@ -124,7 +128,7 @@ $(function() {
 		ctx.strokeStyle = "#222222";
 		ctx.lineWidth = 4;
 	}, false);
-	
+
 	submitBtn.addEventListener("click", function(e) {
 		var dataUrl = canvas.toDataURL();
 		sigText.innerHTML = dataUrl;
