@@ -133,6 +133,8 @@ $(function() {
 		var dataUrl = canvas.toDataURL();
 		sigText.innerHTML = dataUrl;
 		sigImage.setAttribute("src", dataUrl);
+		ctx.strokeStyle = "#222222";
+		ctx.lineWidth = 4;
 	}, false);
 
 });

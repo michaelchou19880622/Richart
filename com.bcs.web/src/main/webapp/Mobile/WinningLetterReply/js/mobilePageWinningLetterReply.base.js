@@ -4,7 +4,6 @@ $(function() {
 			if (this.files && this.files[0]) {
 				var img = document.querySelector('img[id="myImgFront"]'); // $('img')[0]
 				img.src = URL.createObjectURL(this.files[0]); // set src to
-
 				img.onload = imageIsLoaded;
 			}
 		});
@@ -13,7 +12,6 @@ $(function() {
 			if (this.files && this.files[0]) {
 				var img = document.querySelector('img[id="myImgBack"]'); // $('img')[0]
 				img.src = URL.createObjectURL(this.files[0]); // set src to
-
 				img.onload = imageIsLoaded;
 			}
 		});
