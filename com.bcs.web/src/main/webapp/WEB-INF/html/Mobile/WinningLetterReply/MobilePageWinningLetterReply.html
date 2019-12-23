@@ -1,80 +1,113 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
 	th:with="jsList = ${ {'/Mobile/WinningLetterReply/js/mobilePageWinningLetterReply.base.js', '/Mobile/WinningLetterReply/js/mobilePageWinningLetterSignature.base.js'} }" >
-<head th:replace="/BCS/Views/Common/HeadForWinningLetterReply :: head ('中獎回函用戶資料填寫頁面', ${jsList})"></head>
+<head th:replace="/BCS/Views/Common/HeadForWinningLetterReply :: head ('中獎用戶資料填寫頁面', ${jsList})"></head>
 
 <body>
 	<div class="row">
 		<div class="columnUploadImage">
 			<div class="wrapperUploadImage">
 				<div class="mainFrame CMsg Pre">
-				<table border="1">
-					<colgroup>
-						<col width="190">
-						<col>
-					</colgroup>
+				<table border="1" width="100%" style="margin-bottom: 10px; margin-right: 10px;">
 					<tbody>
 						<tr>
-							<th align="left">中獎人姓名 <span style="color: red">*</span></th>
-							<td>
-								<input type="text" id="winningLetterName" name="winningLetterName" style="width: 100%;" autocomplete="off">
+							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+								中獎人姓名
+							</td>
+							<td width="75%" style="padding: 5px 5px 5px 0px;" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off">
+								</div>
 							</td>
 						</tr>
 						<tr>
-							<th align="left">身分證字號 <span style="color: red">*</span></th>
-							<td>
-								<input type="text" id="winningLetterName" name="winningLetterName" style="width: 100%;" autocomplete="off">
+							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+								身分證字號
+							</td>
+							<td width="75%" style="padding: 5px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off" maxlength="12">
+								</div>
 							</td>
 						</tr>
 						<tr>
-							<th align="left">連絡電話<span style="color: red">*</span></th>
-							<td>
-								<input type="text" id="winningLetterName" name="winningLetterName" style="width: 100%;" autocomplete="off">
+							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+								連絡電話
+							</td>
+							<td width="75%" style="padding: 5px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off" maxlength="32">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+								戶籍地址
+							</td>
+							<td width="75%" style="padding: 5px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off" maxlength="200">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+								通訊地址
+							</td>
+							<td width="75%" style="padding: 5px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off" maxlength="200">
+								</div>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-			
+				
 				<!-- 身分證正面 -->
+				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">身分證正面影本</label>
+				<br />
+				<label style="padding: 0px 0px 0px 5px; color: red; font-weight: bold;">*** 請務必於身分證上加註「限Richart行銷活動贈獎使用」字樣 ***</label>
 				<div class="imgZoneBox">
-					<div id="imgZone">
+					<div id="imgZoneFront">
 						<img id="myImgFront">
 					</div>
 				</div>
 				<div class="CHBtnSet">
 					<div class="CHLeft">
-  						<label for="filepondFront" class="btn_upload">選擇上傳身分證正面</label>
-						<input id="filepondFront" type="file" name="filepond" style="visibility:hidden;"/>
+  						<label for="filepondFront" class="btn_upload" style="display:none;">選擇檔案</label>
+						<input id="filepondFront" type="file" name="filepond" style="display:none;"/>
 					</div>
 				</div>
 				
 				<!-- 身分證反面 -->
+				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">身分證反面影本</label>
+				<br />
+				<label style="padding: 0px 0px 0px 5px; color: red; font-weight: bold;">*** 請務必於身分證上加註「限Richart行銷活動贈獎使用」字樣 ***</label>
 				<div class="imgZoneBox">
-					<div id="imgZone">
+					<div id="imgZoneBack">
 						<img id="myImgBack">
 					</div>
 				</div>
 				<div class="CHBtnSet">
 					<div class="CHLeft">
-  						<label for="filepondBack" class="btn_upload">選擇上傳身分證反面</label>
-						<input id="filepondBack" type="file" name="filepond" style="visibility:hidden;"/>
+  						<label for="filepondBack" class="btn_upload" style="display:none;">選擇檔案</label>
+						<input id="filepondBack" type="file" name="filepond" style="display:none;"/>
 					</div>
 				</div>
 				
 				<!-- 電子簽名 -->
-				<div class="row">
-					<div class="col-md-12">
-				 		<canvas class="sig-canvas" id="sig-canvas">
-				 			The browser not supported, get a better browser, bro.
-				 		</canvas>
-				 	</div>
+				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">領獎申請人簽章</label>
+				<div class="sigDiv" id="sig-div">
+			 		<canvas class="sig-canvas" id="sig-canvas" disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
+			 			The browser not supported, get a better browser, bro.
+			 		</canvas>
 				</div>
-				<div class="CHBtnSet">
-					<div class="CHLeft">
-  						<label for="sig-submitBtn" class="btn_submitSignature">確認簽名</label>&nbsp;
-						<input id="sig-submitBtn" type="button" style="visibility:hidden;"/>
+				<div class="CHBtnSetCenter" style="margin-left: 5px;">
+					<div class="CHNone">
+  						<label for="sig-submitBtn" class="btn_submitSignature">送出資料</label>&nbsp;
+						<input id="sig-submitBtn" type="button" style="display:none;"/>
   						<label for="sig-clearBtn" class="btn_clearSignature">重新簽名</label>
-						<input id="sig-clearBtn" type="button" style="visibility:hidden;"/>
+						<input id="sig-clearBtn" type="button" style="display:none;"/>
 					</div>
 				</div>
 			</div>

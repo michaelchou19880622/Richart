@@ -17,6 +17,16 @@ $(function() {
 		});
 	});
 
+	var imgFront = document.getElementById("myImgFront");
+	imgFront.onclick = function() {
+		$('#filepondFront').trigger('click');
+	}
+
+	var imgBack = document.getElementById("myImgBack");
+	imgBack.onclick = function() {
+		$('#filepondBack').trigger('click');
+	}
+
 	function imageIsLoaded() {
 		alert(this.src); // blob url
 		// update width and height ...

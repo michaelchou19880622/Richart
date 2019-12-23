@@ -6,13 +6,20 @@ $(function() {
 				};
 	})();
 
+	var div = document.getElementById('sig-div');
+
 	var canvas = document.getElementById("sig-canvas");
+	canvas.width = div.clientWidth;
+
 	var ctx = canvas.getContext("2d");
 	ctx.strokeStyle = "#222222";
 	ctx.lineWidth = 4;
 
 	window.onresize = function(event) {
+		console.info("ctx.canvas.width = " + ctx.canvas.width + ", window.innerWidth = " + window.innerWidth);
 		ctx.canvas.width = window.innerWidth;
+		ctx.strokeStyle = "#222222";
+		ctx.lineWidth = 4;
 	};
 
 	var drawing = false;
@@ -23,6 +30,7 @@ $(function() {
 	var lastPos = mousePos;
 
 	canvas.addEventListener("mousedown", function(e) {
+		e.preventDefault();
 		drawing = true;
 		lastPos = getMousePos(canvas, e);
 	}, false);
@@ -32,15 +40,13 @@ $(function() {
 	}, false);
 
 	canvas.addEventListener("mousemove", function(e) {
+		e.preventDefault();
 		mousePos = getMousePos(canvas, e);
 	}, false);
 
 	// Add touch event support for mobile
-	canvas.addEventListener("touchstart", function(e) {
-
-	}, false);
-
 	canvas.addEventListener("touchmove", function(e) {
+		e.preventDefault();
 		var touch = e.touches[0];
 		var me = new MouseEvent("mousemove", {
 			clientX : touch.clientX,
@@ -50,6 +56,7 @@ $(function() {
 	}, false);
 
 	canvas.addEventListener("touchstart", function(e) {
+		e.preventDefault();
 		mousePos = getTouchPos(canvas, e);
 		var touch = e.touches[0];
 		var me = new MouseEvent("mousedown", {
@@ -113,26 +120,25 @@ $(function() {
 
 	function clearCanvas() {
 		canvas.width = canvas.width;
+		ctx.strokeStyle = "#222222";
+		ctx.lineWidth = 4;
 	}
 
 	// Set up the UI
-	var sigText = document.getElementById("sig-dataUrl");
-	var sigImage = document.getElementById("sig-image");
+	// var sigText = document.getElementById("sig-dataUrl");
+	// var sigImage = document.getElementById("sig-image");
 	var clearBtn = document.getElementById("sig-clearBtn");
 	var submitBtn = document.getElementById("sig-submitBtn");
 
 	clearBtn.addEventListener("click", function(e) {
 		clearCanvas();
-		sigText.innerHTML = "Data URL for the signature will show here!";
-		sigImage.setAttribute("src", "");
 		ctx.strokeStyle = "#222222";
 		ctx.lineWidth = 4;
 	}, false);
 
 	submitBtn.addEventListener("click", function(e) {
 		var dataUrl = canvas.toDataURL();
-		sigText.innerHTML = dataUrl;
-		sigImage.setAttribute("src", dataUrl);
+		alert(dataUrl);
 		ctx.strokeStyle = "#222222";
 		ctx.lineWidth = 4;
 	}, false);

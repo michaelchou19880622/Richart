@@ -21,19 +21,22 @@ $(function() {
 	canvas.addEventListener("mousedown", function(e) {
 		drawing = true;
 		lastPos = getMousePos(canvas, e);
+		e.preventDefault();
 	}, false);
 
 	canvas.addEventListener("mouseup", function(e) {
 		drawing = false;
+		e.preventDefault();
 	}, false);
 
 	canvas.addEventListener("mousemove", function(e) {
 		mousePos = getMousePos(canvas, e);
+		e.preventDefault();
 	}, false);
 
 	// Add touch event support for mobile
 	canvas.addEventListener("touchstart", function(e) {
-
+		e.preventDefault();
 	}, false);
 
 	canvas.addEventListener("touchmove", function(e) {
@@ -43,6 +46,7 @@ $(function() {
 			clientY : touch.clientY
 		});
 		canvas.dispatchEvent(me);
+		e.preventDefault();
 	}, false);
 
 	canvas.addEventListener("touchstart", function(e) {
@@ -53,11 +57,13 @@ $(function() {
 			clientY : touch.clientY
 		});
 		canvas.dispatchEvent(me);
+		e.preventDefault();
 	}, false);
 
 	canvas.addEventListener("touchend", function(e) {
 		var me = new MouseEvent("mouseup", {});
 		canvas.dispatchEvent(me);
+		e.preventDefault();
 	}, false);
 
 	function getMousePos(canvasDom, mouseEvent) {
@@ -116,7 +122,7 @@ $(function() {
 	var sigImage = document.getElementById("sig-image");
 	var clearBtn = document.getElementById("sig-clearBtn");
 	var submitBtn = document.getElementById("sig-submitBtn");
-	
+
 	clearBtn.addEventListener("click", function(e) {
 		clearCanvas();
 		sigText.innerHTML = "Data URL for the signature will show here!";
@@ -124,7 +130,7 @@ $(function() {
 		ctx.strokeStyle = "#222222";
 		ctx.lineWidth = 4;
 	}, false);
-	
+
 	submitBtn.addEventListener("click", function(e) {
 		var dataUrl = canvas.toDataURL();
 		sigText.innerHTML = dataUrl;

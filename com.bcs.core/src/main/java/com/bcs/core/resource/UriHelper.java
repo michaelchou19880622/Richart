@@ -75,7 +75,7 @@ public class UriHelper {
     }
     
     public static String getWinningLetterTracingUrl(){
-        return baseUrl_Https + "wl/";
+        return baseUrl_Https + "m/wl/";
     }
     
     public static String getMgmPage(){

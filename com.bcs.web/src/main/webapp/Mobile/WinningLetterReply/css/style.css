@@ -91,8 +91,22 @@ input:focus, textarea:focus {
 	margin: 4px 0px 10px 0px;
 }
 
+.CHBtnSetCenter {
+	text-align: center;
+	margin: 4px 0px 10px 0px;
+}
+
+.CHBtnSetRight {
+	text-align: right;
+	margin: 4px 0px 10px 0px;
+}
+
 .CHBtnSet .CHLeft {
 	min-width: 70%;
+	display: inline-block;
+}
+
+.CHNone {
 	display: inline-block;
 }
 
@@ -140,12 +154,16 @@ input:focus, textarea:focus {
 	color: #fff;
 }
 
-.CHLeft>.btn_submitSignature .CHLeft>.btn_clearSignature {
+.CHLeft>.btn_submitSignature .CHLeft>.btn_clearSignature .CHRight>.btn_submitSignature .CHRight>.btn_clearSignature {
 	float: none;
 	margin: 0;
 }
 
 /* Canvas for signature */
+.sigDiv {
+	width: auto;
+}
+
 .sigZoneBox {
 	background-color: rgba(255, 255, 255, .4);
 	border: 1px solid rgba(64, 64, 64, .5);
@@ -153,10 +171,8 @@ input:focus, textarea:focus {
 }
 
 .sig-canvas {
-	border: 2px dotted #CCCCCC;
-	border-radius: 15px;
+	border: 1px solid #CCCCCC;
 	cursor: crosshair;
-	width: 100%;
 	height: 150px;
 }
 
@@ -210,9 +226,11 @@ input:focus, textarea:focus {
 	background-color: rgba(255, 255, 255, .4);
 	border: 1px solid rgba(64, 64, 64, .5);
 	padding: 16px;
+	margin-left: 5px;
+	margin-right: 5px;
 }
 
-#imgZone {
+#imgZoneFront {
 	background-color: rgba(255, 255, 255, .95);
 	color: rgba(0, 0, 0, .5);
 	font-family: Helvetica Neue;
@@ -221,8 +239,27 @@ input:focus, textarea:focus {
 	letter-spacing: 1.5px;
 	text-align: center;
 	text-transform: uppercase;
-	background-image: url('../image/profile_128px.png');
 	opacity: 0.5;
+	background-image: url('../image/upload_front_2.png');
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	-moz-background-size: 50% 50%;
+	-webkit-background-size: 50% 50%;
+	-o-background-size: 50% 50%;
+	background-size: 50% 50%;
+}
+
+#imgZoneBack {
+	background-color: rgba(255, 255, 255, .95);
+	color: rgba(0, 0, 0, .5);
+	font-family: Helvetica Neue;
+	font-weight: bold;
+	font-size: 20px;
+	letter-spacing: 1.5px;
+	text-align: center;
+	text-transform: uppercase;
+	opacity: 0.5;
+	background-image: url('../image/upload_back_2.png');
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	-moz-background-size: 50% 50%;
@@ -306,4 +343,40 @@ input:focus, textarea:focus {
 	min-width: 30px;
 	margin-left: 4px;
 }
+
+.MdFRMWLInput {
+	box-shadow: none;
+	padding: 7px 9px 6px;
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid #ced2db;
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	height: 34px;
+	font-size: 16px;
+	line-height: 1.42857143;
+	color: #555;
+	border-radius: 4px;
+}
+
+.MdFRMWLInput input[type="text"], .MdFRM01Input textarea {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	-webkit-box-align: stretch;
+	-moz-box-align: stretch;
+	border: none;
+	background: transparent;
+	vertical-align: middle;
+	padding: 0;
+}
+
+/* td > input[type='text'] */
+/* { */
+/*     width: 100%; this will set the width of the textbox equal to its container td */
+/* 	font-size: initial; */
+/* } */
 
