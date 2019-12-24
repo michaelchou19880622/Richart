@@ -110,13 +110,13 @@ public class BCSWinningLetterController extends BCSBaseController {
 		return BcsPageEnum.WinningLetterSignaturePage.toString();
 	}
 
-	/** WinningLetter Reply Page **/
-	@RequestMapping(method = RequestMethod.GET, value = "/wl/winningLetterReplyPage")
-	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.info("winningLetterReplyPage");
-		
-		return BcsPageEnum.WinningLetterReplyPage.toString();
-	}
+//	/** WinningLetter Reply Page **/
+//	@RequestMapping(method = RequestMethod.GET, value = "/wl/winningLetterReplyPage")
+//	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//		logger.info("winningLetterReplyPage");
+//		
+//		return BcsPageEnum.WinningLetterReplyPage.toString();
+//	}
 
 	/** Get winning letter list data **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterList")

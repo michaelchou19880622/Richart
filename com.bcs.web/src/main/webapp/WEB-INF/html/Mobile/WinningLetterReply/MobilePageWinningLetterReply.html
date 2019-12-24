@@ -11,52 +11,62 @@
 				<table border="1" width="100%" style="margin-bottom: 10px; margin-right: 10px;">
 					<tbody>
 						<tr>
-							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
 								中獎人姓名
 							</td>
-							<td width="75%" style="padding: 5px 5px 5px 0px;" align="left">
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px;" align="left">
 								<div class="MdFRMWLInput">
-									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off">
+									<input type="text" id="winner_name" autocomplete="off" maxlength="10">
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
 								身分證字號
 							</td>
-							<td width="75%" style="padding: 5px 5px 5px 0px" align="left">
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px" align="left">
 								<div class="MdFRMWLInput">
-									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off" maxlength="12">
+									<input type="text" id="winner_idCardNum" autocomplete="off" maxlength="12">
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
 								連絡電話
 							</td>
-							<td width="75%" style="padding: 5px 5px 5px 0px" align="left">
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px" align="left">
 								<div class="MdFRMWLInput">
-									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off" maxlength="32">
+									<input type="text" id="winner_phoneNumber" autocomplete="off" maxlength="32">
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
 								戶籍地址
 							</td>
-							<td width="75%" style="padding: 5px 5px 5px 0px" align="left">
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px" align="left">
 								<div class="MdFRMWLInput">
-									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off" maxlength="200">
+									<input type="text" id="winner_residentAddress" autocomplete="off" maxlength="200">
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td width="25%" style="padding: 5px 0px 5px 5px; font-weight: bold;" align="left">
-								通訊地址
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
+								通訊地址 ( <input class="checkboxAddress" type="checkbox" id="cb_address"> 同上 ) 
 							</td>
-							<td width="75%" style="padding: 5px 5px 5px 0px" align="left">
-								<div class="MdFRMWLInput">
-									<input type="text" id="winningLetterName" name="winningLetterName" autocomplete="off" maxlength="200">
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput" id="MdFRMWLInput_mAddress">
+									<input type="text" id="winner_mailingAddress" autocomplete="off" maxlength="200">
 								</div>
 							</td>
 						</tr>
@@ -97,11 +107,9 @@
 				
 				<!-- 電子簽名 -->
 				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">領獎申請人簽章</label>
-				<div class="sigDiv" id="sig-div">
-			 		<canvas class="sig-canvas" id="sig-canvas" disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
-			 			The browser not supported, get a better browser, bro.
-			 		</canvas>
-				</div>
+		 		<canvas class="sig-canvas" id="sig-canvas" disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd" height=200>
+		 			The browser not supported, get a better browser, bro.
+		 		</canvas>
 				<div class="CHBtnSetCenter" style="margin-left: 5px;">
 					<div class="CHNone">
   						<label for="sig-submitBtn" class="btn_submitSignature">送出資料</label>&nbsp;

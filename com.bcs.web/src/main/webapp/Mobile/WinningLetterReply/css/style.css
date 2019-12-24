@@ -10,7 +10,8 @@ body, input {
 	color: #333;
 	font-family: '微軟正黑體';
 	font-size: 13px;
-	position: relative
+	position: relative;
+	vertical-align: middle;
 }
 
 /* content */
@@ -160,10 +161,6 @@ input:focus, textarea:focus {
 }
 
 /* Canvas for signature */
-.sigDiv {
-	width: auto;
-}
-
 .sigZoneBox {
 	background-color: rgba(255, 255, 255, .4);
 	border: 1px solid rgba(64, 64, 64, .5);
@@ -173,7 +170,9 @@ input:focus, textarea:focus {
 .sig-canvas {
 	border: 1px solid #CCCCCC;
 	cursor: crosshair;
-	height: 150px;
+	height: 200px;
+	width: 97%;
+	margin-left: 4.25px;
 }
 
 .sig-image {
@@ -346,18 +345,19 @@ input:focus, textarea:focus {
 
 .MdFRMWLInput {
 	box-shadow: none;
-	padding: 7px 9px 6px;
+	padding: 2px 9px 2px;
 	box-sizing: border-box;
 	background: #fff;
 	border: 1px solid #ced2db;
 	position: relative;
 	display: inline-block;
-	width: 100%;
+	width: 99%;
 	height: 34px;
 	font-size: 16px;
 	line-height: 1.42857143;
 	color: #555;
 	border-radius: 4px;
+	margin-left: 5px;
 }
 
 .MdFRMWLInput input[type="text"], .MdFRM01Input textarea {
@@ -372,6 +372,12 @@ input:focus, textarea:focus {
 	background: transparent;
 	vertical-align: middle;
 	padding: 0;
+	width: 100%;
+}
+
+input.checkboxAddress {
+    transform : scale(0.85);
+    vertical-align: middle;
 }
 
 /* td > input[type='text'] */

@@ -45,15 +45,6 @@ public class WinningLetterRecord extends AbstractBcsEntity {
 	@Column(name = "MAILING_ADDRESS", columnDefinition = "nvarchar(200)")
 	private String mailing_address;
 
-//	@Column(name = "ID_CARD_COPY_FRONT", columnDefinition = "varbinary(max)")
-//	private byte[] id_card_copy_front;
-//	
-//	@Column(name = "ID_CARD_COPY_BACK", columnDefinition = "varbinary(max)")
-//	private byte[] id_card_copy_back;
-//	
-//	@Column(name = "E_SIGNATURE", columnDefinition = "varbinary(max)")
-//	private byte[] e_signature;
-	
 	@Column(name = "ID_CARD_COPY_FRONT", columnDefinition = "nvarchar(2083)")
 	private String id_card_copy_front;
 	
