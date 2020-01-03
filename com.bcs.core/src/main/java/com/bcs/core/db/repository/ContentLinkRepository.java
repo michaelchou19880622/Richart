@@ -9,6 +9,12 @@ import com.bcs.core.db.entity.ContentLink;
 import com.bcs.core.db.persistence.EntityRepository;
 
 public interface ContentLinkRepository extends EntityRepository<ContentLink, String>{
+	@Query(value = "SELECT BCS_CONTENT_LINK.LINK_URL, BCS_CONTENT_LINK.LINK_TITLE, BCS_CONTENT_LINK.LINK_ID, BCS_CONTENT_LINK.MODIFY_TIME, BCS_CONTENT_LINK.LINK_TAG, BCS_CONTENT_LINK_TRACING.TRACING_ID "
+            + "FROM BCS_CONTENT_LINK INNER JOIN BCS_CONTENT_LINK_TRACING ON BCS_CONTENT_LINK.LINK_ID = BCS_CONTENT_LINK_TRACING.LINK_ID "
+            + "WHERE BCS_CONTENT_LINK.LINK_URL IS NOT NULL AND BCS_CONTENT_LINK.LINK_URL != '' "
+            + "ORDER BY BCS_CONTENT_LINK.MODIFY_TIME DESC ", nativeQuery = true)
+    public List<Object[]> findAllWithTracingId();
+
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
 			+ "FROM BCS_CONTENT_LINK "
@@ -22,13 +28,12 @@ public interface ContentLinkRepository extends EntityRepository<ContentLink, Str
 			+ "WHERE CONTENT_TYPE = 'LINK' AND FLAG_VALUE = ?1 AND LINK_ID = REFERENCE_ID AND LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
 	public List<Object[]> findAllLinkUrlByFlag(String flag);
-
-//	@Transactional(readOnly = true, timeout = 30)
-//	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
-//			+ "FROM BCS_CONTENT_LINK, BCS_CONTENT_FLAG "
-//			+ "WHERE CONTENT_TYPE = 'LINK' AND FLAG_VALUE LIKE ?1 AND LINK_ID = REFERENCE_ID AND LINK_URL IS NOT NULL AND LINK_URL != '' "
-//			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
-//	public List<Object[]> findAllLinkUrlByLikeFlag(String flag);
+	
+	@Query(value = "SELECT BCS_CONTENT_LINK.LINK_URL, BCS_CONTENT_LINK.LINK_TITLE, BCS_CONTENT_LINK.LINK_ID, BCS_CONTENT_LINK.MODIFY_TIME, BCS_CONTENT_LINK.LINK_TAG, BCS_CONTENT_LINK_TRACING.TRACING_ID "
+            + "FROM BCS_CONTENT_LINK INNER JOIN BCS_CONTENT_LINK_TRACING ON BCS_CONTENT_LINK.LINK_ID = BCS_CONTENT_LINK_TRACING.LINK_ID INNER JOIN BCS_CONTENT_FLAG ON BCS_CONTENT_LINK.LINK_ID = BCS_CONTENT_FLAG.REFERENCE_ID "
+            + "WHERE BCS_CONTENT_FLAG.CONTENT_TYPE = 'LINK' AND BCS_CONTENT_FLAG.FLAG_VALUE = ?1 AND BCS_CONTENT_LINK.LINK_URL IS NOT NULL AND BCS_CONTENT_LINK.LINK_URL != '' "
+            + "ORDER BY BCS_CONTENT_LINK.MODIFY_TIME DESC ", nativeQuery = true)
+    public List<Object[]> findAllLinkUrlWithTracingIdByFlag(String flag);
 	
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME ,LINK_TAG "
@@ -36,6 +41,12 @@ public interface ContentLinkRepository extends EntityRepository<ContentLink, Str
 			+ "WHERE LINK_TAG LIKE ?1  AND LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
 	public List<Object[]> findAllLinkUrlByLikeFlag(String flag);
+	
+	@Query(value = "SELECT BCS_CONTENT_LINK.LINK_URL, BCS_CONTENT_LINK.LINK_TITLE, BCS_CONTENT_LINK.LINK_ID, BCS_CONTENT_LINK.MODIFY_TIME, BCS_CONTENT_LINK.LINK_TAG, BCS_CONTENT_LINK_TRACING.TRACING_ID "
+            + "FROM BCS_CONTENT_LINK INNER JOIN BCS_CONTENT_LINK_TRACING ON BCS_CONTENT_LINK.LINK_ID = BCS_CONTENT_LINK_TRACING.LINK_ID INNER JOIN BCS_CONTENT_FLAG ON BCS_CONTENT_LINK.LINK_ID = BCS_CONTENT_FLAG.REFERENCE_ID "
+            + "WHERE BCS_CONTENT_FLAG.CONTENT_TYPE = 'LINK' AND BCS_CONTENT_LINK.LINK_TAG LIKE ?1 AND BCS_CONTENT_LINK.LINK_URL IS NOT NULL AND BCS_CONTENT_LINK.LINK_URL != '' "
+            + "ORDER BY BCS_CONTENT_LINK.MODIFY_TIME DESC ", nativeQuery = true)
+     public List<Object[]> findAllLinkUrlWithTracingIdByLikeTag(String flag);
 
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME, LINK_TAG "
@@ -50,6 +61,13 @@ public interface ContentLinkRepository extends EntityRepository<ContentLink, Str
 			+ "WHERE MODIFY_TIME BETWEEN ?1 AND  ?2 AND LINK_URL IS NOT NULL AND LINK_URL != '' "
 			+ "ORDER BY MODIFY_TIME DESC, LINK_URL ", nativeQuery = true)
 	public List<Object[]> findAllLinkUrlByLikeTime(String startTime , String endTime);
+	
+	@Transactional(readOnly = true, timeout = 30)
+	@Query(value = "SELECT BCS_CONTENT_LINK.LINK_URL, BCS_CONTENT_LINK.LINK_TITLE, BCS_CONTENT_LINK.LINK_ID, BCS_CONTENT_LINK.MODIFY_TIME, BCS_CONTENT_LINK.LINK_TAG, BCS_CONTENT_LINK_TRACING.TRACING_ID "
+			+ "FROM BCS_CONTENT_LINK INNER JOIN BCS_CONTENT_LINK_TRACING ON BCS_CONTENT_LINK.LINK_ID = BCS_CONTENT_LINK_TRACING.LINK_ID "
+			+ "WHERE BCS_CONTENT_LINK.MODIFY_TIME BETWEEN ?1 AND ?2 AND BCS_CONTENT_LINK.LINK_URL IS NOT NULL AND LINK_URL != '' "
+			+ "ORDER BY MODIFY_TIME DESC ", nativeQuery = true)
+	public List<Object[]> findAllLinkUrlWithTracingIdByLikeTime(String startTime , String endTime);
 	
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT BCS_USER_TRACE_LOG.MODIFY_USER ,BCS_CONTENT_LINK.MODIFY_TIME " 

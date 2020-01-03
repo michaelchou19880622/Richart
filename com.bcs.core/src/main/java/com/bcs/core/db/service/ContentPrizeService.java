@@ -104,7 +104,7 @@ public class ContentPrizeService {
 	}
 	
 	public ContentCoupon getRandomPrizeNew(String gameId, String mid) throws Exception {
-		logger.info("getRandomPrizeNew, gameId=" + gameId + " mid=" + mid);
+		logger.info("Request to get a random prize, gameId=" + gameId + " mid=" + mid);
 		ContentCoupon drewCoupon = null, unDrewLimitCoupon = null;
 		Random random = new Random();
 		BigDecimal index = new BigDecimal(random.ints(1, 10000).findFirst().getAsInt());
@@ -115,7 +115,7 @@ public class ContentPrizeService {
 		if (contentCouponList != null) {
 			prizeCount = contentCouponList.size();
 		}
-		logger.info("getRandomPrizeNew, index=" + index + " contentCouponList=" + contentCouponList);
+		logger.info("Current prize information, index=" + index + " contentCouponList=" + contentCouponList);
 		for (int i = 0; i < prizeCount; i++) {
 		    ContentCoupon coupon = contentCouponList.get(i);
     		// 取得無上限且在領取期間且領取數目最少的優惠卷
@@ -126,27 +126,27 @@ public class ContentPrizeService {
 	    		}
 		    }
     		accumulation = accumulation.add(coupon.getProbability());
-	    	logger.info("getRandomPrizeNew, accumulation =" + accumulation);
+	    	logger.info("Probability information, couponId=" + coupon.getCouponId() + " probability=" + coupon.getProbability() + " accumulation=" + accumulation);
 		   	// 判斷此優惠券是否為中獎優惠券
 		    if (accumulation.multiply(new BigDecimal("100")).compareTo(index) == 1) {
-			    logger.info("getRandomPrizeNew, randomCoupon=" + coupon);
+			    logger.info("A conpon is hit, randomCoupon=" + coupon);
 		   		// 判斷此優惠券無數量限制或是還有剩餘的數量
-		    	if (coupon.getCouponGetLimitNumber() == null || 
-			    	(coupon.getCouponGetLimitNumber() - coupon.getCouponGetNumber()) > 0) {
+		    	if (coupon.getCouponGetLimitNumber() == null || coupon.getCouponGetLimitNumber() > coupon.getCouponGetNumber()) {
 		    		// 判斷此優惠券是否在可領取的期間，如果是的話此優惠券被抽取
 			    	if (today.compareTo(coupon.getCouponStartUsingTime()) >= 0 && today.compareTo(coupon.getCouponEndUsingTime()) < 0) {
-				    	drewCoupon = coupon;
-				    	logger.info("getRandomPrizeNew, drewCouponId=" + drewCoupon.getCouponId());
-					    actionUserCouponService.createActionUserCoupon(mid, drewCoupon.getCouponId(), drewCoupon.getCouponStartUsingTime(), drewCoupon.getCouponEndUsingTime());
-					    break;
+					    if (actionUserCouponService.createActionUserCoupon(mid, coupon.getCouponId(), coupon.getCouponStartUsingTime(), coupon.getCouponEndUsingTime())) {
+					    	drewCoupon = coupon;
+					    	logger.info("Got a conpon successfully, drewCouponId=" + drewCoupon.getCouponId());
+					        break;
+					    }
 				    }
 			    }
 		   	}
 		}
 		if (drewCoupon == null && unDrewLimitCoupon != null) {
 			drewCoupon = unDrewLimitCoupon;
-			logger.info("getRandomPrizeNew, drewCouponId=" + drewCoupon.getCouponId());
 			actionUserCouponService.createActionUserCoupon(mid, drewCoupon.getCouponId(), drewCoupon.getCouponStartUsingTime(), drewCoupon.getCouponEndUsingTime());
+			logger.info("Got a conpon successfully, drewCouponId=" + drewCoupon.getCouponId());
 		}
 		return drewCoupon;
 	}

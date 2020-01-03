@@ -8,22 +8,15 @@ import com.bcs.core.json.AbstractBcsEntity;
 
 public class LinkClickReportModel extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
-
 	private String linkTitle;
-	
 	private String linkUrl;
-	
 	private String linkId;
-	
 	private String linkTime;
-	
 	private String linkFlag;
-	
 	private Set<String> flags = new HashSet<String>();
-	
 	private Long totalCount = 0L;
-	
 	private Long userCount = 0L;
+	private String tracingLink;
 	
 	public String getLinkTitle() {
 		return linkTitle;
@@ -73,4 +66,12 @@ public class LinkClickReportModel extends AbstractBcsEntity{
 	public void setLinkId(String linkId) {
 		this.linkId = linkId;
 	}
+	
+	public String getTracingLink() {
+        return tracingLink;
+    }
+
+    public void setTracingLink(String tracingLink) {
+        this.tracingLink = tracingLink;
+    }
 }

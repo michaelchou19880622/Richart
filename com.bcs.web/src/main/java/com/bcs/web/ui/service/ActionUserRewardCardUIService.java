@@ -89,11 +89,8 @@ public class ActionUserRewardCardUIService {
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public void createFromUIForUse(String mid, ActionUserRewardCard actionUserRewardCard, int getAmount) {
-		logger.info("createFromUIForUse mid : " + mid + ", actionUserRewardCard : " + actionUserRewardCard
-				+ ", getAmount : " + getAmount);
-
-		actionUserRewardCardPointDetailService.createForUse(mid, actionUserRewardCard, getAmount,
-				String.valueOf(actionUserRewardCard.getRewardCardId()));
+		logger.info("createFromUIForUse mid : " + mid + ", actionUserRewardCard : " + actionUserRewardCard + ", getAmount : " + getAmount);
+		actionUserRewardCardPointDetailService.createForUse(mid, actionUserRewardCard, getAmount, String.valueOf(actionUserRewardCard.getRewardCardId()));
 	}
 
 	/**

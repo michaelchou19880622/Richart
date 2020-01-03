@@ -2,7 +2,7 @@
  * 
  */
 $(function(){
-	
+	var loadByTime = false;
 	var page = 0;
 	var paramPage = $.urlParam("page");
 	if(paramPage){
@@ -13,19 +13,29 @@ $(function(){
 	$('.LeftBtn').click(function(){
 		if(page > 0){
 			page--;
-			loadDataFunc("");
+			if (loadByTime) {
+				loadDataByTime();
+			}
+			else {
+				loadDataFunc($("#queryByFlag").val());
+			}
 		}
 	});
 	
 	$('.RightBtn').click(function(){
 		page++;
-		loadDataFunc("");
+		if (loadByTime) {
+			loadDataByTime();
+		}
+		else {
+			loadDataFunc($("#queryByFlag").val());
+		}
 	});
 
 	$('.query').click(function(){
-		
 		var queryFlag = $("#queryByFlag").val();
-		
+		page = 0;
+		loadByTime = false;
 		loadDataFunc(queryFlag);
 	});
 	
@@ -51,17 +61,14 @@ $(function(){
 		}).success(function(response){
 			$('.dataTemplate').remove();
 			console.info(response);
-	
-			$.each(response, function(i, o){
+			var contentLinkTracingList = response.ContentLinkTracingList;
+			var tracingUrlPre = response.TracingUrlPre;
+			$.each(contentLinkTracingList, function(i, o){
 				var groupData = templateBody.clone(true);
-				
 				groupData.find('.linkTitle').html(o.linkTitle);
 				groupData.find('.linkUrl').html(o.linkUrl);
-				
+				groupData.find('.tracingLink').html(tracingUrlPre + o.tracingLink);
 				var linkFlag = moment(o.linkTime).format("YYYY/MM/DD") + "<br/><br/>";
-				//$.each(o.flags, function(i, o){
-				//	linkFlag += o + "/";
-				//});
 				linkFlag += o.linkFlag;
 				groupData.find('.linkFlag').html(linkFlag);
 				
@@ -97,18 +104,23 @@ $(function(){
 	$(".datepicker").datepicker({ 'dateFormat' : 'yy-mm-dd'});
 	
 	$('.querydate').click(function(){
+		page = 0;
+		loadByTime = true;
+		loadDataByTime();
+	});
+	
+	function loadDataByTime() {
 		var campaignStartTime =  moment($('#campaignStartTime').val(), "YYYY-MM-DD");
 		var campaignEndTime =  moment($('#campaignEndTime').val(), "YYYY-MM-DD");
-		
 		var startTime = $("#campaignStartTime").val();
 		var endTime = $("#campaignEndTime").val();
-
 		//需要有日期
 		if(startTime == '' || endTime == ''){
 			alert('請輸入日期區間');
 		}else if (campaignStartTime.isAfter(campaignEndTime)){
 			alert("起始日不能大於結束日");
 		}else{
+			$('#pageText').html(page+1);
 			$('.LyMain').block($.BCS.blockMsgRead);
 			$.ajax({
 				type : "GET",
@@ -116,13 +128,14 @@ $(function(){
 			}).success(function(response){
 				$('.dataTemplate').remove();
 				console.info(response);
-		
-				$.each(response, function(i, o){
+				var contentLinkTracingList = response.ContentLinkTracingList;
+				var tracingUrlPre = response.TracingUrlPre;
+				$.each(contentLinkTracingList, function(i, o){
 					var groupData = templateBody.clone(true);
 					
 					groupData.find('.linkTitle').html(o.linkTitle);
 					groupData.find('.linkUrl').html(o.linkUrl);
-					
+					groupData.find('.tracingLink').html(tracingUrlPre + o.tracingLink);
 					var linkFlag = moment(o.linkTime).format("YYYY/MM/DD") + "<br/><br/>";
 					$.each(o.flags, function(i, o){
 						linkFlag += o + "/";
@@ -149,8 +162,7 @@ $(function(){
 				$('.LyMain').unblock();
 			});
 		}
-		
-	});
+	}
 	
 	$('.exportToExcel').click(function(){
 		var url =  bcs.bcsContextPath + '/edit/exportToExcelForInterface';
@@ -165,6 +177,4 @@ $(function(){
 		downloadReportAllUid.attr("src", url);
 		
 	});
-	
-	
 });

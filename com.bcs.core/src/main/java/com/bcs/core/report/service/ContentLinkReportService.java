@@ -107,7 +107,7 @@ public class ContentLinkReportService {
 					if(count == null || distinctCount == null){
 						if(calendarStart.getTime().getTime() >= fisrtTime.getTime()){
 							if(clickMapCount == null){ 
-								Thread.sleep(100);
+								Thread.sleep(10);
 								logger.info("countClickCountByLinkId queryTime:" + sdf.format(calendarStart.getTime()));
 								List<Object[]> listCountDistinct = contentLinkService.countClickCountByLinkUrl(linkUrl, sdf.format(calendarStart.getTime()));
 								clickMapCount = new HashMap<String, Long>();
