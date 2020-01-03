@@ -34,11 +34,11 @@ public class WinningLetterService {
 		return lst_WinningLetter;
 	}
 	
-	public List<WinningLetter> findAllByStatus(String status) {
+	public List<WinningLetter> findAllByStatusOrderByCreatetimeDesc(String status) {
 		long startTime = System.nanoTime();
 		logger.info("[ findAllByStatus ] Start Time : {}", startTime);
 		
-		List<WinningLetter> lst_WinningLetter = winningLetterRepository.findAllByStatus(status);
+		List<WinningLetter> lst_WinningLetter = winningLetterRepository.findAllByStatusOrderByCreateTimeDesc(status);
 
 		long endTime = System.nanoTime();
 		logger.info("[ findAllByStatus ] End Time : {}", endTime);
@@ -49,11 +49,11 @@ public class WinningLetterService {
 		return lst_WinningLetter;
 	}
 	
-	public List<WinningLetter> findAllByNameContainingAndStatus(String name, String status) {
+	public List<WinningLetter> findAllByNameContainingAndStatusOrderByCreateTimeDesc(String name, String status) {
 		long startTime = System.nanoTime();
 		logger.info("[ findAllByNameContainingAndStatus ] Start Time : {}", startTime);
 		
-		List<WinningLetter> lst_WinningLetter = winningLetterRepository.findAllByNameContainingAndStatus(name, status);
+		List<WinningLetter> lst_WinningLetter = winningLetterRepository.findAllByNameContainingAndStatusOrderByCreateTimeDesc(name, status);
 
 		long endTime = System.nanoTime();
 		logger.info("[ findAllByNameContainingAndStatus ] End Time : {}", endTime);

@@ -1,26 +1,21 @@
 $(function() {
 
 	var userId = "";
-	
+
 	function initializeApp() {
 		userId = liff.getContext().userId;
-		alert("[LIFF INITIAL] Complete : uid = " + userId);
 	}
-	
+
 	function initializeLiff() {
-	    liff
-	        .init({
-	            liffId: "1550669403-KA59ja3L"
-	        })
-	        .then(() => {
-	            initializeApp();
-	        })
-	        .catch((err) => {
-	    		alert("[LIFF INITIAL] Error : " + err.toString());
-	    		userId = "";
-	        });
+	    liff.init({
+            liffId: "1550669403-KA59ja3L"
+        }).then(() => {
+            initializeApp();
+        }).catch((err) => {
+    		userId = "";
+        });
 	}
-	
+
 	initializeLiff();
 
 	let urlParams = new URLSearchParams(window.location.search);
@@ -28,9 +23,7 @@ $(function() {
 	var winningLetterId;
 
 	if (urlParams.has('winningLetterId')) {
-
 		winningLetterId = urlParams.get('winningLetterId');
-		alert("中獎回函編號 : " + winningLetterId);
 	}
 
 	var winner_name = document.getElementById("winner_name");
@@ -166,7 +159,7 @@ $(function() {
 			return 'False';
 		}
 	}
-	
+
 	function getArrayBuffer(file) {
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
@@ -181,49 +174,29 @@ $(function() {
 
 		// 中獎人姓名
 		var data_WinnerName = winner_name.value;
-		console.info("data_IdCardNumber = " + data_IdCardNumber);
 
 		// 身分證字號
 		var data_IdCardNumber = winner_idCardNum.value;
-		console.info("data_IdCardNumber = " + data_IdCardNumber);
 
 		// 聯絡電話
 		var data_PhoneNumber = winner_phoneNumber.value;
-		console.info("data_PhoneNumber = " + data_PhoneNumber);
 
 		// 戶籍地址
 		var data_ResidentAddress = winner_residentAddress.value;
-		console.info("data_ResidentAddress = " + data_ResidentAddress);
 
 		// 通訊地址
 		var data_MailingAddress = ((cb_address.checked) ? data_ResidentAddress : winner_mailingAddress.value);
-		console.info("data_MailingAddress = " + data_MailingAddress);
 
 		// 身分證影本正面
 		var data_IdCardFront = myImgFront.src;
-		console.info("data_IdCardFront = " + data_IdCardFront);
 
 		// 身分證影本反面
 		var data_IdCardBack = myImgBack.src;
-		console.info("data_IdCardBack = " + data_IdCardBack);
 
 		// 領獎申請人簽章
 		var data_Signature = canvas.toDataURL();
 		console.info("data_Signature = " + data_Signature);
 
-// var winningLetterRecordData = {
-// 'uid' : userId,
-// 'winningLetterId' : winningLetterId,
-// 'name' : data_WinnerName,
-// 'id_card_number' : data_IdCardNumber,
-// 'phonenumber' : data_PhoneNumber,
-// 'resident_address' : data_ResidentAddress,
-// 'mailing_address' : data_MailingAddress,
-// 'id_card_copy_front' : data_IdCardFront,
-// 'id_card_copy_back' : data_IdCardBack,
-// 'e_signature' : data_Signature
-// };
-		
 		var winningLetterRecordData = {
 			'uid' : userId,
 			'winningLetterId' : winningLetterId,
@@ -237,26 +210,129 @@ $(function() {
 		return winningLetterRecordData;
 	};
 
+	function dataURLtoFile(dataurl, filename) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+
+        return new File([u8arr], filename, {type:mime});
+    }
+	
+	function isCanvasBlank(canvas) {
+	  return !canvas.getContext('2d')
+	    .getImageData(0, 0, canvas.width, canvas.height).data
+	    .some(channel => channel !== 0);
+	}
+
+	var imageSrcFront = null;
+	var imageSrcBack = null;
+	var imageSrcESignature = null;
+	var winningLetterRecordId;
+	
+	function ajax_updateWinnerIdCardFront() {
+		var formData_front = new FormData();
+		formData_front.append("filePart", imageSrcFront);
+
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				type : "POST",
+				url : encodeURI(bcs.mContextPath + "/wl/updateWinnerIdCard?winningLetterRecordId=" + winningLetterRecordId + "&type=f"),
+	            cache: false,
+	            contentType: false,
+	            processData: false,
+				data : formData_front,
+				success : function(data) {
+					resolve(data)
+					ajax_updateWinnerIdCardBack();
+				},
+				error : function(error) {
+					reject(error)
+				}
+			})
+		})
+	}
+	
+	function ajax_updateWinnerIdCardBack() {
+		var formData_back = new FormData();
+		formData_back.append("filePart", imageSrcBack);
+
+		return new Promise((resolve, reject) => {
+				$.ajax({
+				type : "POST",
+				url : encodeURI(bcs.mContextPath + "/wl/updateWinnerIdCard?winningLetterRecordId=" + winningLetterRecordId + "&type=b"),
+	            cache: false,
+	            contentType: false,
+	            processData: false,
+				data : formData_back,
+				success : function(data) {
+					resolve(data)
+					ajax_updateWinnerESignature();
+				},
+				error : function(error) {
+					reject(error)
+				}
+			})
+		})
+	}
+
+	function ajax_updateWinnerESignature() {
+		
+		var isBlank = isCanvasBlank(canvas);
+		
+		imageSrcESignature = (isBlank)? null : dataURLtoFile(canvas.toDataURL('images/png'), "img.png");
+
+		var formData_eSignature = new FormData();
+		formData_eSignature.append("filePart", imageSrcESignature);
+
+		return new Promise((resolve, reject) => {
+				$.ajax({
+				type : "POST",
+				url : encodeURI(bcs.mContextPath + "/wl/updateWinnerESignature?winningLetterRecordId=" + winningLetterRecordId),
+	            cache: false,
+	            contentType: false,
+	            processData: false,
+				data : formData_eSignature,
+				success : function(data) {
+					resolve(data)
+
+					$('.columnUploadImage').unblock();
+					
+					alert("用戶資料上傳並檢核完成，謝謝您。");
+
+					window.location.replace('https://richart.tw/TSDIB_RichartWeb/RC00/RC000000');
+					
+				},
+				error : function(error) {
+					reject(error)
+				}
+			})
+		})
+	}
+
 	submitBtn.addEventListener("click", function(e) {
+		
+		$('.columnUploadImage').block($.BCS.blockWinnerInfoUploading);
+		
 		$.ajax({
 			type : "GET",
 			url : encodeURI(bcs.mContextPath + "/wl/getWinningLetter?winningLetterId=" + winningLetterId)
 		}).done(function(response) {
+			// 預留判斷中獎回函是否正在活動期間? 如果不是可以擋用戶不讓用戶填寫資料。 
+			// ps. 暫時沒此需求...
+			
 			var endTime = response['endTime'];
 			var isExpired = func_checkIsExpired(endTime);
-			alert("endTime = " + endTime + ", isExpired = " + isExpired);
 
 			if (isExpired == 'True') {
 				alert("很抱歉，此中獎回函填寫時間已過期。");
 				window.location.replace('https://richart.tw/TSDIB_RichartWeb/RC00/RC000000');
 				return;
 			}
-
+		
 			/* Encode winner data to array */
 			var postData = encodeWinningLetterRecordData();
-			alert('JSON.stringify(postData) = ' + JSON.stringify(postData));
-			
-			$('.LyMain').block($.BCS.blockMsgSave);
 			
 			/* Upload winning letter record data */
 			$.ajax({
@@ -268,77 +344,22 @@ $(function() {
 				data : JSON.stringify(postData)
 			}).done(function(response){
 				console.info(response);
-				alert(response);
-				alert('資料上傳成功');
-
+				winningLetterRecordId = response;
+				
+				ajax_updateWinnerIdCardFront();
+				
 			}).fail(function(response) {
 				console.info(response);
-				alert('資料上傳失敗');
-				
-				$('.LyMain').unblock();
+				alert('用戶資料上傳檢核出現異常，請重新嘗試。如仍出現錯誤訊息，請聯繫相關人員。');
+
+				$('.columnUploadImage').unblock();
 			})
-			
-			/*
-			 * Upload image ( Id card copy front ) to backend api to convert and
-			 * store to database
-			 */
-			if (imageSrcFront != null){
-				var formData_front = new FormData();
-				formData_front.append("filePart", imageSrcFront);
-				
-				$.ajax({
-					type : "POST",
-					url : encodeURI(bcs.mContextPath + "/wl/updateWinnerIdCard"),
-		            cache: false,
-	                contentType: false,
-	                processData: false,
-					data : formData_front
-				}).done(function(response){
-					console.info(response);
-					
-					alert('image front test ok');
-
-				}).fail(function(response){
-					console.info(response);
-					
-					alert('image front test fail');
-					
-					$('.LyMain').unblock();
-				})
-			}
-
-			/*
-			 * Upload image ( Id card copy back ) to backend api to convert and
-			 * store to database
-			 */
-			if (imageSrcBack != null) {
-				var formData_back = new FormData();
-				formData_back.append("filePart", imageSrcBack);
-				
-				$.ajax({
-					type : "POST",
-					url : encodeURI(bcs.mContextPath + "/wl/updateWinnerIdCard"),
-		            cache: false,
-	                contentType: false,
-	                processData: false,
-					data : formData_back
-				}).done(function(response){
-					console.info(response);
-					
-					alert('image back test ok');
-
-				}).fail(function(response){
-					console.info(response);
-					
-					alert('image back test fail');
-					
-					$('.LyMain').unblock();
-				})
-			}
 
 		}).fail(function(response) {
 			alert(response.responseText);
-		})
+
+			$('.columnUploadImage').unblock();
+		});
 
 	}, false);
 
@@ -360,42 +381,33 @@ $(function() {
 			MdFRMWLInput_mAddress.style.backgroundColor = 'white';
 		}
 	}
-	
-	var imageSrcFront = null;
-	var imageSrcBack = null;
 
 	window.addEventListener('load', function() {
 		document.querySelector('input[id="filepondFront"]').addEventListener('change', function() {
 			if (this.files && this.files[0]) {
-				alert("this.files[0].name = " + this.files[0].name);
-				
 				if (!this.files[0].type.match(/image.*/)) {
-					alert('Sorry, only images are allowed');
+					alert('很抱歉，您選擇的檔案格式暫不支持，請重新選擇。');
 					return;
 				}
-				
+
 				imageSrcFront = this.files[0];
-				
+
 				var img = document.querySelector('img[id="myImgFront"]');
 				img.src = URL.createObjectURL(this.files[0]);
-				img.onload = imageIsLoaded("正面");
 			}
 		});
 
 		document.querySelector('input[id="filepondBack"]').addEventListener('change', function() {
 			if (this.files && this.files[0]) {
-				alert("this.files[0].name = " + this.files[0].name);
-
 				if (!this.files[0].type.match(/image.*/)) {
-					alert('Sorry, only images are allowed');
+					alert('很抱歉，您選擇的檔案格式暫不支持，請重新選擇。');
 					return;
 				}
-				
+
 				imageSrcBack = this.files[0];
-				
+
 				var img = document.querySelector('img[id="myImgBack"]');
 				img.src = URL.createObjectURL(this.files[0]);
-				img.onload = imageIsLoaded("反面");
 			}
 		});
 	});
@@ -408,9 +420,5 @@ $(function() {
 	var imgBack = document.getElementById("myImgBack");
 	imgBack.onclick = function() {
 		$('#filepondBack').trigger('click');
-	}
-
-	function imageIsLoaded(type) {
-		alert("身分證影本" + type + "上傳成功");
 	}
 });

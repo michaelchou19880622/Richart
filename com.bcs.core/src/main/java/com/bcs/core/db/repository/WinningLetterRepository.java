@@ -16,8 +16,8 @@ public interface WinningLetterRepository extends EntityRepository<WinningLetter,
 	WinningLetter findByName(String name);
 
 	@Transactional(readOnly = true, timeout = 30)
-	List<WinningLetter> findAllByNameContainingAndStatus(String name, String status);
+	List<WinningLetter> findAllByNameContainingAndStatusOrderByCreateTimeDesc(String name, String status);
 	
 	@Transactional(readOnly = true, timeout = 30)
-	List<WinningLetter> findAllByStatus(String status);
+	List<WinningLetter> findAllByStatusOrderByCreateTimeDesc(String status);
 }

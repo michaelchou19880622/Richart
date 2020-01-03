@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.bcs.core.db.entity.ContentResource;
@@ -96,7 +97,7 @@ public class MobileWinningLetterReplyController {
 
 	/** Link WinningLetter **/
 	@RequestMapping(method = RequestMethod.GET, value = "/wl/{winningLetterId}")
-	public RedirectView winningLetterUrlLinkWithId(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable String winningLetterId) throws Exception {
+	public ModelAndView winningLetterUrlLinkWithId(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable String winningLetterId) throws Exception {
 		logger.info("winningLetterUrlLinkWithId");
 		logger.info("winningLetterId = {}", winningLetterId);
 
@@ -108,11 +109,7 @@ public class MobileWinningLetterReplyController {
 
 		model.addAttribute("liffUrl", liffUrl);
 
-		RedirectView redirectTarget = new RedirectView();
-		redirectTarget.setContextRelative(true);
-		redirectTarget.setUrl(liffUrl);
-
-		return redirectTarget;
+	    return new ModelAndView("redirect:" + liffUrl);
 	}
 
 	/** Update Winning Letter Record Data **/
@@ -152,10 +149,73 @@ public class MobileWinningLetterReplyController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/wl/updateWinnerIdCard")
 	@ResponseBody
-	public ResponseEntity<?> updateWinnerIdCard(HttpServletRequest request, HttpServletResponse response, @RequestPart MultipartFile filePart) throws IOException {
+	public ResponseEntity<?> updateWinnerIdCard(HttpServletRequest request, HttpServletResponse response, @RequestPart MultipartFile filePart, @RequestParam String type, @RequestParam String winningLetterRecordId) throws IOException {
 		logger.info("updateWinnerIdCard");
 		
 		try {
+			if (type != null) {
+				logger.info("type = {}", type);
+			}
+
+			if (winningLetterRecordId != null) {
+				logger.info("winningLetterRecordId = {}", winningLetterRecordId);
+			}
+			
+			if (filePart != null) {
+
+				logger.info("filePart.toString() = {}", filePart.toString());
+				logger.info("filePart.getOriginalFilename = {}", filePart.getOriginalFilename());
+				logger.info("filePart.getContentType = {}", filePart.getContentType());
+				logger.info("filePart.getSize = {}", filePart.getSize());
+
+				ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
+				
+				if (resource != null)
+				{
+					logger.info("resource.getResourceId() = {}", resource.getResourceId());
+					
+					WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findById(Long.valueOf(winningLetterRecordId));
+					
+					if (winningLetterRecordData != null) {
+						switch (type) {
+						case "f":
+							winningLetterRecordData.setId_card_copy_front(resource.getResourceId());
+							break;
+						case "b":
+							winningLetterRecordData.setId_card_copy_back(resource.getResourceId());
+							break;
+						}
+						
+						Long savedWinningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
+						logger.info("savedWinningLetterRecordId = {}", savedWinningLetterRecordId);
+					}
+				}
+
+				return new ResponseEntity<>(resource, HttpStatus.OK);
+			} else {
+				throw new Exception("Update Winner Id Card Error");
+			}
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/wl/updateWinnerESignature")
+	@ResponseBody
+	public ResponseEntity<?> updateWinnerESignature(HttpServletRequest request, HttpServletResponse response, @RequestPart MultipartFile filePart, @RequestParam String winningLetterRecordId) throws IOException {
+		logger.info("updateWinnerESignature");
+		
+		try {
+			if (winningLetterRecordId != null) {
+				logger.info("winningLetterRecordId = {}", winningLetterRecordId);
+			}
+			
 			if (filePart != null) {
 
 				logger.info("filePart.toString() = {}", filePart.toString());
@@ -165,9 +225,24 @@ public class MobileWinningLetterReplyController {
 
 				ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
 
+				if (resource != null)
+				{
+					logger.info("resource.getResourceId() = {}", resource.getResourceId());
+					
+					WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findById(Long.valueOf(winningLetterRecordId));
+					
+					if (winningLetterRecordData != null) {
+
+						winningLetterRecordData.setE_signature(resource.getResourceId());	
+						
+						Long savedWinningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
+						logger.info("savedWinningLetterRecordId = {}", savedWinningLetterRecordId);
+					}
+				}
+				
 				return new ResponseEntity<>(resource, HttpStatus.OK);
 			} else {
-				throw new Exception("Update Winner Id Card Error");
+				throw new Exception("Update Winner E-Signature Error");
 			}
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));

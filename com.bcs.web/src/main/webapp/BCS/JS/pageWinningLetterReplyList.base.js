@@ -6,6 +6,8 @@ $(function() {
 	
 	var keywordValue = "";
 	
+	var pageIndex = 1;
+	
 	/* To prevent form refresh from press 'Enter' key */
 	$("form").submit(function() {
 		return false;
@@ -13,7 +15,8 @@ $(function() {
 	
 	/* < TextInput > 查詢 */	
 	$('.searchInput_winnerName').keypress(function(event) {
-		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
+		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome
+		// ...etc)
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		
 		if (keycode == 13) {
@@ -70,7 +73,9 @@ $(function() {
 	
 	/* < Button > PDF檔 */
 	$('.btn_export_pdf').click(function() {
-//		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinningLetter?name=' + keywordValue +'&status=' + pageStatus);
+// window.location.replace(bcs.bcsContextPath +
+// '/edit/exportToExcelForWinningLetter?name=' + keywordValue +'&status=' +
+// pageStatus);
 		alert("功能開發中..");
 	});
 	
@@ -128,9 +133,9 @@ $(function() {
 		checkboxes = document.getElementsByName('checkBoxChilds');
 
 		// Not support on IE browser
-//		for (let checkbox of checkboxes){
-//			checkbox.checked = srcCheckBox.checked;
-//		}
+// for (let checkbox of checkboxes){
+// checkbox.checked = srcCheckBox.checked;
+// }
 
 		// Support on IE browser
 		for (var i = 0, n = checkboxes.length; i < n; i++) {
@@ -167,16 +172,16 @@ $(function() {
 		var numOfCheckedBox = 0;
 		
 		// Not support on IE browser
-//		for (let checkbox of checkboxes){
-//			if (checkbox.checked) {
-//				numOfCheckedBox++;
-//			}
+// for (let checkbox of checkboxes){
+// if (checkbox.checked) {
+// numOfCheckedBox++;
+// }
 //			
-//			if (!checkbox.checked) {
-//				parentCheckbox.checked = false;
-//				continue;
-//			}
-//		}
+// if (!checkbox.checked) {
+// parentCheckbox.checked = false;
+// continue;
+// }
+// }
 
 		// Support on IE browser
 		for (var i = 0, n = checkboxes.length; i < n; i++) {
@@ -207,16 +212,16 @@ $(function() {
 		btn_export_pdf.style.visibility = 'hidden';
 	}
 	
-//	function terms_change(checkbox){
-//	    //If it is checked.
-//	    if(checkbox.checked){
-//	        alert('Checkbox has been ticked!');
-//	    }
-//	    //If it has been unchecked.
-//	    else{
-//	        alert('Checkbox has been unticked!');
-//	    }
-//	}
+// function terms_change(checkbox){
+// //If it is checked.
+// if(checkbox.checked){
+// alert('Checkbox has been ticked!');
+// }
+// //If it has been unchecked.
+// else{
+// alert('Checkbox has been unticked!');
+// }
+// }
 	
 	/* 彈出視窗 Image Model */
 	var model = document.getElementById("myModel");
@@ -236,7 +241,8 @@ $(function() {
 
 	/* When the user click 'ESC', close the model */
 	$(document).keyup(function(e) {
-		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
+		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome
+		// ...etc)
 		var keycode = (e.keyCode ? e.keyCode : e.which);
 		
 		if (keycode == 27) {
@@ -270,7 +276,8 @@ $(function() {
 
 	/* When the user click 'ESC', close the model */
 	$(document).keyup(function(e) {
-		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome ...etc)
+		// Some browsers support 'which'(IE) others support 'keyCode' (Chrome
+		// ...etc)
 		var keycode = (e.keyCode ? e.keyCode : e.which);
 		
 		if (keycode == 27) {
@@ -300,6 +307,7 @@ $(function() {
 
 		$.ajax({
 			type : "GET",
+//			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList/' + pageIndex + '?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
 			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
@@ -323,12 +331,12 @@ $(function() {
 				dataTemplateBody.find('.winnerIdCardNumber').html(func_encryptedString(o.id_card_number));
 				
 				// 檢視身分證正反面
-				dataTemplateBody.find('.btn_check_id_card').attr('img1', o.id_card_copy_front);
-				dataTemplateBody.find('.btn_check_id_card').attr('img2', o.id_card_copy_back);
+				dataTemplateBody.find('.btn_check_id_card').attr('img1', bcs.bcsContextPath + "/getResource/IMAGE/" + o.id_card_copy_front);
+				dataTemplateBody.find('.btn_check_id_card').attr('img2', bcs.bcsContextPath + "/getResource/IMAGE/" + o.id_card_copy_back);
 				dataTemplateBody.find('.btn_check_id_card').click(func_showIdCardModel);
 				
 				// 檢視簽名檔
-				dataTemplateBody.find('.btn_check_e_signature').attr('img1', o.e_signature);
+				dataTemplateBody.find('.btn_check_e_signature').attr('img1', bcs.bcsContextPath + "/getResource/IMAGE/" + o.e_signature);
 				dataTemplateBody.find('.btn_check_e_signature').click(func_showSignatureModel);
 				
 				// 回覆時間
@@ -341,6 +349,8 @@ $(function() {
 			isInitial = false;
 			
 			keywordInput.value = keywordValue;
+			
+			document.getElementById("cbxSelectAll").checked = false;
 
 			$('.LyMain').unblock();
 		}).fail(function(response) {

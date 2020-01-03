@@ -14,11 +14,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.entity.WinningLetterRecord;
+import com.bcs.core.db.service.ContentCouponCodeService;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.resource.UriHelper;
@@ -136,13 +140,13 @@ public class BCSWinningLetterController extends BCSBaseController {
 			List<WinningLetter> list_WinningLetter = new ArrayList<>();
 			
 			if (StringUtils.isBlank(name)) {
-				list_WinningLetter = winningLetterService.findAllByStatus(status);
+				list_WinningLetter = winningLetterService.findAllByStatusOrderByCreatetimeDesc(status);
 			}
 			else if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(status)) {
-				list_WinningLetter = winningLetterService.findAllByNameContainingAndStatus(name, status);
+				list_WinningLetter = winningLetterService.findAllByNameContainingAndStatusOrderByCreateTimeDesc(name, status);
 			}
 			else {
-				list_WinningLetter = winningLetterService.findAllByStatus(WinningLetter.STATUS_ACTIVE);
+				list_WinningLetter = winningLetterService.findAllByStatusOrderByCreatetimeDesc(WinningLetter.STATUS_ACTIVE);
 			}
 			
 			logger.info("list_WinningLetter = {}", list_WinningLetter);
@@ -513,7 +517,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
 	}
-
+	
 	/** Get winning letter reply list data by winning letter id **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterReplyList")
 	@ResponseBody
@@ -530,7 +534,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 		
 		try {
 			List<WinningLetterRecord> list_WinningLetterRecords = null;
-			
+
 			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
 				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterId(winnerName, Long.valueOf(winningLetterId));
 			}
@@ -538,6 +542,45 @@ public class BCSWinningLetterController extends BCSBaseController {
 				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId));
 			}
 			
+			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
+
+			return new ResponseEntity<>(list_WinningLetterRecords, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Exception : ", e);
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+
+	/** Get winning letter reply list data by winning letter id with pageIndex**/
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterReplyList/{pageIndex}")
+	@ResponseBody
+	public ResponseEntity<?> getWinningLetterReplyList(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @RequestParam String winnerName, @PathVariable Integer pageIndex) throws Exception {
+		logger.info("getWinningLetterReplyList");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
+		
+		logger.info("winningLetterId = {}", winningLetterId);
+		logger.info("winnerName = {}", winnerName);
+		
+		try {
+			List<WinningLetterRecord> list_WinningLetterRecords = null;
+
+			Pageable pageable = new PageRequest((pageIndex >= 1) ? pageIndex - 1 : 0, WinningLetterRecordService.pageSize);
+			
+			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
+				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterId(winnerName, Long.valueOf(winningLetterId), pageable);
+			}
+			else {
+				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId));
+			}
 			
 			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
 
