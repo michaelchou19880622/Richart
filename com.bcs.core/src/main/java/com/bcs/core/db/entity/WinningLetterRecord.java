@@ -15,7 +15,7 @@ import com.bcs.core.json.CustomDateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @Entity
-@Table(name = "BCS_WINNING_LETTER_RECORD_TEST", indexes = { @Index(name = "INDEX_0", columnList = "ID") })
+@Table(name = "BCS_WINNING_LETTER_RECORD", indexes = { @Index(name = "INDEX_0", columnList = "ID") })
 public class WinningLetterRecord extends AbstractBcsEntity {
 	private static final long serialVersionUID = 1L;
 
