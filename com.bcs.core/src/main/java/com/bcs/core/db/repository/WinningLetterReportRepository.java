@@ -13,29 +13,29 @@ public interface WinningLetterReportRepository extends EntityRepository<WinningL
 
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT "
-			+ "bwlt.NAME, "
-			+ "bwlt.STATUS, "
-			+ "(SELECT COUNT(bwlrt.ID) FROM BCS_WINNING_LETTER_RECORD_TEST bwlrt WHERE bwlrt.WINNING_LETTER_ID = bwlt.ID) AS REPLY, "
-			+ "bwlt.ID, "
-			+ "bwlt.END_TIME, "
-			+ "bwlt.CREATE_TIME, "
-			+ "bwlt.CREATE_USER, "
-			+ "bwlt.MODIFY_TIME, "
-			+ "bwlt.MODIFY_USER "
-			+ "FROM BCS_WINNING_LETTER_TEST bwlt WHERE bwlt.NAME LIKE %:name% AND bwlt.STATUS = :status", nativeQuery = true)
+			+ "bwl.NAME, "
+			+ "bwl.STATUS, "
+			+ "(SELECT COUNT(bwlr.ID) FROM BCS_WINNING_LETTER_RECORD bwlr WHERE bwlr.WINNING_LETTER_ID = bwl.ID) AS REPLY, "
+			+ "bwl.ID, "
+			+ "bwl.END_TIME, "
+			+ "bwl.CREATE_TIME, "
+			+ "bwl.CREATE_USER, "
+			+ "bwl.MODIFY_TIME, "
+			+ "bwl.MODIFY_USER "
+			+ "FROM BCS_WINNING_LETTER bwl WHERE bwl.NAME LIKE %:name% AND bwl.STATUS = :status", nativeQuery = true)
 	List<Object[]> findSummaryReportByLikeNameAndStatus(@Param("name") String name, @Param("status") String status);
 	
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT "
-			+ "bwlt.NAME, "
-			+ "bwlt.STATUS, "
-			+ "(SELECT COUNT(bwlrt.ID) FROM BCS_WINNING_LETTER_RECORD_TEST bwlrt WHERE bwlrt.WINNING_LETTER_ID = bwlt.ID) AS REPLY, "
-			+ "bwlt.ID, "
-			+ "bwlt.END_TIME, "
-			+ "bwlt.CREATE_TIME, "
-			+ "bwlt.CREATE_USER, "
-			+ "bwlt.MODIFY_TIME, "
-			+ "bwlt.MODIFY_USER "
-			+ "FROM BCS_WINNING_LETTER_TEST bwlt WHERE bwlt.STATUS = :status", nativeQuery = true)
+			+ "bwl.NAME, "
+			+ "bwl.STATUS, "
+			+ "(SELECT COUNT(bwlr.ID) FROM BCS_WINNING_LETTER_RECORD bwlr WHERE bwlr.WINNING_LETTER_ID = bwl.ID) AS REPLY, "
+			+ "bwl.ID, "
+			+ "bwl.END_TIME, "
+			+ "bwl.CREATE_TIME, "
+			+ "bwl.CREATE_USER, "
+			+ "bwl.MODIFY_TIME, "
+			+ "bwl.MODIFY_USER "
+			+ "FROM BCS_WINNING_LETTER bwl WHERE bwl.STATUS = :status", nativeQuery = true)
 	List<Object[]> findSummaryReportByStatus(@Param("status") String status);
 }
