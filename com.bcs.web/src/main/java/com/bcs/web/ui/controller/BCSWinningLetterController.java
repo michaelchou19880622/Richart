@@ -36,6 +36,7 @@ import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.resource.UriHelper;
 import com.bcs.core.richart.api.model.WinningLetterModel;
 import com.bcs.core.richart.service.ExportToExcelForWinningLetterService;
+import com.bcs.core.richart.service.ServiceExportWinnerInfoToPDF;
 import com.bcs.core.richart.service.WinningLetterRecordService;
 import com.bcs.core.richart.service.WinningLetterService;
 import com.bcs.core.utils.ObjectUtil;
@@ -60,6 +61,9 @@ public class BCSWinningLetterController extends BCSBaseController {
 	
 	@Autowired
 	private ExportToExcelForWinningLetterService exportToExcelForWinningLetterService;
+	
+	@Autowired
+	private ServiceExportWinnerInfoToPDF serviceExportWinnerInfoToPDF;
 
 	/** WinningLetter Main Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/winningLetterMainPage")
@@ -113,14 +117,6 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 		return BcsPageEnum.WinningLetterSignaturePage.toString();
 	}
-
-//	/** WinningLetter Reply Page **/
-//	@RequestMapping(method = RequestMethod.GET, value = "/wl/winningLetterReplyPage")
-//	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		logger.info("winningLetterReplyPage");
-//		
-//		return BcsPageEnum.WinningLetterReplyPage.toString();
-//	}
 
 	/** Get winning letter list data **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterList")
@@ -512,7 +508,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 			exportToExcelForWinningLetterService.exportToExcelForWinningListByLikeNameAndStatus(filePath, fileName, name, status);
 
 		} catch (Exception e) {
-			logger.error("Exception : ", e);
+			logger.error("Exception : {}", e);
 		}
 
 		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
@@ -629,11 +625,48 @@ public class BCSWinningLetterController extends BCSBaseController {
 			exportToExcelForWinningLetterService.exportToExcelForWinnerReplyListByWinningLetterId(filePath, fileName, winningLetterId);
 
 		} catch (Exception e) {
-			logger.error("Exception : ", e);
+			logger.error("Exception : {}", e);
 		}
 
 		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
 	}
 	
+
 	
+	/** Export winner reply list to pdf **/
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/exportWinnerInfoToPDF")
+	@ResponseBody
+	public void exportWinnerInfoToPDF(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser)
+			throws IOException {
+		logger.info("exportWinnerInfoToPDF");
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+		
+		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+		logger.info("filePath = {}", filePath);
+		
+		Date date = new Date();
+		
+		String fileName = "TEST_" + sdf.format(date) + ".xlsx";
+		logger.info("fileName = {}", fileName);
+		
+		try {
+			File folder = new File(filePath);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			
+			serviceExportWinnerInfoToPDF.exportWinnerInfoToPDF("", fileName, "");
+			
+//			exportToExcelForWinningLetterService.exportToExcelForWinnerReplyListByWinningLetterId(filePath, fileName, winningLetterId);
+
+		} catch (Exception e) {
+			logger.error("Exception : {}", e);
+		}
+	}
 }

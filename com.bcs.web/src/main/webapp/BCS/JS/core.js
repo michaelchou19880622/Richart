@@ -264,7 +264,7 @@ $(function(){
 	$.BCS.blockWinningLetterStatusUpdating = { "message" : "狀態更新中..."};
 	$.BCS.blockWinningLetterDeleting = { "message" : "中獎回函資料刪除中..."};
 	$.BCS.blockWinningLetterLoading = { "message" : "中獎回函內容載入中..."};
-	$.BCS.blockWinnerInfoUploading = { "message" : "用戶資料正在進行上傳並檢核，麻煩您耐心稍候，並請勿關閉視窗，以免資料檢核失敗，喪失您的權益。"};
+	$.BCS.blockWinnerInfoUploading = { "message" : "用戶資料上傳中..."};
 	
 	$.BCS.formatNumber = function(number, size){
 

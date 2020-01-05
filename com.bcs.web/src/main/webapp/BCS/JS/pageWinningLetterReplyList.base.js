@@ -73,10 +73,21 @@ $(function() {
 	
 	/* < Button > PDF檔 */
 	$('.btn_export_pdf').click(function() {
-// window.location.replace(bcs.bcsContextPath +
-// '/edit/exportToExcelForWinningLetter?name=' + keywordValue +'&status=' +
-// pageStatus);
-		alert("功能開發中..");
+		
+		$('.LyMain').block($.BCS.blockWinningLetterStatusUpdating);
+		$.ajax({
+			type : "POST",
+			url : encodeURI(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF')
+		}).done(function(response) {
+			alert("匯出PDF檔案完成");
+			$('.LyMain').unblock();
+		}).fail(function(response) {
+			console.info(response);
+			$.FailResponse(response);
+			$('.LyMain').unblock();
+		})
+		
+//		alert("功能開發中..");
 	});
 	
 	/* < Button > Excel檔 */

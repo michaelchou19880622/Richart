@@ -296,10 +296,10 @@ $(function() {
 				data : formData_eSignature,
 				success : function(data) {
 					resolve(data)
-
-					$('.columnUploadImage').unblock();
 					
 					alert("用戶資料上傳並檢核完成，謝謝您。");
+
+					$('.columnUploadImage').unblock();
 
 					window.location.replace('https://richart.tw/TSDIB_RichartWeb/RC00/RC000000');
 					
