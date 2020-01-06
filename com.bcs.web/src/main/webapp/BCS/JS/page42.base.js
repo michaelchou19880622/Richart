@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 $(function(){
 	$('.btn_add').click(function(){
@@ -15,25 +15,27 @@ $(function(){
 		var rewardCardId = $(this).attr('rewardCardId');
 		window.location.href=bcs.bcsContextPath +'/edit/rewardCardPointRecordPage?rewardCardId='+rewardCardId;
 	});
-	
-	$('.btn_coupon_record').click(function(){	
+
+	$('.btn_coupon_record').click(function(){
 		console.log("btn_coupon_record");
-		var rewardCardId = $(this).attr('rewardCardId');	
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardCardCouponRecord?rewardCardId=' + rewardCardId;
-		var downloadCouponRecordList = $('#downloadCouponRecordList');
-		downloadCouponRecordList.attr("src", url);
+		var rewardCardId = $(this).attr('rewardCardId');
+		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardCardCouponRecord2?rewardCardId=' + rewardCardId;
+//		var downloadCouponRecordList = $('#downloadCouponRecordList');
+//		downloadCouponRecordList.attr("src", url);
+        console.info('url: ' + url);
+        window.location.href = url;
 	});
-	
+
 	$('.csvFile').on("change", function(e) {
-		var rewardCardId = $(this).attr('rewardCardId');	
+		var rewardCardId = $(this).attr('rewardCardId');
 		var input = e.currentTarget;
 		if (input.files && input.files[0]) {
 			var form_data = new FormData();
-    		
+
             form_data.append("filePart",input.files[0]);
-			
+
     		$('.LyMain').block($.BCS.blockMsgUpload);
-    		
+
     		$.ajax({
     			type : "POST",
     			url : bcs.bcsContextPath + '/edit/manuallyCreateRewardCardPoint?rewardCardId='+rewardCardId,
@@ -52,23 +54,23 @@ $(function(){
 //    					successString+=response.overPointUsers[index]+"\n";
 //    				}
 //    			}
-    			
+
     			alert(successString);
     		}).fail(function(response){
     			$.FailResponse(response);
     			$('.LyMain').unblock();
     		}).done(function(){
     			$('.LyMain').unblock();
-    		});   
+    		});
 		}
 	});
-	
+
 	var btn_copyFunc = function(){
 		var rewardCardId = $(this).attr('rewardCardId');
 		console.info('btn_copyFunc rewardCardId:' + rewardCardId);
  		window.location.href=bcs.bcsContextPath + '/edit/rewardCardCreatePage?rewardCardId=' + rewardCardId + '&actionType=Copy&from=active';
 	};
-	
+
 	var btn_deteleFunc = function(){
 		var rewardCardId = $(this).attr('rewardCardId');
 		console.info('btn_deteleFunc rewardCardId:' + rewardCardId);
@@ -76,7 +78,7 @@ $(function(){
 		if (!confirm('請確認是否刪除')) {
 			return false;
 		}
-		
+
 		$.ajax({
 			type : "DELETE",
 			url : bcs.bcsContextPath + '/admin/deleteContentRewardCard?rewardCardId=' + rewardCardId
@@ -90,13 +92,13 @@ $(function(){
 		}).done(function(){
 		});
 	};
-	
+
 	var btn_qrFunc = function(){
 		var rewardCardId = $(this).attr('rewardCardId');
 		console.info('btn_qrFunc rewardCardId:' + rewardCardId);
 		window.open(bcs.bcsContextPath + '/edit/rewardCardQRCodePage?rewardCardId=' + rewardCardId);
 	};
-	
+
 	// 改變狀態按鈕
 	var redesignFunc = function(){
 		var rewardCardId = $(this).attr('rewardCardId');
@@ -105,7 +107,7 @@ $(function(){
 		if (!confirm('請確認是否取消')) {
 			return false;
 		}
-		
+
 		$.ajax({
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/redesignContentRewardCard?rewardCardId=' + rewardCardId
@@ -121,59 +123,59 @@ $(function(){
 	};
 
 	var loadDataFunc = function(){
-		
+
 		$.ajax({
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/getContentRewardModelCardList'
 		}).success(function(response){
 			$('.dataTemplate').remove();
 			console.info(response);
-						
+
 			$.each(response, function(i, o){
 				var queryBody = templateBody.clone(true);
-				
+
 				var contentRewardCard = o.contentRewardCard;
 				var contentCouponList = o.contentCouponList;
 				console.info(contentCouponList);
 				queryBody.find('.rewardCardTitle a')
 					.attr('href', '../edit/rewardCardCreatePage?rewardCardId=' + contentRewardCard.rewardCardId + '&actionType=Edit&from=active')
 					.html(contentRewardCard.rewardCardMainTitle);
-				
+
 				queryBody.find('.expireTime').html(
-						moment(contentRewardCard.rewardCardStartUsingTime).format('YYYY-MM-DD HH:mm:ss') 
-						+ '<br> ~ ' 
+						moment(contentRewardCard.rewardCardStartUsingTime).format('YYYY-MM-DD HH:mm:ss')
+						+ '<br> ~ '
 						+ moment(contentRewardCard.rewardCardEndUsingTime).format('YYYY-MM-DD HH:mm:ss'));
-				
+
 				for(var index in contentCouponList){
 					var contentCoupon = contentCouponList[index];
 					var couponLink = "../edit/couponCreatePage?couponId="+contentCoupon.couponId+"&actionType=Edit&from=active";
 					queryBody.find('.couponTitle').append('<a href='+couponLink+'>'+contentCoupon.couponTitle+'</a>'+'</br>');
 				}
 				queryBody.find('#couponId').val(contentRewardCard.couponId);
-				
+
 				queryBody.find('.modifyUser').html(moment(contentRewardCard.modifyTime).format('YYYY-MM-DD HH:mm:ss') + "<br>" + contentRewardCard.modifyUser);
 
 				queryBody.find('.status span').html($.BCS.parseInteractiveStatus(contentRewardCard.status));
 
 				queryBody.find('.btn_redeisgn').attr('rewardCardId', contentRewardCard.rewardCardId);
 				queryBody.find('.btn_redeisgn').click(redesignFunc);
-				
+
 				queryBody.find('.btn_copy')
 					.attr('rewardCardId', contentRewardCard.rewardCardId)
 					.click(btn_copyFunc);
-				
+
 				queryBody.find('.btn_detele')
 					.attr('rewardCardId', contentRewardCard.rewardCardId)
 					.click(btn_deteleFunc);
-				
+
 				queryBody.find('.btn_qr_code')
 					.attr('rewardCardId', contentRewardCard.rewardCardId)
 					.click(btn_qrFunc);
-				
+
 				queryBody.find('.btn_point_record').attr('rewardCardId', contentRewardCard.rewardCardId);
 				queryBody.find('.btn_coupon_record').attr('rewardCardId', contentRewardCard.rewardCardId);
 				queryBody.find('.csvFile').attr('rewardCardId', contentRewardCard.rewardCardId);
-				
+
 				$('#tableBody').append(queryBody);
 			});
 		}).fail(function(response){
@@ -182,10 +184,10 @@ $(function(){
 		}).done(function(){
 		});
 	};
-	
+
 	var templateBody = {};
 	templateBody = $('.dataTemplate').clone(true);
 	$('.dataTemplate').remove();
-	
+
 	loadDataFunc();
 });
