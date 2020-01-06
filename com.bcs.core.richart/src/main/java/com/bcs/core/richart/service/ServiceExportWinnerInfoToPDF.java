@@ -1,19 +1,34 @@
 package com.bcs.core.richart.service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.Iterator;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.usermodel.IBodyElement;
+import org.apache.poi.xwpf.converter.pdf.PdfConverter;
+import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlToken;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTNonVisualDrawingProps;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPositiveSize2D;
+import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDrawing;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,174 +39,220 @@ public class ServiceExportWinnerInfoToPDF {
 	/** Logger **/
 	private static Logger logger = LoggerFactory.getLogger(ServiceExportWinnerInfoToPDF.class);
 
-	private static final String SOURCE_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\WinningLetterReplyTempleteSourceNew.docx";
-	private static final String OUTPUT_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\WinningLetterReplyTemplete_Test.docx";
+	private static final String SOURCE_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\docx\\WinningLetterReplyTempleteSource2.docx";
+	private static final String OUTPUT_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\output\\WinningLetterReplyTemplete_Test2.docx";
+	private static final String OUTPUT_PDF_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\output\\WinningLetterReplyTemplete_Test2.pdf";
+	
+	private static final String IMAGE_ID_CARD_FRONT = "C:\\BCS\\FILE\\IMAGE\\90b60bfa-df96-4a76-b009-4d0530b7b139";
+	private static final String IMAGE_ID_CARD_BACK = "C:\\BCS\\FILE\\IMAGE\\4b3fcfd5-f2a3-4c83-8909-11c770374ca8";
+	private static final String IMAGE_ESIGNATURE = "C:\\BCS\\FILE\\IMAGE\\edc54ab0-bde1-4691-8c34-24cd3807f261";
 
 	/** Export winner info to PDF **/
 	public void exportWinnerInfoToPDF(String exportPath, String fileName, String winningLetterRecordId) throws Exception {
-		try {
-			XWPFDocument doc = new XWPFDocument(OPCPackage.open(SOURCE_FILE));
-			
-			Iterator<IBodyElement> iter = doc.getBodyElementsIterator();
-			while (iter.hasNext()) {
-				IBodyElement elem = iter.next();
-				logger.info("elem.getElementType() = {}", elem.getElementType());
-				
-				if (elem instanceof XWPFParagraph) {
-					logger.info("elem instanceof XWPFParagraph");
-					List<IBodyElement> lst_ParagraphBody = elem.getBody().getBodyElements();
-					logger.info("lst_ParagraphBody.size() = {}", lst_ParagraphBody.size());
-					
-					for (IBodyElement iParagraphBodyElement : lst_ParagraphBody) {
-						logger.info("iBodyElement.getElementType() = {}", iParagraphBodyElement.getElementType());
-					}
-				} else if (elem instanceof XWPFTable) {
-					logger.info("elem instanceof XWPFTable");
-					List<IBodyElement> lst_TableBody = elem.getBody().getBodyElements();
-					logger.info("lst_TableBody.size() = {}", lst_TableBody.size());
-					
-					for (IBodyElement iTableBodyElement : lst_TableBody) {
-						logger.info("iBodyElement.getElementType() = {}", iTableBodyElement.getElementType());
-						
-//						iTableBodyElement.getBody().getBodyElements()
-					}
-					
-				} else if (elem instanceof XWPFTableRow) {
-					logger.info("elem instanceof XWPFTableRow");
-				}  else if (elem instanceof XWPFTableCell) {
-					logger.info("elem instanceof XWPFTableCell");
-				} else if (elem instanceof XWPFRun) {
-					logger.info("elem instanceof XWPFRun");
-				}
-			}
 
-//			logger.info("1-1 doc.getTables().size() = {}", doc.getTables().size());
-//			logger.info("1-1 doc.getParagraphs().size() = {}", doc.getParagraphs().size());
-//			logger.info("1-1 doc.getBodyElements().size() = {}", doc.getBodyElements().size());
-			
-			
-//			for (XWPFParagraph p : doc.getParagraphs()) {
-//				List<XWPFRun> runs = p.getRuns();
-//				if (runs != null) {
-//					for (XWPFRun r : runs) {
-//						String text = r.getText(0);
-//						logger.info("1-1 text = {}", text);
-//						if (text != null && text.contains("${WinningLetterName}")) {
-//							text = text.replace("${WinningLetterName}", "測試中獎回函123456");
-//							r.setText(text, 0);
-//						}
-//						else if (text != null && text.contains("${EndTime}")) {
-//							text = text.replace("${EndTime}", "2020/01/05");
-//							r.setText(text, 0);
-//						}
-//					}
-//				}
-//			}
-			
-			
-			
-			
-			for (XWPFTable tbl : doc.getTables()) {
-				logger.info("2-1 doc.getTables().size() = {}", doc.getTables().size());
-				for (XWPFTableRow row : tbl.getRows()) {
-					logger.info("2-1 row.getTableCells().size() = {}", row.getTableCells().size());
-					for (XWPFTableCell cell : row.getTableCells()) {
-						for (XWPFParagraph p : cell.getParagraphs()) {
-							for (XWPFRun r : p.getRuns()) {
-								String text = r.getText(0);
-								logger.info("2-1 text = {}", text);
-								if (text != null && text.contains("${WinningLetterName}")) {
-									text = text.replace("${WinningLetterName}", "測試中獎回函123456");
-									r.setText(text, 0);
+		// check record in database
+
+		Map<String, String> mapReplacedText = new HashMap<>();
+		mapReplacedText.put("${WinningLetterName}", "Richart好禮自由配機會中獎回覆函");
+		mapReplacedText.put("${EndTime}", "2020/01/31 ");
+		mapReplacedText.put("${WinnerName}", "王小明");
+		mapReplacedText.put("${WinnerIdCardNum}", "S123456789");
+		mapReplacedText.put("${WinningLetterGifts}", "LINE Points 3,000點 (價值NT$3,465)");
+		mapReplacedText.put("${WinnerPhoneNumber}", "0987654321");
+		mapReplacedText.put("${WinnerResidentAddress}", "台北市內湖區堤頂大道二段999號");
+		mapReplacedText.put("${WinnerMailingAddress}", "台北市內湖區堤頂大道二段123號");
+		mapReplacedText.put("${idCardFront}", "@@@");
+		mapReplacedText.put("${idCardBack}", "@@@");
+		mapReplacedText.put("${eSignature}", "@@@");
+
+		try {
+			CustomXWPFDocument doc = new CustomXWPFDocument(new FileInputStream(SOURCE_FILE));
+
+			List<XWPFTable> list_Tables = doc.getTables();
+			for (int tableIndex = 0; tableIndex < list_Tables.size(); tableIndex++) {
+				XWPFTable table = list_Tables.get(tableIndex);
+
+				List<XWPFTableRow> list_TableRows = table.getRows();
+				for (int tableRowIndex = 0; tableRowIndex < list_TableRows.size(); tableRowIndex++) {
+					XWPFTableRow tableRow = list_TableRows.get(tableRowIndex);
+
+					List<XWPFTableCell> list_TableCells = tableRow.getTableCells();
+					for (int tableCellIndex = 0; tableCellIndex < list_TableCells.size(); tableCellIndex++) {
+						XWPFTableCell tableCell = list_TableCells.get(tableCellIndex);
+
+						if (tableCell.getParagraphs().size() > 0) {
+
+							List<XWPFParagraph> list_TableCell_Paragraphs = tableCell.getParagraphs();
+							for (int paragraphIndex = 0; paragraphIndex < list_TableCell_Paragraphs.size(); paragraphIndex++) {
+								XWPFParagraph paragraph = list_TableCell_Paragraphs.get(paragraphIndex);
+
+								for (int runIndex = 0; runIndex < paragraph.getRuns().size(); runIndex++) {
+									XWPFRun run = paragraph.getRuns().get(runIndex);
+
+									List<CTDrawing> drawings = run.getCTR().getDrawingList();
+									logger.info("1-1 drawings.size() = {}", drawings.size());
+
+									for (int drawingIndex = 0; drawingIndex < drawings.size(); drawingIndex++) {
+										CTDrawing drawing = drawings.get(drawingIndex);
+										
+										List<CTInline> list_InLine = drawing.getInlineList();
+										logger.info("1-1 list_InLine.size() = {}", list_InLine.size());
+										for (int inLineIndex = 0; inLineIndex < list_InLine.size(); inLineIndex++) {
+											CTInline ctInline = list_InLine.get(inLineIndex);
+											
+											CTPositiveSize2D ps2d = ctInline.getExtent();
+											
+											String blipId = null;
+											
+											long docPrId = ctInline.getDocPr().getId();
+											logger.info("1-1 docPrId = {}", docPrId);
+											
+											switch (String.valueOf(docPrId)) {
+											default:
+												continue;
+											case "2":
+												blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
+												break;
+											case "3":
+												blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
+												break;
+											case "6":
+												blipId = addPictureData(IMAGE_ESIGNATURE, doc);
+												break;
+											}
+											
+											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
+//												run.getCTR().removeDrawing(drawingIndex);
+											
+											drawing.removeInline(inLineIndex);
+											
+											logger.info("1-1 TEST, tcInLineIndex = {}", inLineIndex);
+										}
+									}
+
+									String runText = run.getText(0);
+
+									if (StringUtils.isBlank(runText)) {
+										continue;
+									}
+
+									if (!runText.startsWith("${") || !runText.endsWith("}")) {
+										continue;
+									}
+
+									logger.info(String.format("table[%d].tableRow[%d].tableCell[%d].paragraph[%d].run[%d] = %s", tableIndex, tableRowIndex, tableCellIndex, paragraphIndex, runIndex,
+											runText));
+
+									Set<Map.Entry<String, String>> textSets = mapReplacedText.entrySet();
+									for (Map.Entry<String, String> textSet : textSets) {
+										String key = textSet.getKey();
+										if (runText.indexOf(key) != -1) {
+											run.setText(textSet.getValue(), 0);
+										}
+									}
 								}
-								else if (text != null && text.contains("${EndTime}")) {
-									text = text.replace("${EndTime}", "2020/01/05");
-									r.setText(text, 0);
+							}
+						}
+
+						if (tableCell.getTables().size() > 0) {
+
+							List<XWPFTable> list_TableCell_Tables = tableCell.getTables();
+							for (int tcTableIndex = 0; tcTableIndex < list_TableCell_Tables.size(); tcTableIndex++) {
+								XWPFTable tcTable = list_TableCell_Tables.get(tcTableIndex);
+
+								List<XWPFTableRow> list_TableCell_TableRows = tcTable.getRows();
+								for (int tcTableRowIndex = 0; tcTableRowIndex < list_TableCell_TableRows.size(); tcTableRowIndex++) {
+									XWPFTableRow tcTableRows = list_TableCell_TableRows.get(tcTableRowIndex);
+
+									List<XWPFTableCell> list_TableCell_TableCells = tcTableRows.getTableCells();
+									for (int tcTableCellIndex = 0; tcTableCellIndex < list_TableCell_TableCells.size(); tcTableCellIndex++) {
+										XWPFTableCell tcTableCell = list_TableCell_TableCells.get(tcTableCellIndex);
+
+										List<XWPFParagraph> list_TableCell_TableCell_Paragraphs = tcTableCell.getParagraphs();
+										for (int tcParagraphIndex = 0; tcParagraphIndex < list_TableCell_TableCell_Paragraphs.size(); tcParagraphIndex++) {
+											XWPFParagraph tcParagraph = list_TableCell_TableCell_Paragraphs.get(tcParagraphIndex);
+
+											for (int tcRunIndex = 0; tcRunIndex < tcParagraph.getRuns().size(); tcRunIndex++) {
+												XWPFRun tcRun = tcParagraph.getRuns().get(tcRunIndex);
+												
+												List<CTDrawing> drawings = tcRun.getCTR().getDrawingList();
+												logger.info("2-1 drawings.size() = {}", drawings.size());
+
+												for (int tcRunDrawingIndex = 0; tcRunDrawingIndex < drawings.size(); tcRunDrawingIndex++) {
+													CTDrawing drawing = drawings.get(tcRunDrawingIndex);
+													
+													List<CTInline> list_InLine = drawing.getInlineList();
+													logger.info("2-1 list_InLine.size() = {}", list_InLine.size());
+													for (int tcInLineIndex = 0; tcInLineIndex < list_InLine.size(); tcInLineIndex++) {
+														CTInline ctInline = list_InLine.get(tcInLineIndex);
+														
+														CTPositiveSize2D ps2d = ctInline.getExtent();
+														
+														String blipId = null;
+														
+														long docPrId = ctInline.getDocPr().getId();
+														logger.info("2-1 docPrId = {}", docPrId);
+														
+														switch (String.valueOf(docPrId)) {
+														default:
+															break;
+														case "2":
+															blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
+															break;
+														case "3":
+															blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
+															break;
+														case "6":
+															blipId = addPictureData(IMAGE_ESIGNATURE, doc);
+															break;
+														}
+														
+														doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
+//															tcRun.getCTR().removeDrawing(tcRunDrawingIndex);
+														
+														drawing.removeInline(tcInLineIndex);
+
+														logger.info("2-1 TEST, tcInLineIndex = {}", tcInLineIndex);
+														break;
+													}
+
+													break;
+												}
+
+												String tcRunText = tcRun.getText(0);
+
+												if (StringUtils.isBlank(tcRunText)) {
+													continue;
+												}
+
+												if (!tcRunText.startsWith("${") || !tcRunText.endsWith("}")) {
+													continue;
+												}
+
+												logger.info(String.format("table[%d].tableRow[%d].tableCell[%d].paragraph[%d].run[%d] = %s", tcTableIndex, tcTableRowIndex, tcTableCellIndex,
+														tcParagraphIndex, tcRunIndex, tcRunText));
+
+												Set<Map.Entry<String, String>> textSets = mapReplacedText.entrySet();
+												for (Map.Entry<String, String> textSet : textSets) {
+													String key = textSet.getKey();
+													if (tcRunText.indexOf(key) != -1) {
+														tcRun.setText(textSet.getValue(), 0);
+													}
+												}
+											}
+										}
+									}
 								}
 							}
 						}
 					}
 				}
 			}
-			
+
 			doc.write(new FileOutputStream(OUTPUT_FILE));
 			doc.close();
 
-//			Map<String, String> map = new HashMap<>();
-//	        map.put("WinningLetterName", "Richart好禮自由配機會中獎回覆函");
-//	        map.put("EndTime", "2020/01/31");
-//	        map.put("WinnerName", "王小明");
-//	        map.put("WinnerIdCardNumber", "S123456789");
-//			
-//			XWPFDocument document = new XWPFDocument(OPCPackage.open(SOURCE_FILE));
-//			
-//			// 替换的文本对象
-//			changeText(document, map);
-//			
-//			// 替换的表格对象
-//			changeTable(document, map);
-//
-//			File file = new File(OUTPUT_FILE);
-//			FileOutputStream stream = new FileOutputStream(file);
-//			document.write(stream);
-//			stream.close();
-
-//			/**
-//			 * if uploaded doc then use HWPF else if uploaded Docx file use XWPFDocument
-//			 */
-//			XWPFDocument doc = new XWPFDocument(OPCPackage.open(SOURCE_FILE));
-//
-//			logger.info("doc.getTables().size() = {}", doc.getTables().size());
-//
-//			Iterator<XWPFTable> it = doc.getTablesIterator();
-//
-//			while (it.hasNext()) {
-//				XWPFTable xwpfTable = it.next();
-//				logger.info("xwpfTable.getText() = {}", xwpfTable.getText());
-//
-//				List<XWPFTableRow> listRows = xwpfTable.getRows();
-//				logger.info("listRows.size() = {}", listRows.size());
-//
-//				for (XWPFTableRow row : listRows) {
-//					List<XWPFTableCell> cells = row.getTableCells();
-//					logger.info("cells.size() = {}", cells.size());
-//
-//					for (XWPFTableCell cell : cells) {
-//						List<XWPFParagraph> paragraphListTable = cell.getParagraphs();
-//						logger.info("paragraphListTable.size() = {}", paragraphListTable.size());
-//					}
-//				}
-//			}
-//
-//			for (XWPFTable tbl : doc.getTables()) {
-//
-//				logger.info("tbl.getRows().size() = {}", tbl.getRows().size());
-//				for (XWPFTableRow row : tbl.getRows()) {
-//
-//					logger.info("row.getTableCells().size() = {}", row.getTableCells().size());
-//					for (XWPFTableCell cell : row.getTableCells()) {
-//						logger.info("cell.getText() = {}", cell.getText());
-//
-//						for (XWPFParagraph p : cell.getParagraphs()) {
-//							logger.info("p.getText() = {}", p.getText());
-//
-//							for (XWPFRun r : p.getRuns()) {
-//								logger.info("r.text() = {}", r.text());
-//
-//								String text = r.getText(0);
-//								logger.info("text = {}", text);
-////								if (text != null && text.contains("$$key$$")) {
-////									text = text.replace("$$key$$", "abcd");
-////									r.setText(text, 0);
-////								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//
-//			doc.write(new FileOutputStream(OUTPUT_FILE));
-//			doc.close();
+			wordConverterToPdf(new FileInputStream(OUTPUT_FILE), new FileOutputStream(OUTPUT_PDF_FILE));
 
 		} catch (Exception e) {
 			logger.error("Exception : {}", e);
@@ -199,143 +260,93 @@ public class ServiceExportWinnerInfoToPDF {
 	}
 
 	/**
-	 * 替换段落文本
+	 * File(.docx) convert to file(.pdf)
 	 * 
-	 * @param document docx解析对象
-	 * @param textMap  需要替换的信息集合
+	 * @param source .docx file
+	 * @param target .pdf file
+	 * @throws Exception
 	 */
-	public static void changeText(XWPFDocument document, Map<String, String> textMap) {
-		List<XWPFParagraph> paragraphs = document.getParagraphs();
-		logger.info("paragraphs.size() = {}", paragraphs.size());
+	public static void wordConverterToPdf(InputStream source, OutputStream target) throws Exception {
+		XWPFDocument doc = new XWPFDocument(source);
+		PdfOptions options = null;
+		PdfConverter.getInstance().convert(doc, target, options);
+	}
 
-		for (XWPFParagraph paragraph : paragraphs) {
-			String text = paragraph.getText();
-			logger.info("text = {}", text);
-			if (checkText(text)) {
-				List<XWPFRun> runs = paragraph.getRuns();
-				logger.info("runs = {}", runs);
-				for (XWPFRun run : runs) {
-					run.setText(changeValue(run.toString(), textMap), 0);
-				}
-			}
+	private static String addPictureData(String image, CustomXWPFDocument doc) throws FileNotFoundException, InvalidFormatException {
+		InputStream images = null;
+		try {
+			images = new FileInputStream(image);
+			return doc.addPictureData(images, XWPFDocument.PICTURE_TYPE_PNG);
+		} finally {
 		}
 	}
 
-	/**
-	 * 匹配传入信息集合与模板
-	 * 
-	 * @param value   模板需要替换的区域
-	 * @param textMap 传入信息集合
-	 * @return 模板需要替换区域信息集合对应值
-	 */
-	private static String changeValue(String value, Map<String, String> textMap) {
-		Set<Map.Entry<String, String>> textSets = textMap.entrySet();
-		for (Map.Entry<String, String> textSet : textSets) {
-			// 匹配模板与替换值 格式${key}
-			String key = "${" + textSet.getKey() + "}";
-			if (value.indexOf(key) != -1) {
-				value = textSet.getValue();
-			}
+	public class CustomXWPFDocument extends XWPFDocument {
+		public CustomXWPFDocument() {
+			super();
 		}
-		// 模板未匹配到区域替换为空
-		if (checkText(value)) {
-			value = "-----";
+	 
+		public CustomXWPFDocument(OPCPackage opcPackage) throws IOException {
+			super(opcPackage);
 		}
-		return value;
+	 
+	    public CustomXWPFDocument(InputStream in) throws IOException {
+	        super(in);
+	    }
+	 
+	    public void createPicture(CTR ctr, String blipId, int id, long width, long height) {
+	        CTInline inline = ctr.addNewDrawing().addNewInline();
+	 
+	        String picXml = "" +
+	                "<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">" +
+	                "   <a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
+	                "      <pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
+	                "         <pic:nvPicPr>" +
+	                "            <pic:cNvPr id=\"" + id + "\" name=\"Generated\"/>" +
+	                "            <pic:cNvPicPr/>" +
+	                "         </pic:nvPicPr>" +
+	                "         <pic:blipFill>" +
+	                "            <a:blip r:embed=\"" + blipId + "\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"/>" +
+	                "            <a:stretch>" +
+	                "               <a:fillRect/>" +
+	                "            </a:stretch>" +
+	                "         </pic:blipFill>" +
+	                "         <pic:spPr>" +
+	                "            <a:xfrm>" +
+	                "               <a:off x=\"0\" y=\"0\"/>" +
+	                "               <a:ext cx=\"" + width + "\" cy=\"" + height + "\"/>" +
+	                "            </a:xfrm>" +
+	                "            <a:prstGeom prst=\"rect\">" +
+	                "               <a:avLst/>" +
+	                "            </a:prstGeom>" +
+	                "         </pic:spPr>" +
+	                "      </pic:pic>" +
+	                "   </a:graphicData>" +
+	                "</a:graphic>";
+	 
+	        //CTGraphicalObjectData graphicData = inline.addNewGraphic().addNewGraphicData();
+	        XmlToken xmlToken = null;
+	        try {
+	            xmlToken = XmlToken.Factory.parse(picXml);
+	        } catch(XmlException xe) {
+	            xe.printStackTrace();
+	        }
+	        inline.set(xmlToken);
+	        //graphicData.set(xmlToken);
+	 
+	        inline.setDistT(0);
+	        inline.setDistB(0);
+	        inline.setDistL(0);
+	        inline.setDistR(0);
+	 
+	        CTPositiveSize2D extent = inline.addNewExtent();
+	        extent.setCx(width);
+	        extent.setCy(height);
+	 
+	        CTNonVisualDrawingProps docPr = inline.addNewDocPr();
+	        docPr.setId(id);
+	        docPr.setName("Picture " + id);
+	        docPr.setDescr("Generated");
+	    }
 	}
-
-	/**
-	 * 检索替换位置"$"
-	 * 
-	 * @param text
-	 * @return
-	 */
-	private static boolean checkText(String text) {
-		boolean check = false;
-		if (text.indexOf("$") != -1) {
-			check = true;
-		}
-		return check;
-	}
-
-	/**
-	 * 替换表格对象方法
-	 * 
-	 * @param document  docx解析对象
-	 * @param textMap   需要替换的信息集合
-	 * @param tableList 需要插入的表格信息集合
-	 */
-	public static void changeTable(XWPFDocument document, Map<String, String> textMap) {
-		List<XWPFTable> tables = document.getTables();
-		for (int i = 0; i < tables.size(); i++) {
-			// 只处理行数大于等于2的表格，且不循环表头
-			XWPFTable table = tables.get(i);
-			if (table.getRows().size() > 1) {
-				// 判断表格是需要替换还是需要插入，判断逻辑有$为替换，表格无$为插入
-				if (checkText(table.getText())) {
-					List<XWPFTableRow> rows = table.getRows();
-					eachTable(rows, textMap);
-				}
-			}
-		}
-	}
-
-	/**
-	 * 遍历表格
-	 * 
-	 * @param rows    表格行对象
-	 * @param textMap 需要替换的信息集合
-	 */
-	private static void eachTable(List<XWPFTableRow> rows, Map<String, String> textMap) {
-		for (XWPFTableRow row : rows) {
-			List<XWPFTableCell> cells = row.getTableCells();
-			for (XWPFTableCell cell : cells) {
-				// 判断单元格里是否有需要替换的内容
-				if (checkText(cell.getText())) {
-					List<XWPFParagraph> paragraphs = cell.getParagraphs();
-					for (XWPFParagraph paragraph : paragraphs) {
-						List<XWPFRun> runs = paragraph.getRuns();
-						for (XWPFRun run : runs) {
-							run.setText(changeValue(run.toString(), textMap), 0);
-						}
-					}
-				}
-			}
-		}
-	}
-
-//	private HWPFDocument replaceText(HWPFDocument doc, String findText, String replaceText) {
-//		Range r = doc.getRange();
-//		for (int i = 0; i < r.numSections(); ++i) {
-//			Section s = r.getSection(i);
-//			for (int j = 0; j < s.numParagraphs(); j++) {
-//				Paragraph p = s.getParagraph(j);
-//				for (int k = 0; k < p.numCharacterRuns(); k++) {
-//					CharacterRun run = p.getCharacterRun(k);
-//					String text = run.text();
-//					if (text.contains(findText)) {
-//						run.replaceText(findText, replaceText);
-//					}
-//				}
-//			}
-//		}
-//		return doc;
-//	}
-//
-//	private HWPFDocument openDocument(String file) throws Exception {
-//		URL res = getClass().getClassLoader().getResource(file);
-//		HWPFDocument document = null;
-//		if (res != null) {
-//			document = new HWPFDocument(new POIFSFileSystem(new File(res.getPath())));
-//		}
-//		return document;
-//	}
-//
-//	private void saveDocument(HWPFDocument doc, String file) {
-//		try (FileOutputStream out = new FileOutputStream(file)) {
-//			doc.write(out);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 }
