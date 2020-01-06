@@ -17,6 +17,7 @@
 */.settings/
 */.classpath/
 */.project/
+*/.idea/
 
 # target folder
 */.target/
