@@ -26,6 +26,7 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlToken;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTNonVisualDrawingProps;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTPositiveSize2D;
+import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTAnchor;
 import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDrawing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
@@ -42,7 +43,7 @@ public class ServiceExportWinnerInfoToPDF {
 	private static final String SOURCE_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\docx\\WinningLetterReplyTempleteSource2.docx";
 	private static final String OUTPUT_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\output\\WinningLetterReplyTemplete_Test2.docx";
 	private static final String OUTPUT_PDF_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\output\\WinningLetterReplyTemplete_Test2.pdf";
-	
+
 	private static final String IMAGE_ID_CARD_FRONT = "C:\\BCS\\FILE\\IMAGE\\90b60bfa-df96-4a76-b009-4d0530b7b139";
 	private static final String IMAGE_ID_CARD_BACK = "C:\\BCS\\FILE\\IMAGE\\4b3fcfd5-f2a3-4c83-8909-11c770374ca8";
 	private static final String IMAGE_ESIGNATURE = "C:\\BCS\\FILE\\IMAGE\\edc54ab0-bde1-4691-8c34-24cd3807f261";
@@ -80,75 +81,109 @@ public class ServiceExportWinnerInfoToPDF {
 					for (int tableCellIndex = 0; tableCellIndex < list_TableCells.size(); tableCellIndex++) {
 						XWPFTableCell tableCell = list_TableCells.get(tableCellIndex);
 
-						if (tableCell.getParagraphs().size() > 0) {
+						List<XWPFParagraph> list_Paragraphs = tableCell.getParagraphs();
+						for (int paragraphIndex = 0; paragraphIndex < list_Paragraphs.size(); paragraphIndex++) {
+							XWPFParagraph paragraph = list_Paragraphs.get(paragraphIndex);
 
-							List<XWPFParagraph> list_TableCell_Paragraphs = tableCell.getParagraphs();
-							for (int paragraphIndex = 0; paragraphIndex < list_TableCell_Paragraphs.size(); paragraphIndex++) {
-								XWPFParagraph paragraph = list_TableCell_Paragraphs.get(paragraphIndex);
+							List<XWPFRun> list_Runs = paragraph.getRuns();
+							for (int runIndex = 0; runIndex < list_Runs.size(); runIndex++) {
+								XWPFRun run = list_Runs.get(runIndex);
 
-								for (int runIndex = 0; runIndex < paragraph.getRuns().size(); runIndex++) {
-									XWPFRun run = paragraph.getRuns().get(runIndex);
+								List<CTDrawing> drawings = run.getCTR().getDrawingList();
+								if (drawings.size() > 0) {
+									CTDrawing drawing = drawings.get(0);
+									
+									List<CTAnchor> list_Anchors = drawing.getAnchorList();
+									if (list_Anchors.size() > 0) {
+										CTAnchor ctAnchor = list_Anchors.get(0);
+										CTPositiveSize2D ps2d = ctAnchor.getExtent();
 
-									List<CTDrawing> drawings = run.getCTR().getDrawingList();
-									logger.info("1-1 drawings.size() = {}", drawings.size());
+										String blipId = null;
 
-									for (int drawingIndex = 0; drawingIndex < drawings.size(); drawingIndex++) {
-										CTDrawing drawing = drawings.get(drawingIndex);
-										
-										List<CTInline> list_InLine = drawing.getInlineList();
-										logger.info("1-1 list_InLine.size() = {}", list_InLine.size());
-										for (int inLineIndex = 0; inLineIndex < list_InLine.size(); inLineIndex++) {
-											CTInline ctInline = list_InLine.get(inLineIndex);
-											
-											CTPositiveSize2D ps2d = ctInline.getExtent();
-											
-											String blipId = null;
-											
-											long docPrId = ctInline.getDocPr().getId();
-											logger.info("1-1 docPrId = {}", docPrId);
-											
-											switch (String.valueOf(docPrId)) {
-											default:
-												continue;
-											case "2":
-												blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
-												break;
-											case "3":
-												blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
-												break;
-											case "6":
-												blipId = addPictureData(IMAGE_ESIGNATURE, doc);
-												break;
-											}
-											
+										long docPrId = ctAnchor.getDocPr().getId();
+										logger.info("1-1 docPrId = {}", docPrId);
+
+										switch (String.valueOf(docPrId)) {
+										default:
+											break;
+										case "2":
+											blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
+
 											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
-//												run.getCTR().removeDrawing(drawingIndex);
-											
-											drawing.removeInline(inLineIndex);
-											
-											logger.info("1-1 TEST, tcInLineIndex = {}", inLineIndex);
+											run.getCTR().removeDrawing(0);
+											break;
+										case "3":
+											blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
+
+											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
+											run.getCTR().removeDrawing(0);
+											break;
+										case "5":
+											blipId = addPictureData(IMAGE_ESIGNATURE, doc);
+
+											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
+											run.getCTR().removeDrawing(0);
+											break;
+										}
+										
+										break;
+									}
+									
+									List<CTInline> list_Inlines = drawing.getInlineList();
+									if (list_Inlines.size() > 0) {
+										CTInline ctInline = list_Inlines.get(0);
+										CTPositiveSize2D ps2d = ctInline.getExtent();
+
+										String blipId = null;
+
+										long docPrId = ctInline.getDocPr().getId();
+										logger.info("1-1 docPrId = {}", docPrId);
+
+										switch (String.valueOf(docPrId)) {
+										default:
+											break;
+										case "2":
+											blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
+
+											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
+											run.getCTR().removeDrawing(0);
+											break;
+										case "3":
+											blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
+
+											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
+											run.getCTR().removeDrawing(0);
+											break;
+										case "5":
+											blipId = addPictureData(IMAGE_ESIGNATURE, doc);
+
+											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
+											run.getCTR().removeDrawing(0);
+											break;
 										}
 									}
+									
+									break;
+								}
 
-									String runText = run.getText(0);
+								String runText = run.getText(0);
 
-									if (StringUtils.isBlank(runText)) {
-										continue;
-									}
+								if (StringUtils.isBlank(runText)) {
+									continue;
+								}
 
-									if (!runText.startsWith("${") || !runText.endsWith("}")) {
-										continue;
-									}
+								if (!runText.startsWith("${") || !runText.endsWith("}")) {
+									continue;
+								}
 
-									logger.info(String.format("table[%d].tableRow[%d].tableCell[%d].paragraph[%d].run[%d] = %s", tableIndex, tableRowIndex, tableCellIndex, paragraphIndex, runIndex,
-											runText));
+								logger.info(String.format("table[%d].tableRow[%d].tableCell[%d].paragraph[%d].run[%d] = %s", tableIndex, tableRowIndex, tableCellIndex, paragraphIndex, runIndex,
+										runText));
 
-									Set<Map.Entry<String, String>> textSets = mapReplacedText.entrySet();
-									for (Map.Entry<String, String> textSet : textSets) {
-										String key = textSet.getKey();
-										if (runText.indexOf(key) != -1) {
-											run.setText(textSet.getValue(), 0);
-										}
+								Set<Map.Entry<String, String>> textSets = mapReplacedText.entrySet();
+								for (Map.Entry<String, String> textSet : textSets) {
+									String key = textSet.getKey();
+									if (runText.indexOf(key) != -1) {
+										run.setText(textSet.getValue(), 0);
 									}
 								}
 							}
@@ -168,55 +203,89 @@ public class ServiceExportWinnerInfoToPDF {
 									for (int tcTableCellIndex = 0; tcTableCellIndex < list_TableCell_TableCells.size(); tcTableCellIndex++) {
 										XWPFTableCell tcTableCell = list_TableCell_TableCells.get(tcTableCellIndex);
 
-										List<XWPFParagraph> list_TableCell_TableCell_Paragraphs = tcTableCell.getParagraphs();
-										for (int tcParagraphIndex = 0; tcParagraphIndex < list_TableCell_TableCell_Paragraphs.size(); tcParagraphIndex++) {
-											XWPFParagraph tcParagraph = list_TableCell_TableCell_Paragraphs.get(tcParagraphIndex);
+										List<XWPFParagraph> list_TableCell_Paragraphs = tcTableCell.getParagraphs();
+										for (int tcParagraphIndex = 0; tcParagraphIndex < list_TableCell_Paragraphs.size(); tcParagraphIndex++) {
+											XWPFParagraph tcParagraph = list_TableCell_Paragraphs.get(tcParagraphIndex);
 
-											for (int tcRunIndex = 0; tcRunIndex < tcParagraph.getRuns().size(); tcRunIndex++) {
-												XWPFRun tcRun = tcParagraph.getRuns().get(tcRunIndex);
-												
-												List<CTDrawing> drawings = tcRun.getCTR().getDrawingList();
-												logger.info("2-1 drawings.size() = {}", drawings.size());
+											List<XWPFRun> list_TableCell_Runs = tcParagraph.getRuns();
+											for (int tcRunIndex = 0; tcRunIndex < list_TableCell_Runs.size(); tcRunIndex++) {
+												XWPFRun tcRun = list_TableCell_Runs.get(tcRunIndex);
 
-												for (int tcRunDrawingIndex = 0; tcRunDrawingIndex < drawings.size(); tcRunDrawingIndex++) {
-													CTDrawing drawing = drawings.get(tcRunDrawingIndex);
+												List<CTDrawing> tcDrawings = tcRun.getCTR().getDrawingList();
+												if (tcDrawings.size() > 0) {
+													CTDrawing tcDrawing = tcDrawings.get(0);
 													
-													List<CTInline> list_InLine = drawing.getInlineList();
-													logger.info("2-1 list_InLine.size() = {}", list_InLine.size());
-													for (int tcInLineIndex = 0; tcInLineIndex < list_InLine.size(); tcInLineIndex++) {
-														CTInline ctInline = list_InLine.get(tcInLineIndex);
-														
-														CTPositiveSize2D ps2d = ctInline.getExtent();
-														
+													List<CTAnchor> list_tcAnchors = tcDrawing.getAnchorList();
+													if (list_tcAnchors.size() > 0) {
+														CTAnchor tcAnchor = list_tcAnchors.get(0);
+														CTPositiveSize2D tcPs2d = tcAnchor.getExtent();
+
 														String blipId = null;
-														
-														long docPrId = ctInline.getDocPr().getId();
+
+														long docPrId = tcAnchor.getDocPr().getId();
 														logger.info("2-1 docPrId = {}", docPrId);
-														
+
 														switch (String.valueOf(docPrId)) {
 														default:
 															break;
 														case "2":
 															blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
+
+															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
+															tcRun.getCTR().removeDrawing(0);
 															break;
 														case "3":
 															blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
+
+															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
+															tcRun.getCTR().removeDrawing(0);
 															break;
-														case "6":
+														case "5":
 															blipId = addPictureData(IMAGE_ESIGNATURE, doc);
+
+															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
+															tcRun.getCTR().removeDrawing(0);
 															break;
 														}
 														
-														doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
-//															tcRun.getCTR().removeDrawing(tcRunDrawingIndex);
-														
-														drawing.removeInline(tcInLineIndex);
-
-														logger.info("2-1 TEST, tcInLineIndex = {}", tcInLineIndex);
 														break;
 													}
+													
+													List<CTInline> list_tcInlines = tcDrawing.getInlineList();
+													if (list_tcInlines.size() > 0) {
+														CTInline tcCtInline = list_tcInlines.get(0);
+														CTPositiveSize2D tcPs2d = tcCtInline.getExtent();
 
-													break;
+														String blipId = null;
+
+														long docPrId = tcCtInline.getDocPr().getId();
+														logger.info("2-1 docPrId = {}", docPrId);
+
+														switch (String.valueOf(docPrId)) {
+														default:
+															break;
+														case "2":
+															blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
+
+															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
+															tcRun.getCTR().removeDrawing(0);
+															break;
+														case "3":
+															blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
+
+															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
+															tcRun.getCTR().removeDrawing(0);
+															break;
+														case "5":
+															blipId = addPictureData(IMAGE_ESIGNATURE, doc);
+
+															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
+															tcRun.getCTR().removeDrawing(0);
+															break;
+														}
+														
+														break;
+													}
 												}
 
 												String tcRunText = tcRun.getText(0);
@@ -276,7 +345,7 @@ public class ServiceExportWinnerInfoToPDF {
 		InputStream images = null;
 		try {
 			images = new FileInputStream(image);
-			return doc.addPictureData(images, XWPFDocument.PICTURE_TYPE_PNG);
+			return doc.addPictureData(images, XWPFDocument.PICTURE_TYPE_JPEG);
 		} finally {
 		}
 	}
@@ -285,19 +354,19 @@ public class ServiceExportWinnerInfoToPDF {
 		public CustomXWPFDocument() {
 			super();
 		}
-	 
+
 		public CustomXWPFDocument(OPCPackage opcPackage) throws IOException {
 			super(opcPackage);
 		}
-	 
-	    public CustomXWPFDocument(InputStream in) throws IOException {
-	        super(in);
-	    }
-	 
-	    public void createPicture(CTR ctr, String blipId, int id, long width, long height) {
-	        CTInline inline = ctr.addNewDrawing().addNewInline();
-	 
-	        String picXml = "" +
+
+		public CustomXWPFDocument(InputStream in) throws IOException {
+			super(in);
+		}
+
+		public void createPicture(CTR ctr, String blipId, int id, long width, long height) {
+			CTInline inline = ctr.addNewDrawing().addNewInline();
+
+			String picXml = "" +
 	                "<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">" +
 	                "   <a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
 	                "      <pic:pic xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
@@ -324,29 +393,33 @@ public class ServiceExportWinnerInfoToPDF {
 	                "   </a:graphicData>" +
 	                "</a:graphic>";
 	 
-	        //CTGraphicalObjectData graphicData = inline.addNewGraphic().addNewGraphicData();
 	        XmlToken xmlToken = null;
-	        try {
-	            xmlToken = XmlToken.Factory.parse(picXml);
-	        } catch(XmlException xe) {
-	            xe.printStackTrace();
-	        }
-	        inline.set(xmlToken);
-	        //graphicData.set(xmlToken);
-	 
-	        inline.setDistT(0);
-	        inline.setDistB(0);
-	        inline.setDistL(0);
-	        inline.setDistR(0);
-	 
-	        CTPositiveSize2D extent = inline.addNewExtent();
-	        extent.setCx(width);
-	        extent.setCy(height);
-	 
-	        CTNonVisualDrawingProps docPr = inline.addNewDocPr();
-	        docPr.setId(id);
-	        docPr.setName("Picture " + id);
-	        docPr.setDescr("Generated");
+	        
+			try {
+				xmlToken = XmlToken.Factory.parse(picXml);
+			} catch (XmlException xe) {
+				xe.printStackTrace();
+			}
+			inline.set(xmlToken);
+			// graphicData.set(xmlToken);
+
+			inline.setDistT(0);
+			inline.setDistB(0);
+			inline.setDistL(0);
+			inline.setDistR(0);
+
+			CTPositiveSize2D extent = inline.addNewExtent();
+			extent.setCx(width);
+			extent.setCy(height);
+
+			CTNonVisualDrawingProps docPr = inline.addNewDocPr();
+			docPr.setId(id);
+			docPr.setName("Picture " + id);
+			docPr.setDescr("Generated");
+		}
+		 
+	    public void createPicture(String blipId, int id, int width, int height) {
+	        createPicture(createParagraph().createRun().getCTR(), blipId, id, width, height);
 	    }
 	}
 }
