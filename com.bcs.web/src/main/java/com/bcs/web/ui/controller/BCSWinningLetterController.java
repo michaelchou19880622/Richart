@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.entity.WinningLetterRecord;
-import com.bcs.core.db.service.ContentCouponCodeService;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.resource.UriHelper;
@@ -532,10 +531,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 			List<WinningLetterRecord> list_WinningLetterRecords = null;
 
 			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterId(winnerName, Long.valueOf(winningLetterId));
+				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(winnerName, Long.valueOf(winningLetterId));
 			}
 			else {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId));
+				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
 			}
 			
 			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
@@ -572,10 +571,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 			Pageable pageable = new PageRequest((pageIndex >= 1) ? pageIndex - 1 : 0, WinningLetterRecordService.pageSize);
 			
 			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterId(winnerName, Long.valueOf(winningLetterId), pageable);
+				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(winnerName, Long.valueOf(winningLetterId), pageable);
 			}
 			else {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId));
+				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
 			}
 			
 			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
@@ -636,24 +635,21 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Export winner reply list to pdf **/
 	@RequestMapping(method = RequestMethod.POST, value = "/edit/exportWinnerInfoToPDF")
 	@ResponseBody
-	public void exportWinnerInfoToPDF(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> exportWinnerInfoToPDF(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser, @RequestParam String wlrId)
 			throws IOException {
 		logger.info("exportWinnerInfoToPDF");
+		
+		logger.info("winningLetterRecordId = {}", wlrId);
 		
 		String urlReferrer = request.getHeader("referer");
 		logger.info("urlReferrer = {}", urlReferrer);
 
 		model.addAttribute("urlReferrer", urlReferrer);
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
-		
 		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
 		logger.info("filePath = {}", filePath);
 		
-		Date date = new Date();
-		
-		String fileName = "TEST_" + sdf.format(date) + ".xlsx";
-		logger.info("fileName = {}", fileName);
+		String fileName = null;
 		
 		try {
 			File folder = new File(filePath);
@@ -661,12 +657,21 @@ public class BCSWinningLetterController extends BCSBaseController {
 				folder.mkdirs();
 			}
 			
-			serviceExportWinnerInfoToPDF.exportWinnerInfoToPDF("", fileName, "");
+			fileName = serviceExportWinnerInfoToPDF.exportWinnerInfoToPDF(filePath, wlrId);
+			logger.info("fileName = {}", fileName);
 			
-//			exportToExcelForWinningLetterService.exportToExcelForWinnerReplyListByWinningLetterId(filePath, fileName, winningLetterId);
-
+			return new ResponseEntity<>(fileName, HttpStatus.OK);
+			
 		} catch (Exception e) {
-			logger.error("Exception : {}", e);
+			logger.info("Exception : ", e);
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		}
+
+//		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
 	}
 }

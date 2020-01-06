@@ -265,6 +265,7 @@ $(function(){
 	$.BCS.blockWinningLetterDeleting = { "message" : "中獎回函資料刪除中..."};
 	$.BCS.blockWinningLetterLoading = { "message" : "中獎回函內容載入中..."};
 	$.BCS.blockWinnerInfoUploading = { "message" : "用戶資料上傳中..."};
+	$.BCS.blockWinningLetterRecordExporting = { "message" : "正在生成PDF檔案..."};
 	
 	$.BCS.formatNumber = function(number, size){
 

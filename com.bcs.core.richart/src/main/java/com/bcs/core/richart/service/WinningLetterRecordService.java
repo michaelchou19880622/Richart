@@ -40,11 +40,11 @@ public class WinningLetterRecordService {
 		return lst_WinningLetterRecord;
 	}
 	
-	public List<WinningLetterRecord> findAllByWinningLetterId(Long winningLetterId) {
+	public List<WinningLetterRecord> findAllByWinningLetterIdOrderByIdAsc(Long winningLetterId) {
 		long startTime = System.nanoTime();
 		logger.info("[ findAllByWinningLetterId ] Start Time : {}", startTime);
 		
-		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterId(winningLetterId);
+		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterIdOrderByIdAsc(winningLetterId);
 
 		long endTime = System.nanoTime();
 		logger.info("[ findAllByWinningLetterId ] End Time : {}", endTime);
@@ -55,11 +55,11 @@ public class WinningLetterRecordService {
 		return lst_WinningLetterRecord;
 	}
 	
-	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterId(String name, Long winningLetterId) {
+	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterIdOrderByIdAsc(String name, Long winningLetterId) {
 		long startTime = System.nanoTime();
 		logger.info("[ findAllByNameContainingAndWinningLetterId ] Start Time : {}", startTime);
 		
-		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterId(name, winningLetterId);
+		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(name, winningLetterId);
 
 		long endTime = System.nanoTime();
 		logger.info("[ findAllByNameContainingAndWinningLetterId ] End Time : {}", endTime);
@@ -70,11 +70,11 @@ public class WinningLetterRecordService {
 		return lst_WinningLetterRecord;
 	}
 	
-	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterId(String name, Long winningLetterId, Pageable pageable) {
+	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterIdOrderByIdAsc(String name, Long winningLetterId, Pageable pageable) {
 		long startTime = System.nanoTime();
 		logger.info("[ findAllByNameContainingAndWinningLetterId ] Start Time : {}", startTime);
 		
-		Page<WinningLetterRecord> pageList = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterId(name, winningLetterId, pageable);
+		Page<WinningLetterRecord> pageList = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(name, winningLetterId, pageable);
 //		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterId(name, winningLetterId);
 		List<WinningLetterRecord> lst_WinningLetterRecord = pageList.getContent();
 

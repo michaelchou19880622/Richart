@@ -154,7 +154,7 @@ public class ExportToExcelForWinningLetterService {
 			
 			WinningLetter winningLetter = winningLetterRepository.findById(Long.valueOf(wlId));
 			
-			List<WinningLetterRecord> lst_winnerReplyList = winningLetterRecordRepository.findAllByWinningLetterId(Long.valueOf(wlId));
+			List<WinningLetterRecord> lst_winnerReplyList = winningLetterRecordRepository.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(wlId));
 			
 			long endTime = System.nanoTime();
 			logger.info("[ exportToExcelForWinnerReplyListByWinningLetterId ] End Time : {}", endTime);

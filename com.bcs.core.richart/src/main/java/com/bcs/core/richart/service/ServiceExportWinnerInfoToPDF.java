@@ -6,11 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -26,13 +28,19 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlToken;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTNonVisualDrawingProps;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTPositiveSize2D;
-import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTAnchor;
 import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDrawing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.bcs.core.db.entity.WinningLetter;
+import com.bcs.core.db.entity.WinningLetterRecord;
+import com.bcs.core.db.repository.WinningLetterRecordRepository;
+import com.bcs.core.db.repository.WinningLetterRepository;
+import com.bcs.core.resource.CoreConfigReader;
 
 @Service
 public class ServiceExportWinnerInfoToPDF {
@@ -40,34 +48,59 @@ public class ServiceExportWinnerInfoToPDF {
 	/** Logger **/
 	private static Logger logger = LoggerFactory.getLogger(ServiceExportWinnerInfoToPDF.class);
 
-	private static final String SOURCE_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\docx\\WinningLetterReplyTempleteSource2.docx";
-	private static final String OUTPUT_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\output\\WinningLetterReplyTemplete_Test2.docx";
-	private static final String OUTPUT_PDF_FILE = "C:\\HpiCorp\\06_TestResources\\WinningLetterReplyTemplete\\output\\WinningLetterReplyTemplete_Test2.pdf";
-
-	private static final String IMAGE_ID_CARD_FRONT = "C:\\BCS\\FILE\\IMAGE\\90b60bfa-df96-4a76-b009-4d0530b7b139";
-	private static final String IMAGE_ID_CARD_BACK = "C:\\BCS\\FILE\\IMAGE\\4b3fcfd5-f2a3-4c83-8909-11c770374ca8";
-	private static final String IMAGE_ESIGNATURE = "C:\\BCS\\FILE\\IMAGE\\edc54ab0-bde1-4691-8c34-24cd3807f261";
+	@Autowired
+	private WinningLetterRepository winningLetterRepository;
+	
+	@Autowired
+	private WinningLetterRecordRepository winningLetterRecordRepository;
 
 	/** Export winner info to PDF **/
-	public void exportWinnerInfoToPDF(String exportPath, String fileName, String winningLetterRecordId) throws Exception {
+	public String exportWinnerInfoToPDF(String exportPath, String winningLetterRecordId) throws Exception {
+
+		logger.info("exportPath = {}", exportPath);
+		logger.info("winningLetterRecordId = {}", winningLetterRecordId);
 
 		// check record in database
+		WinningLetterRecord winningLetterRecord = winningLetterRecordRepository.findById(Long.valueOf(winningLetterRecordId));
+		logger.info("winningLetterRecord = {}", winningLetterRecord.toString());
+		
+		WinningLetter winningLetter = winningLetterRepository.findById(Long.valueOf(winningLetterRecord.getWinningLetterId()));
+		logger.info("winningLetter = {}", winningLetter.toString());
+		
+		String outputFileName = String.format("%s\\%s_%s.pdf", exportPath, winningLetter.getName(), winningLetterRecord.getName());
+		logger.info("outputFileName = {}", outputFileName);
 
+		String outputTemplete = String.format("%s\\%s_%s.docx", exportPath, winningLetter.getName(), winningLetterRecord.getName());
+		logger.info("outputTemplete = {}", outputTemplete);
+
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd ");
+		
 		Map<String, String> mapReplacedText = new HashMap<>();
-		mapReplacedText.put("${WinningLetterName}", "Richart好禮自由配機會中獎回覆函");
-		mapReplacedText.put("${EndTime}", "2020/01/31 ");
-		mapReplacedText.put("${WinnerName}", "王小明");
-		mapReplacedText.put("${WinnerIdCardNum}", "S123456789");
-		mapReplacedText.put("${WinningLetterGifts}", "LINE Points 3,000點 (價值NT$3,465)");
-		mapReplacedText.put("${WinnerPhoneNumber}", "0987654321");
-		mapReplacedText.put("${WinnerResidentAddress}", "台北市內湖區堤頂大道二段999號");
-		mapReplacedText.put("${WinnerMailingAddress}", "台北市內湖區堤頂大道二段123號");
-		mapReplacedText.put("${idCardFront}", "@@@");
-		mapReplacedText.put("${idCardBack}", "@@@");
-		mapReplacedText.put("${eSignature}", "@@@");
+		mapReplacedText.put("${WinningLetterName}", winningLetter.getName());
+		mapReplacedText.put("${EndTime}", sdFormat.format(winningLetter.getEndTime()));
+		mapReplacedText.put("${WinnerName}", winningLetterRecord.getName());
+		mapReplacedText.put("${WinnerIdCardNum}", winningLetterRecord.getId_card_number());
+		mapReplacedText.put("${WinningLetterGifts}", winningLetter.getGift());
+		mapReplacedText.put("${WinnerPhoneNumber}", winningLetterRecord.getPhonenumber());
+		mapReplacedText.put("${WinnerResidentAddress}", winningLetterRecord.getResident_address());
+		mapReplacedText.put("${WinnerMailingAddress}", winningLetterRecord.getMailing_address());
+
+		String defaultSourcePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "Default";
+		logger.info("defaultSourcePath = {}", defaultSourcePath);
+		String pdfTemplete = defaultSourcePath + System.getProperty("file.separator") + "WinningLetterReplyTempleteSource.docx";
+		logger.info("pdfTemplete = {}", pdfTemplete);
+		
+		String imageSourcePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "IMAGE";
+		logger.info("imageSourcePath = {}", imageSourcePath);
+		String id_card_front = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getId_card_copy_front();
+		logger.info("id_card_front = {}", id_card_front);
+		String id_card_back = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getId_card_copy_back();
+		logger.info("id_card_back = {}", id_card_back);
+		String e_signature = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getE_signature();
+		logger.info("e_signature = {}", e_signature);
 
 		try {
-			CustomXWPFDocument doc = new CustomXWPFDocument(new FileInputStream(SOURCE_FILE));
+			CustomXWPFDocument doc = new CustomXWPFDocument(new FileInputStream(pdfTemplete));
 
 			List<XWPFTable> list_Tables = doc.getTables();
 			for (int tableIndex = 0; tableIndex < list_Tables.size(); tableIndex++) {
@@ -93,42 +126,6 @@ public class ServiceExportWinnerInfoToPDF {
 								if (drawings.size() > 0) {
 									CTDrawing drawing = drawings.get(0);
 									
-									List<CTAnchor> list_Anchors = drawing.getAnchorList();
-									if (list_Anchors.size() > 0) {
-										CTAnchor ctAnchor = list_Anchors.get(0);
-										CTPositiveSize2D ps2d = ctAnchor.getExtent();
-
-										String blipId = null;
-
-										long docPrId = ctAnchor.getDocPr().getId();
-										logger.info("1-1 docPrId = {}", docPrId);
-
-										switch (String.valueOf(docPrId)) {
-										default:
-											break;
-										case "2":
-											blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
-
-											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
-											run.getCTR().removeDrawing(0);
-											break;
-										case "3":
-											blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
-
-											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
-											run.getCTR().removeDrawing(0);
-											break;
-										case "5":
-											blipId = addPictureData(IMAGE_ESIGNATURE, doc);
-
-											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
-											run.getCTR().removeDrawing(0);
-											break;
-										}
-										
-										break;
-									}
-									
 									List<CTInline> list_Inlines = drawing.getInlineList();
 									if (list_Inlines.size() > 0) {
 										CTInline ctInline = list_Inlines.get(0);
@@ -143,19 +140,19 @@ public class ServiceExportWinnerInfoToPDF {
 										default:
 											break;
 										case "2":
-											blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
+											blipId = addPictureData(id_card_front, doc);
 
 											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
 											run.getCTR().removeDrawing(0);
 											break;
 										case "3":
-											blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
+											blipId = addPictureData(id_card_back, doc);
 
 											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
 											run.getCTR().removeDrawing(0);
 											break;
-										case "5":
-											blipId = addPictureData(IMAGE_ESIGNATURE, doc);
+										case "4":
+											blipId = addPictureData(e_signature, doc);
 
 											doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
 											run.getCTR().removeDrawing(0);
@@ -215,42 +212,6 @@ public class ServiceExportWinnerInfoToPDF {
 												if (tcDrawings.size() > 0) {
 													CTDrawing tcDrawing = tcDrawings.get(0);
 													
-													List<CTAnchor> list_tcAnchors = tcDrawing.getAnchorList();
-													if (list_tcAnchors.size() > 0) {
-														CTAnchor tcAnchor = list_tcAnchors.get(0);
-														CTPositiveSize2D tcPs2d = tcAnchor.getExtent();
-
-														String blipId = null;
-
-														long docPrId = tcAnchor.getDocPr().getId();
-														logger.info("2-1 docPrId = {}", docPrId);
-
-														switch (String.valueOf(docPrId)) {
-														default:
-															break;
-														case "2":
-															blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
-
-															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
-															tcRun.getCTR().removeDrawing(0);
-															break;
-														case "3":
-															blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
-
-															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
-															tcRun.getCTR().removeDrawing(0);
-															break;
-														case "5":
-															blipId = addPictureData(IMAGE_ESIGNATURE, doc);
-
-															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
-															tcRun.getCTR().removeDrawing(0);
-															break;
-														}
-														
-														break;
-													}
-													
 													List<CTInline> list_tcInlines = tcDrawing.getInlineList();
 													if (list_tcInlines.size() > 0) {
 														CTInline tcCtInline = list_tcInlines.get(0);
@@ -265,19 +226,19 @@ public class ServiceExportWinnerInfoToPDF {
 														default:
 															break;
 														case "2":
-															blipId = addPictureData(IMAGE_ID_CARD_FRONT, doc);
+															blipId = addPictureData(id_card_front, doc);
 
 															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
 															tcRun.getCTR().removeDrawing(0);
 															break;
 														case "3":
-															blipId = addPictureData(IMAGE_ID_CARD_BACK, doc);
+															blipId = addPictureData(id_card_back, doc);
 
 															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
 															tcRun.getCTR().removeDrawing(0);
 															break;
-														case "5":
-															blipId = addPictureData(IMAGE_ESIGNATURE, doc);
+														case "4":
+															blipId = addPictureData(e_signature, doc);
 
 															doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
 															tcRun.getCTR().removeDrawing(0);
@@ -318,14 +279,21 @@ public class ServiceExportWinnerInfoToPDF {
 				}
 			}
 
-			doc.write(new FileOutputStream(OUTPUT_FILE));
+			doc.write(new FileOutputStream(outputTemplete));
 			doc.close();
 
-			wordConverterToPdf(new FileInputStream(OUTPUT_FILE), new FileOutputStream(OUTPUT_PDF_FILE));
+			wordConverterToPdf(new FileInputStream(outputTemplete), new FileOutputStream(outputFileName));
+			
+//			File srcOutputFile = new File(OUTPUT_FILE);
+//			if (srcOutputFile.exists()) {
+//				srcOutputFile.delete();
+//			}
 
 		} catch (Exception e) {
 			logger.error("Exception : {}", e);
 		}
+		
+		return outputFileName;
 	}
 
 	/**
@@ -345,7 +313,7 @@ public class ServiceExportWinnerInfoToPDF {
 		InputStream images = null;
 		try {
 			images = new FileInputStream(image);
-			return doc.addPictureData(images, XWPFDocument.PICTURE_TYPE_JPEG);
+			return doc.addPictureData(images, XWPFDocument.PICTURE_TYPE_PNG);
 		} finally {
 		}
 	}
@@ -401,7 +369,6 @@ public class ServiceExportWinnerInfoToPDF {
 				xe.printStackTrace();
 			}
 			inline.set(xmlToken);
-			// graphicData.set(xmlToken);
 
 			inline.setDistT(0);
 			inline.setDistB(0);

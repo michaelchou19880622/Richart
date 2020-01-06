@@ -41,6 +41,8 @@ $(function() {
 	
 	var isInitial = true;
 	
+	var winningLetterRecordId = -1;
+	
 	var pageWinningLetterId = $.urlParam("wlId");
 	
 	var pageWinningLetterName = $.urlParam("wlName");
@@ -74,20 +76,38 @@ $(function() {
 	/* < Button > PDF檔 */
 	$('.btn_export_pdf').click(function() {
 		
-		$('.LyMain').block($.BCS.blockWinningLetterStatusUpdating);
+		checkboxes = document.getElementsByName('checkBoxChilds');
+
+		// Support on IE browser
+		for (var i = 0, n = checkboxes.length; i < n; i++) {
+			console.info("checkboxes[" + i + "].checked = " + checkboxes[i].checked);
+			
+			if (checkboxes[i].checked == false) {
+				continue;
+			}
+
+			winningLetterRecordId = i;
+			console.info("checked winningLetterRecordId = " + winningLetterRecordId);
+			
+			break;
+		}
+		
+		$('.LyMain').block($.BCS.blockWinningLetterRecordExporting);
 		$.ajax({
 			type : "POST",
-			url : encodeURI(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF')
+			url : encodeURI(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + (winningLetterRecordId + 1))
 		}).done(function(response) {
-			alert("匯出PDF檔案完成");
+			if (!document.all) {
+				alert("已生成PDF檔案\n檔案路徑 : " + response);
+			} else {
+				alert("已生成PDF檔案\r\n檔案路徑 : " + response);
+			}
 			$('.LyMain').unblock();
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
 			$('.LyMain').unblock();
 		})
-		
-//		alert("功能開發中..");
 	});
 	
 	/* < Button > Excel檔 */
@@ -144,9 +164,9 @@ $(function() {
 		checkboxes = document.getElementsByName('checkBoxChilds');
 
 		// Not support on IE browser
-// for (let checkbox of checkboxes){
-// checkbox.checked = srcCheckBox.checked;
-// }
+//		for (let checkbox of checkboxes) {
+//			checkbox.checked = srcCheckBox.checked;
+//		}
 
 		// Support on IE browser
 		for (var i = 0, n = checkboxes.length; i < n; i++) {
@@ -183,16 +203,16 @@ $(function() {
 		var numOfCheckedBox = 0;
 		
 		// Not support on IE browser
-// for (let checkbox of checkboxes){
-// if (checkbox.checked) {
-// numOfCheckedBox++;
-// }
-//			
-// if (!checkbox.checked) {
-// parentCheckbox.checked = false;
-// continue;
-// }
-// }
+//		for (let checkbox of checkboxes) {
+//			if (checkbox.checked) {
+//				numOfCheckedBox++;
+//			}
+//					
+//			if (!checkbox.checked) {
+//				parentCheckbox.checked = false;
+//				continue;
+//			}
+//		}
 
 		// Support on IE browser
 		for (var i = 0, n = checkboxes.length; i < n; i++) {
@@ -222,17 +242,6 @@ $(function() {
 
 		btn_export_pdf.style.visibility = 'hidden';
 	}
-	
-// function terms_change(checkbox){
-// //If it is checked.
-// if(checkbox.checked){
-// alert('Checkbox has been ticked!');
-// }
-// //If it has been unchecked.
-// else{
-// alert('Checkbox has been unticked!');
-// }
-// }
 	
 	/* 彈出視窗 Image Model */
 	var model = document.getElementById("myModel");
