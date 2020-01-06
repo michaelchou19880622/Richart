@@ -144,39 +144,60 @@ public class BCSLinkPageController extends BCSBaseController {
 			@CurrentUser CustomUser customUser) throws IOException {
 		String startTime = request.getParameter("startTime");
 		String endTime = request.getParameter("endTime");
-		String page = request.getParameter("page");
+		String pageStr = request.getParameter("page");
 		if (startTime != null) {
 			startTime += " 00:00:00";
 		}
 		if (endTime != null) {
 			endTime += " 23:59:59";
 		}
-		logger.info("getLinkUrlfromTime, startTime=" + startTime + " endTime=" + endTime + " page=" + page);
+		logger.info("getLinkUrlfromTime, startTime=" + startTime + " endTime=" + endTime + " page=" + pageStr);
 		Calendar yesterdayCalendar = Calendar.getInstance();
 		yesterdayCalendar.add(Calendar.DATE, -1);
 		Calendar nowCalendar = Calendar.getInstance();
 		Calendar nextCalendar = Calendar.getInstance();
 		nextCalendar.add(Calendar.DATE, 1);
+		Map<String, Object> tracingResult = new HashMap<String, Object>();
 		try{ 
 			linkResult.clear();
-			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME
-			result = contentLinkService.findAllLinkUrlByLikeTime(startTime, endTime);
-		
-			for(Object[] link : result){
-				String linkUrl = castToString(link[0]);
-				String linkTitle = castToString(link[1]);
-				String linkId = castToString(link[2]);
-				String linkTime = castToString(link[3]);
-				String linkflag = castToString(link[4]);
-				LinkClickReportModel model = linkResult.get(linkUrl);
-				model = new LinkClickReportModel();
-				model.setLinkUrl(linkUrl);
-				model.setLinkId(linkId);
-				model.setLinkTitle(linkTitle);
-				model.setLinkTime(linkTime);
-				model.setLinkFlag(linkflag);
-				linkResult.put(linkId, model);
-			}
+			List<Object[]> result = null; // LINK_URL, LINK_TITLE, LINK_ID, MODIFY_TIME, LINK_TAG, TRACING_ID
+			int page = 0;
+            if (StringUtils.isNotBlank(pageStr)) {
+                page = Integer.parseInt(pageStr);
+            }
+			result = contentLinkService.findAllLinkUrlWithTracingIdByLikeTime(startTime, endTime);
+			String tracingUrlPre = UriHelper.getTracingUrlPre();
+            tracingResult.put("TracingUrlPre", tracingUrlPre);
+            int rowNum = 0, rowStart = page * 20, rowEnd = rowStart + 20;
+            for (Object[] link : result) {
+                if (rowNum >= rowStart && rowNum < rowEnd) {
+                    String linkUrl = castToString(link[0]);
+                    String linkTitle = castToString(link[1]);
+                    String linkId = castToString(link[2]);
+                    String linkTime = castToString(link[3]);
+                    String linkFlag = castToString(link[4]);
+                    String tracingLink = castToString(link[5]);
+                    LinkClickReportModel model = linkResult.get(tracingLink);
+                    if (model == null) {
+                        model = new LinkClickReportModel();
+                        model.setLinkUrl(linkUrl);
+                        model.setLinkId(linkId);
+                        model.setLinkTitle(linkTitle);
+                        model.setLinkTime(linkTime);
+                        model.setLinkFlag(linkFlag);
+                        model.setTracingLink(tracingLink);
+                        linkResult.put(tracingLink, model);
+                    } else {
+                        if (StringUtils.isBlank(model.getLinkTitle())) {
+                            model.setLinkTitle(linkTitle);
+                        }
+                        if (StringUtils.isBlank(model.getLinkUrl())) {
+                            model.setLinkUrl(linkUrl);
+                        }
+                    }
+                }
+                rowNum++;
+            }
 			
 			// Get ContentFlag, setLinkClickCount
 			for(LinkClickReportModel model : linkResult.values()){				
@@ -186,7 +207,9 @@ public class BCSLinkPageController extends BCSBaseController {
 				// setLinkClickCount
 				this.setLinkClickCount(model, nowCalendar, yesterdayCalendar, nextCalendar);
 			}
-			return new ResponseEntity<>(linkResult, HttpStatus.OK);
+			tracingResult.put("ContentLinkTracingList", linkResult);
+            logger.info("getLinkUrlfromTime, tracingUrlPre=" + tracingUrlPre + " sizeOfList=" + linkResult.size());
+            return new ResponseEntity<>(tracingResult, HttpStatus.OK);
 		}
 		catch(Exception e){
 			logger.error(ErrorRecord.recordError(e));
