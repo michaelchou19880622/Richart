@@ -275,7 +275,12 @@ $(function() {
 	
 	/* Defined the popup model for URL */
 	var func_showIdCardModel = function() {
+		modelImage1.style.height = '200px';
+		modelImage1.style.width = '400px';
 		modelImage1.src = $(this).attr('img1');
+		
+		modelImage2.style.height = '200px';
+		modelImage2.style.width = '400px';
 		modelImage2.src = $(this).attr('img2');
 
 		model.style.display = "block";
