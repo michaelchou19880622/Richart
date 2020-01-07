@@ -1,15 +1,12 @@
 package com.bcs.core.db.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
+import com.bcs.core.db.entity.ActionUserCoupon;
+import com.bcs.core.db.entity.ContentCoupon;
+import com.bcs.core.db.entity.ContentCouponCode;
+import com.bcs.core.db.repository.ActionUserCouponRepository;
+import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
+import com.bcs.core.log.util.UserTraceLogUtil;
+import com.bcs.core.utils.ErrorRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bcs.core.db.entity.ActionUserCoupon;
-import com.bcs.core.db.entity.ContentCoupon;
-import com.bcs.core.db.entity.ContentCouponCode;
-import com.bcs.core.db.repository.ActionUserCouponRepository;
-import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
-import com.bcs.core.log.util.UserTraceLogUtil;
-import com.bcs.core.utils.ErrorRecord;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ???
@@ -50,12 +48,6 @@ public class ActionUserCouponService {
         this.contentCouponCodeService = contentCouponCodeService;
     }
 
-    /**
-     * findByMid
-     *
-     * @param mid
-     * @return
-     */
     public List<ActionUserCoupon> findByMid(String mid) {
         return actionUserCouponRepository.findByMid(mid);
     }
@@ -64,33 +56,16 @@ public class ActionUserCouponService {
         return actionUserCouponRepository.findByCouponId(couponId);
     }
 
-    /**
-     * findOne
-     *
-     * @param id
-     * @return
-     */
     public ActionUserCoupon findOne(Long id) {
         return actionUserCouponRepository.findOne(id);
     }
 
-    /**
-     * @param mid
-     * @param couponId
-     * @param actionType
-     * @return ActionUserCoupon
-     */
     public ActionUserCoupon findByMidAndCouponIdAndActionType(String mid, String couponId, String actionType) {
         return actionUserCouponRepository.findByMidAndCouponIdAndActionType(mid, couponId, actionType);
     }
 
     /**
      * 查詢是否存在指定的 mid、couponId、actionType 的優惠劵使用記錄
-     *
-     * @param mid
-     * @param couponId
-     * @param actionType
-     * @return
      */
     public boolean existsByMidAndCouponIdAndActionType(String mid, String couponId, String actionType) {
         return actionUserCouponRepository.existsByMidAndCouponIdAndActionType(mid, couponId, actionType);
@@ -98,11 +73,6 @@ public class ActionUserCouponService {
 
     /**
      * 查詢是否存在指定的 mid、couponId、actionType 且 actionTime 是今天的優惠劵使用記錄
-     *
-     * @param mid
-     * @param couponId
-     * @param actionType
-     * @return
      */
     public boolean existsByMidAndCouponIdAndActionTypeAndActionTimeInToday(String mid, String couponId, String actionType) {
         return actionUserCouponRepository.existsByMidAndCouponIdAndActionTypeAndActionTimeInToday(mid, couponId, actionType);
@@ -110,9 +80,6 @@ public class ActionUserCouponService {
 
     /**
      * 查詢優惠劵的最大 couponSIndex
-     *
-     * @param couponId
-     * @return
      */
     public Long findMaxCouponSIndexByCouponId(String couponId) {
         return actionUserCouponRepository.findMaxCouponSIndexByCouponId(couponId);
@@ -120,11 +87,6 @@ public class ActionUserCouponService {
 
     /**
      * 查詢優惠劵 couponSIndex
-     *
-     * @param mid
-     * @param couponId
-     * @param actionType
-     * @return couponSIndex
      */
     public Long findCouponSIndexByMidAndCouponIdAndActionType(String mid, String couponId, String actionType) {
         return actionUserCouponRepository.findCouponSIndexByMidAndCouponIdAndActionType(mid, couponId, actionType);
@@ -182,9 +144,9 @@ public class ActionUserCouponService {
         for (Object[] o : list) {
             Map<String, String> result = new LinkedHashMap<>();
             String name = ContentCoupon.IS_COUPON_FILLIN_TRUE == Boolean.parseBoolean(String.valueOf(o[7])) ? "此優惠券尚未填寫" : "此優惠券不需填寫";
-            result.put("UID", String.valueOf(o[0]));
-            result.put("couponTitle", String.valueOf(o[1]));
-            result.put("couponActionTime", String.valueOf(o[2]));
+            result.put("UID", o[0] != null ? String.valueOf(o[0]) : "");
+            result.put("couponTitle", o[1] != null ? String.valueOf(o[1]) : "");
+            result.put("couponActionTime", o[2] != null ? String.valueOf(o[2]) : "");
             result.put("name", o[3] != null ? String.valueOf(o[3]) : name);
             result.put("idCardNumber", o[4] != null ? String.valueOf(o[4]) : "");
             result.put("address", o[5] != null ? String.valueOf(o[5]) : "");

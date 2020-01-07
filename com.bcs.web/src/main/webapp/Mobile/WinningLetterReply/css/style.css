@@ -1,0 +1,388 @@
+html, body, .LyContents {
+	width: 100%;
+	min-height: 97%;
+/* 	min-width: 900px; */
+	overflow-x: hidden;
+}
+
+body, input {
+	line-height: 1.3;
+	color: #333;
+	font-family: '微軟正黑體';
+	font-size: 13px;
+	position: relative;
+	vertical-align: middle;
+}
+
+/* content */
+.LyContents {
+	position: relative;
+	background: url(../images/bg_LyContents.png) repeat-y;
+}
+
+input:focus, textarea:focus {
+	outline: 0 !important;
+}
+
+.help {
+	margin-top: 3em;
+	color: #D6D6D6;
+	text-align: center;
+}
+
+.help a {
+	color: #D6D6D6;
+	text-decoration: none;
+	padding: 0 10px;
+}
+
+.help a:nth-of-type(1) {
+	border-right: 1px solid #cdced0;
+}
+
+.Nav ul>li {
+	font-size: 14px;
+	color: #2c2c2c;
+	line-height: 20px;
+}
+
+.Nav a {
+	display: block;
+}
+
+.Nav ul>li>a {
+	color: #2c2c2c;
+	padding: 12px 30px 11px;
+}
+
+.Nav .subMenu {
+	margin-bottom: 15px;
+}
+
+.Nav .subMenu>li.ExSelected>a {
+	color: #005AA9;
+}
+
+.Nav .subMenu>li>a {
+	color: #747474;
+	padding: 7px 30px 6px 41px;
+}
+
+.Nav a:link, .Nav a:visited, .Nav a:hover, .Nav a:active, .Nav a:focus {
+	text-decoration: none;
+}
+
+.btn_save {
+	color: #fff;
+	padding: 10px 15px;
+	margin-bottom: 10px;
+	box-shadow: none;
+	border: 0;
+	min-width: 80px;
+	background: darkgrey;
+}
+
+.btn_save {
+	background: #005AA9;
+}
+
+/* 子選項 */
+.CHBtnSet {
+	text-align: left;
+	margin: 4px 0px 10px 0px;
+}
+
+.CHBtnSetCenter {
+	text-align: center;
+	margin: 4px 0px 10px 0px;
+}
+
+.CHBtnSetRight {
+	text-align: right;
+	margin: 4px 0px 10px 0px;
+}
+
+.CHBtnSet .CHLeft {
+	min-width: 70%;
+	display: inline-block;
+}
+
+.CHNone {
+	display: inline-block;
+}
+
+.CHBtnSet .CHLeft .CHLeftBtn {
+	float: left;
+}
+
+.CHBtnSet .CHLeft .CHLeftBtn>input {
+	background: #e6eaf0;
+	border: 1px solid #b7bfca;
+	border-left: 1px solid #b7bfca;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	color: #6d7987;
+	font-size: 14px;
+	font-weight: normal;
+	text-shadow: none !important;
+	line-height: 33px;
+	margin: 0 2px;
+	padding: 0 12px;
+	min-width: 70px;
+}
+
+.CHBtnSet .CHLeft+.CHRight {
+	display: inline-block;
+	float: right;
+}
+
+.CHBtnSet .CHRight {
+	text-align: right;
+}
+
+.CHBtnSet .CHRight>.btn_add .CHRight>.btn_export {
+	float: none;
+	margin: 0;
+}
+
+.CHBtnSet .CHRight>.btn_upload_keywords {
+	float: none;
+	margin: 0;
+}
+
+.CHBtnSet .CHLeft ul>li.ExSelected>input {
+	background: #A0A0A0;
+	color: #fff;
+}
+
+.CHLeft>.btn_submitSignature .CHLeft>.btn_clearSignature .CHRight>.btn_submitSignature .CHRight>.btn_clearSignature {
+	float: none;
+	margin: 0;
+}
+
+/* Canvas for signature */
+.sigZoneBox {
+	background-color: rgba(255, 255, 255, .4);
+	border: 1px solid rgba(64, 64, 64, .5);
+	padding: 16px;
+}
+
+.sig-canvas {
+	border: 1px solid #CCCCCC;
+	cursor: crosshair;
+	height: 200px;
+	width: 97%;
+	margin-left: 4.25px;
+}
+
+.sig-image {
+	border: 2px solid #CCCCCC;
+	border-radius: 15px;
+}
+
+/* Image Modal Content */
+.image-model-content {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	border: 2px solid #fff;
+	width: 80%;
+	text-align: center;
+	color: blue;
+	font-size: 16px;
+	font-weight: bold;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	-o-border-radius: 15px;
+	-ms-border-radius: 15px;
+	-moz-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Image Modal Content */
+.signature-model-content {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	border: 2px solid #fff;
+	width: 80%;
+	text-align: center;
+	color: blue;
+	font-size: 16px;
+	font-weight: bold;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	-o-border-radius: 15px;
+	-ms-border-radius: 15px;
+	-moz-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Click Upload Image */
+.imgZoneBox {
+	background-color: rgba(255, 255, 255, .4);
+	border: 1px solid rgba(64, 64, 64, .5);
+	padding: 16px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#imgZoneFront {
+	background-color: rgba(255, 255, 255, .95);
+	color: rgba(0, 0, 0, .5);
+	font-family: Helvetica Neue;
+	font-weight: bold;
+	font-size: 20px;
+	letter-spacing: 1.5px;
+	text-align: center;
+	text-transform: uppercase;
+	opacity: 0.5;
+	background-image: url('../image/upload_front_2.png');
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	-moz-background-size: 50% 50%;
+	-webkit-background-size: 50% 50%;
+	-o-background-size: 50% 50%;
+	background-size: 50% 50%;
+}
+
+#imgZoneBack {
+	background-color: rgba(255, 255, 255, .95);
+	color: rgba(0, 0, 0, .5);
+	font-family: Helvetica Neue;
+	font-weight: bold;
+	font-size: 20px;
+	letter-spacing: 1.5px;
+	text-align: center;
+	text-transform: uppercase;
+	opacity: 0.5;
+	background-image: url('../image/upload_back_2.png');
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	-moz-background-size: 50% 50%;
+	-webkit-background-size: 50% 50%;
+	-o-background-size: 50% 50%;
+	background-size: 50% 50%;
+}
+
+/* #imgZone:after { */
+/* 	content: "身分證正面"; */
+/* } */
+
+.columnUploadImage {
+	display: inline-block;
+	width: 100%;
+}
+
+.wrapperUploadImage {
+	margin: 0 auto;
+	padding: 4px;
+}
+
+#myImgFront {
+	border: 2px dashed #808080;
+	width: 100%;
+	height: 150px;
+}
+
+#myImgBack {
+	border: 2px dashed #808080;
+	width: 100%;
+	height: 150px;
+}
+
+.btn_upload {
+	float: left;
+	color: #fff;
+	background: #005AA9;
+	border: 1px solid #005AA9;
+	border-left: 1px solid #005AA9;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	font-size: 14px;
+	font-weight: normal;
+	text-shadow: none !important;
+	line-height: 33px;
+	padding: 0 12px;
+	min-width: 30px;
+}
+
+.btn_submitSignature {
+	float: left;
+	color: #fff;
+	background: #005AA9;
+	border: 1px solid #005AA9;
+	border-left: 1px solid #005AA9;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	font-size: 14px;
+	font-weight: normal;
+	text-shadow: none !important;
+	line-height: 33px;
+	padding: 0 12px;
+	min-width: 30px;
+	margin-right: 4px;
+}
+
+.btn_clearSignature {
+	float: left;
+	color: #fff;
+	background: #005AA9;
+	border: 1px solid #005AA9;
+	border-left: 1px solid #005AA9;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	font-size: 14px;
+	font-weight: normal;
+	text-shadow: none !important;
+	line-height: 33px;
+	padding: 0 12px;
+	min-width: 30px;
+	margin-left: 4px;
+}
+
+.MdFRMWLInput {
+	box-shadow: none;
+	padding: 2px 9px 2px;
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid #ced2db;
+	position: relative;
+	display: inline-block;
+	width: 99%;
+	height: 34px;
+	font-size: 16px;
+	line-height: 1.42857143;
+	color: #555;
+	border-radius: 4px;
+	margin-left: 5px;
+}
+
+.MdFRMWLInput input[type="text"], .MdFRM01Input textarea {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	-webkit-box-align: stretch;
+	-moz-box-align: stretch;
+	border: none;
+	background: transparent;
+	vertical-align: middle;
+	padding: 0;
+	width: 100%;
+}
+
+input.checkboxAddress {
+    transform : scale(0.85);
+    vertical-align: middle;
+}
+
+/* td > input[type='text'] */
+/* { */
+/*     width: 100%; this will set the width of the textbox equal to its container td */
+/* 	font-size: initial; */
+/* } */
+

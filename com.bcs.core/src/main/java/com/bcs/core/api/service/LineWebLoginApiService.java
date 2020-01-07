@@ -151,15 +151,9 @@ public class LineWebLoginApiService {
 						  .build();
 			}
 			
-			
-			
-			
 			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 			
-			
 			CloseableHttpClient closeableHttpClient = httpClientBuilder.setDefaultRequestConfig(config).build();
-			
-			
 			
 			List<String> list = new ArrayList<String>();
 			list.add("grant_type=authorization_code");
@@ -172,7 +166,6 @@ public class LineWebLoginApiService {
 			logger.info("client_secret : " + client_secret);
 			logger.info("code : " + code);
 			logger.info("redirect_uri : " + URLEncoder.encode(redirect_uri, "UTF-8"));
-			
 			
 			String postMsg = StringUtils.join(list.toArray(), "&");
 			

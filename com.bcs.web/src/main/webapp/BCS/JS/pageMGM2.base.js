@@ -94,6 +94,9 @@ $(function(){
 
 				queryBody.find('.status span').html($.BCS.parseInteractiveStatus(o.status));
 				
+				queryBody.find('.btn_redeisgn').attr('campaignId', o.campaignId);
+				queryBody.find('.btn_redeisgn').click(redesignFunc);
+				
 				queryBody.find('.campaignShareNumber a').attr('href', bcs.bcsContextPath +'/edit/shareCampaignReportPage?campaignId=' + o.campaignId);					
 
 				countUserRecord(queryBody, o.campaignId);
@@ -101,8 +104,6 @@ $(function(){
 //				queryBody.find('.campaignClickNumber a').attr('href', bcs.bcsContextPath +'/edit/couponReportPage?couponId=' + o.couponId);
 //				queryBody.find('.campaignClickNumber a').html($.BCS.formatNumber(o.couponUsingNumber,0));
 
-				queryBody.find('.btn_redeisgn').attr('campaignId', o.campaignId);
-				queryBody.find('.btn_redeisgn').click(redesignFunc);
 				
 				queryBody.find('.judgement').html(o.judgement);
 				

@@ -3,12 +3,14 @@ package com.bcs.core.db.repository;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.ShareUserRecord;
 import com.bcs.core.db.persistence.EntityRepository;
+import com.bcs.core.utils.SQLDateFormatUtil;
 
 public interface ShareUserRecordRepository extends EntityRepository<ShareUserRecord, String>{
 
@@ -32,6 +34,13 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
             + "where SUR.MODIFY_TIME >= ?1 and SUR.MODIFY_TIME < ?2 and CAMPAIGN_ID = ?3 "
             + "order by SUR.UID, SUR.MODIFY_TIME", nativeQuery = true)
     List<Object[]> findByModifyTimeAndCampaignId(Date start, Date end, String campaignId);
+    
+//    row1.createCell(0).setCellValue(o[0] == null? "" : o[0].toString());
+//    row1.createCell(1).setCellValue(o[1] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[1], sdf2)));
+//    row1.createCell(2).setCellValue(o[2] == null? "" : o[2].toString());
+//    row1.createCell(3).setCellValue(o[2] == null? "" : (o[3].toString().equals("1")?"NEW":"OLD"));
+//    row1.createCell(4).setCellValue(o[2] == null? "" : (o[6].toString().equals("1")?"Y":"N"));
+//    row1.createCell(5).setCellValue(o[8] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[8], sdf2)));
     
     @Transactional(readOnly = true, timeout = 30)
     @Query(value = "select SUR.UID as SUR_UID, "

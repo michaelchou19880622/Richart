@@ -44,7 +44,7 @@ public class LineFriendShipStatusService {
 			RequestConfig config = RequestConfig.custom().build();
 			try {
 				String proxyUrl = CoreConfigReader.getString(CONFIG_STR.RICHART_PROXY_URL.toString(), true);
-				logger.info("callRetrievingAPIforMGM proxyUrl : " + proxyUrl);
+				logger.info("getFriendShipStatusService proxyUrl : " + proxyUrl);
 //				logger.info("callRetrievingAPIforMGM proxy : " + proxy);
 				if(!StringUtils.isEmpty(proxyUrl)){
 		            HttpHost proxy = new HttpHost(proxyUrl, 80, "http");
@@ -70,18 +70,15 @@ public class LineFriendShipStatusService {
 						  .build();
 			}
 			
-			
-			
-			
 			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-			
 			
 			CloseableHttpClient closeableHttpClient = httpClientBuilder.setDefaultRequestConfig(config).build();
 			
 			String uri = CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_FRIENDSHIP_STATUS);
+			logger.info("uri : " + uri);
 			
 			HttpGet requestGet = new HttpGet(uri);
-			logger.info("URI : " + requestGet.getURI());
+			logger.info("requestGet : " + requestGet);
 			
 			requestGet.addHeader("Authorization", "Bearer " + access_token);
 			logger.info("Authorization : Bearer " + access_token);
@@ -106,7 +103,7 @@ public class LineFriendShipStatusService {
 		}
 		catch(Exception e){
 			String error = ErrorRecord.recordError(e, false);
-			logger.error(error);
+			logger.info(error);
 			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_FriendshipApi, error, e.getMessage());
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_FriendshipApi_Error, start, status, error, status + "");
 			if(retryCount < 5){

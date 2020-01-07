@@ -257,6 +257,15 @@ $(function(){
 	$.BCS.blockMsgRead = { "message" : "讀取資料中...."};
 	$.BCS.blockMsgUpload = { "message" : "上傳資料中...."};
 	$.BCS.blockMsgSave = { "message" : "儲存資料中...."};
+
+	$.BCS.blockWinningLetterCreating = { "message" : "中獎回函資料建立中..."};
+	$.BCS.blockWinningLetterUpdating = { "message" : "中獎回函資料更新中..."};
+	$.BCS.blockWinningLetterListLoading = { "message" : "中獎回函資料讀取中..."};
+	$.BCS.blockWinningLetterStatusUpdating = { "message" : "狀態更新中..."};
+	$.BCS.blockWinningLetterDeleting = { "message" : "中獎回函資料刪除中..."};
+	$.BCS.blockWinningLetterLoading = { "message" : "中獎回函內容載入中..."};
+	$.BCS.blockWinnerInfoUploading = { "message" : "用戶資料上傳中..."};
+	$.BCS.blockWinningLetterRecordExporting = { "message" : "正在生成PDF檔案..."};
 	
 	$.BCS.formatNumber = function(number, size){
 

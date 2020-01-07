@@ -22,7 +22,7 @@
 		<maven-compile>1.7</maven-compile>
 		<quartz.version>2.2.1</quartz.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<dependencies>
 
@@ -312,11 +312,22 @@
 			<version>3.14</version>
 		</dependency>
 
-		<!--dependency>
-			<groupId>com.linecorp.bot</groupId>
-			<artifactId>line-bot-model</artifactId>
-			<version>1.5.0</version>
-		</dependency>-->
+		<!-- https://search.maven.org/remotecontent?filepath=org/apache/poi/poi-scratchpad/4.1.0/poi-scratchpad-4.1.0.jar -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/fr.opensagres.xdocreport/org.apache.poi.xwpf.converter.pdf -->
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>org.apache.poi.xwpf.converter.pdf</artifactId>
+			<version>1.0.6</version>
+		</dependency>
+
+		<!--dependency> <groupId>com.linecorp.bot</groupId> <artifactId>line-bot-model</artifactId> 
+			<version>1.5.0</version> </dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/com.linecorp.bot/line-bot-api-client -->
 		<dependency>

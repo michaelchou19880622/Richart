@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	th:with="jsList = ${ {'/Mobile/WinningLetterReply/js/mobilePageWinningLetterReply.base.js'} }" >
+<head th:replace="/BCS/Views/Common/HeadForWinningLetterReply :: head ('中獎用戶資料填寫頁面', ${jsList})"></head>
+
+<body>
+	<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+	<div class="row">
+		<div class="columnUploadImage">
+			<div class="wrapperUploadImage">
+				<div class="mainFrame CMsg Pre">
+				<table border="1" width="100%" style="margin-bottom: 10px; margin-right: 10px;">
+					<tbody>
+						<tr>
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
+								中獎人姓名
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px;" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winner_name" autocomplete="off" maxlength="10">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
+								身分證字號
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winner_idCardNum" autocomplete="off" maxlength="12">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
+								連絡電話
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winner_phoneNumber" autocomplete="off" maxlength="32">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
+								戶籍地址
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput">
+									<input type="text" id="winner_residentAddress" autocomplete="off" maxlength="200">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
+								通訊地址 ( <input class="checkboxAddress" type="checkbox" id="cb_address"> 同上 ) 
+							</td>
+						</tr>
+						<tr>
+							<td style="padding: 0px 5px 5px 0px" align="left">
+								<div class="MdFRMWLInput" id="MdFRMWLInput_mAddress">
+									<input type="text" id="winner_mailingAddress" autocomplete="off" maxlength="200">
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<!-- 身分證正面 -->
+				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">身分證正面影本</label>
+				<br />
+				<label style="padding: 0px 0px 0px 5px; color: red; font-weight: bold;">*** 請務必於身分證上加註「限Richart行銷活動贈獎使用」字樣 ***</label>
+				<div class="imgZoneBox">
+					<div id="imgZoneFront">
+						<img id="myImgFront">
+					</div>
+				</div>
+				<div class="CHBtnSet">
+					<div class="CHLeft">
+  						<label for="filepondFront" class="btn_upload" style="display:none;">選擇檔案</label>
+						<input id="filepondFront" type="file" name="filepond" style="display:none;"/>
+					</div>
+				</div>
+				
+				<!-- 身分證反面 -->
+				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">身分證反面影本</label>
+				<br />
+				<label style="padding: 0px 0px 0px 5px; color: red; font-weight: bold;">*** 請務必於身分證上加註「限Richart行銷活動贈獎使用」字樣 ***</label>
+				<div class="imgZoneBox">
+					<div id="imgZoneBack">
+						<img id="myImgBack">
+					</div>
+				</div>
+				<div class="CHBtnSet">
+					<div class="CHLeft">
+  						<label for="filepondBack" class="btn_upload" style="display:none;">選擇檔案</label>
+						<input id="filepondBack" type="file" name="filepond" style="display:none;"/>
+					</div>
+				</div>
+				
+				<!-- 電子簽名 -->
+				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">領獎申請人簽章</label>
+		 		<canvas class="sig-canvas" id="sig-canvas" disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd" height=200>
+		 			The browser not supported, get a better browser, bro.
+		 		</canvas>
+				<div class="CHBtnSetCenter" style="margin-left: 5px;">
+					<div class="CHNone">
+  						<label for="sig-submitBtn" class="btn_submitSignature">送出資料</label>&nbsp;
+						<input id="sig-submitBtn" type="button" style="display:none;"/>
+  						<label for="sig-clearBtn" class="btn_clearSignature">重新簽名</label>
+						<input id="sig-clearBtn" type="button" style="display:none;"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

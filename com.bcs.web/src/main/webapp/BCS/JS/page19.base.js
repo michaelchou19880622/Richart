@@ -67,7 +67,7 @@ $(function(){
 					+ '&iMsgId=' + iMsgId + '&userStatus=' + userStatus;
 		
 		var downloadReport = $('#downloadReport');
-		downloadReport.attr("src", url);
+		downloadReport.attr("src", encodeURI(url));
 	});
 	
 	$('.exportMid').click(function(){
@@ -83,7 +83,7 @@ $(function(){
 					+ '&iMsgId=' + iMsgId + '&userStatus=' + userStatus + '&reportType=' + reportType;
 		
 		var downloadReport = $('#downloadReport');
-		downloadReport.attr("src", url);
+		downloadReport.attr("src", encodeURI(url));
 	});
 	
 	var dataTemplate = {};

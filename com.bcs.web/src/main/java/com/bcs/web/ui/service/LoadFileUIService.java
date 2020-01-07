@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,15 +17,15 @@ import com.bcs.core.utils.ErrorRecord;
 
 @Service
 public class LoadFileUIService {
-	
+
 	/** Logger */
 	private static Logger logger = Logger.getLogger(LoadFileUIService.class);
-	
-	public static void loadFileToResponse(String filePath, String fileName, HttpServletResponse response) throws IOException{
+
+	public static void loadFileToResponse(String filePath, String fileName, HttpServletResponse response) throws IOException {
 
 		InputStream inp = new FileInputStream(filePath + System.getProperty("file.separator") + fileName);
 		response.setContentType("application/download; charset=UTF-8");
-		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString()));
 		response.setCharacterEncoding("UTF-8");
 		OutputStream outp = response.getOutputStream();
 		try {
@@ -33,7 +35,7 @@ public class LoadFileUIService {
 			logger.error(ErrorRecord.recordError(e));
 			throw e;
 		} finally {
-			if(outp != null) {
+			if (outp != null) {
 				outp.close();
 			}
 		}

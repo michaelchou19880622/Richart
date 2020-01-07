@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	th:with="jsList = ${ {'/BCS/JS/pageWinningLetterMain.base.js'} }">
+<head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter Main Page', ${jsList})">
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageWinningLetterMain')"></div>
+
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+			<form id="formContentWinningLetter">
+				<section>
+					<header class="ContentHead">
+						<h3 th:text="建立中獎回函" id="title" class="CHTtl"></h3>
+						<p id="subTitle" class="CHDesc">請輸入中獎回函內容。</p>
+					</header>
+					<div class="mainFrame CMsg Pre">
+						<table border="1">
+							<colgroup>
+								<col width="190"><col>
+								<col width="100%"><col>
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>中獎回函名稱 <span style="color: red">*</span></th>
+									<td>
+										<div class="MdFRM01Input">
+											<input type="text" id="winningLetterName" name="winningLetterName" placeholder="請輸入中獎回函名稱" maxlength="50" style="width: 100%;" autocomplete="off">
+										</div>&nbsp; <span class="MdTxtInputCount" style="color:gray;">0/50</span>
+									</td>
+								</tr>
+								<tr>
+									<th>填寫時間 <span style="color: red">*</span></th>
+									<td><span>
+											<div class="option date">
+												<input type="text" class="datepicker" id="winningLetterStartTime" name="winningLetterStartTime" placeholder="YYYY-MM-DD" autocomplete="off"/>
+											</div>
+											<div class="option time">
+												<div class="optionLabel">00</div>
+												<select id="winningLetterStartTimeHour" name="winningLetterStartTimeHour" class="optionSelect" autocomplete="off">
+													<option th:each="i : ${#numbers.sequence( 0, 23, 1)}" th:with="hour=${i < 10 ? '0' + i : i}"
+														th:value="${hour}" th:text="${hour}" autocomplete="off"></option>
+												</select>
+											</div> :
+											<div class="option time">
+												<div class="optionLabel">00</div>
+												<select id="winningLetterStartTimeMinute" name="winningLetterStartTimeMinute" class="optionSelect" autocomplete="off">
+													<option th:each="i : ${#numbers.sequence( 0, 59, 1)}" th:with="minute=${i < 10 ? '0' + i : i}"
+														th:value="${minute}" th:text="${minute}" autocomplete="off"></option>
+												</select>
+											</div>
+									</span> ～ <span>
+											<div class="option date">
+												<input type="text" class="datepicker" id="winningLetterEndTime" name="winningLetterEndTime" placeholder="YYYY-MM-DD" autocomplete="off"/>
+											</div>
+											<div class="option time">
+												<div class="optionLabel">00</div>
+												<select id="winningLetterEndTimeHour" name="winningLetterEndTimeHour" class="optionSelect" autocomplete="off">
+													<option th:each="i : ${#numbers.sequence( 0, 23, 1)}" th:with="hour=${i < 10 ? '0' + i : i}"
+														th:value="${hour}" th:text="${hour}" autocomplete="off"></option>
+												</select>
+											</div> :
+											<div class="option time">
+												<div class="optionLabel">00</div>
+												<select id="winningLetterEndTimeMinute" name="winningLetterEndTimeMinute" class="optionSelect" autocomplete="off">
+													<option th:each="i : ${#numbers.sequence( 0, 59, 1)}" th:with="minute=${i < 10 ? '0' + i : i}"
+														th:value="${minute}" th:text="${minute}" autocomplete="off"></option>
+												</select>
+											</div>
+									</span></td>
+								</tr>
+								<tr>
+									<th>中獎贈品 <span style="color: red">*</span></th>
+									<td>
+										<div class="MdFRMWLInput">
+											<input type="text" id="winningLetterGifts" name="winningLetterGifts" placeholder="請輸入中獎贈品" maxlength="100" style="width: 100%;" autocomplete="off">
+										</div>&nbsp; <span class="MdTxtInputCount" style="color:gray;">0/100</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+                <p id="desc_btn" class="MdTxtNotice01 MdAC">建立/儲存後，至「中獎回函列表」頁面，點擊「網址」按鈕即可查看中獎回函網址連結。</p>
+				<div class="BtnSet">
+					<div>
+						<input id="btn_create_save" class="btn_save" style="cursor: pointer;" type="button" value="建立"> 
+						<input id="btn_cancel" class="btn_cancel" style="cursor: pointer;" type="button" value="取消" >
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<input id="urlReferrer" type="hidden" th:value="${urlReferrer}" />
+</body>
+
+</html>

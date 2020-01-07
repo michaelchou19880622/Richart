@@ -1,0 +1,23 @@
+package com.bcs.core.db.repository;
+
+import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bcs.core.db.entity.WinningLetter;
+import com.bcs.core.db.persistence.EntityRepository;
+
+public interface WinningLetterRepository extends EntityRepository<WinningLetter, String> {
+
+	@Transactional(readOnly = true, timeout = 30)
+	WinningLetter findById(Long id);
+	
+	@Transactional(readOnly = true, timeout = 30)
+	WinningLetter findByName(String name);
+
+	@Transactional(readOnly = true, timeout = 30)
+	List<WinningLetter> findAllByNameContainingAndStatusOrderByCreateTimeDesc(String name, String status);
+	
+	@Transactional(readOnly = true, timeout = 30)
+	List<WinningLetter> findAllByStatusOrderByCreateTimeDesc(String status);
+}
