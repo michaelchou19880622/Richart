@@ -244,6 +244,12 @@ $(function() {
 			model.style.display = "none";
 		}
 	}
+	
+	window.addEventListener('click', function(e) {   
+		if (document.getElementById('myModel').contains(e.target)){
+			model.style.display = "none";
+		}
+	});
 
 	/* When the user click 'ESC', close the model */
 	$(document).keyup(function(e) {

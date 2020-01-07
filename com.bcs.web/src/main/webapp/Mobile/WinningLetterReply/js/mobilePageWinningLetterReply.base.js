@@ -8,7 +8,7 @@ $(function() {
 
 	function initializeLiff() {
 	    liff.init({
-            liffId: "1550434846-3lDaM6jL"
+            liffId: "1550669403-KA59ja3L"
         }).then(() => {
             initializeApp();
         }).catch((err) => {
@@ -333,7 +333,7 @@ $(function() {
 
 		// 戶籍地址
 		if (!winner_residentAddress.value) {
-			alert("很抱歉，身分證字號不能為空。");
+			alert("很抱歉，戶籍地址不能為空。");
 			return;
 		}
 
