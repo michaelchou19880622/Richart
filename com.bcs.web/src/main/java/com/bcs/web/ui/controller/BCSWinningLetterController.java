@@ -633,9 +633,9 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 	
 	/** Export winner reply list to pdf **/
-	@RequestMapping(method = RequestMethod.POST, value = "/edit/exportWinnerInfoToPDF")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportWinnerInfoToPDF")
 	@ResponseBody
-	public ResponseEntity<?> exportWinnerInfoToPDF(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser, @RequestParam String wlrId)
+	public void exportWinnerInfoToPDF(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser, @RequestParam String wlrId)
 			throws IOException {
 		logger.info("exportWinnerInfoToPDF");
 		
@@ -660,18 +660,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 			fileName = serviceExportWinnerInfoToPDF.exportWinnerInfoToPDF(filePath, wlrId);
 			logger.info("fileName = {}", fileName);
 			
-			return new ResponseEntity<>(fileName, HttpStatus.OK);
-			
 		} catch (Exception e) {
 			logger.info("Exception : ", e);
-
-			if (e instanceof BcsNoticeException) {
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			} else {
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
 		}
 
-//		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
+		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
 	}
 }

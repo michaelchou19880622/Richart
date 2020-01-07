@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +25,7 @@ public class LoadFileUIService {
 
 		InputStream inp = new FileInputStream(filePath + System.getProperty("file.separator") + fileName);
 		response.setContentType("application/download; charset=UTF-8");
-		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString()));
 		response.setCharacterEncoding("UTF-8");
 		OutputStream outp = response.getOutputStream();
 		try {

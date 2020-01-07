@@ -1,5 +1,6 @@
 package com.bcs.core.richart.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -67,8 +68,8 @@ public class ServiceExportWinnerInfoToPDF {
 		WinningLetter winningLetter = winningLetterRepository.findById(Long.valueOf(winningLetterRecord.getWinningLetterId()));
 		logger.info("winningLetter = {}", winningLetter.toString());
 		
-		String outputFileName = String.format("%s\\%s_%s.pdf", exportPath, winningLetter.getName(), winningLetterRecord.getName());
-		logger.info("outputFileName = {}", outputFileName);
+		String outputFilePDF = String.format("%s\\%s_%s.pdf", exportPath, winningLetter.getName(), winningLetterRecord.getName());
+		logger.info("outputFilePDF = {}", outputFilePDF);
 
 		String outputTemplete = String.format("%s\\%s_%s.docx", exportPath, winningLetter.getName(), winningLetterRecord.getName());
 		logger.info("outputTemplete = {}", outputTemplete);
@@ -282,18 +283,18 @@ public class ServiceExportWinnerInfoToPDF {
 			doc.write(new FileOutputStream(outputTemplete));
 			doc.close();
 
-			wordConverterToPdf(new FileInputStream(outputTemplete), new FileOutputStream(outputFileName));
+			wordConverterToPdf(new FileInputStream(outputTemplete), new FileOutputStream(outputFilePDF));
 			
-//			File srcOutputFile = new File(OUTPUT_FILE);
-//			if (srcOutputFile.exists()) {
-//				srcOutputFile.delete();
-//			}
+			File srcOutputFile = new File(outputTemplete);
+			if (srcOutputFile.exists()) {
+				srcOutputFile.delete();
+			}
 
 		} catch (Exception e) {
 			logger.error("Exception : {}", e);
 		}
 		
-		return outputFileName;
+		return FileUtils.getFile(outputFilePDF).getName();
 	}
 
 	/**

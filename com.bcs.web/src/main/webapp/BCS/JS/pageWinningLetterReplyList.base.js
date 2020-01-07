@@ -92,22 +92,23 @@ $(function() {
 			break;
 		}
 		
-		$('.LyMain').block($.BCS.blockWinningLetterRecordExporting);
-		$.ajax({
-			type : "POST",
-			url : encodeURI(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + (winningLetterRecordId + 1))
-		}).done(function(response) {
-			if (!document.all) {
-				alert("已生成PDF檔案\n檔案路徑 : " + response);
-			} else {
-				alert("已生成PDF檔案\r\n檔案路徑 : " + response);
-			}
-			$('.LyMain').unblock();
-		}).fail(function(response) {
-			console.info(response);
-			$.FailResponse(response);
-			$('.LyMain').unblock();
-		})
+		window.location.replace(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + (winningLetterRecordId + 1));
+
+//		$.ajax({
+//			type : "POST",
+//			url : encodeURI(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + (winningLetterRecordId + 1))
+//		}).done(function(response) {
+//			if (!document.all) {
+//				alert("已生成PDF檔案\n檔案路徑 : " + response);
+//			} else {
+//				alert("已生成PDF檔案\r\n檔案路徑 : " + response);
+//			}
+//			$('.LyMain').unblock();
+//		}).fail(function(response) {
+//			console.info(response);
+//			$.FailResponse(response);
+//			$('.LyMain').unblock();
+//		})
 	});
 	
 	/* < Button > Excel檔 */
