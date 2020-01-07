@@ -21,3 +21,5 @@
 
 # target folder
 */.target/
+*.iml
+*.idea
