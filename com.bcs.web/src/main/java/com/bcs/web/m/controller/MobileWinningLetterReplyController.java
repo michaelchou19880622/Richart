@@ -1,8 +1,17 @@
 package com.bcs.web.m.controller;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -193,7 +202,8 @@ public class MobileWinningLetterReplyController {
 
 				return new ResponseEntity<>(resource, HttpStatus.OK);
 			} else {
-				throw new Exception("Update Winner Id Card Error");
+//				throw new Exception("Update Winner Id Card Error");
+				return new ResponseEntity<>("Update Winner Id Card Error", HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
@@ -242,7 +252,8 @@ public class MobileWinningLetterReplyController {
 				
 				return new ResponseEntity<>(resource, HttpStatus.OK);
 			} else {
-				throw new Exception("Update Winner E-Signature Error");
+//				throw new Exception("Update Winner E-Signature Error");
+				return new ResponseEntity<>("Update Winner E-Signature Error", HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
@@ -253,5 +264,35 @@ public class MobileWinningLetterReplyController {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
+	}
+	
+	public void addTextWatermark(String text, File sourceImageFile, File destImageFile) {
+	    try {
+	        BufferedImage sourceImage = ImageIO.read(sourceImageFile);
+	        Graphics2D g2d = (Graphics2D) sourceImage.getGraphics();
+	 
+	        // initializes necessary graphic properties
+	        AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f);
+	        g2d.setComposite(alphaChannel);
+	        g2d.setColor(Color.BLUE);
+	        g2d.setFont(new Font("Arial", Font.BOLD, 64));
+	        FontMetrics fontMetrics = g2d.getFontMetrics();
+	        Rectangle2D rect = fontMetrics.getStringBounds(text, g2d);
+	 
+	        // calculates the coordinate where the String is painted
+	        int centerX = (sourceImage.getWidth() - (int) rect.getWidth()) / 2;
+	        int centerY = sourceImage.getHeight() / 2;
+	 
+	        // paints the textual watermark
+	        g2d.drawString(text, centerX, centerY);
+	 
+	        ImageIO.write(sourceImage, "png", destImageFile);
+	        g2d.dispose();
+	 
+	        System.out.println("The tex watermark is added to the image.");
+	 
+	    } catch (IOException ex) {
+	        System.err.println(ex);
+	    }
 	}
 }

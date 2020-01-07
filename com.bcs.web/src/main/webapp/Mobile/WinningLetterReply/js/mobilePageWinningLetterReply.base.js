@@ -8,7 +8,7 @@ $(function() {
 
 	function initializeLiff() {
 	    liff.init({
-            liffId: "1550669403-KA59ja3L"
+            liffId: "1550434846-3lDaM6jL"
         }).then(() => {
             initializeApp();
         }).catch((err) => {
@@ -313,6 +313,48 @@ $(function() {
 
 	submitBtn.addEventListener("click", function(e) {
 		
+		// 中獎人姓名
+		if (!winner_name.value) {
+			alert("很抱歉，中獎人姓名不能為空。");
+			return;
+		}
+
+		// 身分證字號
+		if (!winner_idCardNum.value) {
+			alert("很抱歉，身分證字號不能為空。");
+			return;
+		}
+
+		// 聯絡電話
+		if (!winner_phoneNumber.value) {
+			alert("很抱歉，聯絡電話不能為空。");
+			return;
+		}
+
+		// 戶籍地址
+		if (!winner_residentAddress.value) {
+			alert("很抱歉，身分證字號不能為空。");
+			return;
+		}
+
+		// 通訊地址
+		if (!cb_address.checked && !winner_mailingAddress.value) {
+			alert("很抱歉，通訊地址不能為空。");
+			return;
+		}
+
+		// 身分證影本正面
+		if (!myImgFront.src || !myImgFront.src.trim()) {
+			alert("很抱歉，身分證影本正面未正確上傳。");
+			return;
+		}
+
+		// 身分證影本反面
+		if (!myImgBack.src || !myImgBack.src.trim()) {
+			alert("很抱歉，身分證影本反面未正確上傳。");
+			return;
+		}
+		
 		$('.columnUploadImage').block($.BCS.blockWinnerInfoUploading);
 		
 		$.ajax({
@@ -330,7 +372,7 @@ $(function() {
 				window.location.replace('https://richart.tw/TSDIB_RichartWeb/RC00/RC000000');
 				return;
 			}
-		
+			
 			/* Encode winner data to array */
 			var postData = encodeWinningLetterRecordData();
 			
