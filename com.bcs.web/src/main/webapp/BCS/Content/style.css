@@ -399,6 +399,33 @@ input:focus, textarea:focus {
 	opacity: 0;
 }
 
+.optionForPageSize {
+	position: relative;
+	display: inline-block;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	min-width: 60px;
+	background: white url(../images/ico_mdFRM03Select.png) no-repeat right center;
+	border: 1px solid #ced2dc;
+	margin-left:5px;
+	border-radius: 0;
+	padding: 5px 24px 5px 5px;
+}
+
+.optionForPageSize .optionLabelPageSize {
+	font-size: 13px;
+	color: #a1a7b5;
+}
+
+.optionForPageSize .optionSelectPageSize {
+	display: block;
+	position: absolute;
+	left: 10px;
+	width: 100%;
+	opacity: 0;
+	margin-left: 5px;
+}
+
 .option.date {
 	width: 130px;
 	background: white url(../images/ico_mdFRM01Date.png) no-repeat 103px
@@ -493,6 +520,19 @@ div.btn_delete {
 	min-width: 60px;
 	background: #005AA9;
 }
+
+.btn_PreviousPage, .btn_NextPage {
+	color: #fff;
+	padding: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	box-shadow: none;
+	border: 0;
+	height: 30px;
+	width: 30px;
+	background: #408080;
+}
+
 
 .btn_copy, .btn_detele, .btn_redeisgn, .btn_winner_list, .btn_prize_list,
 	.btn_detail, .btn_point_record, .btn_coupon_record, .btn_qr_code,

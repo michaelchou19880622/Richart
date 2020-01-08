@@ -2,6 +2,8 @@ package com.bcs.core.db.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bcs.core.db.entity.WinningLetter;
@@ -20,4 +22,7 @@ public interface WinningLetterRepository extends EntityRepository<WinningLetter,
 	
 	@Transactional(readOnly = true, timeout = 30)
 	List<WinningLetter> findAllByStatusOrderByCreateTimeDesc(String status);
+	
+	@Transactional(readOnly = true, timeout = 30)
+	Page<WinningLetter> findAllByStatus(String status, Pageable pageable);
 }

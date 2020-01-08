@@ -17,7 +17,10 @@ public interface WinningLetterRecordRepository extends EntityRepository<WinningL
 
 	@Transactional(readOnly = true, timeout = 300)
 	List<WinningLetterRecord> findAllByWinningLetterIdOrderByIdAsc(Long winningLetterId);
-
+	
+	@Transactional(readOnly = true, timeout = 300)
+	Page<WinningLetterRecord> findAllByWinningLetterId(Long winningLetterId, Pageable pageable);
+	
 	@Transactional(readOnly = true, timeout = 300)
 	List<WinningLetterRecord> findAllByNameContainingAndWinningLetterIdOrderByIdAsc(String name, Long winningLetterId);
 
@@ -27,4 +30,5 @@ public interface WinningLetterRecordRepository extends EntityRepository<WinningL
 	@Transactional(readOnly = true, timeout = 300)
 	@Query(value = "SELECT COUNT(*) AS REPLY_PEOPLE_COUNT FROM BCS_WINNING_LETTER_RECORD WHERE WINNING_LETTER_ID = ?1", nativeQuery = true)
 	Integer countByWinningLetterId(String winningLetterId);
+	
 }

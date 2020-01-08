@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +51,8 @@ import com.bcs.web.ui.service.LoadFileUIService;
 @RequestMapping("/bcs")
 public class BCSWinningLetterController extends BCSBaseController {
 
+	private static final String DEFAULT_PAGE_SIZE = "10";
+	
 	/** Logger **/
 	private static Logger logger = LoggerFactory.getLogger(BCSWinningLetterController.class);
 
@@ -120,9 +124,18 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Get winning letter list data **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterList")
 	@ResponseBody
-	public ResponseEntity<?> getWinningLetterList(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String name, @RequestParam String status) throws Exception {
+	public ResponseEntity<?> getWinningLetterList(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestParam String name, @RequestParam String status,
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+	        @RequestParam(value = "size", defaultValue = DEFAULT_PAGE_SIZE) Integer size) throws Exception {
 		logger.info("getWinningLetterList");
-		
+
+		logger.info("page = {}", page);
+		logger.info("size = {}", size);
+
+	    Sort sort = new Sort(Direction.DESC, "id");
+	    Pageable pageable = new PageRequest(page, size, sort);
+
 		String urlReferrer = request.getHeader("referer");
 		logger.info("urlReferrer = {}", urlReferrer);
 
@@ -135,7 +148,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 			List<WinningLetter> list_WinningLetter = new ArrayList<>();
 			
 			if (StringUtils.isBlank(name)) {
-				list_WinningLetter = winningLetterService.findAllByStatusOrderByCreatetimeDesc(status);
+//				list_WinningLetter = winningLetterService.findAllByStatusOrderByCreatetimeDesc(status);
+				list_WinningLetter = winningLetterService.findAllByStatus(status, pageable);
 			}
 			else if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(status)) {
 				list_WinningLetter = winningLetterService.findAllByNameContainingAndStatusOrderByCreateTimeDesc(name, status);
@@ -516,8 +530,17 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Get winning letter reply list data by winning letter id **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterReplyList")
 	@ResponseBody
-	public ResponseEntity<?> getWinningLetterReplyList(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @RequestParam String winnerName) throws Exception {
+	public ResponseEntity<?> getWinningLetterReplyList(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestParam String winningLetterId, @RequestParam String winnerName,
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+	        @RequestParam(value = "size", defaultValue = DEFAULT_PAGE_SIZE) Integer size) throws Exception {
 		logger.info("getWinningLetterReplyList");
+		
+		logger.info("page = {}", page);
+		logger.info("size = {}", size);
+
+	    Sort sort = new Sort(Direction.DESC, "id");
+	    Pageable pageable = new PageRequest(page, size, sort);
 		
 		String urlReferrer = request.getHeader("referer");
 		logger.info("urlReferrer = {}", urlReferrer);
@@ -534,7 +557,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(winnerName, Long.valueOf(winningLetterId));
 			}
 			else {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
+//				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
+				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId), pageable);
 			}
 			
 			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);

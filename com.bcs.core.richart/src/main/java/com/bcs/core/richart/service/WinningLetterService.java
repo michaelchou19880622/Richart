@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.db.entity.WinningLetter;
@@ -47,6 +49,21 @@ public class WinningLetterService {
 		logger.info("[ findAllByStatus ] lst_WinningLetter = {}", lst_WinningLetter);
 		
 		return lst_WinningLetter;
+	}
+
+	public List<WinningLetter> findAllByStatus(String status, Pageable pageable) {
+		long startTime = System.nanoTime();
+		logger.info("[ findAllByStatusWithPageable ] Start Time : {}", startTime);
+		
+		List<WinningLetter> list_WinningLetter = winningLetterRepository.findAllByStatus(status, pageable).getContent();
+
+		long endTime = System.nanoTime();
+		logger.info("[ findAllByStatusWithPageable ] End Time : {}", endTime);
+		logger.info("[ findAllByStatusWithPageable ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ findAllByStatusWithPageable ] lst_WinningLetter = {}", list_WinningLetter);
+		
+		return list_WinningLetter;
 	}
 	
 	public List<WinningLetter> findAllByNameContainingAndStatusOrderByCreateTimeDesc(String name, String status) {

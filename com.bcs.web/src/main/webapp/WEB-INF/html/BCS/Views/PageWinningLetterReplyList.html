@@ -25,7 +25,7 @@
 						</div>
                         <div class="CHRight">
                             <input class="btn_export_pdf" id="btn_export_pdf" type="button" value="PDF檔"  style="cursor: pointer; visibility: hidden;">&nbsp;
-                            <input class="btn_export_excel" id="btn_export_excel" type="button" value="Excel明細檔"  style="cursor: pointer;">
+                            <input class="btn_export_excel" id="btn_export_excel" type="button" value="Excel明細檔" style="cursor: pointer;">
                         </div>
 					</div>
 					<div class="mainFrame">
@@ -68,6 +68,26 @@
 								<td class="recordTime"></td>
 							</tr>
 						</table>
+					</div>
+					<div class="CHBtnSet">
+	                    <div class="CHRight">
+							<input id="btn_PreviousPage" type="button" value="<" style="cursor: pointer;">
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">第</label>
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">1</label>
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">/</label>
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">200</label>
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">頁</label>
+	                        <input id="btn_NextPage" type="button" value=">" style="cursor: pointer;">
+							<div class="optionForPageSize">
+								<div class="optionLabelPageSize">10</div>
+								<select id="keywordSelector" class="optionSelectPageSize" name="">
+									<optionForPageSize value="5">5</optionForPageSize>
+									<optionForPageSize value="10" selected>10</optionForPageSize>
+									<optionForPageSize value="15">15</optionForPageSize>
+									<optionForPageSize value="20">20</optionForPageSize>
+								</select>
+							</div>
+	                    </div>
 					</div>
 
 				</section>
