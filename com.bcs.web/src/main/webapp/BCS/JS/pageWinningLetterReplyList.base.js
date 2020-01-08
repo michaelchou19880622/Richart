@@ -85,30 +85,15 @@ $(function() {
 			if (checkboxes[i].checked == false) {
 				continue;
 			}
-
-			winningLetterRecordId = i;
+			
+			winningLetterRecordId = checkboxes[i].getAttribute('wlrid');
 			console.info("checked winningLetterRecordId = " + winningLetterRecordId);
 			
 			break;
 		}
 		
-		window.location.replace(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + (winningLetterRecordId + 1));
+		window.location.replace(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + winningLetterRecordId);
 
-//		$.ajax({
-//			type : "POST",
-//			url : encodeURI(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + (winningLetterRecordId + 1))
-//		}).done(function(response) {
-//			if (!document.all) {
-//				alert("已生成PDF檔案\n檔案路徑 : " + response);
-//			} else {
-//				alert("已生成PDF檔案\r\n檔案路徑 : " + response);
-//			}
-//			$('.LyMain').unblock();
-//		}).fail(function(response) {
-//			console.info(response);
-//			$.FailResponse(response);
-//			$('.LyMain').unblock();
-//		})
 	});
 	
 	/* < Button > Excel檔 */
@@ -259,6 +244,12 @@ $(function() {
 			model.style.display = "none";
 		}
 	}
+	
+	window.addEventListener('click', function(e) {   
+		if (document.getElementById('myModel').contains(e.target)){
+			model.style.display = "none";
+		}
+	});
 
 	/* When the user click 'ESC', close the model */
 	$(document).keyup(function(e) {
@@ -344,6 +335,7 @@ $(function() {
 				var dataTemplateBody = templateBody.clone(true);
 
 				dataTemplateBody.find('.checkBox2').click(func_toggleChildCheckbox);
+				dataTemplateBody.find('.checkBox2').attr('wlrId', o.id)
 				
 				$('.checkBox2').click(func_toggleChildCheckbox(this));
 
