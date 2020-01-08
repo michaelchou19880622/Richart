@@ -1,5 +1,26 @@
 $(function() {
+	let urlParams = new URLSearchParams(window.location.search);
 
+	var liffId;
+	if (urlParams.has('liffId')) {
+		liffId = urlParams.get('liffId');
+	}
+	
+	var winningLetterId;
+	if (urlParams.has('winningLetterId')) {
+		winningLetterId = urlParams.get('winningLetterId');
+	}
+
+	var wlEndTime;
+	if (urlParams.has('endTime')) {
+		wlEndTime = urlParams.get('endTime');
+	}
+	
+	var replacedEndTime = document.getElementById("replacedEndTime");
+	str = (replacedEndTime.innerHTML || replacedEndTime.textContent);
+	
+	replacedEndTime.innerHTML = str.replace("${EndTime}", wlEndTime);
+	
 	var userId = "";
 
 	function initializeApp() {
@@ -8,7 +29,7 @@ $(function() {
 
 	function initializeLiff() {
 	    liff.init({
-            liffId: "1550669403-KA59ja3L"
+            liffId: liffId
         }).then(() => {
             initializeApp();
         }).catch((err) => {
@@ -17,14 +38,6 @@ $(function() {
 	}
 
 	initializeLiff();
-
-	let urlParams = new URLSearchParams(window.location.search);
-
-	var winningLetterId;
-
-	if (urlParams.has('winningLetterId')) {
-		winningLetterId = urlParams.get('winningLetterId');
-	}
 
 	var winner_name = document.getElementById("winner_name");
 	var winner_idCardNum = document.getElementById("winner_idCardNum");
@@ -297,7 +310,7 @@ $(function() {
 				success : function(data) {
 					resolve(data)
 					
-					alert("用戶資料上傳並檢核完成，謝謝您。");
+					alert("用戶資料已成功上傳，台新銀行將進行檢核回饋作業，謝謝。");
 
 					$('.columnUploadImage').unblock();
 
@@ -392,7 +405,7 @@ $(function() {
 				
 			}).fail(function(response) {
 				console.info(response);
-				alert('用戶資料上傳檢核出現異常，請重新嘗試。如仍出現錯誤訊息，請聯繫相關人員。');
+				alert('用戶資料上傳出現異常，請重新嘗試。如仍出現錯誤訊息，請聯繫相關人員。');
 
 				$('.columnUploadImage').unblock();
 			})
@@ -436,6 +449,8 @@ $(function() {
 
 				var img = document.querySelector('img[id="myImgFront"]');
 				img.src = URL.createObjectURL(this.files[0]);
+
+				img.onload = idCardIsLoaded;
 			}
 		});
 
@@ -450,6 +465,8 @@ $(function() {
 
 				var img = document.querySelector('img[id="myImgBack"]');
 				img.src = URL.createObjectURL(this.files[0]);
+				
+				img.onload = idCardIsLoaded;
 			}
 		});
 	});
@@ -462,5 +479,9 @@ $(function() {
 	var imgBack = document.getElementById("myImgBack");
 	imgBack.onclick = function() {
 		$('#filepondBack').trigger('click');
+	}
+
+	function idCardIsLoaded() {
+		alert("請確認身份證資訊皆有完整露出");
 	}
 });

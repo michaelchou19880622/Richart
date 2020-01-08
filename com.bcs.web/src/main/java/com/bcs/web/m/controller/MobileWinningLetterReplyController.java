@@ -11,6 +11,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -122,6 +123,11 @@ public class MobileWinningLetterReplyController {
 
 		WinningLetter winningLetter = winningLetterService.findById(Long.valueOf(winningLetterId));
 
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd ");
+		
+		String endTime = sdFormat.format(winningLetter.getEndTime());
+		logger.info("endTime = {}", endTime);
+
 		String liffAppId = null;
 
 		// Check is winning letter inactived?
@@ -132,12 +138,21 @@ public class MobileWinningLetterReplyController {
 		}
 
 		logger.info("liffAppId = {}", liffAppId);
+		
+		String liffId = liffAppId.split("\\?")[0].replace("line://app/", "");
+		logger.info("liffId = {}", liffId);
 
-		String liffUrl = liffAppId.replace("{winningLetterId}", winningLetterId);
-		logger.info("liffUrl = {}", liffUrl);
-
-		model.addAttribute("liffUrl", liffUrl);
-
+		String liffUrl = liffAppId;
+		
+		liffUrl = liffUrl.replace("{liffId}", liffId);
+		logger.info("1-1 liffUrl = {}", liffUrl);
+				
+		liffUrl = liffUrl.replace("{winningLetterId}", winningLetterId);
+		logger.info("1-2 liffUrl = {}", liffUrl);
+		
+		liffUrl = liffUrl.replace("{endTime}", endTime);
+		logger.info("1-3 liffUrl = {}", liffUrl);
+		
 		return new ModelAndView("redirect:" + liffUrl);
 	}
 
@@ -205,8 +220,6 @@ public class MobileWinningLetterReplyController {
 
 				String srcFile = filePath + System.getProperty("file.separator") + resource.getResourceId();
 				logger.info("srcFile = {}", srcFile);
-
-//			    addTextWatermark("限 Richart 行銷活動贈獎使用", new File(srcFile), new File(srcFile));
 
 				String waterMarkPath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "DEFAULT";
 
