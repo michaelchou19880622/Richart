@@ -1,153 +1,169 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.bcs</groupId>
-		<artifactId>com.bcs.project.richart</artifactId>
-		<version>0.0.1.RELEASE</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<artifactId>com.bcs.web.richart</artifactId>
-	
-	<dependencies>
-		<dependency>
-			<groupId>com.bcs</groupId>
-			<artifactId>com.bcs.core.richart</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.bcs</groupId>
-			<artifactId>com.bcs.core.bot.richart</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.bcs</groupId>
-			<artifactId>com.bcs.core.web.richart</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.bcs</groupId>
-			<artifactId>com.bcs.core.richart.richart</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.bcs</groupId>
-			<artifactId>com.bcs.core.richmenu.richart</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.bcs</groupId>
+        <artifactId>com.bcs.project.richart</artifactId>
+        <version>0.0.1.RELEASE</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>com.bcs.web.richart</artifactId>
 
-	<packaging>war</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.bcs</groupId>
+            <artifactId>com.bcs.core.richart</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bcs</groupId>
+            <artifactId>com.bcs.core.bot.richart</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bcs</groupId>
+            <artifactId>com.bcs.core.web.richart</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bcs</groupId>
+            <artifactId>com.bcs.core.richart.richart</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bcs</groupId>
+            <artifactId>com.bcs.core.richmenu.richart</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
-	<profiles>
-		<profile>
-			<id>richartuat</id> <!-- Richart測試機 BCS -->
-			<properties>
-				<package.environment>richartuat</package.environment>
-				<rp.build.warname>richartuat</rp.build.warname>
-				<maven.war.webxml>src/main/resources/richartuat/web/web.xml</maven.war.webxml> <!-- set up webxml location -->
-			</properties>
-		</profile>
-		<profile>
-			<id>richartapi</id> <!-- Richart測試機 API -->
-			<properties>
-				<package.environment>richartapi</package.environment>
-				<rp.build.warname>richartapi</rp.build.warname>
-				<maven.war.webxml>src/main/resources/richartapi/web/web.xml</maven.war.webxml> <!-- set up webxml location -->
-			</properties>
-		</profile>
-		<profile>
-			<id>richartoa</id> <!-- Richart正式機 BCS -->
-			<properties>
-				<package.environment>richartoa</package.environment>
-				<rp.build.warname>richartoa</rp.build.warname>
-				<maven.war.webxml>src/main/resources/richartoa/web/web.xml</maven.war.webxml> <!-- set up webxml location -->
-			</properties>
-		</profile>
-		<profile>
-			<id>oaapi</id> <!-- Richart正式機 API -->
-			<properties>
-				<package.environment>oaapi</package.environment>
-				<rp.build.warname>oaapi</rp.build.warname>
-				<maven.war.webxml>src/main/resources/oaapi/web/web.xml</maven.war.webxml> <!-- set up webxml location -->
-			</properties>
-		</profile>
-		<profile>
-			<id>test</id>
-			<properties>
-				<package.environment>test</package.environment>
-				<rp.build.warname>Richart</rp.build.warname>
-				<maven.war.webxml>src/main/webapp/WEB-INF/web.xml</maven.war.webxml> <!-- set up webxml location -->
-			</properties>
-		</profile>
-		<profile>
-			<id>local</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<package.environment></package.environment>
-				<rp.build.warname>bcs</rp.build.warname>
-				<maven.war.webxml>src/main/webapp/WEB-INF/web.xml</maven.war.webxml> <!-- set up webxml location -->
-			</properties>
-		</profile>
-	</profiles>
-	<build>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
- 				<excludes>
-					<exclude>test/</exclude>
-					<exclude>richartuat/</exclude>
-					<exclude>richartapi/</exclude>
-					<exclude>richartoa/</exclude>
-					<exclude>oaapi/</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<finalName>bcs</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<addMavenDescriptor>false</addMavenDescriptor> <!-- remove maven folder -->
-					</archive>
-					<webResources>
-						<resource>
-							<directory>src/main/resources/${package.environment}/web</directory>
-							<targetPath>WEB-INF/html/BCS/Views/Common</targetPath>
-							<excludes>
-								<exclude>web.xml</exclude>
-							</excludes>
-						</resource>
-						<resource>
-							<directory>src/main/resources/${package.environment}</directory>
-							<targetPath>WEB-INF/classes</targetPath>
-							<excludes>
-								<exclude>web/</exclude>
-							</excludes>
-						</resource>
-					</webResources>
-					<!-- web.xml is not mandatory since JavaEE 5 -->
-					<failOnMissingWebXml>true</failOnMissingWebXml>
-					
-					<!-- Packaging excludes for Taishin official environment -->
-<!-- 					<packagingExcludes>%regex[WEB-INF/lib/(?!line-bot-model-1.12.0.jar)(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]</packagingExcludes> remove third party jar -->
-					
-					<!-- Packaging excludes for Taishin test environment -->
-					<packagingExcludes>WEB-INF/lib/*pwd.jar,WEB-INF/lib/*TSIB.jar</packagingExcludes>
-					
-					<!-- Set up war name -->
-					<warName>${rp.build.warname}</warName> 
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <packaging>war</packaging>
+
+    <profiles>
+        <profile>
+            <!-- Richart測試機 BCS -->
+            <id>richartuat</id>
+            <properties>
+                <package.environment>richartuat</package.environment>
+                <rp.build.warname>richartuat</rp.build.warname>
+                <maven.war.webxml>src/main/resources/richartuat/web/web.xml
+                </maven.war.webxml>
+            </properties>
+        </profile>
+        <profile>
+            <!-- Richart測試機 API -->
+            <id>richartapi</id>
+            <properties>
+                <package.environment>richartapi</package.environment>
+                <rp.build.warname>richartapi</rp.build.warname>
+                <maven.war.webxml>src/main/resources/richartapi/web/web.xml
+                </maven.war.webxml>
+            </properties>
+        </profile>
+        <profile>
+            <!-- Richart正式機 BCS -->
+            <id>richartoa</id>
+            <properties>
+                <package.environment>richartoa</package.environment>
+                <rp.build.warname>richartoa</rp.build.warname>
+                <maven.war.webxml>src/main/resources/richartoa/web/web.xml
+                </maven.war.webxml> <!-- set up webxml location -->
+            </properties>
+        </profile>
+        <profile>
+            <!-- Richart正式機 API -->
+            <id>oaapi</id>
+            <properties>
+                <package.environment>oaapi</package.environment>
+                <rp.build.warname>oaapi</rp.build.warname>
+                <maven.war.webxml>src/main/resources/oaapi/web/web.xml</maven.war.webxml>
+            </properties>
+        </profile>
+        <profile>
+            <!-- Windows -->
+            <id>test</id>
+            <properties>
+                <package.environment>test</package.environment>
+                <rp.build.warname>Richart</rp.build.warname>
+                <maven.war.webxml>src/main/webapp/WEB-INF/web.xml</maven.war.webxml>
+            </properties>
+        </profile>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <package.environment></package.environment>
+                <rp.build.warname>bcs</rp.build.warname>
+                <maven.war.webxml>src/main/webapp/WEB-INF/web.xml</maven.war.webxml>
+            </properties>
+        </profile>
+    </profiles>
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>test/</exclude>
+                    <exclude>richartuat/</exclude>
+                    <exclude>richartapi/</exclude>
+                    <exclude>richartoa/</exclude>
+                    <exclude>oaapi/</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <finalName>bcs</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <addMavenDescriptor>false</addMavenDescriptor> <!-- remove maven folder -->
+                    </archive>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/resources/${package.environment}/web</directory>
+                            <targetPath>WEB-INF/html/BCS/Views/Common</targetPath>
+                            <excludes>
+                                <exclude>web.xml</exclude>
+                            </excludes>
+                        </resource>
+                        <resource>
+                            <directory>src/main/resources/${package.environment}</directory>
+                            <targetPath>WEB-INF/classes</targetPath>
+                            <excludes>
+                                <exclude>web/</exclude>
+                            </excludes>
+                        </resource>
+                    </webResources>
+                    <!-- web.xml is not mandatory since JavaEE 5 -->
+                    <failOnMissingWebXml>true</failOnMissingWebXml>
+
+                    <!-- Packaging excludes for Taishin official environment -->
+                    <!-- <packagingExcludes>%regex[WEB-INF/lib/(?!line-bot-model-1.12.0.jar)(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]</packagingExcludes> remove third party jar -->
+
+                    <!-- Packaging excludes for Taishin test environment -->
+                    <packagingExcludes>WEB-INF/lib/*pwd.jar,WEB-INF/lib/*TSIB.jar</packagingExcludes>
+
+                    <!-- Set up war name -->
+                    <warName>${rp.build.warname}</warName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-                            
-    
-    
-    
-    
-    
+
+
+
+
+
+
     <wb-module deploy-name="bcs">
         <wb-resource deploy-path="/WEB-INF/web.xml" source-path="/src/main/webapp/WEB-INF/web.xml"/>
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
@@ -26,29 +26,29 @@
         <dependent-module archiveName="com.bcs.core.richmenu.richart-0.0.1.RELEASE.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/com.bcs.core.richmenu.richart/com.bcs.core.richmenu.richart">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-                                                        
-        
-        
-        
-        
-        
+
+
+
+
+
+
         <property name="context-root" value="bcs"/>
-                                                        
-        
-        
-        
-        
-        
+
+
+
+
+
+
         <property name="java-output-path" value="/com.bcs.web/target/classes"/>
         <property name="component.exclusion.patterns" value="WEB-INF/lib/*pwd.jar,WEB-INF/lib/*TSIB.jar"/>
-                                                    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     </wb-module>
-                        
+
 
 
 

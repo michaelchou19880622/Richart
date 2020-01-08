@@ -1,0 +1,270 @@
+package com.bcs.core.utils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.GsonBuilder;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * 工具類別
+ *
+ * @author Alan
+ */
+@Slf4j
+@UtilityClass
+public class DataUtils {
+    /**
+     * To Pretty Json user Gson
+     *
+     * @param obj obj
+     * @return JSON String
+     */
+    public static String toPrettyJson(Object obj) {
+        return new GsonBuilder().setPrettyPrinting().serializeNulls().create().toJson(obj);
+    }
+
+    public static String toNormalJson(Object obj) {
+        return new GsonBuilder().serializeNulls().create().toJson(obj);
+    }
+
+    /**
+     * To Pretty Json user Jackson
+     *
+     * @param obj onj
+     * @return JSON String
+     */
+    public static String toPrettyJsonUseJackson(Object obj) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            return mapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            log.error("JsonProcessingException : {}", e.getMessage());
+            return obj.getClass().getName() + '@' + Integer.toHexString(obj.hashCode());
+        }
+    }
+
+    /**
+     * To Pretty Json user Jackson
+     *
+     * @param jsonString onj
+     * @return JSON String
+     */
+    public static String toPrettyJsonUseJackson(String jsonString) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Object jsonObject = mapper.readValue(jsonString, Object.class);
+
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            return mapper.writeValueAsString(jsonObject);
+        } catch (Exception e) {
+            log.error("JsonProcessingException : {}", e.getMessage());
+            return "";
+        }
+    }
+
+    /**
+     * Format Date to String
+     *
+     * @param date   date
+     * @param format format pattern
+     * @return Format Date String
+     */
+    public static String formatDateToString(Date date, String format) {
+        if (date == null || format.trim().isEmpty()) {
+            return null;
+        }
+        return new SimpleDateFormat(format).format(date);
+    }
+
+    /**
+     * Conv str to date date.
+     *
+     * @param str    the str
+     * @param format the format
+     * @return the date
+     */
+    public static Date convStrToDate(String str, String format) {
+        if (str == null || str.trim().isEmpty() || format == null || format.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return new SimpleDateFormat(format).parse(str);
+        } catch (ParseException se) {
+            return null;
+        }
+    }
+
+    /**
+     * Conv str to date date.
+     *
+     * @param str         the str
+     * @param inputFormat the format
+     * @return the date
+     */
+    public static String convDateStrToString(String str, String inputFormat, String outputFormate) {
+        if (str == null || str.trim().isEmpty() || inputFormat == null || inputFormat.trim().isEmpty()) {
+            return "";
+        }
+        try {
+            Date date = new SimpleDateFormat(inputFormat).parse(str);
+            return date == null ? null : new SimpleDateFormat(outputFormate).format(date);
+        } catch (ParseException se) {
+            return "";
+        }
+    }
+
+    /**
+     * Conv date to str string.
+     *
+     * @param date   the date
+     * @param format the format
+     * @return the string
+     */
+    public static String convDateToStr(Date date, String format) {
+        if (date == null || format.trim().isEmpty()) {
+            return null;
+        }
+        return new SimpleDateFormat(format).format(date);
+    }
+
+    /**
+     * Conv date to hhmm string.
+     *
+     * @param date the date
+     * @return the string
+     */
+    public static String convDateToHHMM(Date date) {
+        if (date == null) {
+            return null;
+        }
+        try {
+            return new SimpleDateFormat("HH:mm").format(date);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Replace Unnecessary Space
+     *
+     * @param str str
+     * @return Replace String
+     */
+    public static String replaceUnnecessarySpace(String str) {
+        return str.replaceAll("\\s{1,}", " ");
+    }
+
+    public static Object getOrDefault(Map map, Object key, Object defaultValue) {
+        return map.get(key) != null || map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+
+    /**
+     * isFuture
+     *
+     * @param compareDate compareDate
+     * @return isFuture
+     */
+    public static boolean isFuture(Date compareDate) {
+        if (compareDate == null) {
+            return false;
+        }
+        return new Date().before(compareDate);
+    }
+
+    /**
+     * isPast
+     *
+     * @param compareDate compareDate
+     * @return isPast
+     */
+    public static boolean isPast(Date compareDate) {
+        if (compareDate == null) {
+            return false;
+        }
+        return new Date().after(compareDate);
+    }
+
+    /**
+     * Get Page Row Start And Row End;
+     *
+     * @param page    page number
+     * @param pageRow one page row number
+     * @return int[rowStart, rowEnd]
+     */
+    public static int[] pageRowCalculate(final Integer page, final Integer pageRow) {
+        int rowStart;
+        int rowEnd;
+        int index = page == null || page == 0 ? 0 : page - 1;
+        rowStart = index * pageRow + 1;
+        rowEnd = rowStart + pageRow;
+        return new int[]{rowStart, rowEnd};
+    }
+
+    /**
+     * 設定為時分秒23:59:59:999
+     */
+    public static Date truncEndDate(Date srcDate) {
+        return customDateTime(srcDate, 23, 59, 59, 999);
+    }
+
+    /**
+     * 設定為時分秒00:00:00:000
+     */
+    public static Date truncDate(Date srcDate) {
+        return customDateTime(srcDate, 0, 0, 0, 0);
+    }
+
+    public static Date customDateTime(Date srcDate, int h, int m, int s, int x) {
+        Calendar cal = Calendar.getInstance();
+        Date rtnDate = null;
+        if (srcDate != null) {
+            cal.setTime(srcDate);
+            cal.set(Calendar.HOUR_OF_DAY, h);
+            cal.set(Calendar.MINUTE, m);
+            cal.set(Calendar.SECOND, s);
+            cal.set(Calendar.MILLISECOND, x);
+            rtnDate = cal.getTime();
+        }
+        return rtnDate;
+    }
+
+    /**
+     * Mask String
+     *
+     * @param sourceString sourceString
+     * @param replaceChar  replaceChar
+     * @param startIndex   startIndex
+     * @param lastIndex    lastIndex
+     * @return after mask string
+     * @apiNote (" 0900123456 ", " * ", 2, 3) => 09*****456
+     */
+    public static String maskString(String sourceString, char replaceChar, int startIndex, int lastIndex) {
+        if (StringUtils.isBlank(sourceString)) {
+            return "";
+        }
+        startIndex = Math.max(startIndex, 0);
+        lastIndex = Math.max(lastIndex, 0);
+        char[] strArray = sourceString.toCharArray();
+        startIndex = Math.min(startIndex, strArray.length);
+        lastIndex = lastIndex > strArray.length ? 0 : lastIndex;
+        for (int i = startIndex; i < strArray.length - lastIndex; i++) {
+            strArray[i] = replaceChar;
+        }
+
+        return String.valueOf(strArray);
+    }
+
+    public static int calTotalPage(int totalCount, int onePageCount) {
+        return totalCount / onePageCount + (totalCount % onePageCount == 0 ? 0 : 1);
+    }
+}
