@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-	th:with="jsList = ${ {'/Mobile/WinningLetterReply/js/mobilePageWinningLetterReply.base.js'} }" >
+	th:with="jsList = ${ {'/Mobile/WinningLetterReply/js/mobilePageWinningLetterReply.base.js'} }">
 <head th:replace="/BCS/Views/Common/HeadForWinningLetterReply :: head ('中獎用戶資料填寫頁面', ${jsList})"></head>
 
 <body>
@@ -9,119 +9,116 @@
 		<div class="columnUploadImage">
 			<div class="wrapperUploadImage">
 				<div class="mainFrame CMsg Pre">
-				<table border="1" width="100%" style="margin-bottom: 10px; margin-right: 10px;">
-					<tbody>
-						<tr>
-							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
-								中獎人姓名
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 0px 5px 5px 0px;" align="left">
-								<div class="MdFRMWLInput">
-									<input type="text" id="winner_name" autocomplete="off" maxlength="10">
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
-								身分證字號
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 0px 5px 5px 0px" align="left">
-								<div class="MdFRMWLInput">
-									<input type="text" id="winner_idCardNum" autocomplete="off" maxlength="12">
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
-								連絡電話
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 0px 5px 5px 0px" align="left">
-								<div class="MdFRMWLInput">
-									<input type="text" id="winner_phoneNumber" autocomplete="off" maxlength="32">
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
-								戶籍地址
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 0px 5px 5px 0px" align="left">
-								<div class="MdFRMWLInput">
-									<input type="text" id="winner_residentAddress" autocomplete="off" maxlength="200">
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">
-								通訊地址 ( <input class="checkboxAddress" type="checkbox" id="cb_address"> 同上 ) 
-							</td>
-						</tr>
-						<tr>
-							<td style="padding: 0px 5px 5px 0px" align="left">
-								<div class="MdFRMWLInput" id="MdFRMWLInput_mAddress">
-									<input type="text" id="winner_mailingAddress" autocomplete="off" maxlength="200">
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				
-				<!-- 身分證正面 -->
-				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">身分證正面影本</label>
-				<br />
-				<label style="padding: 0px 0px 0px 5px; color: red; font-weight: bold;">*** 請務必於身分證上加註「限Richart行銷活動贈獎使用」字樣 ***</label>
-				<div class="imgZoneBox">
-					<div id="imgZoneFront">
-						<img id="myImgFront">
+					<table border="1" width="100%" style="margin-bottom: 10px; margin-right: 10px;">
+						<tbody>
+							<tr>
+								<td style="padding: 8px 5px 15px 5px;">
+									<label style="padding: 0px 0px 15px 0px; color: red;" id="replacedEndTime">中獎人請填妥本回覆函，連同應檢附之相關身分證明文件，於${EndTime}前將中獎人資料回傳至Richart數位中獎回函系統。(以回傳時間為憑)</label><br /> 
+									<label style="color: black;">若中獎人不願填寫回覆函、未檢附相關資料、資料不全(正反面影本未黏貼或合成在中獎回函上)或有誤、逾期未回覆、檔案無法開啟(建議使用PDF、JPG格式)無法核對中獎人資料或其他可歸責中獎人之事由致無法寄送或被退件等情事者，則視同中獎人自動放棄中獎資格及獎項，不再另行通知，亦不得要求補發。</label><br /> 
+									<label style="color: black;">*本活動為機會中獎活動，依所得稅法規定，</label>
+									<label style="font-weight: bold; color: black;">年度累積中獎價值超過NT$1,000整，將併入中獎人個人年度綜合所得稅申報；若年度累積中獎價值超過NT$20,010整，中獎人須自行負擔10%之機會中獎所得稅（非中華民國境內居住之個人為20%）並配合台新銀行辦理代扣繳相關事宜。</label>
+									<label style="color: black;">中獎人另須提供姓名、身分證字號、戶籍地址、通訊地址及身分證正、反面影本，以供台新銀行向稅捐機關進行年度列單申報作業。若中獎人不願提供相關資料或未依限如期繳納應繳稅額並配合辦理領獎手續或其他可歸責中獎人事由等相關事宜致無法完成領獎手續者，即視為自動放棄中獎資格，事後不得再提出其他任何要求。</label>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">中獎人姓名</td>
+							</tr>
+							<tr>
+								<td style="padding: 0px 5px 5px 0px;" align="left">
+									<div class="MdFRMWLInput">
+										<input type="text" id="winner_name" autocomplete="off" maxlength="10">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">身分證字號</td>
+							</tr>
+							<tr>
+								<td style="padding: 0px 5px 5px 0px" align="left">
+									<div class="MdFRMWLInput">
+										<input type="text" id="winner_idCardNum" autocomplete="off" maxlength="12">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">連絡電話</td>
+							</tr>
+							<tr>
+								<td style="padding: 0px 5px 5px 0px" align="left">
+									<div class="MdFRMWLInput">
+										<input type="text" id="winner_phoneNumber" autocomplete="off" maxlength="32">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">戶籍地址</td>
+							</tr>
+							<tr>
+								<td style="padding: 0px 5px 5px 0px" align="left">
+									<div class="MdFRMWLInput">
+										<input type="text" id="winner_residentAddress" autocomplete="off" maxlength="200">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">通訊地址 ( <input class="checkboxAddress"
+									type="checkbox" id="cb_address"> 同上 )
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 0px 5px 5px 0px" align="left">
+									<div class="MdFRMWLInput" id="MdFRMWLInput_mAddress">
+										<input type="text" id="winner_mailingAddress" autocomplete="off" maxlength="200">
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<!-- 身分證正面 -->
+					<label style="padding: 0px 0px 0px 5px; font-weight: bold;">身分證正面影本</label>
+					<div class="imgZoneBox">
+						<div id="imgZoneFront">
+							<img id="myImgFront">
+						</div>
 					</div>
-				</div>
-				<div class="CHBtnSet">
-					<div class="CHLeft">
-  						<label for="filepondFront" class="btn_upload" style="display:none;">選擇檔案</label>
-						<input id="filepondFront" type="file" name="filepond" style="display:none;"/>
+					<div class="CHBtnSet">
+						<div class="CHLeft">
+							<label for="filepondFront" class="btn_upload" style="display: none;">選擇檔案</label> <input id="filepondFront"
+								type="file" name="filepond" style="display: none;" />
+						</div>
 					</div>
-				</div>
-				
-				<!-- 身分證反面 -->
-				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">身分證反面影本</label>
-				<br />
-				<label style="padding: 0px 0px 0px 5px; color: red; font-weight: bold;">*** 請務必於身分證上加註「限Richart行銷活動贈獎使用」字樣 ***</label>
-				<div class="imgZoneBox">
-					<div id="imgZoneBack">
-						<img id="myImgBack">
+
+					<!-- 身分證反面 -->
+					<label style="padding: 0px 0px 0px 5px; font-weight: bold;">身分證反面影本</label>
+					<div class="imgZoneBox">
+						<div id="imgZoneBack">
+							<img id="myImgBack">
+						</div>
 					</div>
-				</div>
-				<div class="CHBtnSet">
-					<div class="CHLeft">
-  						<label for="filepondBack" class="btn_upload" style="display:none;">選擇檔案</label>
-						<input id="filepondBack" type="file" name="filepond" style="display:none;"/>
+					<div class="CHBtnSet">
+						<div class="CHLeft">
+							<label for="filepondBack" class="btn_upload" style="display: none;">選擇檔案</label> <input id="filepondBack"
+								type="file" name="filepond" style="display: none;" />
+						</div>
 					</div>
-				</div>
-				
-				<!-- 電子簽名 -->
-				<label style="padding: 0px 0px 0px 5px; font-weight: bold;">領獎申請人簽章</label>
-		 		<canvas class="sig-canvas" id="sig-canvas" disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd" height=200>
+
+					<!-- 電子簽名 -->
+					<label style="padding: 0px 0px 0px 5px; font-weight: bold;">領獎申請人簽章</label>
+					<canvas class="sig-canvas" id="sig-canvas" disable-scroll="true" bindtouchstart="touchStart"
+						bindtouchmove="touchMove" bindtouchend="touchEnd" height=200>
 		 			The browser not supported, get a better browser, bro.
 		 		</canvas>
-				<div class="CHBtnSetCenter" style="margin-left: 5px;">
-					<div class="CHNone">
-  						<label for="sig-submitBtn" class="btn_submitSignature">送出資料</label>&nbsp;
-						<input id="sig-submitBtn" type="button" style="display:none;"/>
-  						<label for="sig-clearBtn" class="btn_clearSignature">重新簽名</label>
-						<input id="sig-clearBtn" type="button" style="display:none;"/>
+					<div class="CHBtnSetCenter" style="margin-left: 5px;">
+						<div class="CHNone">
+							<label for="sig-submitBtn" class="btn_submitSignature">送出資料</label>&nbsp; <input id="sig-submitBtn" type="button"
+								style="display: none;" /> <label for="sig-clearBtn" class="btn_clearSignature">重新簽名</label> <input
+								id="sig-clearBtn" type="button" style="display: none;" />
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 </body>
 
 </html>
