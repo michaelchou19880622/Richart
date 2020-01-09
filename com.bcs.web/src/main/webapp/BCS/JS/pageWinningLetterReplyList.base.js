@@ -6,13 +6,13 @@ $(function() {
 	
 	var keywordValue = "";
 	
-//	var totalPageSize = document.getElementById('totalPageSize');
+	var totalPageSize = document.getElementById('totalPageSize');
 	
-//	var currentPageIndex = document.getElementById('currentPageIndex').innerText;
-//	console.info('currentPageIndex = ' + currentPageIndex)
+	var currentPageIndex = document.getElementById('currentPageIndex').innerText;
+	console.info('currentPageIndex = ' + currentPageIndex)
 	
-//	var perPageSize = $(this).find('option:selected').text();
-//	console.info('perPageSize = ' + perPageSize)
+	var perPageSize = $(this).find('option:selected').text();
+	console.info('perPageSize = ' + perPageSize)
 	
 	/* To prevent form refresh from press 'Enter' key */
 	$("form").submit(function() {
@@ -35,19 +35,19 @@ $(function() {
 		}
 	});
 
-//	/* 更新每頁顯示數量下拉選單 */
-//	var func_optionSelectChanged = function(){
-//		var selectValue = $(this).find('option:selected').text();
-//		console.info('selectValue = ', selectValue);
-//		
-//		$(this).closest('.optionPageSize').find('.optionLabelPageSize').html(selectValue);
-//		
-//		perPageSize = selectValue;
-//		
-//		loadDataFunc();
-//	};
+	/* 更新每頁顯示數量下拉選單 */
+	var func_optionSelectChanged = function(){
+		var selectValue = $(this).find('option:selected').text();
+		console.info('selectValue = ', selectValue);
+		
+		$(this).closest('.optionPageSize').find('.optionLabelPageSize').html(selectValue);
+		
+		perPageSize = selectValue;
+		
+		loadDataFunc();
+	};
 
-//	$('.optionSelectPageSize').change(func_optionSelectChanged);
+	$('.optionSelectPageSize').change(func_optionSelectChanged);
 	
 	/* Get URL Referrer */
 	var urlRef = $('#urlReferrer').val();
@@ -85,21 +85,21 @@ $(function() {
 		func_toggleCheckbox(this);
 	});
 	
-//	/* < Button > 上一頁 */
-//	$('.btn_PreviousPage').click(function() {
-//		
-//		currentPageIndex = (currentPageIndex - 1 >= 0)? 1 : currentPageIndex;
-//		
-//		loadDataFunc();
-//	});
-//	
-//	/* < Button > 下一頁 */
-//	$('.btn_NextPage').click(function() {
-//
-//		currentPageIndex = (currentPageIndex + 1 >= totalPageSize)? totalPageSize : currentPageIndex;
-//		
-//		loadDataFunc();
-//	});
+	/* < Button > 上一頁 */
+	$('.btn_PreviousPage').click(function() {
+		
+		currentPageIndex = (currentPageIndex - 1 >= 0)? 1 : currentPageIndex;
+		
+		loadDataFunc();
+	});
+	
+	/* < Button > 下一頁 */
+	$('.btn_NextPage').click(function() {
+
+		currentPageIndex = (currentPageIndex + 1 >= totalPageSize)? totalPageSize : currentPageIndex;
+		
+		loadDataFunc();
+	});
 	
 	/* < Button > 查詢 */
 	$('.btn_name_query').click(function() {
@@ -360,16 +360,16 @@ $(function() {
 		
 		$.ajax({
 			type : "GET",
-			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
-//			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId + '&page=' + (currentPageIndex - 1) +'&size=' + perPageSize)
+//			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
+			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId + '&page=' + (currentPageIndex - 1) +'&size=' + perPageSize)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
 			
-//			/* Get URL TotalPageSize */
-//			var urlTotalPageSize = $('#urlTotalPageSize').val();
-//			console.info('urlTotalPageSize = ', urlTotalPageSize);
-//			
-//			totalPageSize.innerText = urlTotalPageSize;
+			/* Get URL TotalPageSize */
+			var urlTotalPageSize = $('#urlTotalPageSize').val();
+			console.info('urlTotalPageSize = ', urlTotalPageSize);
+			
+			totalPageSize.innerText = urlTotalPageSize;
 
 			isInitial = true;
 

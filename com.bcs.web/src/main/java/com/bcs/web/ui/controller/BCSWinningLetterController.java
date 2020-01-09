@@ -540,8 +540,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("page = {}", page);
 		logger.info("size = {}", size);
 
-//	    Sort sort = new Sort(Direction.DESC, "id");
-//	    Pageable pageable = new PageRequest(page, size, sort);
+	    Sort sort = new Sort(Direction.DESC, "id");
+	    Pageable pageable = new PageRequest(page, size, sort);
 		
 		String urlReferrer = request.getHeader("referer");
 		logger.info("urlReferrer = {}", urlReferrer);
@@ -552,21 +552,21 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("winnerName = {}", winnerName);
 		
 		try {
-			List<WinningLetterRecord> list_WinningLetterRecords = null;
+			Page<WinningLetterRecord> page_WinningLetterRecords = null;
 
 			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(winnerName, Long.valueOf(winningLetterId));
+//				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(winnerName, Long.valueOf(winningLetterId));
 			}
 			else {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
-//				page_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId), pageable);
+//				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
+				page_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId), pageable);
 			}
 
-//			logger.info("page_WinningLetterRecords.getTotalPages() = {}", page_WinningLetterRecords.getTotalPages());
+			logger.info("page_WinningLetterRecords.getTotalPages() = {}", page_WinningLetterRecords.getTotalPages());
 			
-//			model.addAttribute("urlTotalPageSize", page_WinningLetterRecords.getTotalPages());
+			model.addAttribute("urlTotalPageSize", page_WinningLetterRecords.getTotalPages());
 			
-//			List<WinningLetterRecord> list_WinningLetterRecords = page_WinningLetterRecords.getContent();
+			List<WinningLetterRecord> list_WinningLetterRecords = page_WinningLetterRecords.getContent();
 			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
 
 			return new ResponseEntity<>(list_WinningLetterRecords, HttpStatus.OK);
