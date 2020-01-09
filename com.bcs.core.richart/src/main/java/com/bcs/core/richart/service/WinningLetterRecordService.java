@@ -55,19 +55,19 @@ public class WinningLetterRecordService {
 		return lst_WinningLetterRecord;
 	}
 	
-	public List<WinningLetterRecord> findAllByWinningLetterId(Long winningLetterId, Pageable pageable) {
+	public Page<WinningLetterRecord> findAllByWinningLetterId(Long winningLetterId, Pageable pageable) {
 		long startTime = System.nanoTime();
 		logger.info("[ findAllByWinningLetterId ] Start Time : {}", startTime);
 		
-		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterId(winningLetterId, pageable).getContent();
+		Page<WinningLetterRecord> page_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterId(winningLetterId, pageable);
 
 		long endTime = System.nanoTime();
 		logger.info("[ findAllByWinningLetterId ] End Time : {}", endTime);
 		logger.info("[ findAllByWinningLetterId ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 
-		logger.info("[ findAllByWinningLetterId ] lst_WinningLetterRecord = {}", lst_WinningLetterRecord);
+		logger.info("[ findAllByWinningLetterId ] page_WinningLetterRecord.getContent() = {}", page_WinningLetterRecord.getContent());
 		
-		return lst_WinningLetterRecord;
+		return page_WinningLetterRecord;
 	}
 	
 	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterIdOrderByIdAsc(String name, Long winningLetterId) {

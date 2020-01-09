@@ -74,7 +74,7 @@ public class ServiceExportWinnerInfoToPDF {
 		String outputTemplete = String.format("%s\\%s_%s.docx", exportPath, winningLetter.getName(), winningLetterRecord.getName());
 		logger.info("outputTemplete = {}", outputTemplete);
 
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd ");
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd");
 		
 		Map<String, String> mapReplacedText = new HashMap<>();
 		mapReplacedText.put("${WinningLetterName}", winningLetter.getName());
@@ -88,15 +88,19 @@ public class ServiceExportWinnerInfoToPDF {
 
 		String defaultSourcePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "Default";
 		logger.info("defaultSourcePath = {}", defaultSourcePath);
+		
 		String pdfTemplete = defaultSourcePath + System.getProperty("file.separator") + "WinningLetterReplyTempleteSource.docx";
 		logger.info("pdfTemplete = {}", pdfTemplete);
 		
 		String imageSourcePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "IMAGE";
 		logger.info("imageSourcePath = {}", imageSourcePath);
+		
 		String id_card_front = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getId_card_copy_front();
 		logger.info("id_card_front = {}", id_card_front);
+		
 		String id_card_back = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getId_card_copy_back();
 		logger.info("id_card_back = {}", id_card_back);
+		
 		String e_signature = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getE_signature();
 		logger.info("e_signature = {}", e_signature);
 

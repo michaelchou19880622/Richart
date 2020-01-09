@@ -6,7 +6,13 @@ $(function() {
 	
 	var keywordValue = "";
 	
-	var pageIndex = 1;
+//	var totalPageSize = document.getElementById('totalPageSize');
+	
+//	var currentPageIndex = document.getElementById('currentPageIndex').innerText;
+//	console.info('currentPageIndex = ' + currentPageIndex)
+	
+//	var perPageSize = $(this).find('option:selected').text();
+//	console.info('perPageSize = ' + perPageSize)
 	
 	/* To prevent form refresh from press 'Enter' key */
 	$("form").submit(function() {
@@ -28,6 +34,20 @@ $(function() {
 			loadDataFunc();
 		}
 	});
+
+//	/* 更新每頁顯示數量下拉選單 */
+//	var func_optionSelectChanged = function(){
+//		var selectValue = $(this).find('option:selected').text();
+//		console.info('selectValue = ', selectValue);
+//		
+//		$(this).closest('.optionPageSize').find('.optionLabelPageSize').html(selectValue);
+//		
+//		perPageSize = selectValue;
+//		
+//		loadDataFunc();
+//	};
+
+//	$('.optionSelectPageSize').change(func_optionSelectChanged);
 	
 	/* Get URL Referrer */
 	var urlRef = $('#urlReferrer').val();
@@ -64,6 +84,22 @@ $(function() {
 		
 		func_toggleCheckbox(this);
 	});
+	
+//	/* < Button > 上一頁 */
+//	$('.btn_PreviousPage').click(function() {
+//		
+//		currentPageIndex = (currentPageIndex - 1 >= 0)? 1 : currentPageIndex;
+//		
+//		loadDataFunc();
+//	});
+//	
+//	/* < Button > 下一頁 */
+//	$('.btn_NextPage').click(function() {
+//
+//		currentPageIndex = (currentPageIndex + 1 >= totalPageSize)? totalPageSize : currentPageIndex;
+//		
+//		loadDataFunc();
+//	});
 	
 	/* < Button > 查詢 */
 	$('.btn_name_query').click(function() {
@@ -321,13 +357,19 @@ $(function() {
 	var loadDataFunc = function() {
 		
 		$('.LyMain').block($.BCS.blockWinningLetterListLoading);
-
+		
 		$.ajax({
 			type : "GET",
-//			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList/' + pageIndex + '?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
 			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
+//			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId + '&page=' + (currentPageIndex - 1) +'&size=' + perPageSize)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
+			
+//			/* Get URL TotalPageSize */
+//			var urlTotalPageSize = $('#urlTotalPageSize').val();
+//			console.info('urlTotalPageSize = ', urlTotalPageSize);
+//			
+//			totalPageSize.innerText = urlTotalPageSize;
 
 			isInitial = true;
 
@@ -336,6 +378,7 @@ $(function() {
 
 				dataTemplateBody.find('.checkBox2').click(func_toggleChildCheckbox);
 				dataTemplateBody.find('.checkBox2').attr('wlrId', o.id)
+				dataTemplateBody.find('.checkBox2').attr('id', o.id)
 				
 				$('.checkBox2').click(func_toggleChildCheckbox(this));
 

@@ -399,7 +399,7 @@ input:focus, textarea:focus {
 	opacity: 0;
 }
 
-.optionForPageSize {
+.optionPageSize {
 	position: relative;
 	display: inline-block;
 	-moz-box-sizing: border-box;
@@ -407,24 +407,25 @@ input:focus, textarea:focus {
 	min-width: 60px;
 	background: white url(../images/ico_mdFRM03Select.png) no-repeat right center;
 	border: 1px solid #ced2dc;
-	margin-left:5px;
 	border-radius: 0;
-	padding: 5px 24px 5px 5px;
+	margin-left: 10px;
+	padding: 3px 24px 3px 9px;
 }
 
-.optionForPageSize .optionLabelPageSize {
+.optionPageSize .optionLabelPageSize {
 	font-size: 13px;
 	color: #a1a7b5;
 }
 
-.optionForPageSize .optionSelectPageSize {
+.optionPageSize .optionSelectPageSize {
 	display: block;
 	position: absolute;
+	top: 7px;
 	left: 10px;
 	width: 100%;
 	opacity: 0;
-	margin-left: 5px;
 }
+
 
 .option.date {
 	width: 130px;
