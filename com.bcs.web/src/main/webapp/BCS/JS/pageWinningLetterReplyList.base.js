@@ -59,6 +59,12 @@ $(function() {
 		return
 	}
 	
+	/* Get URL TotalPageSize */
+	var urlTotalPageSize = $('#urlTotalPageSize').val();
+	console.info('urlTotalPageSize = ', urlTotalPageSize);
+	
+	totalPageSize.innerText = urlTotalPageSize;
+	
 	var isInitial = true;
 	
 	var winningLetterRecordId = -1;
@@ -364,12 +370,6 @@ $(function() {
 			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId + '&page=' + (currentPageIndex - 1) +'&size=' + perPageSize)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
-			
-			/* Get URL TotalPageSize */
-			var urlTotalPageSize = $('#urlTotalPageSize').val();
-			console.info('urlTotalPageSize = ', urlTotalPageSize);
-			
-			totalPageSize.innerText = urlTotalPageSize;
 
 			isInitial = true;
 

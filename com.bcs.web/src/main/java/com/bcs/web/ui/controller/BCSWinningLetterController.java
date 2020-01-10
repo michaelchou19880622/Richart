@@ -540,7 +540,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("page = {}", page);
 		logger.info("size = {}", size);
 
-	    Sort sort = new Sort(Direction.DESC, "id");
+	    Sort sort = new Sort(Direction.ASC, "id");
 	    Pageable pageable = new PageRequest(page, size, sort);
 		
 		String urlReferrer = request.getHeader("referer");
@@ -567,46 +567,6 @@ public class BCSWinningLetterController extends BCSBaseController {
 			model.addAttribute("urlTotalPageSize", page_WinningLetterRecords.getTotalPages());
 			
 			List<WinningLetterRecord> list_WinningLetterRecords = page_WinningLetterRecords.getContent();
-			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
-
-			return new ResponseEntity<>(list_WinningLetterRecords, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.info("Exception : ", e);
-
-			if (e instanceof BcsNoticeException) {
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			} else {
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
-	}
-
-	/** Get winning letter reply list data by winning letter id with pageIndex**/
-	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetterReplyList/{pageIndex}")
-	@ResponseBody
-	public ResponseEntity<?> getWinningLetterReplyList(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @RequestParam String winnerName, @PathVariable Integer pageIndex) throws Exception {
-		logger.info("getWinningLetterReplyList");
-		
-		String urlReferrer = request.getHeader("referer");
-		logger.info("urlReferrer = {}", urlReferrer);
-
-		model.addAttribute("urlReferrer", urlReferrer);
-		
-		logger.info("winningLetterId = {}", winningLetterId);
-		logger.info("winnerName = {}", winnerName);
-		
-		try {
-			List<WinningLetterRecord> list_WinningLetterRecords = null;
-
-			Pageable pageable = new PageRequest((pageIndex >= 1) ? pageIndex - 1 : 0, WinningLetterRecordService.pageSize);
-			
-			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(winnerName, Long.valueOf(winningLetterId), pageable);
-			}
-			else {
-				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
-			}
-			
 			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
 
 			return new ResponseEntity<>(list_WinningLetterRecords, HttpStatus.OK);
