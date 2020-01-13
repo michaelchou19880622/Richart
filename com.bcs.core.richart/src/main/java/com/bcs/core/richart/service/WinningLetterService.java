@@ -51,34 +51,49 @@ public class WinningLetterService {
 		return lst_WinningLetter;
 	}
 
-	public List<WinningLetter> findAllByStatus(String status, Pageable pageable) {
+	public Page<WinningLetter> findAllByStatus(String status, Pageable pageable) {
 		long startTime = System.nanoTime();
-		logger.info("[ findAllByStatusWithPageable ] Start Time : {}", startTime);
+		logger.info("[ findAllByStatus ] Start Time : {}", startTime);
 		
-		List<WinningLetter> list_WinningLetter = winningLetterRepository.findAllByStatus(status, pageable).getContent();
+		Page<WinningLetter> page_WinningLetter = winningLetterRepository.findAllByStatus(status, pageable);
 
 		long endTime = System.nanoTime();
-		logger.info("[ findAllByStatusWithPageable ] End Time : {}", endTime);
-		logger.info("[ findAllByStatusWithPageable ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+		logger.info("[ findAllByStatus ] End Time : {}", endTime);
+		logger.info("[ findAllByStatus ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 
-		logger.info("[ findAllByStatusWithPageable ] lst_WinningLetter = {}", list_WinningLetter);
+		logger.info("[ findAllByStatus ] page_WinningLetter.getContent() = {}", page_WinningLetter.getContent());
 		
-		return list_WinningLetter;
+		return page_WinningLetter;
 	}
 	
 	public List<WinningLetter> findAllByNameContainingAndStatusOrderByCreateTimeDesc(String name, String status) {
 		long startTime = System.nanoTime();
-		logger.info("[ findAllByNameContainingAndStatus ] Start Time : {}", startTime);
+		logger.info("[ findAllByNameContainingAndStatusOrderByCreateTimeDesc ] Start Time : {}", startTime);
 		
 		List<WinningLetter> lst_WinningLetter = winningLetterRepository.findAllByNameContainingAndStatusOrderByCreateTimeDesc(name, status);
+
+		long endTime = System.nanoTime();
+		logger.info("[ findAllByNameContainingAndStatusOrderByCreateTimeDesc ] End Time : {}", endTime);
+		logger.info("[ findAllByNameContainingAndStatusOrderByCreateTimeDesc ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ findAllByNameContainingAndStatusOrderByCreateTimeDesc ] lst_WinningLetter = {}", lst_WinningLetter);
+		
+		return lst_WinningLetter;
+	}
+	
+	public Page<WinningLetter> findAllByNameContainingAndStatus(String name, String status, Pageable pageable) {
+		long startTime = System.nanoTime();
+		logger.info("[ findAllByNameContainingAndStatus ] Start Time : {}", startTime);
+		
+		Page<WinningLetter> page_WinningLetter = winningLetterRepository.findAllByNameContainingAndStatus(name, status, pageable);
 
 		long endTime = System.nanoTime();
 		logger.info("[ findAllByNameContainingAndStatus ] End Time : {}", endTime);
 		logger.info("[ findAllByNameContainingAndStatus ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 
-		logger.info("[ findAllByNameContainingAndStatus ] lst_WinningLetter = {}", lst_WinningLetter);
+		logger.info("[ findAllByNameContainingAndStatus ] page_WinningLetter.getContent() = {}", page_WinningLetter.getContent());
 		
-		return lst_WinningLetter;
+		return page_WinningLetter;
 	}
 	
 	public WinningLetter findById(Long id) {

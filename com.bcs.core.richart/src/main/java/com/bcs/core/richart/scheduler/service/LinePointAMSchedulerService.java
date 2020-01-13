@@ -103,14 +103,15 @@ public class LinePointAMSchedulerService {
 		}
 
 		// run every day
-		scheduledFuture = scheduler.scheduleAtFixedRate(new Runnable() {
+//		scheduledFuture = scheduler.scheduleAtFixedRate(new Runnable() {
+		scheduledFuture = scheduler.scheduleWithFixedDelay(new Runnable() {
 			public void run() {
 				logger.info("LinePointAMSchedulerService startCircle....");
 				pushScheduledLinePoint();
 				logger.info("LinePointAMSchedulerService endCircle....");
 			}
 		//}, delay, 86400, TimeUnit.SECONDS);
-		}, 0, 120, TimeUnit.SECONDS);
+		}, 60, 10, TimeUnit.SECONDS);
 	}
 	
 	/**

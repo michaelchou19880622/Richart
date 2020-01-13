@@ -6,6 +6,16 @@ $(function() {
 	
 	var keywordValue = "";
 	
+	var totalPageSize = document.getElementById('totalPageSize');
+	
+	var valTotalPageSize = 0;
+	
+	var currentPageIndex = document.getElementById('currentPageIndex');
+	
+	var valCurrentPageIndex = 1;
+	
+	var perPageSize = $(this).find('option:selected').text();
+	
 	/* To prevent form refresh from press 'Enter' key */
 	$("form").submit(function() {
 		return false;
@@ -25,10 +35,22 @@ $(function() {
 			loadDataFunc();
 		}
 	});
+
+	/* 更新每頁顯示數量下拉選單 */
+	var func_optionSelectChanged = function(){
+		var selectValue = $(this).find('option:selected').text();
+		
+		$(this).closest('.optionPageSize').find('.optionLabelPageSize').html(selectValue);
+		
+		perPageSize = selectValue;
+		
+		loadDataFunc();
+	};
+
+	$('.optionSelectPageSize').change(func_optionSelectChanged);
 	
 	/* Get URL Referrer */
 	var urlRef = $('#urlReferrer').val();
-	console.info('urlRef = ', urlRef);
 
 	if (urlRef == null || urlRef.length == 0) {
 		alert("對不起，您不能直接更改URL來訪問網頁，你的操作非法。");
@@ -44,6 +66,20 @@ $(function() {
 
 	var activeButton_li = document.getElementById('ActiveBtn_li');
 	var disableButton_li = document.getElementById('DisableBtn_li');
+	
+	/* < Button > 上一頁 */
+	$('#btn_PreviousPage').click(function() {
+		valCurrentPageIndex = (valCurrentPageIndex - 1 <= 0)? valCurrentPageIndex : valCurrentPageIndex - 1;
+		
+		loadDataFunc();
+	});
+	
+	/* < Button > 下一頁 */
+	$('#btn_NextPage').click(function() {
+		valCurrentPageIndex = (valCurrentPageIndex + 1 > valTotalPageSize)? valCurrentPageIndex : valCurrentPageIndex + 1;
+		
+		loadDataFunc();
+	});
 
 	/* < Button > 查詢 */
 	$('.btn_name_query').click(function() {
@@ -106,14 +142,16 @@ $(function() {
 		if (!confirm((pageStatus == 'Active') ? '請確認是否取消' : '請確認是否生效')) {
 			return false;
 		}
-
+		
+		valCurrentPageIndex = 1;
+		
 		$('.LyMain').block($.BCS.blockWinningLetterStatusUpdating);
 
 		var ajax_Url = (pageStatus == 'Active') ? 'inactiveWinningLetter?' : 'activeWinningLetter?';
 
 		$.ajax({
 			type : "POST",
-			url : bcs.bcsContextPath + '/admin/' + ajax_Url + 'winningLetterId=' + winningLetterId
+			url : encodeURI(bcs.bcsContextPath + '/admin/' + ajax_Url + 'winningLetterId=' + winningLetterId)
 		}).done(function(response) {
 			alert("狀態已更新");
 			$('.LyMain').unblock();
@@ -168,7 +206,7 @@ $(function() {
 
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/edit/countWinningLetterReplyPeople?winningLetterId=' + winningLetterId
+			url : encodeURI(bcs.bcsContextPath + '/edit/countWinningLetterReplyPeople?winningLetterId=' + winningLetterId)
 		}).done(
 				function(response) {
 					replyCount = $.BCS.formatNumber(response, 0);
@@ -244,14 +282,40 @@ $(function() {
 		(pageStatus == 'Active') ? activeButton_li.classList.add("ExSelected") : disableButton_li.classList.add("ExSelected");
 
 		$('.LyMain').block($.BCS.blockWinningLetterListLoading);
-
+		
 		$.ajax({
 			type : "GET",
-			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterList?name=' + keywordValue + '&status=' + pageStatus)
+			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterList?name=' + keywordValue + '&status=' + pageStatus + '&page=' + (valCurrentPageIndex - 1) +'&size=' + perPageSize)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
+			
+			if (response.totalElements == 0) {
+				totalPageSize.innerText = '-';
+				currentPageIndex.innerText = '-';
+				
+				keywordInput.value = keywordValue;
 
-			$.each(response, function(i, o) {
+				$('.LyMain').unblock();
+				
+				return;
+			}
+			
+			valTotalPageSize = response.totalPages;
+			valCurrentPageIndex = (response.number + 1);
+			
+			totalPageSize.innerText = valTotalPageSize;
+			currentPageIndex.innerText = valCurrentPageIndex;
+
+			if (valCurrentPageIndex > valTotalPageSize) {
+				valCurrentPageIndex = valTotalPageSize;
+				currentPageIndex.innerText = valCurrentPageIndex;
+				
+				loadDataFunc();
+				
+				return;
+			}
+
+			$.each(response.content, function(i, o) {
 				var dataTemplateBody = templateBody.clone(true);
 
 				var isExpired = func_checkIsExpired(o.endTime);

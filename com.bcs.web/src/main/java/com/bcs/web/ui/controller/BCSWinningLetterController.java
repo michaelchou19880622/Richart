@@ -134,7 +134,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("page = {}", page);
 		logger.info("size = {}", size);
 
-	    Sort sort = new Sort(Direction.DESC, "id");
+	    Sort sort = new Sort(Direction.ASC, "id");
 	    Pageable pageable = new PageRequest(page, size, sort);
 
 		String urlReferrer = request.getHeader("referer");
@@ -146,22 +146,22 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("status = {}", status);
 		
 		try {
-			List<WinningLetter> list_WinningLetter = new ArrayList<>();
+			Page<WinningLetter> page_WinningLetter = null;
 			
 			if (StringUtils.isBlank(name)) {
 //				list_WinningLetter = winningLetterService.findAllByStatusOrderByCreatetimeDesc(status);
-				list_WinningLetter = winningLetterService.findAllByStatus(status, pageable);
+				page_WinningLetter = winningLetterService.findAllByStatus(status, pageable);
 			}
 			else if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(status)) {
-				list_WinningLetter = winningLetterService.findAllByNameContainingAndStatusOrderByCreateTimeDesc(name, status);
+//				list_WinningLetter = winningLetterService.findAllByNameContainingAndStatusOrderByCreateTimeDesc(name, status);
+				page_WinningLetter = winningLetterService.findAllByNameContainingAndStatus(name, status, pageable);
 			}
 			else {
-				list_WinningLetter = winningLetterService.findAllByStatusOrderByCreatetimeDesc(WinningLetter.STATUS_ACTIVE);
+//				list_WinningLetter = winningLetterService.findAllByStatusOrderByCreatetimeDesc(WinningLetter.STATUS_ACTIVE);
+				page_WinningLetter = winningLetterService.findAllByStatus(WinningLetter.STATUS_ACTIVE, pageable);
 			}
 			
-			logger.info("list_WinningLetter = {}", list_WinningLetter);
-
-			return new ResponseEntity<>(list_WinningLetter, HttpStatus.OK);
+			return new ResponseEntity<>(page_WinningLetter, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Exception : ", e);
 
@@ -176,7 +176,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Get winning letter data **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> getWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId) throws IOException {
+	public ResponseEntity<?> getWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestParam String winningLetterId) throws IOException {
 		logger.info("getWinningLetter");
 		
 		String urlReferrer = request.getHeader("referer");
@@ -211,7 +212,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Count reply people **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/countWinningLetterReplyPeople")
 	@ResponseBody
-	public ResponseEntity<?> countWinningLetterReplyPeople(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId) throws IOException {
+	public ResponseEntity<?> countWinningLetterReplyPeople(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestParam String winningLetterId) throws IOException {
 		logger.info("countWinningLetterReplyPeople");
 		
 		String urlReferrer = request.getHeader("referer");
@@ -246,7 +248,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Create WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/api/createWinningLetter", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> createWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestBody String winningLetterContent, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> createWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestBody String winningLetterContent, @CurrentUser CustomUser customUser)
 			throws Exception {
 		logger.info("createWinningLetter");
 		
@@ -293,7 +296,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Edit WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/api/editWinningLetter", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> editWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestBody String winningLetterContent, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> editWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestBody String winningLetterContent, @CurrentUser CustomUser customUser)
 			throws Exception {
 
 		logger.info("editWinningLetter");
@@ -341,7 +345,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Delete WinningLetter **/
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> deleteWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> deleteWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
 			throws IOException {
 		logger.info("deleteWinningLetter");
 		
@@ -391,7 +396,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Active WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/activeWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> activeWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> activeWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
 			throws IOException {
 		logger.info("activeWinningLetter");
 		
@@ -441,7 +447,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Inactive WinningLetter **/
 	@RequestMapping(method = RequestMethod.POST, value = "/admin/inactiveWinningLetter")
 	@ResponseBody
-	public ResponseEntity<?> inactiveWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
+	public ResponseEntity<?> inactiveWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestParam String winningLetterId, @CurrentUser CustomUser customUser)
 			throws IOException {
 		logger.info("inactiveWinningLetter");
 		
@@ -491,7 +498,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Export winning letter list to excel **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportToExcelForWinningLetter")
 	@ResponseBody
-	public void exportToExcelForWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser, @RequestParam String name, @RequestParam String status)
+	public void exportToExcelForWinningLetter(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@CurrentUser CustomUser customUser, @RequestParam String name, @RequestParam String status)
 			throws IOException {
 		logger.info("exportToExcelForWinningLetter");
 		
@@ -556,20 +564,14 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
 //				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(winnerName, Long.valueOf(winningLetterId));
+				page_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterId(winnerName, Long.valueOf(winningLetterId), pageable);
 			}
 			else {
 //				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
 				page_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId), pageable);
 			}
 
-			logger.info("page_WinningLetterRecords.getTotalPages() = {}", page_WinningLetterRecords.getTotalPages());
-			
-			model.addAttribute("urlTotalPageSize", page_WinningLetterRecords.getTotalPages());
-			
-			List<WinningLetterRecord> list_WinningLetterRecords = page_WinningLetterRecords.getContent();
-			logger.info("list_WinningLetterRecords = {}", list_WinningLetterRecords);
-
-			return new ResponseEntity<>(list_WinningLetterRecords, HttpStatus.OK);
+			return new ResponseEntity<>(page_WinningLetterRecords, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Exception : ", e);
 
@@ -584,7 +586,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Export winner reply list to excel **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportToExcelForWinnerReplyList")
 	@ResponseBody
-	public void exportToExcelForWinnerReplyList(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser, @RequestParam String winningLetterId)
+	public void exportToExcelForWinnerReplyList(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@CurrentUser CustomUser customUser, @RequestParam String winningLetterId)
 			throws IOException {
 		logger.info("exportToExcelForWinnerReplyList");
 		
@@ -625,7 +628,8 @@ public class BCSWinningLetterController extends BCSBaseController {
 	/** Export winner reply list to pdf **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportWinnerInfoToPDF")
 	@ResponseBody
-	public void exportWinnerInfoToPDF(HttpServletRequest request, HttpServletResponse response, Model model, @CurrentUser CustomUser customUser, @RequestParam String wlrId)
+	public void exportWinnerInfoToPDF(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@CurrentUser CustomUser customUser, @RequestParam String wlrId)
 			throws IOException {
 		logger.info("exportWinnerInfoToPDF");
 		

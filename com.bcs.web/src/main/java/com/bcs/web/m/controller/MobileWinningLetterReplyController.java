@@ -171,6 +171,12 @@ public class MobileWinningLetterReplyController {
 		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("RequestBody : winningLetterRecord = {}", winningLetterRecord);
+		
+		// 檢查用戶資料是否已經存在? 先預留
+//		WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findAllBy身分證?or電話?(id_card_number, phonenumber);
+//		if (winningLetterRecordData != null) {
+//			//用戶資料存在(表示已經填寫過了)
+//		}
 
 		Date currentDateTime = new Date();
 		logger.info("currentDateTime = {}", currentDateTime);

@@ -8,11 +8,13 @@ $(function() {
 	
 	var totalPageSize = document.getElementById('totalPageSize');
 	
-	var currentPageIndex = document.getElementById('currentPageIndex').innerText;
-	console.info('currentPageIndex = ' + currentPageIndex)
+	var valTotalPageSize = 0;
+	
+	var currentPageIndex = document.getElementById('currentPageIndex');
+	
+	var valCurrentPageIndex = 1;
 	
 	var perPageSize = $(this).find('option:selected').text();
-	console.info('perPageSize = ' + perPageSize)
 	
 	/* To prevent form refresh from press 'Enter' key */
 	$("form").submit(function() {
@@ -38,7 +40,6 @@ $(function() {
 	/* 更新每頁顯示數量下拉選單 */
 	var func_optionSelectChanged = function(){
 		var selectValue = $(this).find('option:selected').text();
-		console.info('selectValue = ', selectValue);
 		
 		$(this).closest('.optionPageSize').find('.optionLabelPageSize').html(selectValue);
 		
@@ -51,19 +52,12 @@ $(function() {
 	
 	/* Get URL Referrer */
 	var urlRef = $('#urlReferrer').val();
-	console.info('urlRef = ', urlRef);
 
 	if (urlRef == null || urlRef.length == 0) {
 		alert("對不起，您不能直接更改URL來訪問網頁，你的操作非法。");
 		window.location.replace(bcs.bcsContextPath + '/admin/winningLetterListPage?status=Active');
 		return
 	}
-	
-	/* Get URL TotalPageSize */
-	var urlTotalPageSize = $('#urlTotalPageSize').val();
-	console.info('urlTotalPageSize = ', urlTotalPageSize);
-	
-	totalPageSize.innerText = urlTotalPageSize;
 	
 	var isInitial = true;
 	
@@ -92,17 +86,19 @@ $(function() {
 	});
 	
 	/* < Button > 上一頁 */
-	$('.btn_PreviousPage').click(function() {
-		
-		currentPageIndex = (currentPageIndex - 1 >= 0)? 1 : currentPageIndex;
+	$('#btn_PreviousPage').click(function() {
+		valCurrentPageIndex = (valCurrentPageIndex - 1 <= 0)? valCurrentPageIndex : valCurrentPageIndex - 1;
+
+		btn_export_pdf.style.visibility = 'hidden';
 		
 		loadDataFunc();
 	});
 	
 	/* < Button > 下一頁 */
-	$('.btn_NextPage').click(function() {
-
-		currentPageIndex = (currentPageIndex + 1 >= totalPageSize)? totalPageSize : currentPageIndex;
+	$('#btn_NextPage').click(function() {
+		valCurrentPageIndex = (valCurrentPageIndex + 1 > valTotalPageSize)? valCurrentPageIndex : valCurrentPageIndex + 1;
+		
+		btn_export_pdf.style.visibility = 'hidden';
 		
 		loadDataFunc();
 	});
@@ -110,7 +106,13 @@ $(function() {
 	/* < Button > 查詢 */
 	$('.btn_name_query').click(function() {
 		
+		isInitial = false;
+		
 		keywordValue = keywordInput.value;
+
+		document.getElementById("cbxSelectAll").checked = false;
+		
+		btn_export_pdf.style.visibility = 'hidden';
 		
 		loadDataFunc();
 	});
@@ -122,14 +124,12 @@ $(function() {
 
 		// Support on IE browser
 		for (var i = 0, n = checkboxes.length; i < n; i++) {
-			console.info("checkboxes[" + i + "].checked = " + checkboxes[i].checked);
 			
 			if (checkboxes[i].checked == false) {
 				continue;
 			}
 			
 			winningLetterRecordId = checkboxes[i].getAttribute('wlrid');
-			console.info("checked winningLetterRecordId = " + winningLetterRecordId);
 			
 			break;
 		}
@@ -353,7 +353,6 @@ $(function() {
 		modelSignature.style.display = "block";
 	};
 	
-	
 	/* Defined the popup model for URL */
 	var func_encryptedString = function(srcString) {
 		return srcString.replace(/^(.{4})(?:\d+)(.{4})$/,"$1******$2");
@@ -364,23 +363,53 @@ $(function() {
 		
 		$('.LyMain').block($.BCS.blockWinningLetterListLoading);
 		
+		keywordInput.value = keywordValue;
+		
+		document.getElementById("cbxSelectAll").checked = false;
+		
+		btn_export_pdf.style.visibility = 'hidden';
+		
 		$.ajax({
 			type : "GET",
 //			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
-			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId + '&page=' + (currentPageIndex - 1) +'&size=' + perPageSize)
+			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId + '&page=' + (valCurrentPageIndex - 1) +'&size=' + perPageSize)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
 
+			if (response.totalElements == 0) {
+				totalPageSize.innerText = '-';
+				currentPageIndex.innerText = '-';
+
+				$('.LyMain').unblock();
+				
+				return;
+			}
+			
+			valTotalPageSize = response.totalPages;
+			valCurrentPageIndex = (response.number + 1);
+			
+			totalPageSize.innerText = valTotalPageSize;
+			currentPageIndex.innerText = valCurrentPageIndex;
+
+			if (valCurrentPageIndex > valTotalPageSize) {
+				valCurrentPageIndex = valTotalPageSize;
+				currentPageIndex.innerText = valCurrentPageIndex;
+				
+				loadDataFunc();
+				
+				return;
+			}
+
 			isInitial = true;
 
-			$.each(response, function(i, o) {
+			$.each(response.content, function(i, o) {
 				var dataTemplateBody = templateBody.clone(true);
 
 				dataTemplateBody.find('.checkBox2').click(func_toggleChildCheckbox);
 				dataTemplateBody.find('.checkBox2').attr('wlrId', o.id)
 				dataTemplateBody.find('.checkBox2').attr('id', o.id)
 				
-				$('.checkBox2').click(func_toggleChildCheckbox(this));
+//				$('.checkBox2').click(func_toggleChildCheckbox(this));
 
 				// 中獎者名稱
 				dataTemplateBody.find('.winnerName').html(o.name);

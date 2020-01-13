@@ -85,21 +85,19 @@ public class WinningLetterRecordService {
 		return lst_WinningLetterRecord;
 	}
 	
-	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterIdOrderByIdAsc(String name, Long winningLetterId, Pageable pageable) {
+	public Page<WinningLetterRecord> findAllByNameContainingAndWinningLetterId(String name, Long winningLetterId, Pageable pageable) {
 		long startTime = System.nanoTime();
-		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] Start Time : {}", startTime);
+		logger.info("[ findAllByNameContainingAndWinningLetterId ] Start Time : {}", startTime);
 		
-		Page<WinningLetterRecord> pageList = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(name, winningLetterId, pageable);
-//		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterId(name, winningLetterId);
-		List<WinningLetterRecord> lst_WinningLetterRecord = pageList.getContent();
+		Page<WinningLetterRecord> page_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterId(name, winningLetterId, pageable);
 
 		long endTime = System.nanoTime();
-		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] End Time : {}", endTime);
-		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+		logger.info("[ findAllByNameContainingAndWinningLetterId ] End Time : {}", endTime);
+		logger.info("[ findAllByNameContainingAndWinningLetterId ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 
-		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] lst_WinningLetter = {}", lst_WinningLetterRecord);
+		logger.info("[ findAllByNameContainingAndWinningLetterId ] page_WinningLetterRecord.getContent() = {}", page_WinningLetterRecord.getContent());
 		
-		return lst_WinningLetterRecord;
+		return page_WinningLetterRecord;
 	}
 	
 	public WinningLetterRecord findById(Long id) {
