@@ -34,6 +34,7 @@
                         <li th:classappend="${currentPage == 'LinePointReportPage'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/market/linePointReportPage}"><span>Line Point 發送報表</span></a>
                         </li>
+                        <!-- 轉此頁面URL需要帶上相關參數，否則會報錯。( 上台新測試/正式環境，先隱藏 ) -->
 <!--                    <li th:classappend="${currentPage == 'LinePointDetailPage'} ? 'ExSelected'">-->
  <!--                         	<a th:href="@{/bcs/market/linePointDetailPage}"><span>Line Point 活動明細</span></a>-->
                         </li>
@@ -73,6 +74,7 @@
                     </ul>
                 </li>
                 
+                <!-- 使用 iframe 嵌入仁大版本的 Richmenu ( 仍在開發中，若要上台新測試/正式環境，需要先關閉 ) -->
 <!--                 <li> -->
 <!--                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a> -->
 <!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
@@ -82,6 +84,7 @@
 <!--                     </ul> -->
 <!--                 </li> -->
                 
+                <!-- 上台新測試/正式環境，需要先關閉 -->
 <!--                 <li> -->
 <!--                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a> -->
 <!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
@@ -270,6 +273,8 @@
                         <li th:classappend="${currentPage == 'PageWinningLetterList'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/admin/winningLetterListPage}"><span>中獎回函列表</span></a>
                         </li>
+                        
+                		<!-- 上台新測試/正式環境，需要先關閉，等之後完全沒問題再拿掉 -->
 <!--                         <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/wl/winningLetterReplyPage}"><span>資料填寫(後台測試)</span></a> -->
 <!--                         </li> -->
