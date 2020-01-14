@@ -111,7 +111,7 @@ public class LinePointAMSchedulerService {
 				logger.info("LinePointAMSchedulerService endCircle....");
 			}
 		//}, delay, 86400, TimeUnit.SECONDS);
-		}, 60, 10, TimeUnit.SECONDS);
+		}, 60, 120, TimeUnit.SECONDS);
 	}
 	
 	/**
