@@ -8,15 +8,17 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.PreDestroy;
-import org.apache.log4j.Logger;
+
 import org.json.JSONArray;
 import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +42,12 @@ import com.bcs.core.richart.db.service.LinePointScheduledDetailService;
 @Service
 public class LinePointAMSchedulerService {
 
-	/** Logger */
-	private static Logger logger = Logger.getLogger(LinePointAMSchedulerService.class);
+//	/** Logger */
+//	private static Logger logger = Logger.getLogger(LinePointAMSchedulerService.class);
+
+	/** Logger **/
+	private static Logger logger = LoggerFactory.getLogger(LinePointAMSchedulerService.class);
+
 	@Autowired
 	LinePointPushAkkaService linePointPushAkkaService;
 	@Autowired
@@ -56,7 +62,7 @@ public class LinePointAMSchedulerService {
 	ShareCampaignService shareCampaignService;
 	@Autowired
 	ShareDonatorRecordService shareDonatorRecordService;
-	
+
 	private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledFuture<?> scheduledFuture = null;
 
@@ -79,26 +85,25 @@ public class LinePointAMSchedulerService {
 			Date startDate = sdf.parse(startTimeStr);
 			Calendar start = Calendar.getInstance();
 			start.setTime(startDate);
-			
+
 			// calculate next trigger time
 			LocalDateTime localNow = LocalDateTime.now();
-	        ZonedDateTime now = ZonedDateTime.of(localNow, ZoneId.systemDefault());
-	        ZonedDateTime nextTrigger = now.withHour(start.get(Calendar.AM_PM) * 12 + start.get(Calendar.HOUR))
-	        		.withMinute(start.get(Calendar.MINUTE)).withSecond(start.get(Calendar.SECOND));
-			if(now.compareTo(nextTrigger) > 0) {
+			ZonedDateTime now = ZonedDateTime.of(localNow, ZoneId.systemDefault());
+			ZonedDateTime nextTrigger = now.withHour(start.get(Calendar.AM_PM) * 12 + start.get(Calendar.HOUR)).withMinute(start.get(Calendar.MINUTE)).withSecond(start.get(Calendar.SECOND));
+			if (now.compareTo(nextTrigger) > 0) {
 				// trigger at tomorrow
 				nextTrigger = nextTrigger.plusDays(1);
 			}
-			
+
 			// calculate delay
 			Duration duration = Duration.between(now, nextTrigger);
 			delay = duration.getSeconds();
-			
+
 			// write logger
 			logger.info("now: " + now);
 			logger.info("nextTrigger: " + nextTrigger);
 			logger.info("delay: " + delay);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			logger.info("startCircle Calucute Delay Error:" + e.getMessage());
 		}
 
@@ -110,10 +115,10 @@ public class LinePointAMSchedulerService {
 				pushScheduledLinePoint();
 				logger.info("LinePointAMSchedulerService endCircle....");
 			}
-		//}, delay, 86400, TimeUnit.SECONDS);
+			// }, delay, 86400, TimeUnit.SECONDS);
 		}, 60, 120, TimeUnit.SECONDS);
 	}
-	
+
 	/**
 	 * Stop Schedule : Wait for Executing Jobs to Finish
 	 * 
@@ -130,93 +135,99 @@ public class LinePointAMSchedulerService {
 			scheduler.shutdown();
 		}
 	}
-	
+
 	public void pushScheduledLinePoint() {
-		// get undoneUser			
-		List<ShareUserRecord> undoneUsers = shareUserRecordService.findLatelyUndoneUsers();
-		logger.info("undoneUsers:"+undoneUsers);
+		long startTime = System.nanoTime();
+		logger.info("[ pushScheduledLinePoint ] Start Time : {}", startTime);
 		
-		for(ShareUserRecord undoneUser : undoneUsers) {
-			logger.info("undoneUser:"+undoneUser);
-		    
-		    // get autoSendPoint & judgment
-		    ShareCampaign shareCampaign = shareCampaignService.findOne(undoneUser.getCampaignId());
-		    Boolean autoSendPoint = shareCampaign.getAutoSendPoint();
-		    String judgment = shareCampaign.getJudgement();
-		    
-		    // combine stateJudgment(MGM)
-		    String stateJudgment = "";
-		    if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)) {
-		    	String campaignStartDate = shareCampaign.getStartTime().toString();
-		    	logger.info("campaignStartDate:"+campaignStartDate);
-		    	stateJudgment = " and status <> 'BLOCK' and create_Time >= '" + campaignStartDate + "' ";
-		    }else if (judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
-		    	String campaignStartDate = shareCampaign.getStartTime().toString();
-		    	logger.info("campaignStartDate:"+campaignStartDate);
-		    	stateJudgment = " and isBinded = 'BINDED' and bind_Time >= '" + campaignStartDate + "' ";
-		    }
-		    // add count
-		    Long noJudgementCount = 0L;
-		    List<ShareCampaignClickTracing> friends =  shareCampaignClickTracingService.findByShareUserRecordId(undoneUser.getShareUserRecordId());
-		    for(ShareCampaignClickTracing shareCampaignClickTracing : friends) {
-		    	String friendUid = shareCampaignClickTracing.getUid();
-		    	logger.info("friendUid:"+friendUid);
-		    	
-		    	// check Judgment(判斷此UID 在line_USER裡面狀態是否符合)
-		    	if(shareUserRecordService.checkJudgment(friendUid, stateJudgment)) {
-		    		logger.info("friendUid who Satisfied Judgment:"+friendUid);
-		    		
-		    		// check Exclusive
-		    		if(judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)){
-		    			noJudgementCount += 1L;
-		    		}else{
-				    	// find one row with same donatorUid(名人堂)
-				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUid(friendUid);
-				    	logger.info("pastDonators:"+pastDonators);
-				    	// if not duplicated
-				    	if(pastDonators.isEmpty()) {
-				    		logger.info("donator is unique:"+friendUid);
-				    		// save ShareDonatorRecord
-				    		ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
-				    		shareDonatorRecord.setDonatorUid(friendUid);
-				    		shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
-				    		shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
-				    		shareDonatorRecord.setModifyTime(new Date());
-				    		shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
-				    		shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
-				    		shareDonatorRecord.setDonateLevel(judgment);
-				    		shareDonatorRecordService.save(shareDonatorRecord);
-				    		logger.info("shareDonatorRecord for saving:"+shareDonatorRecord);
-				    		
-				    		// save cumulative count
-				    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
-				    		undoneUser.setModifyTime(new Date());
-				    		shareUserRecordService.save(undoneUser);
-				    		logger.info("undoneUser for saving:"+undoneUser);
-				    	}else{
-				    		// sun 修改  MGM 名人堂 更新為兩筆資料狀態分別為綁定及加好友
-				    		if(pastDonators.size() < 2) {
-					    		//ShareDonatorRecord shareDonatorRecord1 = pastDonators.get(0);
-				    			//如果兩筆以上代表有一筆是綁定所以不會進來 如果只有一筆就判斷他貢獻狀態是否是FOLLOW 是的話就在新增一筆
-					    		if(pastDonators.get(0).getDonateLevel().equals("FOLLOW") && judgment.equals(ShareCampaign.JUDGEMENT_BINDED) ) {
-					    			
-					    			ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
-						    		shareDonatorRecord.setDonatorUid(friendUid);
-						    		shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
-						    		shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
-						    		shareDonatorRecord.setModifyTime(new Date());
-						    		shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
-						    		shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
-						    		shareDonatorRecord.setDonateLevel(judgment);
-						    		shareDonatorRecordService.save(shareDonatorRecord);
-						    		logger.info("shareDonatorRecord for saving:"+shareDonatorRecord);
-						    		
-						    		// save cumulative count
-						    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
-						    		undoneUser.setModifyTime(new Date());
-						    		shareUserRecordService.save(undoneUser);
-						    		logger.info("undoneUser for saving:"+undoneUser);					    			
-					    			
+		// get undoneUser
+		List<ShareUserRecord> undoneUsers = shareUserRecordService.findLatelyUndoneUsers();
+		logger.info("undoneUsers.size() = {}", undoneUsers.size());
+		logger.info("undoneUsers = {}", undoneUsers);
+
+		for (ShareUserRecord undoneUser : undoneUsers) {
+			logger.info("undoneUser = {}", undoneUser);
+
+			// get autoSendPoint & judgment
+			ShareCampaign shareCampaign = shareCampaignService.findOne(undoneUser.getCampaignId());
+			Boolean autoSendPoint = shareCampaign.getAutoSendPoint();
+			String judgment = shareCampaign.getJudgement();
+
+			// combine stateJudgment(MGM)
+			String stateJudgment = "";
+			if (judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)) {
+				String campaignStartDate = shareCampaign.getStartTime().toString();
+				logger.info("campaignStartDate:" + campaignStartDate);
+				stateJudgment = " and status <> 'BLOCK' and create_Time >= '" + campaignStartDate + "' ";
+			} else if (judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
+				String campaignStartDate = shareCampaign.getStartTime().toString();
+				logger.info("campaignStartDate:" + campaignStartDate);
+				stateJudgment = " and isBinded = 'BINDED' and bind_Time >= '" + campaignStartDate + "' ";
+			}
+			
+			// add count
+			Long noJudgementCount = 0L;
+			List<ShareCampaignClickTracing> friends = shareCampaignClickTracingService.findByShareUserRecordId(undoneUser.getShareUserRecordId());
+			
+			for (ShareCampaignClickTracing shareCampaignClickTracing : friends) {
+				String friendUid = shareCampaignClickTracing.getUid();
+				logger.info("friendUid:" + friendUid);
+
+				// check Judgment(判斷此UID 在line_USER裡面狀態是否符合)
+				if (shareUserRecordService.checkJudgment(friendUid, stateJudgment)) {
+					logger.info("friendUid who Satisfied Judgment:" + friendUid);
+
+					// check Exclusive
+					if (judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)) {
+						noJudgementCount += 1L;
+					} else {
+						// find one row with same donatorUid(名人堂)
+						List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUid(friendUid);
+						logger.info("pastDonators:" + pastDonators);
+						// if not duplicated
+						if (pastDonators.isEmpty()) {
+							logger.info("donator is unique:" + friendUid);
+							// save ShareDonatorRecord
+							ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
+							shareDonatorRecord.setDonatorUid(friendUid);
+							shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
+							shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
+							shareDonatorRecord.setModifyTime(new Date());
+							shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
+							shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
+							shareDonatorRecord.setDonateLevel(judgment);
+							shareDonatorRecordService.save(shareDonatorRecord);
+							logger.info("shareDonatorRecord for saving:" + shareDonatorRecord);
+
+							// save cumulative count
+							undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
+							undoneUser.setModifyTime(new Date());
+							shareUserRecordService.save(undoneUser);
+							logger.info("undoneUser for saving:" + undoneUser);
+						} else {
+							// sun 修改 MGM 名人堂 更新為兩筆資料狀態分別為綁定及加好友
+							if (pastDonators.size() < 2) {
+								// ShareDonatorRecord shareDonatorRecord1 = pastDonators.get(0);
+								// 如果兩筆以上代表有一筆是綁定所以不會進來 如果只有一筆就判斷他貢獻狀態是否是FOLLOW 是的話就在新增一筆
+								if (pastDonators.get(0).getDonateLevel().equals("FOLLOW") && judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
+
+									ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
+									shareDonatorRecord.setDonatorUid(friendUid);
+									shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
+									shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
+									shareDonatorRecord.setModifyTime(new Date());
+									shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
+									shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
+									shareDonatorRecord.setDonateLevel(judgment);
+									shareDonatorRecordService.save(shareDonatorRecord);
+									logger.info("shareDonatorRecord for saving:" + shareDonatorRecord);
+
+									// save cumulative count
+									undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
+									undoneUser.setModifyTime(new Date());
+									shareUserRecordService.save(undoneUser);
+									logger.info("undoneUser for saving:" + undoneUser);
+
 //					    			logger.info("shareDonatorRecord : " + shareDonatorRecord);
 //					    			shareDonatorRecord.setDonateLevel(ShareCampaign.JUDGEMENT_BINDED);
 //					    			shareDonatorRecordService.save(shareDonatorRecord);
@@ -225,14 +236,13 @@ public class LinePointAMSchedulerService {
 //						    		undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
 //						    		undoneUser.setModifyTime(new Date());
 //						    		shareUserRecordService.save(undoneUser);
-					    		}
-				    		}
-				    		logger.info("donator is duplicated:"+friendUid);
-				    	}
-				    	
-		    		}
-		    		
-		    		
+								}
+							}
+							logger.info("donator is duplicated:" + friendUid);
+						}
+
+					}
+
 //				    if(judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)  ||judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
 //				    	// find one row with same donatorUid
 //				    	List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUid(friendUid);
@@ -261,73 +271,76 @@ public class LinePointAMSchedulerService {
 //				    		logger.info("donator is duplicated:"+friendUid);
 //				    	}
 //				    }
-		    	}
-		    }
-		    if(judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)) {
-		    	undoneUser.setCumulativeCount(noJudgementCount);
-		    	logger.info("noJudgementCount for saving:"+noJudgementCount);
-		    	shareUserRecordService.save(undoneUser);
-		    }
-		    
-		    // undone -> done
-		    if(undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
-		    	logger.info("符合要求人數:"+undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());
-		    }
-		    if(undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
+				}
+			}
+			
+			if (judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)) {
+				undoneUser.setCumulativeCount(noJudgementCount);
+				logger.info("noJudgementCount for saving:" + noJudgementCount);
+				shareUserRecordService.save(undoneUser);
+			}
 
-		    	// shareUserRecord.status = done
-		    	ShareUserRecord shareUserRecord = shareUserRecordService.findOne(undoneUser.getShareUserRecordId());
-		    	shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
-		    	shareUserRecord.setDoneTime(new Date());
-		    	shareUserRecordService.save(shareUserRecord);
-		    	
-		    	// autoSendPoint
-		    	logger.info("autoSendPoint:"+autoSendPoint);
-		    	if(autoSendPoint) {
-			    	logger.info("LinePointMain.STATUS_SCHEDULED Saving");
-			    	// linePointMain.status = scheduled
-			    	String linePointSerialId = shareCampaign.getLinePointSerialId();
-			    	LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
-			    	linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
-			    	linePointMainService.save(linePointMain);
-			    	
-			    	// linePointScheduledDetail.status = waiting
-			    	LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
-			    	linePointScheduledDetail.setUid(undoneUser.getUid());
-			    	linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
-			    	linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
-			    	linePointScheduledDetail.setModifyTime(new Date());
-			    	linePointScheduledDetailService.save(linePointScheduledDetail);	    		
-		    	}
+			// undone -> done
+			if (undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
+				logger.info("符合要求人數:" + undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());
+			}
+			if (undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
 
+				// shareUserRecord.status = done
+				ShareUserRecord shareUserRecord = shareUserRecordService.findOne(undoneUser.getShareUserRecordId());
+				shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+				shareUserRecord.setDoneTime(new Date());
+				shareUserRecordService.save(shareUserRecord);
 
-		    }
+				// autoSendPoint
+				logger.info("autoSendPoint:" + autoSendPoint);
+				if (autoSendPoint) {
+					logger.info("LinePointMain.STATUS_SCHEDULED Saving");
+					// linePointMain.status = scheduled
+					String linePointSerialId = shareCampaign.getLinePointSerialId();
+					LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+					linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+					linePointMainService.save(linePointMain);
+
+					// linePointScheduledDetail.status = waiting
+					LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+					linePointScheduledDetail.setUid(undoneUser.getUid());
+					linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+					linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+					linePointScheduledDetail.setModifyTime(new Date());
+					linePointScheduledDetailService.save(linePointScheduledDetail);
+				}
+
+			}
 		}
-		
+
 		// find linePointMain.status = scheduled
 		List<LinePointMain> mains = linePointMainService.findByStatus(LinePointMain.STATUS_SCHEDULED);
-		for(LinePointMain main : mains) {
-			logger.info("Scheduled LinePointMainId:"+main.getId());
-			
+		logger.info("mains.size() = {}", mains.size());
+		logger.info("mains = {}", mains);
+		
+		for (LinePointMain main : mains) {
+			logger.info("Scheduled LinePointMainId:" + main.getId());
+
 			// linePointMain.status = idle
 			main.setStatus(LinePointMain.STATUS_IDLE);
 			linePointMainService.save(main);
-			
+
 			// find linePointScheduledDetail.mainId = mainId
 			List<LinePointScheduledDetail> details = linePointScheduledDetailService.findByLinePointMainId(main.getId());
-			
+
 			JSONArray uid = new JSONArray();
-			for(LinePointScheduledDetail detail : details) {
-				//這邊應該判定 發過點就不發了
-				if(LinePointScheduledDetail.STATUS_WAITING.equals(detail.getStatus())) {
+			for (LinePointScheduledDetail detail : details) {
+				// 這邊應該判定 發過點就不發了
+				if (LinePointScheduledDetail.STATUS_WAITING.equals(detail.getStatus())) {
 					uid.put(detail.getUid());
 				}
 				detail.setStatus(LinePointScheduledDetail.STATUS_SENDED);
 				detail.setModifyTime(new Date());
 				linePointScheduledDetailService.save(detail);
 			}
-			logger.info("uid (begin to send):"+uid);
-			
+			logger.info("uid (begin to send):" + uid);
+
 			// push to AkkaService
 			LinePointPushModel linePointPushModel = new LinePointPushModel();
 			linePointPushModel.setAmount(main.getAmount());
@@ -338,5 +351,9 @@ public class LinePointAMSchedulerService {
 			linePointPushModel.setTriggerTime(new Date());
 			linePointPushAkkaService.tell(linePointPushModel);
 		}
+
+		long endTime = System.nanoTime();
+		logger.info("[ pushScheduledLinePoint ] End Time : {}", endTime);
+		logger.info("[ pushScheduledLinePoint ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 	}
 }

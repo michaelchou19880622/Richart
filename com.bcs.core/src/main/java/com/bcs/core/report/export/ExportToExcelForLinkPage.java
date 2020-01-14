@@ -61,7 +61,7 @@ public class ExportToExcelForLinkPage {
 		for(LinkClickReportModel model : linkResult.values()){
 			List<Object[]> resultUID = contentLinkService.findAllLinkUrlForallUID(model.getLinkUrl());
 			for(Object[] UID : resultUID) {
-				System.out.println(UID[0].toString());
+				logger.info(UID[0].toString());
 				Row row1 = sheetLink.createRow(seqNo);
 				row1.createCell(0).setCellValue(model.getLinkTitle());
 				row1.createCell(1).setCellValue(model.getLinkUrl());

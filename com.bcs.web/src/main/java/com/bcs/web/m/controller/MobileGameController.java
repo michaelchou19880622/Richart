@@ -459,18 +459,18 @@ public class MobileGameController {
 //			}
 //			
 //			String payloadString = new String(base64Decoder.decode(payload), "UTF-8");
-//			System.out.println("payloadString:"+payloadString);
+//			logger.info("payloadString:"+payloadString);
 //			int x = payloadString.indexOf("\"amr\"");
 //			payloadString = payloadString.substring(0, x - 1) + "}";
 //			
-//			System.out.println(x);
-//			System.out.println(payloadString.substring(0, x - 1) + "}");
+//			logger.info(x);
+//			logger.info(payloadString.substring(0, x - 1) + "}");
 //			
 //			JSONObject payloadObject = new JSONObject(payloadString);
-//			System.out.println(payloadObject);
+//			logger.info(payloadObject);
 //			
 //			//Boolean validate = validateJWT(secret, header, payload, signature, channelId, nonce);
-//			//System.out.println("validate:"+validate);
+//			//logger.info("validate:"+validate);
 //		}catch (Exception e) {
 //			e.printStackTrace();
 //		}

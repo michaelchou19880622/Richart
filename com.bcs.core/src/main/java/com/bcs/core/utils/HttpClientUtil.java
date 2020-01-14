@@ -81,18 +81,18 @@ public class HttpClientUtil {
 		// set up a TrustManager that trusts everything
 		sslContext.init(null, new TrustManager[] { new X509TrustManager() {
 			public X509Certificate[] getAcceptedIssuers() {
-				System.out.println("getAcceptedIssuers =============" + Calendar.getInstance().getTime().toString());
+				logger.info("getAcceptedIssuers =============" + Calendar.getInstance().getTime().toString());
 				return null;
 			}
 			
 			public void checkClientTrusted(X509Certificate[] certs,
 			                String authType) {
-				System.out.println("checkClientTrusted =============" + Calendar.getInstance().getTime().toString());
+				logger.info("checkClientTrusted =============" + Calendar.getInstance().getTime().toString());
 			}
 			
 			public void checkServerTrusted(X509Certificate[] certs,
 			                String authType) {
-				System.out.println("checkServerTrusted =============" + Calendar.getInstance().getTime().toString());
+				logger.info("checkServerTrusted =============" + Calendar.getInstance().getTime().toString());
 			}
 		} }, new SecureRandom());
 		

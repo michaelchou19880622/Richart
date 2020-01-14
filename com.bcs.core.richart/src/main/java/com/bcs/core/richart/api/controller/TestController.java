@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Controller
 @RequestMapping("/api")
 public class TestController {
+	
+	/** Logger **/
+	private static Logger logger = LoggerFactory.getLogger(TestController.class);
     
     @Autowired
     private LineUserStatusService lineUserStatusService;
@@ -52,7 +57,7 @@ public class TestController {
         String status = result.get("status").toString();
         String time = result.get("time").toString();
         
-        System.out.println("uid=" + uid + "; status=" + status + "; time=" + time);
+        logger.info("uid=" + uid + "; status=" + status + "; time=" + time);
         ObjectNode  node = mapper.createObjectNode();
         node.put("uid", uid);
         node.put("result", "1");

@@ -65,7 +65,7 @@ public class QrcodeGenerator {
 	public static void main(String[] args) throws Exception {
 		String qrCodeText = "http://www.journaldev.com";
 		createQRImage(qrCodeText, DEFAULT_Size);
-		System.out.println("DONE");
+		logger.info("DONE");
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

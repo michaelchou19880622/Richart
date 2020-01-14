@@ -422,8 +422,8 @@ public class BCSMsgSendController extends BCSBaseController {
 //		//i1+= 7;
 //		int i2 = oldContext.indexOf("\"}");
 //		String context = oldContext.substring(i1, i2);
-//		System.out.println(context);
-//		System.out.println(UriHelper.getCdnResourceUri("IMAGE", context));
+//		logger.info(context);
+//		logger.info(UriHelper.getCdnResourceUri("IMAGE", context));
 //	}
 	
 	// CDN

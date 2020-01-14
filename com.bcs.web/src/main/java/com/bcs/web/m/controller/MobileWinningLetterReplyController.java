@@ -1,7 +1,5 @@
 package com.bcs.web.m.controller;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
@@ -171,6 +169,8 @@ public class MobileWinningLetterReplyController {
 		model.addAttribute("urlReferrer", urlReferrer);
 
 		logger.info("RequestBody : winningLetterRecord = {}", winningLetterRecord);
+		
+//		WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findById(id)
 		
 		// 檢查用戶資料是否已經存在? 先預留
 //		WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findAllBy身分證?or電話?(id_card_number, phonenumber);

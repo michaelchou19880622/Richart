@@ -63,7 +63,7 @@ public class LineUserStatusService {
             if (httpStatus == 200) {
                 JsonNode resultNode = mapper.readTree(result);
                 String resultStr = resultNode.get("result").toString();
-                System.out.println("resultStr=" + resultStr);
+                logger.info("resultStr=" + resultStr);
                 if ("0".equals(resultStr)) {
                     logger.debug("更新失敗:" + resultNode.get("uid"));
                     SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.ACTION_RICHART_API, LOG_TARGET_ACTION_TYPE.ACTION_SendToRichartApiStatus, result, resultNode.get("uid").toString());
