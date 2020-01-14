@@ -343,7 +343,7 @@ public class MobileWinningLetterReplyController {
 			ImageIO.write(sourceImage, "png", destImageFile);
 			g2d.dispose();
 		} catch (IOException ex) {
-			System.err.println(ex);
+			logger.info("ex = {}", ex);
 		}
 	}
 
@@ -368,7 +368,7 @@ public class MobileWinningLetterReplyController {
 			g2d.dispose();
 
 		} catch (IOException ex) {
-			System.err.println(ex);
+			logger.info("ex = {}", ex);
 		}
 	}
 }

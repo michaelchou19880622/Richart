@@ -38,7 +38,7 @@ public class ExportExcelForLinkPageSrevice {
 			ExportToExcelForLinkPage.exportToExcelforSummary(filePath,fileName,linkResult);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.print("e :" + e.getMessage());
+			logger.info("Exception = " + e.getMessage());
 			e.printStackTrace();
 		}
 		//exportToExcelFromDB.exportToExcel(filePath, fileName, excelName, titles, data);
@@ -57,7 +57,7 @@ public class ExportExcelForLinkPageSrevice {
 			ExportToExcelForLinkPage.exportExcelForInterface(filePath,fileName,linkResult);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.print("e :" + e.getMessage());
+			logger.info("e = " + e.getMessage());
 			e.printStackTrace();
 		}
 		
