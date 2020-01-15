@@ -354,6 +354,6 @@ public class LinePointAMSchedulerService {
 
 		long endTime = System.nanoTime();
 		logger.info("[ pushScheduledLinePoint ] End Time : {}", endTime);
-		logger.info("[ pushScheduledLinePoint ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+		logger.info("[ pushScheduledLinePoint ] Elapsed Time : {} seconds", (endTime - startTime) / 1_000_000_000);
 	}
 }

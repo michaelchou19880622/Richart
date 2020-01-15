@@ -59,6 +59,10 @@ $(function() {
 		return
 	}
 	
+	/* Get URL PDF Export Path */
+	var pdfExportPath = $('#pdfExportPath').val();
+	console.info('pdfExportPath = ', pdfExportPath);
+	
 	var isInitial = true;
 	
 	var winningLetterRecordId = -1;
@@ -89,7 +93,7 @@ $(function() {
 	$('#btn_PreviousPage').click(function() {
 		valCurrentPageIndex = (valCurrentPageIndex - 1 <= 0)? valCurrentPageIndex : valCurrentPageIndex - 1;
 
-		btn_export_pdf.style.visibility = 'hidden';
+//		btn_export_pdf.style.visibility = 'hidden';
 		
 		loadDataFunc();
 	});
@@ -98,7 +102,7 @@ $(function() {
 	$('#btn_NextPage').click(function() {
 		valCurrentPageIndex = (valCurrentPageIndex + 1 > valTotalPageSize)? valCurrentPageIndex : valCurrentPageIndex + 1;
 		
-		btn_export_pdf.style.visibility = 'hidden';
+//		btn_export_pdf.style.visibility = 'hidden';
 		
 		loadDataFunc();
 	});
@@ -112,13 +116,18 @@ $(function() {
 
 		document.getElementById("cbxSelectAll").checked = false;
 		
-		btn_export_pdf.style.visibility = 'hidden';
+//		btn_export_pdf.style.visibility = 'hidden';
 		
 		loadDataFunc();
 	});
 	
 	/* < Button > PDF檔 */
 	$('.btn_export_pdf').click(function() {
+
+		var checkedWinningLetterRecordIds = [];
+		var pdfFiles = "";
+		
+		$('.LyMain').block($.BCS.blockWinningLetterRecordExporting);
 		
 		checkboxes = document.getElementsByName('checkBoxChilds');
 
@@ -131,10 +140,36 @@ $(function() {
 			
 			winningLetterRecordId = checkboxes[i].getAttribute('wlrid');
 			
-			break;
+			checkedWinningLetterRecordIds.push(winningLetterRecordId);
+			
+//			break;
 		}
 		
-		window.location.replace(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + winningLetterRecordId);
+//		window.location.replace(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + winningLetterRecordId);
+		
+		$.ajax({
+			type : "POST",
+            cache: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+			url : encodeURI(bcs.bcsContextPath + '/edit/exportWinnerInfoListToPDF'),
+			data: JSON.stringify(checkedWinningLetterRecordIds)
+		}).done(function(response) {
+			response.forEach(function(fileName){
+				pdfFiles = pdfFiles + fileName + '\n';
+			});
+			
+			alert("下列檔案已匯出至 \" "+ pdfExportPath + " \"\n" + pdfFiles);
+
+			$('.LyMain').unblock();
+			
+//			$('.LyMain').unblock();
+		}).fail(function(response) {
+			console.info(response);
+			$.FailResponse(response);
+
+			$('.LyMain').unblock();
+		})
 
 	});
 	
@@ -202,10 +237,12 @@ $(function() {
 		}
 		
 		if (srcCheckBox.checked) {
-			btn_export_pdf.style.visibility = (checkboxes.length == 1) ? 'visible' : "hidden";
-		} else if (checkboxes.length == 1){
-			btn_export_pdf.style.visibility = 'hidden';
-		}
+			btn_export_pdf.style.visibility = 'visible';
+//			btn_export_pdf.style.visibility = (checkboxes.length == 1) ? 'visible' : "hidden";
+		} 
+//		else if (checkboxes.length == 1){
+//			btn_export_pdf.style.visibility = 'hidden';
+//		}
 	}
 
 	/* Toggle child checkboxes to select/unselect the parent checkbox */
@@ -217,6 +254,7 @@ $(function() {
 		parentCheckbox = document.getElementById("cbxSelectAll");
 		
 		checkboxes = document.getElementsByName('checkBoxChilds');
+		console.info('checkboxes.length = ' + checkboxes.length);
 		
 		if (checkboxes.length == 1) {
 			checkbox = checkboxes[0];
@@ -268,7 +306,7 @@ $(function() {
 			return;
 		}
 
-		btn_export_pdf.style.visibility = 'hidden';
+//		btn_export_pdf.style.visibility = 'hidden';
 	}
 	
 	/* 彈出視窗 Image Model */
@@ -276,9 +314,13 @@ $(function() {
 
 	/* Model Image 1 */
 	var modelImage1 = document.getElementById("model_image1");
+	modelImage1.style.height = '200px';
+	modelImage1.style.width = '400px';
 
 	/* Model Image 2 */
 	var modelImage2 = document.getElementById("model_image2");
+	modelImage2.style.height = '200px';
+	modelImage2.style.width = '400px';
 
 	/* When the user clicks anywhere outside of the model, close the model */
 	window.onclick = function(event) {
@@ -308,12 +350,7 @@ $(function() {
 	
 	/* Defined the popup model for URL */
 	var func_showIdCardModel = function() {
-		modelImage1.style.height = '200px';
-		modelImage1.style.width = '400px';
 		modelImage1.src = $(this).attr('img1');
-		
-		modelImage2.style.height = '200px';
-		modelImage2.style.width = '400px';
 		modelImage2.src = $(this).attr('img2');
 
 		model.style.display = "block";
@@ -368,6 +405,8 @@ $(function() {
 		document.getElementById("cbxSelectAll").checked = false;
 		
 		btn_export_pdf.style.visibility = 'hidden';
+		
+		console.info('bcs.bcsContextPath = ' + bcs.bcsContextPath);
 		
 		$.ajax({
 			type : "GET",

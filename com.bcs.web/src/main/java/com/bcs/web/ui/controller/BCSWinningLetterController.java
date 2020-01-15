@@ -1,9 +1,13 @@
 package com.bcs.web.ui.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.entity.WinningLetterRecord;
+import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.resource.UriHelper;
@@ -102,6 +107,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("urlReferrer = {}", urlReferrer);
 
 		model.addAttribute("urlReferrer", urlReferrer);
+		
+		String pdfExportPath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+		
+		model.addAttribute("pdfExportPath", pdfExportPath.replace("/", System.getProperty("file.separator")));
 
 		return BcsPageEnum.WinningLetterReplyListPage.toString();
 	}
@@ -588,6 +597,10 @@ public class BCSWinningLetterController extends BCSBaseController {
 			throws IOException {
 		logger.info("exportToExcelForWinnerReplyList");
 		
+		String contextPath = request.getContextPath(); 
+		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + contextPath + "/";
+		logger.info("basePath = {}", basePath);
+		
 		String urlReferrer = request.getHeader("referer");
 		logger.info("urlReferrer = {}", urlReferrer);
 
@@ -611,7 +624,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 				folder.mkdirs();
 			}
 			
-			exportToExcelForWinningLetterService.exportToExcelForWinnerReplyListByWinningLetterId(filePath, fileName, winningLetterId);
+			exportToExcelForWinningLetterService.exportToExcelForWinnerReplyListByWinningLetterId(basePath, filePath, fileName, winningLetterId);
 
 		} catch (Exception e) {
 			logger.error("Exception : {}", e);
@@ -619,8 +632,6 @@ public class BCSWinningLetterController extends BCSBaseController {
 
 		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
 	}
-	
-
 	
 	/** Export winner reply list to pdf **/
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportWinnerInfoToPDF")
@@ -656,5 +667,53 @@ public class BCSWinningLetterController extends BCSBaseController {
 		}
 
 		LoadFileUIService.loadFileToResponse(filePath, fileName, response);
+	}
+
+	/** Export winner reply list to pdf **/
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/exportWinnerInfoListToPDF")
+	@ResponseBody
+	public ResponseEntity<?> exportWinnerInfoListToPDF(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@CurrentUser CustomUser customUser, @RequestBody List<String> list_wlrId)
+			throws IOException {
+		logger.info("exportWinnerInfoListToPDF");
+		
+		logger.info("list_winningLetterRecordId = {}", list_wlrId);
+		
+		String urlReferrer = request.getHeader("referer");
+		logger.info("urlReferrer = {}", urlReferrer);
+
+		model.addAttribute("urlReferrer", urlReferrer);
+
+		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+		logger.info("filePath = {}", filePath);
+		
+		List<String> list_fileName = new ArrayList<String>();
+		
+		try {
+			File folder = new File(filePath);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			
+			for (String wlrId : list_wlrId)
+			{
+				String fileName = serviceExportWinnerInfoToPDF.exportWinnerInfoToPDF(filePath, wlrId);
+				
+				list_fileName.add(fileName);
+			}
+			
+			logger.info("list_fileName = {}", list_fileName);
+
+			return new ResponseEntity<>(list_fileName, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			logger.info("Exception : ", e);
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 	}
 }

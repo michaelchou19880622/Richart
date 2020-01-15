@@ -10,16 +10,35 @@ $(function() {
 	if (urlParams.has('winningLetterId')) {
 		winningLetterId = urlParams.get('winningLetterId');
 	}
+	console.info('winningLetterId = ' + winningLetterId);
+
+	var winningLetterName;
+	if (urlParams.has('winningLetterName')) {
+		winningLetterName = urlParams.get('winningLetterName');
+	}
+	console.info('winningLetterName = ' + winningLetterName);
 
 	var wlEndTime;
 	if (urlParams.has('endTime')) {
 		wlEndTime = urlParams.get('endTime');
 	}
+	console.info('wlEndTime = ' + wlEndTime);
+
+	var gifts;
+	if (urlParams.has('gifts')) {
+		gifts = urlParams.get('gifts');
+	}
+	console.info('gifts = ' + gifts);
+
+	var replacedWinningLetterName = document.getElementById("replacedWinningLetterName");
+	replacedWinningLetterName.innerHTML = winningLetterName;
 	
 	var replacedEndTime = document.getElementById("replacedEndTime");
 	str = (replacedEndTime.innerHTML || replacedEndTime.textContent);
-	
 	replacedEndTime.innerHTML = str.replace("${EndTime}", wlEndTime);
+
+	var replacedWinningLetterGifts = document.getElementById("replacedWinningLetterGifts");
+	replacedWinningLetterGifts.value = gifts;
 	
 	var userId = "";
 

@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bcs.core.db.entity.ContentResource;
 import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.entity.WinningLetterRecord;
 import com.bcs.core.db.repository.WinningLetterRecordRepository;
@@ -147,7 +148,13 @@ public class ExportToExcelForWinningLetterService {
 	}
 	
 	/** Export winner reply list to excel **/
-	public void exportToExcelForWinnerReplyListByWinningLetterId(String exportPath, String fileName, String wlId) throws Exception {
+	public void exportToExcelForWinnerReplyListByWinningLetterId(String basePath, String exportPath, String fileName, String wlId) throws Exception {
+		
+		logger.info("basePath = {}", basePath);
+//		logger.info("exportPath = {}", exportPath);
+//		logger.info("fileName = {}", fileName);
+//		logger.info("wlId = {}", wlId);
+		
 		try {
 			long startTime = System.nanoTime();
 			logger.info("[ exportToExcelForWinnerReplyListByWinningLetterId ] Start Time : {}", startTime);
@@ -164,6 +171,9 @@ public class ExportToExcelForWinningLetterService {
 			
 			String baseUrl = CoreConfigReader.getString(CONFIG_STR.BaseUrlHTTPS.toString());
 			logger.info("baseUrl = {}", baseUrl);
+			
+			String getResouceImageUrl = basePath + CoreConfigReader.getString(CONFIG_STR.PageBCS.toString()) + CoreConfigReader.getString("rest.api.path.resource") + ContentResource.RESOURCE_TYPE_IMAGE;
+			logger.info("getResouceImageUrl = {}", getResouceImageUrl);
 			
 			XSSFWorkbook wb = new XSSFWorkbook(); // HSSFWorkbook → xls, XSSFWorkbook → xlsx
 
@@ -190,10 +200,10 @@ public class ExportToExcelForWinningLetterService {
 			row.createCell(5).setCellValue("中獎贈品");
 			row.createCell(6).setCellValue("戶籍地址");
 			row.createCell(7).setCellValue("通訊地址");
-//			row.createCell(8).setCellValue("身分證反面");
-//			row.createCell(9).setCellValue("身分證正面");
-//			row.createCell(10).setCellValue("簽名檔");
-			row.createCell(8).setCellValue("客戶回覆時間");
+			row.createCell(8).setCellValue("身分證反面");
+			row.createCell(9).setCellValue("身分證正面");
+			row.createCell(10).setCellValue("簽名檔");
+			row.createCell(11).setCellValue("客戶回覆時間");
 
 			for (int i = 0; i < sheetWinningLetter.getRow(0).getPhysicalNumberOfCells(); i++)
 			{
@@ -224,10 +234,10 @@ public class ExportToExcelForWinningLetterService {
 					row.getCell(5).setCellValue(winningLetter.getGift()); // 中獎贈品
 					row.getCell(6).setCellValue(winningLetterRecord.getResident_address()); // 戶籍地址
 					row.getCell(7).setCellValue(winningLetterRecord.getMailing_address()); // 通訊地址
-//					row.getCell(8).setCellValue(winningLetterRecord.getId_card_copy_front()); // 身分證反面
-//					row.getCell(9).setCellValue(winningLetterRecord.getId_card_copy_front()); // 身分證正面
-//					row.getCell(10).setCellValue(winningLetterRecord.getE_signature()); // 簽名檔
-					row.getCell(8).setCellValue(winningLetterRecord.getRecordTime().toString()); // 客戶回覆時間
+					row.getCell(8).setCellValue(getResouceImageUrl + "/" + winningLetterRecord.getId_card_copy_front()); // 身分證反面
+					row.getCell(9).setCellValue(getResouceImageUrl + "/" + winningLetterRecord.getId_card_copy_front()); // 身分證正面
+					row.getCell(10).setCellValue(getResouceImageUrl + "/" + winningLetterRecord.getE_signature()); // 簽名檔
+					row.getCell(11).setCellValue(winningLetterRecord.getRecordTime().toString()); // 客戶回覆時間
 					
 					seqNo++;
 				}

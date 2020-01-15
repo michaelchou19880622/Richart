@@ -12,7 +12,15 @@
 					<table border="1" width="100%" style="margin-bottom: 10px; margin-right: 10px;">
 						<tbody>
 							<tr>
-								<td style="padding: 8px 5px 15px 5px;">
+								<td class="pdfHeadLogo">
+									<img src="" width="100px" style="cursor: pointer;">
+								</td>
+							</tr>
+							<tr>
+								<td id="replacedWinningLetterName" style="padding: 8px 5px 2px 5px; font-weight: bold; font-size:20px;" align="center">中獎回函名稱TEST</td>
+							</tr>
+							<tr>
+								<td style="padding: 2px 5px 15px 5px;">
 									<label style="padding: 0px 0px 15px 0px; color: red;" id="replacedEndTime">中獎人請填妥本回覆函，連同應檢附之相關身分證明文件，於${EndTime}前將中獎人資料回傳至Richart數位中獎回函系統。(以回傳時間為憑)</label><br /> 
 									<label style="color: black;">若中獎人不願填寫回覆函、未檢附相關資料、資料不全或有誤、逾期未回覆導致無法核對中獎人資料，則視同中獎人自動放棄中獎資格及獎項，不再另行通知，亦不得要求補發。</label><br /> 
 									<label style="color: black;">*本活動為機會中獎活動，依所得稅法規定，</label>
@@ -27,6 +35,16 @@
 								<td style="padding: 0px 5px 5px 0px;" align="left">
 									<div class="MdFRMWLInput">
 										<input type="text" id="winner_name" autocomplete="off" maxlength="10">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 5px 0px 0px 5px; font-weight: bold;" align="left">中獎贈品</td>
+							</tr>
+							<tr>
+								<td style="padding: 0px 5px 5px 0px" align="left">
+									<div class="MdFRMWLInput">
+										<input type="text" id="replacedWinningLetterGifts" autocomplete="off" maxlength="12" disabled>
 									</div>
 								</td>
 							</tr>

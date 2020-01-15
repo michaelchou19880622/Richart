@@ -120,11 +120,17 @@ public class MobileWinningLetterReplyController {
 		logger.info("winningLetterId = {}", winningLetterId);
 
 		WinningLetter winningLetter = winningLetterService.findById(Long.valueOf(winningLetterId));
+		
+		String winningLetterName = winningLetter.getName();
+		logger.info("winningLetterName = {}", winningLetterName);
 
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd ");
 		
 		String endTime = sdFormat.format(winningLetter.getEndTime());
 		logger.info("endTime = {}", endTime);
+		
+		String gifts = winningLetter.getGift();
+		logger.info("gifts = {}", gifts);
 
 		String liffAppId = null;
 
@@ -142,14 +148,22 @@ public class MobileWinningLetterReplyController {
 
 		String liffUrl = liffAppId;
 		
+		//line://app/1550669403-KA59ja3L?liffId={liffId}&winningLetterId={winningLetterId}&winningLetterName={winningLetterName}&endTime={endTime}&gifts={gifts}
+		
 		liffUrl = liffUrl.replace("{liffId}", liffId);
 		logger.info("1-1 liffUrl = {}", liffUrl);
 				
 		liffUrl = liffUrl.replace("{winningLetterId}", winningLetterId);
 		logger.info("1-2 liffUrl = {}", liffUrl);
 		
-		liffUrl = liffUrl.replace("{endTime}", endTime);
+		liffUrl = liffUrl.replace("{winningLetterName}", winningLetterName);
 		logger.info("1-3 liffUrl = {}", liffUrl);
+		
+		liffUrl = liffUrl.replace("{endTime}", endTime);
+		logger.info("1-4 liffUrl = {}", liffUrl);
+		
+		liffUrl = liffUrl.replace("{gifts}", gifts);
+		logger.info("1-5 liffUrl = {}", gifts);
 		
 		return new ModelAndView("redirect:" + liffUrl);
 	}
