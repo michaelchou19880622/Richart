@@ -229,14 +229,14 @@ public class ExportToExcelForWinningLetterService {
 					row.getCell(0).setCellValue(winningLetter.getName()); // 中獎回函名稱
 					row.getCell(1).setCellValue(winningLetterRecord.getUid()); // UID
 					row.getCell(2).setCellValue(winningLetterRecord.getName()); // 中獎者姓名
-					row.getCell(3).setCellValue(winningLetterRecord.getPhonenumber()); // 連絡電話
-					row.getCell(4).setCellValue(winningLetterRecord.getId_card_number()); // 身分證字號
+					row.getCell(3).setCellValue(winningLetterRecord.getPhoneNumber()); // 連絡電話
+					row.getCell(4).setCellValue(winningLetterRecord.getIdCardNumber()); // 身分證字號
 					row.getCell(5).setCellValue(winningLetter.getGift()); // 中獎贈品
-					row.getCell(6).setCellValue(winningLetterRecord.getResident_address()); // 戶籍地址
-					row.getCell(7).setCellValue(winningLetterRecord.getMailing_address()); // 通訊地址
-					row.getCell(8).setCellValue(getResouceImageUrl + "/" + winningLetterRecord.getId_card_copy_front()); // 身分證反面
-					row.getCell(9).setCellValue(getResouceImageUrl + "/" + winningLetterRecord.getId_card_copy_front()); // 身分證正面
-					row.getCell(10).setCellValue(getResouceImageUrl + "/" + winningLetterRecord.getE_signature()); // 簽名檔
+					row.getCell(6).setCellValue(winningLetterRecord.getResidentAddress()); // 戶籍地址
+					row.getCell(7).setCellValue(winningLetterRecord.getMailingAddress()); // 通訊地址
+					row.getCell(8).setCellValue((winningLetterRecord.getIdCardCopyFront() == null)? "" : getResouceImageUrl + "/" + winningLetterRecord.getIdCardCopyFront()); // 身分證反面
+					row.getCell(9).setCellValue((winningLetterRecord.getIdCardCopyBack() == null)? "" : getResouceImageUrl + "/" + winningLetterRecord.getIdCardCopyBack()); // 身分證正面
+					row.getCell(10).setCellValue((winningLetterRecord.geteSignature() == null)? "" : getResouceImageUrl + "/" + winningLetterRecord.geteSignature()); // 簽名檔
 					row.getCell(11).setCellValue(winningLetterRecord.getRecordTime().toString()); // 客戶回覆時間
 					
 					seqNo++;

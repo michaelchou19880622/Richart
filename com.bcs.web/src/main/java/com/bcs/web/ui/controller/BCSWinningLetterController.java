@@ -1,17 +1,22 @@
 package com.bcs.web.ui.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +39,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.entity.WinningLetterRecord;
-import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.resource.UriHelper;
@@ -49,6 +53,7 @@ import com.bcs.core.web.security.CustomUser;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 import com.bcs.web.ui.service.LoadFileUIService;
+import com.google.common.io.Files;
 
 @Controller
 @RequestMapping("/bcs")
@@ -569,11 +574,9 @@ public class BCSWinningLetterController extends BCSBaseController {
 			Page<WinningLetterRecord> page_WinningLetterRecords = null;
 
 			if (StringUtils.isNotBlank(winningLetterId) && StringUtils.isNotBlank(winnerName)) {
-//				list_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(winnerName, Long.valueOf(winningLetterId));
 				page_WinningLetterRecords = winningLetterRecordService.findAllByNameContainingAndWinningLetterId(winnerName, Long.valueOf(winningLetterId), pageable);
 			}
 			else {
-//				list_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterIdOrderByIdAsc(Long.valueOf(winningLetterId));
 				page_WinningLetterRecords = winningLetterRecordService.findAllByWinningLetterId(Long.valueOf(winningLetterId), pageable);
 			}
 
@@ -687,24 +690,45 @@ public class BCSWinningLetterController extends BCSBaseController {
 		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
 		logger.info("filePath = {}", filePath);
 		
+		File tempFolder = Files.createTempDir();
+		logger.info("tempFolderName.getAbsolutePath() = {}", tempFolder.getAbsolutePath());
+		
 		List<String> list_fileName = new ArrayList<String>();
+
+		List<String> zipfiles = new ArrayList<String>();
 		
 		try {
-			File folder = new File(filePath);
-			if (!folder.exists()) {
-				folder.mkdirs();
+			if (!tempFolder.exists()) {
+				tempFolder.mkdirs();
 			}
 			
 			for (String wlrId : list_wlrId)
 			{
-				String fileName = serviceExportWinnerInfoToPDF.exportWinnerInfoToPDF(filePath, wlrId);
+				String fileName = serviceExportWinnerInfoToPDF.exportWinnerInfoToPDF(tempFolder.getAbsolutePath(), wlrId);
 				
 				list_fileName.add(fileName);
+				
+				String finalSrcZipFile = tempFolder + System.getProperty("file.separator") + fileName;
+				logger.info("finalSrcZipFile = {}", finalSrcZipFile);
+
+				zipfiles.add(finalSrcZipFile);
+			}
+			logger.info("list_fileName = {}", list_fileName);
+			
+			String outputZipFile = tempFolder.getAbsolutePath();
+			logger.info("outputZipFile = {}", outputZipFile);
+			
+			String zippedFileName = zipFiles(zipfiles, outputZipFile);
+			logger.info("zippedFileName = {}", zippedFileName);
+			
+			if (tempFolder.exists()) {
+				logger.info("tempFolder deleted = {}", deleteDirectory(tempFolder));
 			}
 			
-			logger.info("list_fileName = {}", list_fileName);
-
-			return new ResponseEntity<>(list_fileName, HttpStatus.OK);
+			List<String> list_zipFileName = new ArrayList<String>();
+			list_zipFileName.add(zippedFileName);
+			
+			return new ResponseEntity<>(list_zipFileName, HttpStatus.OK);
 			
 		} catch (Exception e) {
 			logger.info("Exception : ", e);
@@ -715,5 +739,100 @@ public class BCSWinningLetterController extends BCSBaseController {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
+	}
+
+	/** Download winner reply list to pdf **/
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/downloadExportedFileAsZip")
+	@ResponseBody
+	public void downloadExportedFileAsZip(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@CurrentUser CustomUser customUser, @RequestParam String zipFileName)
+			throws IOException {
+		logger.info("downloadExportedFileAsZip");
+		
+		logger.info("zipFileName = {}", zipFileName);
+
+		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+		logger.info("filePath = {}", filePath);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+		
+		Date date = new Date();
+		
+		String copyZipfileName = "WinnerReplyList_" + sdf.format(date) + ".zip";
+		logger.info("copyZipfileName = {}", copyZipfileName);
+
+		LoadFileUIService.askDownloadFileToResponse(zipFileName, copyZipfileName, response);
+	}
+	
+	public String zipFiles(List<String> files, String outputZipFile) {
+
+		synchronized (this) {
+			logger.info("zipFiles --- START");
+			
+			FileOutputStream fos = null;
+			ZipOutputStream zipOut = null;
+			FileInputStream fis = null;
+			
+			String outputFile = outputZipFile + ".zip";
+			
+			try {
+				fos = new FileOutputStream(outputFile);
+				zipOut = new ZipOutputStream(new BufferedOutputStream(fos));
+				for (String filePath : files) {
+					File input = new File(filePath);
+					
+					fis = new FileInputStream(input);
+					
+					ZipEntry ze = new ZipEntry(input.getName());
+					
+					logger.info("Zipping the file : {}", input.getName());
+					
+					zipOut.putNextEntry(ze);
+					
+					byte[] tmp = new byte[4 * 1024];
+					int size = 0;
+					
+					while ((size = fis.read(tmp)) != -1) {
+						zipOut.write(tmp, 0, size);
+					}
+					
+					zipOut.flush();
+					fis.close();
+				}
+				
+				zipOut.close();
+			} catch (FileNotFoundException e) {
+				logger.info("FileNotFoundException = {}", e);
+			} catch (IOException e) {
+				logger.info("IOException = {}", e);
+			} finally {
+				try {
+					if (fos != null) {
+						fos.close();
+					}
+					
+				} catch (Exception ex) {
+					logger.info("Exception = {}", ex);
+				}
+
+				logger.info("zipFiles --- FINISH");
+			}
+			
+			return outputFile;
+		}
+	}
+	
+	public static boolean deleteDirectory(File dir) {
+		if (dir.isDirectory()) {
+			File[] children = dir.listFiles();
+			for (int i = 0; i < children.length; i++) {
+				boolean success = deleteDirectory(children[i]);
+				if (!success) {
+					return false;
+				}
+			}
+		}
+		
+		return dir.delete();
 	}
 }

@@ -114,6 +114,21 @@ public class WinningLetterRecordService {
 		
 		return winningLetterRecord;
 	}
+	
+	public WinningLetterRecord findByIdCardNumberAndWinningLetterId(String idCardNumber, Long winningLetterId) {
+		long startTime = System.nanoTime();
+		logger.info("[ findByIdCardNumber ] Start Time : {}", startTime);
+		
+		WinningLetterRecord winningLetterRecord = winningLetterRecordRepository.findByIdCardNumberAndWinningLetterId(idCardNumber, winningLetterId);
+
+		long endTime = System.nanoTime();
+		logger.info("[ findByIdCardNumber ] End Time : {}", endTime);
+		logger.info("[ findByIdCardNumber ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+
+		logger.info("[ findByIdCardNumber ] winningLetterRecord = {}", winningLetterRecord);
+		
+		return winningLetterRecord;
+	}
 
 //	public WinningLetter findByName(String name) {
 //		long startTime = System.nanoTime();

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
@@ -34,132 +35,158 @@ public class WinningLetterRecord extends AbstractBcsEntity {
 	private String name;
 
 	@Column(name = "PHONENUMBER", columnDefinition = "nvarchar(32)")
-	private String phonenumber;
+	private String phoneNumber;
 	
 	@Column(name = "ID_CARD_NUMBER", columnDefinition = "nvarchar(12)")
-	private String id_card_number;
+	private String idCardNumber;
 	
 	@Column(name = "RESIDENT_ADDRESS", columnDefinition = "nvarchar(200)")
-	private String resident_address;
+	private String residentAddress;
 	
 	@Column(name = "MAILING_ADDRESS", columnDefinition = "nvarchar(200)")
-	private String mailing_address;
+	private String mailingAddress;
 
 	@Column(name = "ID_CARD_COPY_FRONT", columnDefinition = "nvarchar(2083)")
-	private String id_card_copy_front;
+	private String idCardCopyFront;
 	
 	@Column(name = "ID_CARD_COPY_BACK", columnDefinition = "nvarchar(2083)")
-	private String id_card_copy_back;
+	private String idCardCopyBack;
 	
 	@Column(name = "E_SIGNATURE", columnDefinition = "nvarchar(2083)")
-	private String e_signature;
+	private String eSignature;
 	
 
 	@JsonDeserialize(using = CustomDateDeserializer.class)
 	@Column(name = "RECORD_TIME")
 	private Date recordTime;
 
+
 	public Long getId() {
 		return id;
 	}
+
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+
 	public Long getWinningLetterId() {
 		return winningLetterId;
 	}
+
 
 	public void setWinningLetterId(Long winningLetterId) {
 		this.winningLetterId = winningLetterId;
 	}
 
+
 	public String getUid() {
 		return uid;
 	}
+
 
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
 
-	public Date getRecordTime() {
-		return recordTime;
-	}
-
-	public void setRecordTime(Date recordTime) {
-		this.recordTime = recordTime;
-	}
 
 	public String getName() {
 		return name;
 	}
 
+
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getPhonenumber() {
-		return phonenumber;
+
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhonenumber(String phonenumber) {
-		this.phonenumber = phonenumber;
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
-	public String getId_card_number() {
-		return id_card_number;
+
+	public String getIdCardNumber() {
+		return idCardNumber;
 	}
 
-	public void setId_card_number(String id_card_number) {
-		this.id_card_number = id_card_number;
+
+	public void setIdCardNumber(String idCardNumber) {
+		this.idCardNumber = idCardNumber;
 	}
 
-	public String getResident_address() {
-		return resident_address;
+
+	public String getResidentAddress() {
+		return residentAddress;
 	}
 
-	public void setResident_address(String resident_address) {
-		this.resident_address = resident_address;
+
+	public void setResidentAddress(String residentAddress) {
+		this.residentAddress = residentAddress;
 	}
 
-	public String getMailing_address() {
-		return mailing_address;
+
+	public String getMailingAddress() {
+		return mailingAddress;
 	}
 
-	public void setMailing_address(String mailing_address) {
-		this.mailing_address = mailing_address;
+
+	public void setMailingAddress(String mailingAddress) {
+		this.mailingAddress = mailingAddress;
 	}
 
-	public String getId_card_copy_front() {
-		return id_card_copy_front;
+
+	public String getIdCardCopyFront() {
+		return idCardCopyFront;
 	}
 
-	public void setId_card_copy_front(String id_card_copy_front) {
-		this.id_card_copy_front = id_card_copy_front;
+
+	public void setIdCardCopyFront(String idCardCopyFront) {
+		this.idCardCopyFront = idCardCopyFront;
 	}
 
-	public String getId_card_copy_back() {
-		return id_card_copy_back;
+
+	public String getIdCardCopyBack() {
+		return idCardCopyBack;
 	}
 
-	public void setId_card_copy_back(String id_card_copy_back) {
-		this.id_card_copy_back = id_card_copy_back;
+
+	public void setIdCardCopyBack(String idCardCopyBack) {
+		this.idCardCopyBack = idCardCopyBack;
 	}
 
-	public String getE_signature() {
-		return e_signature;
+
+	public String geteSignature() {
+		return eSignature;
 	}
 
-	public void setE_signature(String e_signature) {
-		this.e_signature = e_signature;
+
+	public void seteSignature(String eSignature) {
+		this.eSignature = eSignature;
 	}
+
+
+	public Date getRecordTime() {
+		return recordTime;
+	}
+
+
+	public void setRecordTime(Date recordTime) {
+		this.recordTime = recordTime;
+	}
+
 
 	@Override
 	public String toString() {
-		return "WinningLetterRecord [id=" + id + ", winningLetterId=" + winningLetterId + ", uid=" + uid + ", name=" + name + ", phonenumber=" + phonenumber + ", id_card_number=" + id_card_number
-				+ ", resident_address=" + resident_address + ", mailing_address=" + mailing_address + ", id_card_copy_front=" + id_card_copy_front + ", id_card_copy_back=" + id_card_copy_back
-				+ ", e_signature=" + e_signature + ", recordTime=" + recordTime + "]";
+		return "WinningLetterRecord [id=" + id + ", winningLetterId=" + winningLetterId + ", uid=" + uid + ", name=" + name + ", phoneNumber=" + phoneNumber + ", idCardNumber=" + idCardNumber
+				+ ", residentAddress=" + residentAddress + ", mailingAddress=" + mailingAddress + ", idCardCopyFront=" + idCardCopyFront + ", idCardCopyBack=" + idCardCopyBack + ", eSignature="
+				+ eSignature + ", recordTime=" + recordTime + "]";
 	}
+
 	
 }

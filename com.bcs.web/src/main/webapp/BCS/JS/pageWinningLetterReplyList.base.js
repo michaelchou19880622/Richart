@@ -61,7 +61,6 @@ $(function() {
 	
 	/* Get URL PDF Export Path */
 	var pdfExportPath = $('#pdfExportPath').val();
-	console.info('pdfExportPath = ', pdfExportPath);
 	
 	var isInitial = true;
 	
@@ -114,12 +113,14 @@ $(function() {
 		
 		keywordValue = keywordInput.value;
 
-		document.getElementById("cbxSelectAll").checked = false;
-		
-//		btn_export_pdf.style.visibility = 'hidden';
-		
 		loadDataFunc();
 	});
+	
+	function fakeAlert(message) {
+		alert(message);
+	}
+	
+	var shitZipFile = "";
 	
 	/* < Button > PDF檔 */
 	$('.btn_export_pdf').click(function() {
@@ -141,11 +142,7 @@ $(function() {
 			winningLetterRecordId = checkboxes[i].getAttribute('wlrid');
 			
 			checkedWinningLetterRecordIds.push(winningLetterRecordId);
-			
-//			break;
 		}
-		
-//		window.location.replace(bcs.bcsContextPath + '/edit/exportWinnerInfoToPDF?wlrId=' + winningLetterRecordId);
 		
 		$.ajax({
 			type : "POST",
@@ -155,15 +152,12 @@ $(function() {
 			url : encodeURI(bcs.bcsContextPath + '/edit/exportWinnerInfoListToPDF'),
 			data: JSON.stringify(checkedWinningLetterRecordIds)
 		}).done(function(response) {
-			response.forEach(function(fileName){
-				pdfFiles = pdfFiles + fileName + '\n';
-			});
 			
-			alert("下列檔案已匯出至 \" "+ pdfExportPath + " \"\n" + pdfFiles);
-
+			shitZipFile = response[0];
+			
+			window.location.replace(encodeURI(bcs.bcsContextPath + '/edit/downloadExportedFileAsZip?zipFileName=' + response[0]));
+			
 			$('.LyMain').unblock();
-			
-//			$('.LyMain').unblock();
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
@@ -239,7 +233,10 @@ $(function() {
 		if (srcCheckBox.checked) {
 			btn_export_pdf.style.visibility = 'visible';
 //			btn_export_pdf.style.visibility = (checkboxes.length == 1) ? 'visible' : "hidden";
-		} 
+		}
+		else {
+			btn_export_pdf.style.visibility = 'hidden';
+		}
 //		else if (checkboxes.length == 1){
 //			btn_export_pdf.style.visibility = 'hidden';
 //		}
@@ -254,7 +251,6 @@ $(function() {
 		parentCheckbox = document.getElementById("cbxSelectAll");
 		
 		checkboxes = document.getElementsByName('checkBoxChilds');
-		console.info('checkboxes.length = ' + checkboxes.length);
 		
 		if (checkboxes.length == 1) {
 			checkbox = checkboxes[0];
@@ -400,17 +396,8 @@ $(function() {
 		
 		$('.LyMain').block($.BCS.blockWinningLetterListLoading);
 		
-		keywordInput.value = keywordValue;
-		
-		document.getElementById("cbxSelectAll").checked = false;
-		
-		btn_export_pdf.style.visibility = 'hidden';
-		
-		console.info('bcs.bcsContextPath = ' + bcs.bcsContextPath);
-		
 		$.ajax({
 			type : "GET",
-//			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId)
 			url : encodeURI(bcs.bcsContextPath + '/edit/getWinningLetterReplyList?winnerName=' + keywordValue + '&winningLetterId=' + pageWinningLetterId + '&page=' + (valCurrentPageIndex - 1) +'&size=' + perPageSize)
 		}).done(function(response) {
 			$('.dataTemplate').remove();
@@ -445,27 +432,25 @@ $(function() {
 				var dataTemplateBody = templateBody.clone(true);
 
 				dataTemplateBody.find('.checkBox2').click(func_toggleChildCheckbox);
-				dataTemplateBody.find('.checkBox2').attr('wlrId', o.id)
-				dataTemplateBody.find('.checkBox2').attr('id', o.id)
+				dataTemplateBody.find('.checkBox2').attr('wlrId', o.id);
+				dataTemplateBody.find('.checkBox2').attr('id', o.id);
 				
-//				$('.checkBox2').click(func_toggleChildCheckbox(this));
-
 				// 中獎者名稱
 				dataTemplateBody.find('.winnerName').html(o.name);
 
 				// 連絡電話
-				dataTemplateBody.find('.winnerContact').html(func_encryptedString(o.phonenumber));
+				dataTemplateBody.find('.winnerContact').html(func_encryptedString(o.phoneNumber));
 
 				// 身分證字號
-				dataTemplateBody.find('.winnerIdCardNumber').html(func_encryptedString(o.id_card_number));
+				dataTemplateBody.find('.winnerIdCardNumber').html(func_encryptedString(o.idCardNumber));
 				
 				// 檢視身分證正反面
-				dataTemplateBody.find('.btn_check_id_card').attr('img1', bcs.bcsContextPath + "/getResource/IMAGE/" + o.id_card_copy_front);
-				dataTemplateBody.find('.btn_check_id_card').attr('img2', bcs.bcsContextPath + "/getResource/IMAGE/" + o.id_card_copy_back);
+				dataTemplateBody.find('.btn_check_id_card').attr('img1', bcs.bcsContextPath + "/getResource/IMAGE/" + o.idCardCopyFront);
+				dataTemplateBody.find('.btn_check_id_card').attr('img2', bcs.bcsContextPath + "/getResource/IMAGE/" + o.idCardCopyBack);
 				dataTemplateBody.find('.btn_check_id_card').click(func_showIdCardModel);
 				
 				// 檢視簽名檔
-				dataTemplateBody.find('.btn_check_e_signature').attr('img1', bcs.bcsContextPath + "/getResource/IMAGE/" + o.e_signature);
+				dataTemplateBody.find('.btn_check_e_signature').attr('img1', bcs.bcsContextPath + "/getResource/IMAGE/" + o.eSignature);
 				dataTemplateBody.find('.btn_check_e_signature').click(func_showSignatureModel);
 				
 				// 回覆時間
@@ -480,6 +465,8 @@ $(function() {
 			keywordInput.value = keywordValue;
 			
 			document.getElementById("cbxSelectAll").checked = false;
+			
+			btn_export_pdf.style.visibility = 'hidden';
 
 			$('.LyMain').unblock();
 		}).fail(function(response) {

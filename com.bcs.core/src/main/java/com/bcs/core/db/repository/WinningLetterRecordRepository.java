@@ -15,6 +15,9 @@ public interface WinningLetterRecordRepository extends EntityRepository<WinningL
 	@Transactional(readOnly = true, timeout = 30)
 	WinningLetterRecord findById(Long id);
 
+	@Transactional(readOnly = true, timeout = 30)
+	WinningLetterRecord findByIdCardNumberAndWinningLetterId(String idCardNumber, Long winningLetterId);
+
 	@Transactional(readOnly = true, timeout = 300)
 	List<WinningLetterRecord> findAllByWinningLetterIdOrderByIdAsc(Long winningLetterId);
 	

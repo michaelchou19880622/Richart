@@ -1,7 +1,5 @@
 package com.bcs.core.richart.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -83,11 +81,11 @@ public class ServiceExportWinnerInfoToPDF {
 			mapReplacedText.put("${WinningLetterName}", winningLetter.getName());
 			mapReplacedText.put("${EndTime}", sdFormat.format(winningLetter.getEndTime()));
 			mapReplacedText.put("${WinnerName}", winningLetterRecord.getName());
-			mapReplacedText.put("${WinnerIdCardNum}", winningLetterRecord.getId_card_number());
+			mapReplacedText.put("${WinnerIdCardNum}", winningLetterRecord.getIdCardNumber());
 			mapReplacedText.put("${WinningLetterGifts}", winningLetter.getGift());
-			mapReplacedText.put("${WinnerPhoneNumber}", winningLetterRecord.getPhonenumber());
-			mapReplacedText.put("${WinnerResidentAddress}", winningLetterRecord.getResident_address());
-			mapReplacedText.put("${WinnerMailingAddress}", winningLetterRecord.getMailing_address());
+			mapReplacedText.put("${WinnerPhoneNumber}", winningLetterRecord.getPhoneNumber());
+			mapReplacedText.put("${WinnerResidentAddress}", winningLetterRecord.getResidentAddress());
+			mapReplacedText.put("${WinnerMailingAddress}", winningLetterRecord.getMailingAddress());
 	
 			String defaultSourcePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "Default";
 			logger.info("defaultSourcePath = {}", defaultSourcePath);
@@ -98,14 +96,14 @@ public class ServiceExportWinnerInfoToPDF {
 			String imageSourcePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "IMAGE";
 			logger.info("imageSourcePath = {}", imageSourcePath);
 			
-			String id_card_front = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getId_card_copy_front();
-			logger.info("id_card_front = {}", id_card_front);
+			String idCardCopyFront = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getIdCardCopyFront();
+			logger.info("idCardCopyFront = {}", idCardCopyFront);
 			
-			String id_card_back = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getId_card_copy_back();
-			logger.info("id_card_back = {}", id_card_back);
+			String idCardCopyBack = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getIdCardCopyBack();
+			logger.info("idCardCopyBack = {}", idCardCopyBack);
 			
-			String e_signature = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.getE_signature();
-			logger.info("e_signature = {}", e_signature);
+			String eSignature = imageSourcePath + System.getProperty("file.separator") + winningLetterRecord.geteSignature();
+			logger.info("eSignature = {}", eSignature);
 	
 			try {
 				CustomXWPFDocument doc = new CustomXWPFDocument(new FileInputStream(pdfTemplete));
@@ -148,19 +146,19 @@ public class ServiceExportWinnerInfoToPDF {
 											default:
 												break;
 											case "2":
-												blipId = addPictureData(id_card_front, doc);
+												blipId = addPictureData(idCardCopyFront, doc);
 	
 												doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
 												run.getCTR().removeDrawing(0);
 												break;
 											case "3":
-												blipId = addPictureData(id_card_back, doc);
+												blipId = addPictureData(idCardCopyBack, doc);
 	
 												doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
 												run.getCTR().removeDrawing(0);
 												break;
 											case "4":
-												blipId = addPictureData(e_signature, doc);
+												blipId = addPictureData(eSignature, doc);
 	
 												doc.createPicture(run.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), ps2d.getCx(), ps2d.getCy());
 												run.getCTR().removeDrawing(0);
@@ -236,19 +234,19 @@ public class ServiceExportWinnerInfoToPDF {
 															default:
 																break;
 															case "2":
-																blipId = addPictureData(id_card_front, doc);
+																blipId = addPictureData(idCardCopyFront, doc);
 	
 																doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
 																tcRun.getCTR().removeDrawing(0);
 																break;
 															case "3":
-																blipId = addPictureData(id_card_back, doc);
+																blipId = addPictureData(idCardCopyBack, doc);
 	
 																doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
 																tcRun.getCTR().removeDrawing(0);
 																break;
 															case "4":
-																blipId = addPictureData(e_signature, doc);
+																blipId = addPictureData(eSignature, doc);
 	
 																doc.createPicture(tcRun.getCTR(), blipId, doc.getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_PNG), tcPs2d.getCx(), tcPs2d.getCy());
 																tcRun.getCTR().removeDrawing(0);

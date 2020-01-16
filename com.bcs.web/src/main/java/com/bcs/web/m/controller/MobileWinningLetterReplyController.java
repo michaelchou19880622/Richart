@@ -182,27 +182,25 @@ public class MobileWinningLetterReplyController {
 
 		model.addAttribute("urlReferrer", urlReferrer);
 
-		logger.info("RequestBody : winningLetterRecord = {}", winningLetterRecord);
-		
-//		WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findById(id)
-		
-		// 檢查用戶資料是否已經存在? 先預留
-//		WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findAllBy身分證?or電話?(id_card_number, phonenumber);
-//		if (winningLetterRecordData != null) {
-//			//用戶資料存在(表示已經填寫過了)
-//		}
-
 		Date currentDateTime = new Date();
 		logger.info("currentDateTime = {}", currentDateTime);
 
-		WinningLetterRecord winningLetterRecordData = new WinningLetterRecord();
+		logger.info("RequestBody : winningLetterRecord = {}", winningLetterRecord);
+		
+		WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findByIdCardNumberAndWinningLetterId(winningLetterRecord.getIdCardNumber(), winningLetterRecord.getWinningLetterId());
+		logger.info("winningLetterRecordData = {}", winningLetterRecordData);
+		
+		if (winningLetterRecordData == null) {
+			winningLetterRecordData = new WinningLetterRecord();
+		}
+
+		winningLetterRecordData.setIdCardNumber(winningLetterRecord.getIdCardNumber());
 		winningLetterRecordData.setUid(winningLetterRecord.getUid());
 		winningLetterRecordData.setWinningLetterId(winningLetterRecord.getWinningLetterId());
 		winningLetterRecordData.setName(winningLetterRecord.getName());
-		winningLetterRecordData.setId_card_number(winningLetterRecord.getId_card_number());
-		winningLetterRecordData.setPhonenumber(winningLetterRecord.getPhonenumber());
-		winningLetterRecordData.setResident_address(winningLetterRecord.getResident_address());
-		winningLetterRecordData.setMailing_address(winningLetterRecord.getMailing_address());
+		winningLetterRecordData.setPhoneNumber(winningLetterRecord.getPhoneNumber());
+		winningLetterRecordData.setResidentAddress(winningLetterRecord.getResidentAddress());
+		winningLetterRecordData.setMailingAddress(winningLetterRecord.getMailingAddress());
 		winningLetterRecordData.setRecordTime(currentDateTime);
 
 		Long winningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
@@ -256,10 +254,10 @@ public class MobileWinningLetterReplyController {
 					if (winningLetterRecordData != null) {
 						switch (type) {
 						case "f":
-							winningLetterRecordData.setId_card_copy_front(resource.getResourceId());
+							winningLetterRecordData.setIdCardCopyFront(resource.getResourceId());
 							break;
 						case "b":
-							winningLetterRecordData.setId_card_copy_back(resource.getResourceId());
+							winningLetterRecordData.setIdCardCopyBack(resource.getResourceId());
 							break;
 						}
 
@@ -311,7 +309,7 @@ public class MobileWinningLetterReplyController {
 
 					if (winningLetterRecordData != null) {
 
-						winningLetterRecordData.setE_signature(resource.getResourceId());
+						winningLetterRecordData.seteSignature(resource.getResourceId());
 
 						Long savedWinningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
 						logger.info("savedWinningLetterRecordId = {}", savedWinningLetterRecordId);

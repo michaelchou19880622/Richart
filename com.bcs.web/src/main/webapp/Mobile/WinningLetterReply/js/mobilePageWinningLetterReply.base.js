@@ -233,10 +233,10 @@ $(function() {
 			'uid' : userId,
 			'winningLetterId' : winningLetterId,
 			'name' : data_WinnerName,
-			'id_card_number' : data_IdCardNumber,
-			'phonenumber' : data_PhoneNumber,
-			'resident_address' : data_ResidentAddress,
-			'mailing_address' : data_MailingAddress
+			'idCardNumber' : data_IdCardNumber,
+			'phoneNumber' : data_PhoneNumber,
+			'residentAddress' : data_ResidentAddress,
+			'mailingAddress' : data_MailingAddress
 		};
 
 		return winningLetterRecordData;
