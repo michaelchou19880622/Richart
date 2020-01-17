@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -359,25 +360,51 @@ public class MobileWinningLetterReplyController {
 			logger.info("ex = {}", ex);
 		}
 	}
+	
+	private static BufferedImage resizeImage(BufferedImage originalImage, int type, int width, int height) {
+		
+		Image toolkitImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		int tkImageWidth = toolkitImage.getWidth(null);
+		int tkImageHeight = toolkitImage.getHeight(null);
+		
+		BufferedImage resizedImage = new BufferedImage(tkImageWidth, tkImageHeight, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(toolkitImage, 0, 0, width, height, null);
+		g.dispose();
+
+		return resizedImage;
+	}
 
 	public void addImageWatermark(File watermarkImageFile, File sourceImageFile, File destImageFile) {
 		try {
+			
 			BufferedImage sourceImage = ImageIO.read(sourceImageFile);
+			logger.info("sourceImage.getWidth() = {}", sourceImage.getWidth());
+			logger.info("sourceImage.getHeight() = {}", sourceImage.getHeight());
+			
 			BufferedImage watermarkImage = ImageIO.read(watermarkImageFile);
-
+			logger.info("watermarkImage.getWidth() = {}", watermarkImage.getWidth());
+			logger.info("watermarkImage.getHeight() = {}", watermarkImage.getHeight());
+			
+			int type = sourceImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sourceImage.getType();
+			
+			BufferedImage scaledSourceImage = resizeImage(sourceImage, type, 760, 450);
+			logger.info("scaledSourceImage.getWidth() = {}", scaledSourceImage.getWidth());
+			logger.info("scaledSourceImage.getHeight() = {}", scaledSourceImage.getHeight());
+			
 			// initializes necessary graphic properties
-			Graphics2D g2d = (Graphics2D) sourceImage.getGraphics();
+			Graphics2D g2d = (Graphics2D) scaledSourceImage.getGraphics();
 			AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f);
 			g2d.setComposite(alphaChannel);
-
+			
 			// calculates the coordinate where the image is painted
-			int topLeftX = (sourceImage.getWidth() - watermarkImage.getWidth()) / 2;
-			int topLeftY = (sourceImage.getHeight() - watermarkImage.getHeight()) / 2;
+			int topLeftX = (scaledSourceImage.getWidth() - watermarkImage.getWidth()) / 2;
+			int topLeftY = (scaledSourceImage.getHeight() - watermarkImage.getHeight()) / 2;
 
 			// paints the image watermark
 			g2d.drawImage(watermarkImage, topLeftX, topLeftY, null);
 
-			ImageIO.write(sourceImage, "png", destImageFile);
+			ImageIO.write(scaledSourceImage, "png", destImageFile);
 			g2d.dispose();
 
 		} catch (IOException ex) {
