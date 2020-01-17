@@ -9,6 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -156,14 +157,14 @@ public class MobileWinningLetterReplyController {
 		liffUrl = liffUrl.replace("{winningLetterId}", winningLetterId);
 		logger.info("1-2 liffUrl = {}", liffUrl);
 		
-		liffUrl = liffUrl.replace("{winningLetterName}", winningLetterName);
+		liffUrl = liffUrl.replace("{winningLetterName}", URLEncoder.encode(winningLetterName, "UTF-8"));
 		logger.info("1-3 liffUrl = {}", liffUrl);
 		
 		liffUrl = liffUrl.replace("{endTime}", endTime);
 		logger.info("1-4 liffUrl = {}", liffUrl);
 		
-		liffUrl = liffUrl.replace("{gifts}", gifts);
-		logger.info("1-5 liffUrl = {}", gifts);
+		liffUrl = liffUrl.replace("{gifts}", URLEncoder.encode(gifts, "UTF-8"));
+		logger.info("1-5 liffUrl = {}", liffUrl);
 		
 		return new ModelAndView("redirect:" + liffUrl);
 	}

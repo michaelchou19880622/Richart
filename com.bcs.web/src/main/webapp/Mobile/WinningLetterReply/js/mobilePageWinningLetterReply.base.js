@@ -1,4 +1,10 @@
 $(function() {
+	function getQueryString(key){
+        var reg = new RegExp("(^|&)"+key+"=([^&]*)(&|$)");
+        var result = window.location.search.substr(1).match(reg);
+        return result?decodeURIComponent(result[2]):null;
+	}
+	
 	let urlParams = new URLSearchParams(window.location.search);
 
 	var liffId;
@@ -14,7 +20,7 @@ $(function() {
 
 	var winningLetterName;
 	if (urlParams.has('winningLetterName')) {
-		winningLetterName = urlParams.get('winningLetterName');
+		winningLetterName = decodeURI(urlParams.get('winningLetterName'));
 	}
 	console.info('winningLetterName = ' + winningLetterName);
 
@@ -26,7 +32,7 @@ $(function() {
 
 	var gifts;
 	if (urlParams.has('gifts')) {
-		gifts = urlParams.get('gifts');
+		gifts = decodeURI(urlParams.get('gifts'));
 	}
 	console.info('gifts = ' + gifts);
 
