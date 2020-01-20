@@ -1,122 +1,122 @@
-<!-- <!DOCTYPE html> -->
-<!-- <html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags" -->
-<!-- 	xmlns:th="http://www.thymeleaf.org" -->
-<!-- 	th:with="jsList = ${{'/BCS/JS/pageWinningLetterReplyList.base.js'}}"> -->
-<!-- <head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter Reply List Page', ${jsList})"> -->
-<!-- </head> -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:th="http://www.thymeleaf.org"
+	th:with="jsList = ${{'/BCS/JS/pageWinningLetterReplyList.base.js'}}">
+<head th:replace="/BCS/Views/Common/Head :: head ('Winning Letter Reply List Page', ${jsList})">
+</head>
 
-<!-- <body> -->
-<!-- 	<header th:replace="/BCS/Views/Common/Header :: header"></header> -->
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
 
-<!-- 	<div class="LyContents"> -->
-<!-- 		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageWinningLetterList')"></div> -->
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageWinningLetterList')"></div>
 
-<!-- 		<!-- Right Content --> -->
-<!-- 		<div class="LyMain" role="main"> -->
-<!-- 			<form> -->
-<!-- 				<section> -->
-<!-- 					<header class="ContentHead"> -->
-<!-- 						<h3 class="CHTtl" id="title">中獎回函名單</h3> -->
-<!-- 					</header> -->
-<!-- 					<div class="CHBtnSet"> -->
-<!--                         <div class="CHLeft"> -->
-<!-- 							<input class="searchInput_winnerName" id="keywordInput" type="text" placeholder="請輸入欲查詢之中獎者名稱" maxlength="50" name="keywordInput" autocomplete="off"> -->
-<!-- 	                       	<input class="btn_name_query" type="button" value="查詢"  style="cursor: pointer;"> -->
-<!-- 						</div> -->
-<!--                         <div class="CHRight"> -->
-<!--                             <input class="btn_export_pdf" id="btn_export_pdf" type="button" value="PDF檔"  style="cursor: pointer; visibility: hidden;">&nbsp; -->
-<!--                             <input class="btn_export_excel" id="btn_export_excel" type="button" value="Excel明細檔" style="cursor: pointer;"> -->
-<!--                         </div> -->
-<!-- 					</div> -->
-<!-- 					<div class="mainFrame"> -->
-<!-- 						<table border="1" id="tableBody"> -->
-<!-- 							<colgroup> -->
-<!-- 								<col width="90"> 勾選 -->
-<!-- 								<col width="110"> 中獎者名稱 -->
-<!-- 								<col width="80"> 連絡電話 -->
-<!-- 								<col width="100"> 身分證字號 -->
-<!-- 								<col width="120"> 檢視(身分證正反面) -->
-<!-- 								<col width="100"> 檢視(簽名檔) -->
-<!-- 								<col width="100"> 回覆時間 -->
-<!-- 							</colgroup> -->
-<!-- 							<tr> -->
-<!-- 								<th> -->
-<!-- 									<label> -->
-<!-- 										<input class="cbxSelectAll" type="checkbox" id="cbxSelectAll">勾選 -->
-<!-- 									</label> -->
-<!-- 								</th> -->
-<!-- 								<th>中獎者名稱</th> -->
-<!-- 								<th>連絡電話</th> -->
-<!-- 								<th>身分證字號</th> -->
-<!-- 								<th>身分證正反面</th> -->
-<!-- 								<th>簽名檔</th> -->
-<!-- 								<th>回覆時間</th> -->
-<!-- 							</tr> -->
-<!-- 							<tr class="dataTemplate"> -->
-<!-- 								<td> -->
-<!-- 									<input class="checkBox2" type="checkbox" name="checkBoxChilds" id="checkBoxChilds"> -->
-<!-- 								</td> -->
-<!-- 								<td class="winnerName"><a></a></td> -->
-<!-- 								<td class="winnerContact"><a></a></td> -->
-<!-- 								<td class="winnerIdCardNumber"><a></a></td> -->
-<!-- 								<td> -->
-<!-- 									<input class="btn_check_id_card" style="cursor: pointer;" type="button" value="檢視"> -->
-<!-- 								</td> -->
-<!-- 								<td> -->
-<!-- 									<input class="btn_check_e_signature" style="cursor: pointer;" type="button" value="檢視"> -->
-<!-- 								</td> -->
-<!-- 								<td class="recordTime"></td> -->
-<!-- 							</tr> -->
-<!-- 						</table> -->
-<!-- 					</div> -->
-<!-- 					<div class="CHBtnSet"> -->
-<!-- 	                    <div class="CHLeft"> -->
-<!-- 							<input id="btn_PreviousPage" type="button" value="<" style="cursor: pointer;"> -->
-<!-- 	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">第</label> -->
-<!-- 	                        <label id="currentPageIndex" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label> -->
-<!-- 	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">/</label> -->
-<!-- 	                        <label id="totalPageSize" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label> -->
-<!-- 	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">頁</label> -->
-<!-- 	                        <input id="btn_NextPage" type="button" value=">" style="cursor: pointer;"> -->
-<!-- 	                    </div> -->
-<!-- 	                    <div class="CHRight"> -->
-<!-- 	                    	<label style="padding: 0px 0px 0px 5px; font-weight: bold; color: black;">每頁顯示資料筆數</label> -->
-<!-- 							<div class="optionPageSize"> -->
-<!-- 								<div class="optionLabelPageSize">10</div> -->
-<!-- 								<select id="keywordSelector" class="optionSelectPageSize" name=""> -->
-<!-- 									<option value="5">5</option> -->
-<!-- 									<option value="10" selected>10</option> -->
-<!-- 									<option value="15">15</option> -->
-<!-- 									<option value="20">20</option> -->
-<!-- 								</select> -->
-<!-- 							</div> -->
-<!-- 	                    </div> -->
-<!-- 					</div> -->
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+			<form>
+				<section>
+					<header class="ContentHead">
+						<h3 class="CHTtl" id="title">中獎回函名單</h3>
+					</header>
+					<div class="CHBtnSet">
+                        <div class="CHLeft">
+							<input class="searchInput_winnerName" id="keywordInput" type="text" placeholder="請輸入欲查詢之中獎者名稱" maxlength="50" name="keywordInput" autocomplete="off">
+	                       	<input class="btn_name_query" type="button" value="查詢"  style="cursor: pointer;">
+						</div>
+                        <div class="CHRight">
+                            <input class="btn_export_pdf" id="btn_export_pdf" type="button" value="PDF檔"  style="cursor: pointer; visibility: hidden;">&nbsp;
+                            <input class="btn_export_excel" id="btn_export_excel" type="button" value="Excel明細檔" style="cursor: pointer;">
+                        </div>
+					</div>
+					<div class="mainFrame">
+						<table border="1" id="tableBody">
+							<colgroup>
+								<col width="90"> <!-- 勾選 -->
+								<col width="110"> <!-- 中獎者名稱 -->
+								<col width="80"> <!-- 連絡電話 -->
+								<col width="100"> <!-- 身分證字號 -->
+								<col width="120"> <!-- 檢視(身分證正反面) -->
+								<col width="100"> <!-- 檢視(簽名檔) -->
+								<col width="100"> <!-- 回覆時間 -->
+							</colgroup>
+							<tr>
+								<th>
+									<label>
+										<input class="cbxSelectAll" type="checkbox" id="cbxSelectAll">勾選
+									</label>
+								</th>
+								<th>中獎者名稱</th>
+								<th>連絡電話</th>
+								<th>身分證字號</th>
+								<th>身分證正反面</th>
+								<th>簽名檔</th>
+								<th>回覆時間</th>
+							</tr>
+							<tr class="dataTemplate">
+								<td>
+									<input class="checkBox2" type="checkbox" name="checkBoxChilds" id="checkBoxChilds">
+								</td>
+								<td class="winnerName"><a></a></td>
+								<td class="winnerContact"><a></a></td>
+								<td class="winnerIdCardNumber"><a></a></td>
+								<td>
+									<input class="btn_check_id_card" style="cursor: pointer;" type="button" value="檢視">
+								</td>
+								<td>
+									<input class="btn_check_e_signature" style="cursor: pointer;" type="button" value="檢視">
+								</td>
+								<td class="recordTime"></td>
+							</tr>
+						</table>
+					</div>
+					<div class="CHBtnSet">
+	                    <div class="CHLeft">
+							<input id="btn_PreviousPage" type="button" value="<" style="cursor: pointer;">
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">第</label>
+	                        <label id="currentPageIndex" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label>
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">/</label>
+	                        <label id="totalPageSize" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label>
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">頁</label>
+	                        <input id="btn_NextPage" type="button" value=">" style="cursor: pointer;">
+	                    </div>
+	                    <div class="CHRight">
+	                    	<label style="padding: 0px 0px 0px 5px; font-weight: bold; color: black;">每頁顯示資料筆數</label>
+							<div class="optionPageSize">
+								<div class="optionLabelPageSize">10</div>
+								<select id="keywordSelector" class="optionSelectPageSize" name="">
+									<option value="5">5</option>
+									<option value="10" selected>10</option>
+									<option value="15">15</option>
+									<option value="20">20</option>
+								</select>
+							</div>
+	                    </div>
+					</div>
 
-<!-- 				</section> -->
-<!-- 			</form> -->
+				</section>
+			</form>
 
-<!-- 			<!-- The Image Model --> -->
-<!-- 			<div class="model" id="myModel"> -->
-<!-- 				Model content -->
-<!-- 				<div class="image-model-content"> -->
-<!-- 					<img id="model_image1"/>&nbsp; -->
-<!-- 					<img id="model_image2"/> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
+			<!-- The Image Model -->
+			<div class="model" id="myModel">
+				<!-- Model content -->
+				<div class="image-model-content">
+					<img id="model_image1"/>&nbsp;
+					<img id="model_image2"/>
+				</div>
+			</div>
 			
-<!-- 			<!-- The E-Signature Model --> -->
-<!-- 			<div class="model" id="mySignModel"> -->
-<!-- 				Model content -->
-<!-- 				<div class="signature-model-content"> -->
-<!-- 					<img id="signature_image"/> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
+			<!-- The E-Signature Model -->
+			<div class="model" id="mySignModel">
+				<!-- Model content -->
+				<div class="signature-model-content">
+					<img id="signature_image"/>
+				</div>
+			</div>
 			
-<!-- 		</div> -->
-<!-- 	</div> -->
-<!-- 	<input id="urlReferrer" type="hidden" th:value="${urlReferrer}" /> -->
-<!-- 	<input id=pdfExportPath type="hidden" th:value="${pdfExportPath}" /> -->
-<!-- </body> -->
+		</div>
+	</div>
+	<input id="urlReferrer" type="hidden" th:value="${urlReferrer}" />
+	<input id=pdfExportPath type="hidden" th:value="${pdfExportPath}" />
+</body>
 
-<!-- </html> -->
+</html>
