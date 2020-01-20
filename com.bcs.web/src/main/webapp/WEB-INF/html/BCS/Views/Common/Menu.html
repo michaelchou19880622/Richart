@@ -75,14 +75,14 @@
                 </li>
                 
                 <!-- 使用 iframe 嵌入仁大版本的 Richmenu ( 仍在開發中，若要上台新測試/正式環境，需要先關閉 ) -->
-<!--                 <li> -->
-<!--                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a> -->
-<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
-<!--                     	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>選單列表</span></a> -->
-<!--                         </li> -->
-<!--                     </ul> -->
-<!--                 </li> -->
+                <li>
+                    <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
+                    <ul class="MdNonDisp subMenu" style="display:none">
+                    	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>選單列表</span></a>
+                        </li>
+                    </ul>
+                </li>
                 
                 <!-- 上台新測試/正式環境，需要先關閉 -->
 <!--                 <li> -->
@@ -264,15 +264,18 @@
                     </ul>
                 </li>
                 
-<!--                 <li> -->
-<!--                     <a href="" style="cursor: pointer;"><span>數位中獎回函</span></a> -->
-<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
-<!--                         <li th:classappend="${currentPage == 'PageWinningLetterMain'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/admin/winningLetterMainPage}"><span>建立中獎回函</span></a> -->
-<!--                         </li> -->
-<!--                         <li th:classappend="${currentPage == 'PageWinningLetterList'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/bcs/admin/winningLetterListPage}"><span>中獎回函列表</span></a> -->
-<!--                         </li> -->
+                <!-- 上台新測試/正式環境，需要先關閉，等之後完全沒問題再拿掉 -->
+                <li>
+                    <a href="" style="cursor: pointer;"><span>數位中獎回函</span></a>
+                    <ul class="MdNonDisp subMenu" style="display:none">
+                        <li th:classappend="${currentPage == 'PageWinningLetterMain'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/admin/winningLetterMainPage}"><span>建立中獎回函</span></a>
+                        </li>
+                        <li th:classappend="${currentPage == 'PageWinningLetterList'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/admin/winningLetterListPage}"><span>中獎回函列表</span></a>
+                        </li>
+                    </ul>
+                </li>
                         
                 		<!-- 上台新測試/正式環境，需要先關閉，等之後完全沒問題再拿掉 -->
 <!--                         <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'"> -->
@@ -289,6 +292,7 @@
 <!--                         </li> -->
 <!--                     </ul> -->
 <!--                 </li> -->
+
                 <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')">
                     <a href="" style="cursor: pointer;"><span>測試區</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
