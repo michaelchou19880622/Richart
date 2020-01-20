@@ -234,5 +234,14 @@ public class MsgInteractiveMain extends AbstractBcsEntity {
 	public void setSerialId(String serialId) {
 		this.serialId = serialId;
 	}
+
+	@Override
+	public String toString() {
+		return "MsgInteractiveMain [iMsgId=" + iMsgId + ", interactiveStatus=" + interactiveStatus + ", interactiveType=" + interactiveType + ", userStatus=" + userStatus + ", mainKeyword="
+				+ mainKeyword + ", statusNotice=" + statusNotice + ", interactiveIndex=" + interactiveIndex + ", interactiveStartTime=" + interactiveStartTime + ", interactiveEndTime="
+				+ interactiveEndTime + ", interactiveTimeType=" + interactiveTimeType + ", sendCount=" + sendCount + ", modifyUser=" + modifyUser + ", modifyTime=" + modifyTime + ", otherRole="
+				+ otherRole + ", serialId=" + serialId + "]";
+	}
+	
 	
 }

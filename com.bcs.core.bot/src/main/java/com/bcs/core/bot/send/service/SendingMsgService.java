@@ -171,8 +171,17 @@ public class SendingMsgService {
 	}
 	
 	public void sendMatchMessage(String replyToken, Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception{
-
-		if(details != null && details.size() > 0){
+		logger.info("sendMatchMessage");
+		logger.info(">> replyToken = " + replyToken);
+		logger.info(">> iMsgId = " + iMsgId);
+		logger.info(">> details = " + details.toString());
+		logger.info(">> ChannelId = " + ChannelId);
+		logger.info(">> MID = " + MID);
+		logger.info(">> ApiType = " + ApiType);
+		logger.info(">> targetId = " + targetId);
+		logger.info(">> retryCount = " + retryCount);
+		
+		if (details != null && details.size() > 0) {
 
 			MsgInteractiveMain msgInteractiveMain = null;
 			if(iMsgId != null){
@@ -201,14 +210,14 @@ public class SendingMsgService {
 			
 			String codeError = "";
 			
-			// 回覆 關鍵字回應內容
+			// 回覆關鍵字回應內容
 			try{
 				
 				ReplyMessage replyMessage = new ReplyMessage(replyToken, messageList);
 				sendToBotModel.setReplyMessage(replyMessage);
 				
 				Response<BotApiResponse> response = LineAccessApiService.sendToLine(sendToBotModel);
-				logger.debug("status:" + response.code());
+				logger.info("status:" + response.code());
 				
 				if(response.code() == 400){
 					codeError = "400Error";
@@ -221,6 +230,10 @@ public class SendingMsgService {
 			}
 			catch(Exception e){
 				logger.error(ErrorRecord.recordError(e));
+
+				logger.info("retryCount = " + retryCount);
+				logger.info("codeError = " + codeError);
+				
 				if(retryCount < 5 && StringUtils.isBlank(codeError)){
 					this.sendMatchMessage(replyToken, iMsgId, details, ChannelId, MID, ApiType, targetId, retryCount + 1);
 				}

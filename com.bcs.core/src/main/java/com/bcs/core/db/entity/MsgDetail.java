@@ -99,5 +99,12 @@ public class MsgDetail extends AbstractBcsEntity {
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
+
+	@Override
+	public String toString() {
+		return "MsgDetail [detailId=" + detailId + ", msgId=" + msgId + ", msgParentType=" + msgParentType + ", msgType=" + msgType + ", text=" + text + ", eventType=" + eventType + ", referenceId="
+				+ referenceId + "]";
+	}
 	
+    
 }

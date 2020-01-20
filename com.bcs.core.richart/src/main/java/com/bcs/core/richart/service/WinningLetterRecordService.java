@@ -1,166 +1,166 @@
-package com.bcs.core.richart.service;
-
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import com.bcs.core.db.entity.ContentCouponCode;
-import com.bcs.core.db.entity.WinningLetter;
-import com.bcs.core.db.entity.WinningLetterRecord;
-import com.bcs.core.db.repository.WinningLetterRecordRepository;
-
-@Service
-public class WinningLetterRecordService {
-
-	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(WinningLetterRecordService.class);
-	
-	public static final Integer pageSize = 10;
-
-	@Autowired
-	private WinningLetterRecordRepository winningLetterRecordRepository;
-
-	public List<WinningLetterRecord> findAll() {
-		long startTime = System.nanoTime();
-		logger.info("[ findAll ] Start Time : {}", startTime);
-		
-		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAll();
-
-		long endTime = System.nanoTime();
-		logger.info("[ findAll ] End Time : {}", endTime);
-		logger.info("[ findAll ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-
-		logger.info("[ findAll ] lst_WinningLetterRecord = {}", lst_WinningLetterRecord);
-		
-		return lst_WinningLetterRecord;
-	}
-	
-	public List<WinningLetterRecord> findAllByWinningLetterIdOrderByIdAsc(Long winningLetterId) {
-		long startTime = System.nanoTime();
-		logger.info("[ findAllByWinningLetterIdOrderByIdAsc ] Start Time : {}", startTime);
-		
-		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterIdOrderByIdAsc(winningLetterId);
-
-		long endTime = System.nanoTime();
-		logger.info("[ findAllByWinningLetterIdOrderByIdAsc ] End Time : {}", endTime);
-		logger.info("[ findAllByWinningLetterIdOrderByIdAsc ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-
-		logger.info("[ findAllByWinningLetterIdOrderByIdAsc ] lst_WinningLetterRecord = {}", lst_WinningLetterRecord);
-		
-		return lst_WinningLetterRecord;
-	}
-	
-	public Page<WinningLetterRecord> findAllByWinningLetterId(Long winningLetterId, Pageable pageable) {
-		long startTime = System.nanoTime();
-		logger.info("[ findAllByWinningLetterId ] Start Time : {}", startTime);
-		
-		Page<WinningLetterRecord> page_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterId(winningLetterId, pageable);
-
-		long endTime = System.nanoTime();
-		logger.info("[ findAllByWinningLetterId ] End Time : {}", endTime);
-		logger.info("[ findAllByWinningLetterId ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-
-		logger.info("[ findAllByWinningLetterId ] page_WinningLetterRecord.getContent() = {}", page_WinningLetterRecord.getContent());
-		
-		return page_WinningLetterRecord;
-	}
-	
-	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterIdOrderByIdAsc(String name, Long winningLetterId) {
-		long startTime = System.nanoTime();
-		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] Start Time : {}", startTime);
-		
-		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(name, winningLetterId);
-
-		long endTime = System.nanoTime();
-		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] End Time : {}", endTime);
-		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-
-		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] lst_WinningLetter = {}", lst_WinningLetterRecord);
-		
-		return lst_WinningLetterRecord;
-	}
-	
-	public Page<WinningLetterRecord> findAllByNameContainingAndWinningLetterId(String name, Long winningLetterId, Pageable pageable) {
-		long startTime = System.nanoTime();
-		logger.info("[ findAllByNameContainingAndWinningLetterId ] Start Time : {}", startTime);
-		
-		Page<WinningLetterRecord> page_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterId(name, winningLetterId, pageable);
-
-		long endTime = System.nanoTime();
-		logger.info("[ findAllByNameContainingAndWinningLetterId ] End Time : {}", endTime);
-		logger.info("[ findAllByNameContainingAndWinningLetterId ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-
-		logger.info("[ findAllByNameContainingAndWinningLetterId ] page_WinningLetterRecord.getContent() = {}", page_WinningLetterRecord.getContent());
-		
-		return page_WinningLetterRecord;
-	}
-	
-	public WinningLetterRecord findById(Long id) {
-		long startTime = System.nanoTime();
-		logger.info("[ findById ] Start Time : {}", startTime);
-		
-		WinningLetterRecord winningLetterRecord = winningLetterRecordRepository.findById(id);
-
-		long endTime = System.nanoTime();
-		logger.info("[ findById ] End Time : {}", endTime);
-		logger.info("[ findById ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-
-		logger.info("[ findById ] winningLetterRecord = {}", winningLetterRecord);
-		
-		return winningLetterRecord;
-	}
-	
-	public WinningLetterRecord findByIdCardNumberAndWinningLetterId(String idCardNumber, Long winningLetterId) {
-		long startTime = System.nanoTime();
-		logger.info("[ findByIdCardNumber ] Start Time : {}", startTime);
-		
-		WinningLetterRecord winningLetterRecord = winningLetterRecordRepository.findByIdCardNumberAndWinningLetterId(idCardNumber, winningLetterId);
-
-		long endTime = System.nanoTime();
-		logger.info("[ findByIdCardNumber ] End Time : {}", endTime);
-		logger.info("[ findByIdCardNumber ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-
-		logger.info("[ findByIdCardNumber ] winningLetterRecord = {}", winningLetterRecord);
-		
-		return winningLetterRecord;
-	}
-
-//	public WinningLetter findByName(String name) {
+//package com.bcs.core.richart.service;
+//
+//import java.util.List;
+//
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.Pageable;
+//import org.springframework.stereotype.Service;
+//
+//import com.bcs.core.db.entity.ContentCouponCode;
+//import com.bcs.core.db.entity.WinningLetter;
+//import com.bcs.core.db.entity.WinningLetterRecord;
+//import com.bcs.core.db.repository.WinningLetterRecordRepository;
+//
+//@Service
+//public class WinningLetterRecordService {
+//
+//	/** Logger **/
+//	private static Logger logger = LoggerFactory.getLogger(WinningLetterRecordService.class);
+//	
+//	public static final Integer pageSize = 10;
+//
+//	@Autowired
+//	private WinningLetterRecordRepository winningLetterRecordRepository;
+//
+//	public List<WinningLetterRecord> findAll() {
 //		long startTime = System.nanoTime();
-//		logger.info("[ findByName ] Start Time : {}", startTime);
+//		logger.info("[ findAll ] Start Time : {}", startTime);
 //		
-//		WinningLetter winningLetter = winningLetterRepository.findByName(name);
+//		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAll();
 //
 //		long endTime = System.nanoTime();
-//		logger.info("[ findByName ] End Time : {}", endTime);
-//		logger.info("[ findByName ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+//		logger.info("[ findAll ] End Time : {}", endTime);
+//		logger.info("[ findAll ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
 //
-//		logger.info("[ findByName ] winningLetter = {}", winningLetter);
+//		logger.info("[ findAll ] lst_WinningLetterRecord = {}", lst_WinningLetterRecord);
 //		
-//		return winningLetter;
+//		return lst_WinningLetterRecord;
 //	}
-	
-	public Long save(WinningLetterRecord winningLetterRecordSrc) {
-		long startTime = System.nanoTime();
-		logger.info("[ save ] Start Time : {}", startTime);
-		
-		WinningLetterRecord winningLetterRecord = winningLetterRecordRepository.save(winningLetterRecordSrc);
-
-		long endTime = System.nanoTime();
-		logger.info("[ save ] End Time : {}", endTime);
-		logger.info("[ save ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
-
-		logger.info("[ save ] winningLetterRecord = {}", winningLetterRecord);
-		
-		return winningLetterRecord.getId();
-	}
-	
-	public Integer countByWinningLetterId(String winningLetterId){
-	    return winningLetterRecordRepository.countByWinningLetterId(winningLetterId);
-	}
-}
+//	
+//	public List<WinningLetterRecord> findAllByWinningLetterIdOrderByIdAsc(Long winningLetterId) {
+//		long startTime = System.nanoTime();
+//		logger.info("[ findAllByWinningLetterIdOrderByIdAsc ] Start Time : {}", startTime);
+//		
+//		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterIdOrderByIdAsc(winningLetterId);
+//
+//		long endTime = System.nanoTime();
+//		logger.info("[ findAllByWinningLetterIdOrderByIdAsc ] End Time : {}", endTime);
+//		logger.info("[ findAllByWinningLetterIdOrderByIdAsc ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+//
+//		logger.info("[ findAllByWinningLetterIdOrderByIdAsc ] lst_WinningLetterRecord = {}", lst_WinningLetterRecord);
+//		
+//		return lst_WinningLetterRecord;
+//	}
+//	
+//	public Page<WinningLetterRecord> findAllByWinningLetterId(Long winningLetterId, Pageable pageable) {
+//		long startTime = System.nanoTime();
+//		logger.info("[ findAllByWinningLetterId ] Start Time : {}", startTime);
+//		
+//		Page<WinningLetterRecord> page_WinningLetterRecord = winningLetterRecordRepository.findAllByWinningLetterId(winningLetterId, pageable);
+//
+//		long endTime = System.nanoTime();
+//		logger.info("[ findAllByWinningLetterId ] End Time : {}", endTime);
+//		logger.info("[ findAllByWinningLetterId ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+//
+//		logger.info("[ findAllByWinningLetterId ] page_WinningLetterRecord.getContent() = {}", page_WinningLetterRecord.getContent());
+//		
+//		return page_WinningLetterRecord;
+//	}
+//	
+//	public List<WinningLetterRecord> findAllByNameContainingAndWinningLetterIdOrderByIdAsc(String name, Long winningLetterId) {
+//		long startTime = System.nanoTime();
+//		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] Start Time : {}", startTime);
+//		
+//		List<WinningLetterRecord> lst_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterIdOrderByIdAsc(name, winningLetterId);
+//
+//		long endTime = System.nanoTime();
+//		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] End Time : {}", endTime);
+//		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+//
+//		logger.info("[ findAllByNameContainingAndWinningLetterIdOrderByIdAsc ] lst_WinningLetter = {}", lst_WinningLetterRecord);
+//		
+//		return lst_WinningLetterRecord;
+//	}
+//	
+//	public Page<WinningLetterRecord> findAllByNameContainingAndWinningLetterId(String name, Long winningLetterId, Pageable pageable) {
+//		long startTime = System.nanoTime();
+//		logger.info("[ findAllByNameContainingAndWinningLetterId ] Start Time : {}", startTime);
+//		
+//		Page<WinningLetterRecord> page_WinningLetterRecord = winningLetterRecordRepository.findAllByNameContainingAndWinningLetterId(name, winningLetterId, pageable);
+//
+//		long endTime = System.nanoTime();
+//		logger.info("[ findAllByNameContainingAndWinningLetterId ] End Time : {}", endTime);
+//		logger.info("[ findAllByNameContainingAndWinningLetterId ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+//
+//		logger.info("[ findAllByNameContainingAndWinningLetterId ] page_WinningLetterRecord.getContent() = {}", page_WinningLetterRecord.getContent());
+//		
+//		return page_WinningLetterRecord;
+//	}
+//	
+//	public WinningLetterRecord findById(Long id) {
+//		long startTime = System.nanoTime();
+//		logger.info("[ findById ] Start Time : {}", startTime);
+//		
+//		WinningLetterRecord winningLetterRecord = winningLetterRecordRepository.findById(id);
+//
+//		long endTime = System.nanoTime();
+//		logger.info("[ findById ] End Time : {}", endTime);
+//		logger.info("[ findById ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+//
+//		logger.info("[ findById ] winningLetterRecord = {}", winningLetterRecord);
+//		
+//		return winningLetterRecord;
+//	}
+//	
+//	public WinningLetterRecord findByIdCardNumberAndWinningLetterId(String idCardNumber, Long winningLetterId) {
+//		long startTime = System.nanoTime();
+//		logger.info("[ findByIdCardNumber ] Start Time : {}", startTime);
+//		
+//		WinningLetterRecord winningLetterRecord = winningLetterRecordRepository.findByIdCardNumberAndWinningLetterId(idCardNumber, winningLetterId);
+//
+//		long endTime = System.nanoTime();
+//		logger.info("[ findByIdCardNumber ] End Time : {}", endTime);
+//		logger.info("[ findByIdCardNumber ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+//
+//		logger.info("[ findByIdCardNumber ] winningLetterRecord = {}", winningLetterRecord);
+//		
+//		return winningLetterRecord;
+//	}
+//
+////	public WinningLetter findByName(String name) {
+////		long startTime = System.nanoTime();
+////		logger.info("[ findByName ] Start Time : {}", startTime);
+////		
+////		WinningLetter winningLetter = winningLetterRepository.findByName(name);
+////
+////		long endTime = System.nanoTime();
+////		logger.info("[ findByName ] End Time : {}", endTime);
+////		logger.info("[ findByName ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+////
+////		logger.info("[ findByName ] winningLetter = {}", winningLetter);
+////		
+////		return winningLetter;
+////	}
+//	
+//	public Long save(WinningLetterRecord winningLetterRecordSrc) {
+//		long startTime = System.nanoTime();
+//		logger.info("[ save ] Start Time : {}", startTime);
+//		
+//		WinningLetterRecord winningLetterRecord = winningLetterRecordRepository.save(winningLetterRecordSrc);
+//
+//		long endTime = System.nanoTime();
+//		logger.info("[ save ] End Time : {}", endTime);
+//		logger.info("[ save ] Elapsed Time : {} seconds\n", (endTime - startTime) / 1_000_000_000);
+//
+//		logger.info("[ save ] winningLetterRecord = {}", winningLetterRecord);
+//		
+//		return winningLetterRecord.getId();
+//	}
+//	
+//	public Integer countByWinningLetterId(String winningLetterId){
+//	    return winningLetterRecordRepository.countByWinningLetterId(winningLetterId);
+//	}
+//}

@@ -62,7 +62,7 @@
                 <prop key="hibernate.connection.useUnicode">true</prop>
                 <prop key="hibernate.connection.characterEncoding">UTF-8</prop>
                 <prop key="hibernate.connection.charSet">UTF-8</prop> 
-            	<prop key="hibernate.hbm2ddl.auto">update</prop>
+            	<prop key="hibernate.hbm2ddl.auto">none</prop>
             	<prop key="hibernate.jdbc.batch_size">50</prop>
             	<prop key="hibernate.order_inserts">true</prop>
 				<prop key="hibernate.order_updates">true</prop>

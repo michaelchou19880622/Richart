@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bcs.core.api.service.model.LocationModel;
 import com.bcs.core.bot.db.entity.MsgBotReceive;
@@ -39,13 +40,14 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 
 	/** Logger */
 	private static Logger logger = Logger.getLogger(ReceivingMsgHandlerMsgReceive.class);
-
+	
 	@Override
 	public void onReceive(Object message){
-		logger.debug("-------Get Message Save-------");
+		logger.info("-------Get Message Save-------");
 		InteractiveService interactiveService = ApplicationContextProvider.getApplicationContext().getBean(InteractiveService.class);
 		
 		boolean recordText = CoreConfigReader.getBoolean(CONFIG_STR.RECORD_RECEIVE_AUTORESPONSE_TEXT, true);
+		logger.info("recordText = " + recordText);
 
 		if (message instanceof Map) {
 			@SuppressWarnings("unchecked")
@@ -87,7 +89,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 		
 		ReceivingMsgHandlerMaster.taskCount.addAndGet(-1L);
 		ReceivingMsgHandlerMaster.updateDate = Calendar.getInstance().getTime();
-		logger.debug("-------Get Message Save End-------");
+		logger.info("-------Get Message Save End-------");
 	}
 	
 	/**
@@ -99,11 +101,14 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 	 * @return iMsgId
 	 */
 	public static Long handleMsgReceive(MsgBotReceive content, String ChannelId, String ChannelName, String ApiType){
+		logger.info("handleMsgReceive");
+		
 		LineUserService lineUserService = ApplicationContextProvider.getApplicationContext().getBean(LineUserService.class);
 		InteractiveService interactiveService = ApplicationContextProvider.getApplicationContext().getBean(InteractiveService.class);
 		LiveChatProcessService liveChatService = ApplicationContextProvider.getApplicationContext().getBean(LiveChatProcessService.class);
 
 		boolean recordText = CoreConfigReader.getBoolean(CONFIG_STR.RECORD_RECEIVE_AUTORESPONSE_TEXT, true);
+		logger.info("recordText:" + recordText);
 
 		logger.info("content.getChannel():" + content.getChannel());
 		logger.info("content.getEventType():" + content.getEventType());
@@ -124,18 +129,34 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 		String replyToken = content.getReplyToken();
 		logger.info("replyToken:" + replyToken);
 		
-		Map<Long, List<MsgDetail>> result = new HashMap<>();
-		
 		try {
+			logger.info("=== Check is line user exist? ===");
 			LineUser lineUser = lineUserService.findByMidAndCreateUnbind(MID);
+			logger.info("lineUser = " + ((lineUser == null)? "null" : lineUser));
+			
 			String userStatus = LineUser.STATUS_UNBIND;
 			
-			if(lineUser != null){
+			if (lineUser != null) {
 				userStatus = lineUser.getStatus();
 			}
 			
+			logger.info("=== Check content's event type and postback data. ===");
+			logger.info("content.getEventType() = " + content.getEventType());
+			
 			if (MsgBotReceive.EVENT_TYPE_POSTBACK.equals(content.getEventType())) {
 				text = content.getPostbackData();
+				
+				logger.info("=== Check is received text match to richmenu custom id? ===");
+				logger.info("1-1 text = " + text);
+				
+				// 判斷是否為Richmenu關鍵字 (long格式, 去 richmenu_list table 比對) 
+				RichMenuService richMenuService = ApplicationContextProvider.getApplicationContext().getBean(RichMenuService.class);
+				Boolean isRichmenuCustomId = richMenuService.onCustomIdReceiving(ChannelId, MID, text);
+				logger.info("isRichmenuCustomId = " + isRichmenuCustomId);
+				
+				if (isRichmenuCustomId) {
+					return -2L;
+				}
 
 				if (text.contains("action=")) {
 					String switchAction = text.split("action=")[1];
@@ -174,9 +195,11 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				}
 			}
 			
+			logger.info("=== Check content's msg type ===");
+			logger.info("content.getMsgType() = " + content.getMsgType());
 			// 問泰咪段邏輯保留
 			if(MsgBotReceive.MESSAGE_TYPE_LOCATION.equals(content.getMsgType())) {
-				String address = content.getLocationAddress();	// 地址
+				String address = content.getLocationAddress();		// 地址
 				String longitude = content.getLocationLongitude();	// 經度
 				String latitude = content.getLocationLatitude();	// 緯度
 				
@@ -184,23 +207,18 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				
 				return -2L;
 			}
-			
-			// 判斷是否為Richmenu關鍵字 (long格式, 去 richmenu_list table 比對) 
-			RichMenuService richMenuService = ApplicationContextProvider.getApplicationContext().getBean(RichMenuService.class);
-			Boolean isRichmenuCustomId = richMenuService.onCustomIdReceiving(ChannelId, MID, text);
-			logger.info("isRichmenuCustomId = " + isRichmenuCustomId);
-			
-			if (isRichmenuCustomId) {
-				return -2L;
-			}
-			
+
+			logger.info("=== Check is in the campaign flow? ===");
+			logger.info("1-2 text = " + text);
 			
             //處理活動流程(如果先前有觸發過，否則一律回傳空值)
-            result = handleCampaignFlow(MID, text, content.getReplyToken(), ChannelId, ApiType, content.getMsgId(), content.getMsgType());
+			Map<Long, List<MsgDetail>> result = new HashMap<>();
 			
+            result = handleCampaignFlow(MID, text, content.getReplyToken(), ChannelId, ApiType, content.getMsgId(), content.getMsgType());
+            
 			if (StringUtils.isNotBlank(text) || (result != null && result.size() > 0)) {
 				if (recordText) {
-					logger.debug("Get Keyword:" + text);
+					logger.info("Get Keyword:" + text);
 				}
 
 				// 判斷是否不在活動處理流程中
@@ -214,7 +232,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 						List<MsgDetail> details = result.get(iMsgId);
 
 						if (recordText) {
-							logger.info("Match Keyword:" + text + ",iMsgId:" + iMsgId);
+							logger.info("Match Keyword:" + text + ", iMsgId:" + iMsgId);
 						}
 						
 						// 傳送 關鍵字回應
@@ -230,7 +248,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					if (iMsgIdBlack != null) {
 						// Update 關鍵字回應 記數
 						ApplicationContextProvider.getApplicationContext().getBean(MsgInteractiveMainService.class).increaseSendCountByMsgInteractiveId(iMsgIdBlack);
-						logger.debug("Match BlackKeyword:" + text + ",iMsgIdBlack:" + iMsgIdBlack);
+						logger.info("Match BlackKeyword:" + text + ", iMsgIdBlack:" + iMsgIdBlack);
 						return iMsgIdBlack;
 					} else {
 						// 未設定 預設回應
@@ -255,9 +273,14 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					}
 				}
 			} else {
+				logger.info("MID = " + MID);
+				logger.info("userStatus = " + userStatus);
+				
 				MsgInteractiveMain main = interactiveService.getAutoResponse(MID, userStatus);
 
 				if (main != null) {
+					logger.info("main = " + main.toString());
+					
 					Long iMsgId = main.getiMsgId();
 					List<MsgDetail> details = interactiveService.getMsgDetails(iMsgId);
 
@@ -267,6 +290,16 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					// 記錄自動回應 iMsgId
 					return iMsgId;
 				} else {
+
+					logger.info("ChannelId = " + ChannelId);
+					logger.info("MID = " + MID);
+					logger.info("replyToken = " + replyToken);
+					logger.info("text = " + text);
+					logger.info("content.getMsgId() = " + content.getMsgId());
+					logger.info("content.getMsgType() = " + content.getMsgType());
+					
+//					ChannelId, MID, replyToken, text, content.getMsgId(), content.getMsgType()
+					
 					// 20190126 新增參數content.getMsgType()供碩網判斷。
 					// 20190126機器人應答狀況下，如使用者傳圖片，須判斷type後在qa-ajax多帶一個參數給碩網判斷
 					ApplicationContextProvider.getApplicationContext().getBean(MessageTransmitService.class).transmitToBOT(ChannelId, MID, replyToken, text, content.getMsgId(), content.getMsgType());
@@ -282,7 +315,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 	}
 	
 	private static Map<Long, List<MsgDetail>> handleCampaignFlow(String MID, Object msg, String replyToken, String ChannelId, String ApiType, String msgId, String msgType) throws Exception {
-	    logger.debug(("MID=" + MID + ", msg=" + msg + ", replyToken=" + replyToken + ", ChannelId=" + ChannelId + ", ApiType=" + ApiType + ", msgId=" + msgId + ", msgType=" + msgType));
+	    logger.info(("MID=" + MID + ", msg=" + msg + ", replyToken=" + replyToken + ", ChannelId=" + ChannelId + ", ApiType=" + ApiType + ", msgId=" + msgId + ", msgType=" + msgType));
 	    Map<Long, List<MsgDetail>> iMsgIdAndMsgDetails = new HashMap<Long, List<MsgDetail>>();
 	    InteractiveService interactiveService = ApplicationContextProvider.getApplicationContext().getBean(InteractiveService.class);
 

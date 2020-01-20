@@ -147,10 +147,10 @@
                     <failOnMissingWebXml>true</failOnMissingWebXml>
 
                     <!-- Packaging excludes for Taishin official environment -->
-                    <!-- <packagingExcludes>%regex[WEB-INF/lib/(?!line-bot-model-1.12.0.jar)(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]</packagingExcludes> remove third party jar -->
+                    <packagingExcludes>%regex[WEB-INF/lib/(?!line-bot-model-1.12.0.jar)(?!log4j.*\.jar)(?!slf4j.*\.jar)(?!logging.*\.jar)(?!com.bcs.*\.jar).*\.jar]</packagingExcludes> remove third party jar
 
                     <!-- Packaging excludes for Taishin test environment -->
-                    <packagingExcludes>WEB-INF/lib/*pwd.jar,WEB-INF/lib/*TSIB.jar</packagingExcludes>
+<!--                     <packagingExcludes>WEB-INF/lib/*pwd.jar,WEB-INF/lib/*TSIB.jar</packagingExcludes> -->
 
                     <!-- Set up war name -->
                     <warName>${rp.build.warname}</warName>

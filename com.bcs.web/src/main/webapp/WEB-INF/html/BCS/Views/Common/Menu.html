@@ -264,31 +264,31 @@
                     </ul>
                 </li>
                 
-                <li>
-                    <a href="" style="cursor: pointer;"><span>數位中獎回函</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'PageWinningLetterMain'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/winningLetterMainPage}"><span>建立中獎回函</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'PageWinningLetterList'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/winningLetterListPage}"><span>中獎回函列表</span></a>
-                        </li>
+<!--                 <li> -->
+<!--                     <a href="" style="cursor: pointer;"><span>數位中獎回函</span></a> -->
+<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
+<!--                         <li th:classappend="${currentPage == 'PageWinningLetterMain'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/winningLetterMainPage}"><span>建立中獎回函</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'PageWinningLetterList'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/winningLetterListPage}"><span>中獎回函列表</span></a> -->
+<!--                         </li> -->
                         
                 		<!-- 上台新測試/正式環境，需要先關閉，等之後完全沒問題再拿掉 -->
 <!--                         <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/wl/winningLetterReplyPage}"><span>資料填寫(後台測試)</span></a> -->
 <!--                         </li> -->
-                        <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'">
-                        	<a th:href="@{/m/wl/winningLetterReplyPage}"><span>資料填寫(手機模擬測試)</span></a>
-                        </li>
+<!--                         <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/m/wl/winningLetterReplyPage}"><span>資料填寫(手機模擬測試)</span></a> -->
+<!--                         </li> -->
 <!--                         <li th:classappend="${currentPage == 'PageWinningLetterSignature'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/admin/winningLetterSignaturePage}"><span>電子簽名(後台測試)</span></a> -->
 <!--                         </li> -->
 <!--                         <li th:classappend="${currentPage == 'PageWinningLetterSignature'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/admin/winningLetterSignaturePage}"><span>電子簽名(終端測試)</span></a> -->
 <!--                         </li> -->
-                    </ul>
-                </li>
+<!--                     </ul> -->
+<!--                 </li> -->
                 <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')">
                     <a href="" style="cursor: pointer;"><span>測試區</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
