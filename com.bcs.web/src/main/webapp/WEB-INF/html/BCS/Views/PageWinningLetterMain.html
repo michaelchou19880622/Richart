@@ -45,7 +45,7 @@
 													<option th:each="i : ${#numbers.sequence( 0, 23, 1)}" th:with="hour=${i < 10 ? '0' + i : i}"
 														th:value="${hour}" th:text="${hour}" autocomplete="off"></option>
 												</select>
-											</div> :
+											</div><span class="MdTxtInputCount" style="color:gray;">:</span>
 											<div class="option time">
 												<div class="optionLabel">00</div>
 												<select id="winningLetterStartTimeMinute" name="winningLetterStartTimeMinute" class="optionSelect" autocomplete="off">
@@ -53,7 +53,7 @@
 														th:value="${minute}" th:text="${minute}" autocomplete="off"></option>
 												</select>
 											</div>
-									</span> ～ <span>
+											<span class="MdTxtInputCount" style="color:gray;"> ～ </span>
 											<div class="option date">
 												<input type="text" class="datepicker" id="winningLetterEndTime" name="winningLetterEndTime" placeholder="YYYY-MM-DD" autocomplete="off"/>
 											</div>
@@ -63,7 +63,7 @@
 													<option th:each="i : ${#numbers.sequence( 0, 23, 1)}" th:with="hour=${i < 10 ? '0' + i : i}"
 														th:value="${hour}" th:text="${hour}" autocomplete="off"></option>
 												</select>
-											</div> :
+											</div><span class="MdTxtInputCount" style="color:gray;">:</span>
 											<div class="option time">
 												<div class="optionLabel">00</div>
 												<select id="winningLetterEndTimeMinute" name="winningLetterEndTimeMinute" class="optionSelect" autocomplete="off">

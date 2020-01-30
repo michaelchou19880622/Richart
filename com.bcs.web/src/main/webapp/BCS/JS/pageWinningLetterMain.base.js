@@ -42,6 +42,8 @@ $(function() {
 
 	var winningLetterName = document.getElementById('winningLetterName');
 	var winningLetterGifts = document.getElementById('winningLetterGifts');
+	
+	var optionLabelTimePicker = document.getElementsByClassName('optionLabel');
 
 	var dateFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -184,9 +186,16 @@ $(function() {
 
 	/* 設定日期時間欄位是否禁用 */
 	var func_setElementDateTimeDisabled = function(elementId, isDisable) {
+		console.info('elementId = ', elementId, ', isDisable = ', isDisable);
+		
 		document.getElementById(elementId).disabled = isDisable;
+		document.getElementById(elementId).style.color = (isDisable)? '#a1a7b5' : 'black';
+		
 		document.getElementById(elementId + 'Hour').disabled = isDisable;
+		document.getElementById(elementId + 'Hour').style.color = (isDisable)? '#a1a7b5' : 'black';
+		
 		document.getElementById(elementId + 'Minute').disabled = isDisable;
+		document.getElementById(elementId + 'Minute').style.color = (isDisable)? '#a1a7b5' : 'black';
 	}
 
 	/* 設定時間 */
@@ -346,6 +355,7 @@ $(function() {
 
 		winningLetterName.disabled = (actionType == 'Edit') ? true : false;
 		winningLetterName.style.color = (actionType == 'Edit') ? 'silver' : 'black';
+		
 
 		if (isExpired == 'True') {
 			winningLetterGifts.disabled = true;
@@ -353,12 +363,20 @@ $(function() {
 			winningLetterGifts.style.color = 'silver';
 			func_setElementDateTimeDisabled('winningLetterStartTime', true);
 			func_setElementDateTimeDisabled('winningLetterEndTime', true);
+			
+			for (i = 0, len = optionLabelTimePicker.length; i < len; i++) {
+				optionLabelTimePicker[i].style.color = '#a1a7b5';
+			}
 		} else {
 			winningLetterGifts.disabled = false;
 			btn_create_save.style.visibility = 'visible';
 			winningLetterGifts.style.color = 'black';
 			func_setElementDateTimeDisabled('winningLetterStartTime', false);
 			func_setElementDateTimeDisabled('winningLetterEndTime', false);
+			
+			for (i = 0, len = optionLabelTimePicker.length; i < len; i++) {
+				optionLabelTimePicker[i].style.color = 'black';
+			}
 		}
 		
 		if (winningLetterId) {

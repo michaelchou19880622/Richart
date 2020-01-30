@@ -9,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.bcs.core.db.entity.ContentCouponCode;
-import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.entity.WinningLetterRecord;
 import com.bcs.core.db.repository.WinningLetterRecordRepository;
 

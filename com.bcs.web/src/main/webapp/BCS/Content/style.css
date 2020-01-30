@@ -427,6 +427,14 @@ input:focus, textarea:focus {
 }
 
 
+input[id="winningLetterStartTime"]:disabled {
+	background-color: transparent;
+}
+
+input[id="winningLetterEndTime"]:disabled {
+	background-color: transparent;
+}
+
 .option.date {
 	width: 130px;
 	background: white url(../images/ico_mdFRM01Date.png) no-repeat 103px
