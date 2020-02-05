@@ -1,8 +1,9 @@
 $(function() {
 	function getQueryString(key){
-        var reg = new RegExp("(^|&)"+key+"=([^&]*)(&|$)");
+        var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
         var result = window.location.search.substr(1).match(reg);
-        return result?decodeURIComponent(result[2]):null;
+        
+        return result? decodeURIComponent(result[2]) : null;
 	}
 	
 	let urlParams = new URLSearchParams(window.location.search);
@@ -20,8 +21,9 @@ $(function() {
 
 	var winningLetterName;
 	if (urlParams.has('winningLetterName')) {
-		winningLetterName = decodeURI(urlParams.get('winningLetterName'));
+		winningLetterName = decodeURIComponent(urlParams.get('winningLetterName'));
 	}
+	
 	console.info('winningLetterName = ' + winningLetterName);
 
 	var wlEndTime;
@@ -32,7 +34,7 @@ $(function() {
 
 	var gifts;
 	if (urlParams.has('gifts')) {
-		gifts = decodeURI(urlParams.get('gifts'));
+		gifts = decodeURIComponent(urlParams.get('gifts'));
 	}
 	console.info('gifts = ' + gifts);
 
@@ -41,7 +43,7 @@ $(function() {
 	
 	var replacedEndTime = document.getElementById("replacedEndTime");
 	str = (replacedEndTime.innerHTML || replacedEndTime.textContent);
-	replacedEndTime.innerHTML = str.replace("${EndTime}", wlEndTime);
+	replacedEndTime.innerHTML = str.replace("${EndTime}", wlEndTime.trim());
 
 	var replacedWinningLetterGifts = document.getElementById("replacedWinningLetterGifts");
 	replacedWinningLetterGifts.value = gifts;
@@ -63,7 +65,7 @@ $(function() {
 	}
 
 	initializeLiff();
-
+	
 	var winner_name = document.getElementById("winner_name");
 	var winner_idCardNum = document.getElementById("winner_idCardNum");
 	var winner_phoneNumber = document.getElementById("winner_phoneNumber");
@@ -72,6 +74,9 @@ $(function() {
 	var cb_address = document.getElementById("cb_address");
 	var myImgFront = document.getElementById("myImgFront");
 	var myImgBack = document.getElementById("myImgBack");
+	
+	var isIdCardFrontSending = false;
+	var isIdCardBackSending = false;
 
 	window.requestAnimFrame = (function(callback) {
 		return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimaitonFrame
@@ -269,18 +274,21 @@ $(function() {
 	var imageSrcESignature = null;
 	var winningLetterRecordId;
 	
+	var resourceId_IdCardFront = null;
+	var resourceId_IdCardBack = null;
+	
 	function ajax_updateWinnerIdCardFront() {
-		var formData_front = new FormData();
-		formData_front.append("filePart", imageSrcFront);
+//		var formData_front = new FormData();
+//		formData_front.append("filePart", imageSrcFront);
 
 		return new Promise((resolve, reject) => {
 			$.ajax({
 				type : "POST",
-				url : encodeURI(bcs.mContextPath + "/wl/updateWinnerIdCard?winningLetterRecordId=" + winningLetterRecordId + "&type=f"),
+				url : encodeURI(bcs.mContextPath + "/wl/updateWinnerIdCard?winningLetterRecordId=" + winningLetterRecordId + "&type=f&resourceId=" + resourceId_IdCardFront),
 	            cache: false,
 	            contentType: false,
 	            processData: false,
-				data : formData_front,
+//				data : formData_front,
 				success : function(data) {
 					resolve(data)
 					ajax_updateWinnerIdCardBack();
@@ -293,17 +301,17 @@ $(function() {
 	}
 	
 	function ajax_updateWinnerIdCardBack() {
-		var formData_back = new FormData();
-		formData_back.append("filePart", imageSrcBack);
+//		var formData_back = new FormData();
+//		formData_back.append("filePart", imageSrcBack);
 
 		return new Promise((resolve, reject) => {
 				$.ajax({
 				type : "POST",
-				url : encodeURI(bcs.mContextPath + "/wl/updateWinnerIdCard?winningLetterRecordId=" + winningLetterRecordId + "&type=b"),
+				url : encodeURI(bcs.mContextPath + "/wl/updateWinnerIdCard?winningLetterRecordId=" + winningLetterRecordId + "&type=b&resourceId=" + resourceId_IdCardBack),
 	            cache: false,
 	            contentType: false,
 	            processData: false,
-				data : formData_back,
+//				data : formData_back,
 				success : function(data) {
 					resolve(data)
 					ajax_updateWinnerESignature();
@@ -335,7 +343,7 @@ $(function() {
 				success : function(data) {
 					resolve(data)
 					
-					alert("用戶資料已成功上傳，台新銀行將進行檢核回饋作業，謝謝。");
+					alert("中獎人資料已成功上傳，台新銀行將進行檢核回饋作業，謝謝。");
 
 					$('.columnUploadImage').unblock();
 
@@ -382,12 +390,22 @@ $(function() {
 		}
 
 		// 身分證影本正面
+		if (isIdCardFrontSending) {
+			alert("身分證正面正在上傳中，請稍後。");
+			return;
+		}
+		
 		if (!myImgFront.src || !myImgFront.src.trim()) {
 			alert("很抱歉，身分證影本正面未正確上傳。");
 			return;
 		}
 
 		// 身分證影本反面
+		if (isIdCardBackSending) {
+			alert("身分證反面正在上傳中，請稍後。");
+			return;
+		}
+		
 		if (!myImgBack.src || !myImgBack.src.trim()) {
 			alert("很抱歉，身分證影本反面未正確上傳。");
 			return;
@@ -399,7 +417,7 @@ $(function() {
 			type : "GET",
 			url : encodeURI(bcs.mContextPath + "/wl/getWinningLetter?winningLetterId=" + winningLetterId)
 		}).done(function(response) {
-			// 預留判斷中獎回函是否正在活動期間? 如果不是可以擋用戶不讓用戶填寫資料。 
+			// 預留判斷中獎回函是否正在活動期間? 判斷是否需要阻擋用戶，不讓用戶填寫資料。 
 			// ps. 暫時沒此需求...
 			
 			var endTime = response['endTime'];
@@ -471,11 +489,43 @@ $(function() {
 				}
 
 				imageSrcFront = this.files[0];
+				console.info('imageSrcFront = ', imageSrcFront);
+				
+				var formData_imageSrcFront = new FormData();
+				formData_imageSrcFront.append("filePart", imageSrcFront);
+				
+				$('.imgZoneBoxFront').block($.BCS.blockIDCardUploading);
+				isIdCardFrontSending = true;
+				
+				$.ajax({
+					type : "POST",
+					url : encodeURI(bcs.mContextPath + "/wl/addWatermark"),
+		            cache: false,
+		            contentType: false,
+		            processData: false,
+					data : formData_imageSrcFront,
+				}).done(function(response){
+					console.info(response);
+					
+					resourceId_IdCardFront = response;
+					
+					var img = document.querySelector('img[id="myImgFront"]');
+					img.src = bcs.bcsContextPath + '/getResource/IMAGE/' + response;
+					 
+					img.onload = idCardIsLoaded(img);
 
-				var img = document.querySelector('img[id="myImgFront"]');
-				img.src = URL.createObjectURL(this.files[0]);
+					isIdCardFrontSending = false;
 
-				img.onload = idCardIsLoaded;
+					$('.imgZoneBoxFront').unblock();
+					
+				}).fail(function(response) {
+					console.info(response);
+					alert('很抱歉，上傳圖片發生異常，請重新再試一次。');
+
+					isIdCardFrontSending = false;
+
+					$('.imgZoneBoxFront').unblock();
+				})
 			}
 		});
 
@@ -487,11 +537,48 @@ $(function() {
 				}
 
 				imageSrcBack = this.files[0];
-
-				var img = document.querySelector('img[id="myImgBack"]');
-				img.src = URL.createObjectURL(this.files[0]);
+				console.info('imageSrcBack = ', imageSrcBack);
 				
-				img.onload = idCardIsLoaded;
+				var formData_imageSrcBack = new FormData();
+				formData_imageSrcBack.append("filePart", imageSrcBack);
+				
+				$('.imgZoneBoxBack').block($.BCS.blockIDCardUploading);
+				isIdCardBackSending = true;
+				
+				$.ajax({
+					type : "POST",
+					url : encodeURI(bcs.mContextPath + "/wl/addWatermark"),
+		            cache: false,
+		            contentType: false,
+		            processData: false,
+					data : formData_imageSrcBack,
+				}).done(function(response){
+					console.info(response);
+					
+					resourceId_IdCardBack = response;
+					
+					var img = document.querySelector('img[id="myImgBack"]');
+					img.src = bcs.bcsContextPath + '/getResource/IMAGE/' + response;
+					 
+					img.onload = idCardIsLoaded(img);
+					
+					isIdCardBackSending = false;
+
+					$('.imgZoneBoxBack').unblock();
+					
+				}).fail(function(response) {
+					console.info(response);
+					alert('很抱歉，上傳圖片發生異常，請重新再試一次。');
+					
+					isIdCardBackSending = false;
+
+					$('.imgZoneBoxBack').unblock();
+				})
+
+//				var img = document.querySelector('img[id="myImgBack"]');
+//				img.src = URL.createObjectURL(imageSrcBack);
+//				
+//				img.onload = idCardIsLoaded(img);
 			}
 		});
 	});
@@ -506,7 +593,9 @@ $(function() {
 		$('#filepondBack').trigger('click');
 	}
 
-	function idCardIsLoaded() {
-		alert("請確認身份證資訊皆有完整露出");
+	function idCardIsLoaded(srcImage) {
+		console.info('srcImage = ', srcImage.src);
+		
+		alert("上傳成功，請確認身份證資訊皆有完整露出。");
 	}
 });

@@ -79,7 +79,8 @@ public enum MobilePageEnum {
 	
 	// 中獎回函
     WinningLetterReplyPage("/Mobile/WinningLetterReply/MobilePageWinningLetterReply", "中獎回函用戶資料填寫頁面"),
-    WinningLetterReplyPageInactived("/Mobile/WinningLetterReply/MobilePageWinningLetterReplyInactived", "中獎回函活動已取消")
+    WinningLetterReplyPageInactived("/Mobile/WinningLetterReply/MobilePageWinningLetterReplyInactived", "中獎回函活動已取消"),
+    WinningLetterReplyPageExpired("/Mobile/WinningLetterReply/MobilePageWinningLetterReplyExpired", "中獎回函活動已過期")
 	;
 
     private final String str;

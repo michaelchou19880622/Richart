@@ -229,6 +229,22 @@ input:focus, textarea:focus {
 	margin-right: 5px;
 }
 
+.imgZoneBoxFront {
+	background-color: rgba(255, 255, 255, .4);
+	border: 1px solid rgba(64, 64, 64, .5);
+	padding: 16px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.imgZoneBoxBack {
+	background-color: rgba(255, 255, 255, .4);
+	border: 1px solid rgba(64, 64, 64, .5);
+	padding: 16px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
 #imgZoneFront {
 	background-color: rgba(255, 255, 255, .95);
 	color: rgba(0, 0, 0, .5);
@@ -246,6 +262,8 @@ input:focus, textarea:focus {
 	-webkit-background-size: 50% 50%;
 	-o-background-size: 50% 50%;
 	background-size: 50% 50%;
+	width: 100%;
+	height: 100%;
 }
 
 #imgZoneBack {
@@ -265,6 +283,8 @@ input:focus, textarea:focus {
 	-webkit-background-size: 50% 50%;
 	-o-background-size: 50% 50%;
 	background-size: 50% 50%;
+	width: 100%;
+	height: 100%;
 }
 
 /* #imgZone:after { */
@@ -281,13 +301,13 @@ input:focus, textarea:focus {
 	padding: 4px;
 }
 
-#myImgFront {
+#myImgFront { 
 	border: 2px dashed #808080;
 	width: 100%;
 	height: 150px;
 }
 
-#myImgBack {
+#myImgBack { 
 	border: 2px dashed #808080;
 	width: 100%;
 	height: 150px;

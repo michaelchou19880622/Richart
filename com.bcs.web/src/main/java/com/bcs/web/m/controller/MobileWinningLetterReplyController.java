@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -80,6 +81,14 @@ public class MobileWinningLetterReplyController {
 		return MobilePageEnum.WinningLetterReplyPageInactived.toString();
 	}
 
+	/** WinningLetter Reply Page For Expired **/
+	@RequestMapping(method = RequestMethod.GET, value = "/wl/winningLetterReplyPageExpired")
+	public String winningLetterReplyPageExpired(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		logger.info("winningLetterReplyPageExpired");
+
+		return MobilePageEnum.WinningLetterReplyPageExpired.toString();
+	}
+
 	/** Get winning letter data **/
 	@RequestMapping(method = RequestMethod.GET, value = "/wl/getWinningLetter")
 	@ResponseBody
@@ -133,12 +142,15 @@ public class MobileWinningLetterReplyController {
 		
 		String gifts = winningLetter.getGift();
 		logger.info("gifts = {}", gifts);
+		
+		boolean isExpired = checkIsExpired(winningLetter.getEndTime());
+		logger.info("isExpired = {}", isExpired);
 
 		String liffAppId = null;
 
 		// Check is winning letter inactived?
-		if (winningLetter == null || !winningLetter.getStatus().equals(WinningLetter.STATUS_ACTIVE)) {
-			liffAppId = CoreConfigReader.getString("winningLetterInactived.LiffAppId");
+		if (winningLetter == null || !winningLetter.getStatus().equals(WinningLetter.STATUS_ACTIVE) || isExpired) {
+			liffAppId = (isExpired)? CoreConfigReader.getString("winningLetterExpired.LiffAppId") : CoreConfigReader.getString("winningLetterInactived.LiffAppId");
 		} else {
 			liffAppId = CoreConfigReader.getString("winningLetter.LiffAppId");
 		}
@@ -150,22 +162,23 @@ public class MobileWinningLetterReplyController {
 
 		String liffUrl = liffAppId;
 		
-		//line://app/1550669403-KA59ja3L?liffId={liffId}&winningLetterId={winningLetterId}&winningLetterName={winningLetterName}&endTime={endTime}&gifts={gifts}
-		
 		liffUrl = liffUrl.replace("{liffId}", liffId);
-		logger.info("1-1 liffUrl = {}", liffUrl);
+		logger.info("1-1 liffUrl.replace(\"{liffId}\") = {}", liffUrl);
 				
 		liffUrl = liffUrl.replace("{winningLetterId}", winningLetterId);
-		logger.info("1-2 liffUrl = {}", liffUrl);
+		logger.info("1-2 liffUrl.replace(\"{winningLetterId}\") = {}", liffUrl);
 		
 		liffUrl = liffUrl.replace("{winningLetterName}", URLEncoder.encode(winningLetterName, "UTF-8"));
-		logger.info("1-3 liffUrl = {}", liffUrl);
+		logger.info("1-3 liffUrl.replace(\"{winningLetterName}\") = {}", liffUrl);
 		
 		liffUrl = liffUrl.replace("{endTime}", endTime);
-		logger.info("1-4 liffUrl = {}", liffUrl);
+		logger.info("1-4 liffUrl.replace(\"{endTime}\") = {}", liffUrl);
 		
 		liffUrl = liffUrl.replace("{gifts}", URLEncoder.encode(gifts, "UTF-8"));
-		logger.info("1-5 liffUrl = {}", liffUrl);
+		logger.info("1-5 liffUrl.replace(\"{gifts}\") = {}", liffUrl);
+		
+		liffUrl = liffUrl.replaceAll("\\+", "%20");
+		logger.info("1-6 liffUrl.replaceAll(\"\\\\+\") = {}", liffUrl);
 		
 		return new ModelAndView("redirect:" + liffUrl);
 	}
@@ -213,8 +226,8 @@ public class MobileWinningLetterReplyController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/wl/updateWinnerIdCard")
 	@ResponseBody
-	public ResponseEntity<?> updateWinnerIdCard(HttpServletRequest request, HttpServletResponse response, @RequestPart MultipartFile filePart, @RequestParam String type,
-			@RequestParam String winningLetterRecordId) throws IOException {
+	public ResponseEntity<?> updateWinnerIdCard(HttpServletRequest request, HttpServletResponse response, @RequestParam String type,
+			@RequestParam String winningLetterRecordId, @RequestParam String resourceId) throws IOException {
 		logger.info("updateWinnerIdCard");
 
 		try {
@@ -226,53 +239,75 @@ public class MobileWinningLetterReplyController {
 				logger.info("winningLetterRecordId = {}", winningLetterRecordId);
 			}
 
-			if (filePart != null) {
+			if (resourceId != null) {
+				logger.info("resourceId = {}", resourceId);
+			}
+			
+			WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findById(Long.valueOf(winningLetterRecordId));
 
-				logger.info("filePart.toString() = {}", filePart.toString());
-				logger.info("filePart.getOriginalFilename = {}", filePart.getOriginalFilename());
-				logger.info("filePart.getContentType = {}", filePart.getContentType());
-				logger.info("filePart.getSize = {}", filePart.getSize());
-
-				ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
-
-				String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "IMAGE";
-				logger.info("filePath = {}", filePath);
-
-				String srcFile = filePath + System.getProperty("file.separator") + resource.getResourceId();
-				logger.info("srcFile = {}", srcFile);
-
-				String waterMarkPath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "DEFAULT";
-
-				File fileWatermark = new File(waterMarkPath + System.getProperty("file.separator") + "richart_use_only_watermark.png");
-				logger.info("fileWatermark = {}", fileWatermark);
-
-				addImageWatermark(fileWatermark, new File(srcFile), new File(srcFile));
-
-				if (resource != null) {
-					logger.info("resource.getResourceId() = {}", resource.getResourceId());
-
-					WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findById(Long.valueOf(winningLetterRecordId));
-
-					if (winningLetterRecordData != null) {
-						switch (type) {
-						case "f":
-							winningLetterRecordData.setIdCardCopyFront(resource.getResourceId());
-							break;
-						case "b":
-							winningLetterRecordData.setIdCardCopyBack(resource.getResourceId());
-							break;
-						}
-
-						Long savedWinningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
-						logger.info("savedWinningLetterRecordId = {}", savedWinningLetterRecordId);
-					}
+			if (winningLetterRecordData != null) {
+				switch (type) {
+				case "f":
+					winningLetterRecordData.setIdCardCopyFront(resourceId);
+					break;
+				case "b":
+					winningLetterRecordData.setIdCardCopyBack(resourceId);
+					break;
 				}
 
-				return new ResponseEntity<>(resource, HttpStatus.OK);
-			} else {
-//				throw new Exception("Update Winner Id Card Error");
-				return new ResponseEntity<>("Update Winner Id Card Error", HttpStatus.INTERNAL_SERVER_ERROR);
+				Long savedWinningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
+				logger.info("savedWinningLetterRecordId = {}", savedWinningLetterRecordId);
 			}
+
+			return new ResponseEntity<>(resourceId, HttpStatus.OK);
+
+//			if (filePart != null) {
+//
+//				logger.info("filePart.toString() = {}", filePart.toString());
+//				logger.info("filePart.getOriginalFilename = {}", filePart.getOriginalFilename());
+//				logger.info("filePart.getContentType = {}", filePart.getContentType());
+//				logger.info("filePart.getSize = {}", filePart.getSize());
+//
+//				ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
+//
+//				String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "IMAGE";
+//				logger.info("filePath = {}", filePath);
+//
+//				String srcFile = filePath + System.getProperty("file.separator") + resource.getResourceId();
+//				logger.info("srcFile = {}", srcFile);
+//
+//				String waterMarkPath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "DEFAULT";
+//
+//				File fileWatermark = new File(waterMarkPath + System.getProperty("file.separator") + "richart_use_only_watermark.png");
+//				logger.info("fileWatermark = {}", fileWatermark);
+//
+//				addImageWatermark(fileWatermark, new File(srcFile), new File(srcFile));
+//
+//				if (resource != null) {
+//					logger.info("resource.getResourceId() = {}", resource.getResourceId());
+//
+//					WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findById(Long.valueOf(winningLetterRecordId));
+//
+//					if (winningLetterRecordData != null) {
+//						switch (type) {
+//						case "f":
+//							winningLetterRecordData.setIdCardCopyFront(resource.getResourceId());
+//							break;
+//						case "b":
+//							winningLetterRecordData.setIdCardCopyBack(resource.getResourceId());
+//							break;
+//						}
+//
+//						Long savedWinningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
+//						logger.info("savedWinningLetterRecordId = {}", savedWinningLetterRecordId);
+//					}
+//				}
+//
+//				return new ResponseEntity<>(resource, HttpStatus.OK);
+//			} else {
+////				throw new Exception("Update Winner Id Card Error");
+//				return new ResponseEntity<>("Update Winner Id Card Error", HttpStatus.INTERNAL_SERVER_ERROR);
+//			}
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
@@ -374,7 +409,7 @@ public class MobileWinningLetterReplyController {
 
 		return resizedImage;
 	}
-
+	
 	public void addImageWatermark(File watermarkImageFile, File sourceImageFile, File destImageFile) {
 		try {
 			
@@ -388,13 +423,13 @@ public class MobileWinningLetterReplyController {
 			
 			int type = sourceImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : sourceImage.getType();
 			
-			BufferedImage scaledSourceImage = resizeImage(sourceImage, type, 760, 450);
+			BufferedImage scaledSourceImage = resizeImage(sourceImage, type, 494, 293);
 			logger.info("scaledSourceImage.getWidth() = {}", scaledSourceImage.getWidth());
 			logger.info("scaledSourceImage.getHeight() = {}", scaledSourceImage.getHeight());
 			
 			// initializes necessary graphic properties
 			Graphics2D g2d = (Graphics2D) scaledSourceImage.getGraphics();
-			AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f);
+			AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.95f);
 			g2d.setComposite(alphaChannel);
 			
 			// calculates the coordinate where the image is painted
@@ -410,5 +445,77 @@ public class MobileWinningLetterReplyController {
 		} catch (IOException ex) {
 			logger.info("ex = {}", ex);
 		}
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/wl/addWatermark")
+	@ResponseBody
+	public ResponseEntity<?> addWatermark(HttpServletRequest request, HttpServletResponse response, @RequestPart MultipartFile filePart)
+			throws IOException {
+		logger.info("addWatermark");
+
+		try {
+			if (filePart != null) {
+
+				logger.info("filePart.toString() = {}", filePart.toString());
+				logger.info("filePart.getOriginalFilename = {}", filePart.getOriginalFilename());
+				logger.info("filePart.getContentType = {}", filePart.getContentType());
+				logger.info("filePart.getSize = {}", filePart.getSize());
+
+				ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
+
+				if (resource != null) {
+					logger.info("resource.getResourceId() = {}", resource.getResourceId());
+					
+					String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "IMAGE";
+					logger.info("filePath = {}", filePath);
+
+					String srcFile = filePath + System.getProperty("file.separator") + resource.getResourceId();
+					logger.info("srcFile = {}", srcFile);
+
+					String waterMarkPath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "DEFAULT";
+
+					File fileWatermark = new File(waterMarkPath + System.getProperty("file.separator") + "richart_use_only_watermark.png");
+					logger.info("fileWatermark = {}", fileWatermark);
+
+					addImageWatermark(fileWatermark, new File(srcFile), new File(srcFile));
+				}
+
+				return new ResponseEntity<>(resource.getResourceId(), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>("Add watermark error", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+	
+	public boolean checkIsExpired(Date endDateTime) {
+
+		boolean isExpired = false;
+		
+		try {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			Date curDate = simpleDateFormat.parse(simpleDateFormat.format(new Date()));
+
+			logger.info("curDate = {}", curDate);
+
+			logger.info("endDateTime = {}", endDateTime);
+
+			isExpired = (curDate.compareTo(endDateTime) >= 0);
+
+		} catch (ParseException e) {
+			logger.error("ParseException = {}", e);
+		}
+
+		logger.info("isExpired = {}", isExpired);
+
+		return isExpired;
 	}
 }

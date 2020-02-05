@@ -125,7 +125,7 @@
 			css: {
 				padding:	0,
 				margin:		0,
-				width:		'30%',
+				width:		'50%',
 				top:		'40%',
 				left:		'35%',
 				textAlign:	'center',
