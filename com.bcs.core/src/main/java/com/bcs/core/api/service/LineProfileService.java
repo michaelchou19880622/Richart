@@ -5,8 +5,9 @@ import java.util.Date;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,8 +29,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Service
 public class LineProfileService {
 
-	/** Logger */
-	private static Logger logger = Logger.getLogger(LineProfileService.class);
+	/** Logger **/
+	private static Logger logger = LoggerFactory.getLogger(ChatBotApiService.class);
 
 	public ObjectNode callGetProfileAPI(String access_token) throws Exception{
 		Date start = new Date();
@@ -84,16 +85,27 @@ public class LineProfileService {
 	}
 	
 	public JSONObject getUserProfile(String UID) throws Exception {
+		logger.info("getUserProfile");
+
+		logger.info("UID = " + UID);
+		
 		String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), "ChannelToken", true);
-		String url = CoreConfigReader.getString(CONFIG_STR.LINE_GET_PROFILE_URL.toString());		
+		logger.info("accessToken = " + accessToken);
+		
+		String url = CoreConfigReader.getString(CONFIG_STR.LINE_GET_PROFILE_URL.toString());
+		logger.info("CONFIG_STR.LINE_GET_PROFILE_URL = " + CoreConfigReader.getString(CONFIG_STR.LINE_GET_PROFILE_URL.toString()));	
+		
 		url = UriComponentsBuilder.fromUriString(url).path(UID).build().toUriString();
+		logger.info("url = " + url);	
 		
 		/* 設定 request headers */
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+		logger.info("headers = " + headers.toString());
 
 		HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+		logger.info("httpEntity = " + httpEntity.toString());
 		
 		RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.GET, url, httpEntity);
 
@@ -101,6 +113,16 @@ public class LineProfileService {
 	}
 	
 	public String getUserNickName(String UID) throws Exception {
-		return this.getUserProfile(UID).getString("displayName");
+		
+		String srcNickName = this.getUserProfile(UID).getString("displayName");
+		logger.info("srcNickName = " + srcNickName);
+				
+		byte[] bytes = srcNickName.getBytes("ISO-8859-1");
+		logger.info("bytes = " + bytes);
+		
+		String decodedNickName = new String(bytes, "UTF-8");
+		logger.info("decodedNickName = " + decodedNickName);
+		
+		return decodedNickName;
 	}
 }

@@ -9,8 +9,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +26,8 @@ import com.bcs.core.utils.RestfulUtil;
 
 @Service
 public class ChatBotApiService {
-	private static Logger logger = Logger.getLogger(ChatBotApiService.class);
+	/** Logger **/
+	private static Logger logger = LoggerFactory.getLogger(ChatBotApiService.class);
 	
 	@Autowired
 	public LineProfileService lineProfileService;
@@ -60,6 +62,8 @@ public class ChatBotApiService {
 			
 			logger.info("◎ 經度：" + requestBody.getString("lng") + "； 緯度：" + requestBody.getString("lat"));
 		} 
+		
+		logger.info("requestBody：{}", requestBody.toString());
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody.toString(), headers);
 		

@@ -125,12 +125,12 @@ public class InitController {
 		}
 		
 //		// LinePoint PM Push flow
-		try {
-			logger.info("init LinePoint PM Push flow");
-			linePointPMSchedulerService.startCircle();
-		} catch (Throwable e) {
-			logger.error(ErrorRecord.recordError(e));
-		}
+//		try {
+//			logger.info("init LinePoint PM Push flow");
+//			linePointPMSchedulerService.startCircle();
+//		} catch (Throwable e) {
+//			logger.error(ErrorRecord.recordError(e));
+//		}
 		
 		/* 定期查找 FTP 有沒有需要發送的訊息檔案 */
 		/*if(CoreConfigReader.getBoolean(CONFIG_STR.IS_MAIN_SYSTEM)) {	// 判斷是否為 BC 後台

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.bcs.core.api.service.LineProfileService;
 import com.bcs.core.api.service.model.LocationModel;
 import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.bot.db.service.MsgBotReceiveService;
@@ -138,6 +139,11 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 			
 			if (lineUser != null) {
 				userStatus = lineUser.getStatus();
+				
+				LineProfileService lineProfileService = ApplicationContextProvider.getApplicationContext().getBean(LineProfileService.class);
+
+				String displayName = lineProfileService.getUserNickName(MID);
+				logger.info("displayName = " + displayName);
 			}
 			
 			logger.info("=== Check content's event type and postback data. ===");
