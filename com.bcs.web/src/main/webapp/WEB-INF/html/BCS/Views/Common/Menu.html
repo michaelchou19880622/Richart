@@ -37,7 +37,7 @@
                         <!-- 轉此頁面URL需要帶上相關參數，否則會報錯。( 上台新測試/正式環境，先隱藏 ) -->
 <!--                    <li th:classappend="${currentPage == 'LinePointDetailPage'} ? 'ExSelected'">-->
  <!--                         	<a th:href="@{/bcs/market/linePointDetailPage}"><span>Line Point 活動明細</span></a>-->
-                        </li>
+<!--                         </li> -->
                     </ul>
                 </li>
                 
@@ -74,10 +74,16 @@
                     </ul>
                 </li>
                 
-                <!-- 使用 iframe 嵌入仁大版本的 Richmenu ( 仍在開發中，若要上台新測試/正式環境，需要先關閉 ) -->
+                <!-- 使用 iframe 嵌入仁大版本的 Richmenu ( 仍在開發中，若要上台新正式環境，需要先關閉 ) -->
                 <li>
                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
+<!--                     	<li th:classappend="${currentPage == 'PageHpiRichmenuGroupList'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/edit/hpiRichMenuGroupListPage}"><span>群組列表(開發中)</span></a> -->
+<!--                         </li> -->
+<!--                     	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>建立群組(開發中)</span></a> -->
+<!--                         </li> -->
                     	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>選單列表</span></a>
                         </li>
@@ -91,13 +97,13 @@
 <!--                     	<li th:classappend="${currentPage == 'PageRMgL'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/edit/richMenuGroupListPage}"><span>選單群組列表</span></a> -->
 <!--                         </li> -->
-<!--                         <li th:classappend="${currentPage == 'PageRMmL'} ? 'ExSelected'">
+<!--                         <li th:classappend="${currentPage == 'PageRMmL'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/edit/richMenuMemberListPage}"><span>圖文選單群組成員列表</span></a> -->
 <!--                         </li> -->
 <!--                         <li th:classappend="${currentPage == 'PageRMC'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/edit/richMenuCreatePage}"><span>建立圖文選單</span></a> -->
 <!--                         </li> --> 
-<!-- <!--                         <li th:classappend="${currentPage == 'PageRMB'} ? 'ExSelected'"> -->
+<!--                          <li th:classappend="${currentPage == 'PageRMB'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/edit/richMenuBindingPage}"><span>圖文選單與使用者相連</span></a> -->
 <!--                         </li>   --> 
 <!-- 						<li th:classappend="${currentPage == 'PageRMsgL'} ? 'ExSelected'"> -->
@@ -106,7 +112,7 @@
 <!--                         <li th:classappend="${currentPage == 'PageRMsgC'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/market/richMenuSendGroupCreatePage}"><span>建立發送群組</span></a> -->
 <!--                         </li> -->
-<!--                      <li th:classappend="${currentPage == 'PagermSMsgC'} ? 'ExSelected'">
+<!--                      <li th:classappend="${currentPage == 'PagermSMsgC'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/edit/richMenuSendMsgCreatePage}"><span>發送訊息</span></a> -->
 <!--                         </li><   --> 
 <!--                     </ul> -->
@@ -274,9 +280,9 @@
                         <li th:classappend="${currentPage == 'PageWinningLetterList'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/admin/winningLetterListPage}"><span>中獎回函列表</span></a>
                         </li>
-<!--                         <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'"> -->
-<!--                         	<a th:href="@{/m/wl/winningLetterReplyPage}"><span>資料填寫(手機模擬測試)</span></a> -->
-<!--                         </li> -->
+                        <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'">
+                        	<a th:href="@{/m/wl/winningLetterReplyPage}"><span>資料填寫(手機模擬測試)</span></a>
+                        </li>
                     </ul>
                 </li>
                         
