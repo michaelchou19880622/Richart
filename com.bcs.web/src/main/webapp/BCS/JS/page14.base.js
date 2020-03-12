@@ -137,13 +137,18 @@ $(function(){
             processData: false,
 			data : JSON.stringify(postData)
 		}).success(function(response){
+			console.info('response = ', response);
+			
 			$('.dataTemplate').remove();
 			$.BCS.ResourceMap = response.ResourceMap;
+			console.info('response.ResourceMap = ', response.ResourceMap);
 			
 			for(key in response.MsgMain){
+				console.info('key = ', key);
 				var msgData = templateBody.clone(true);
 				
 				var keyObj = JSON.parse(key);
+				console.info('keyObj = ' + keyObj);
 				
 				var valueObj = response.MsgMain[key];
 				console.info('keyObj', keyObj);
