@@ -375,9 +375,13 @@ input:focus, textarea:focus {
 	height: 34px;
 	font-size: 18px;
 	line-height: 1.42857143;
-	color: #555;
+	color: #000000;
 	border-radius: 4px;
 	margin-left: 5px;
+}
+
+.MdFRMWLInput input[type="text"]:disabled {
+	color: black;
 }
 
 .MdFRMWLInput input[type="text"], .MdFRM01Input textarea {

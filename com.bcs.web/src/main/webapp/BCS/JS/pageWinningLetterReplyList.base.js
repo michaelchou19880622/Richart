@@ -34,6 +34,8 @@ $(function() {
 			keywordValue = keywordInput.value;
 			
 			loadDataFunc();
+			
+			
 		}
 	});
 
@@ -171,6 +173,24 @@ $(function() {
 	$('.btn_export_excel').click(function() {
 		window.location.replace(bcs.bcsContextPath + '/edit/exportToExcelForWinnerReplyList?winningLetterId=' + pageWinningLetterId);
 	});
+	
+	/* 重新計算填寫人數 */
+	var func_countReplyPeopleAndResetTitle = function() {
+
+		$.ajax({
+			type : "GET",
+			url : encodeURI(bcs.bcsContextPath + '/edit/countWinningLetterReplyPeople?winningLetterId=' + pageWinningLetterId)
+		}).done(function(response) {
+			replyCount = $.BCS.formatNumber(response, 0);
+			console.info('1-1 replyCount = ' + replyCount);
+			
+			title.innerText = '中獎回函名單 ( 中獎回函名稱 = ' + decodeURI(pageWinningLetterName) + ',  填寫人數 = ' + replyCount + ' )';
+			
+		}).fail(function(response) {
+			console.info(response);
+			$.FailResponse(response);
+		})
+	}
 
 	/* 更新狀態按鈕 */
 	var func_updateStatusButton = function() {
@@ -405,6 +425,8 @@ $(function() {
 			if (response.totalElements == 0) {
 				totalPageSize.innerText = '-';
 				currentPageIndex.innerText = '-';
+				
+				func_countReplyPeopleAndResetTitle();
 
 				$('.LyMain').unblock();
 				
@@ -467,11 +489,15 @@ $(function() {
 			document.getElementById("cbxSelectAll").checked = false;
 			
 			btn_export_pdf.style.visibility = 'hidden';
+			
+			func_countReplyPeopleAndResetTitle();
 
 			$('.LyMain').unblock();
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
+
+			func_countReplyPeopleAndResetTitle();
 
 			$('.LyMain').unblock();
 		})
