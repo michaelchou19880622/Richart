@@ -23,18 +23,18 @@ public class GroupGenerateService {
 	private GroupGenerateRepository groupGenerateRepository;
 
 	public BigInteger findMIDCountBySendGroupDetail(List<SendGroupDetail> sendGroupDetails) throws Exception {
-		logger.debug("findMIDCountBySendGroupDetail");
+		logger.info("findMIDCountBySendGroupDetail");
 		return groupGenerateRepository.findMIDCountBySendGroupDetail(sendGroupDetails);
 	}
 
 	public List<String> findMIDBySendGroupDetailGroupId(Long groupId) throws Exception{
-		logger.debug("findMIDBySendGroupDetailGroupId");
+		logger.info("findMIDBySendGroupDetailGroupId");
 		return groupGenerateRepository.findMIDBySendGroupDetailGroupId(groupId);
 	}
 	
 	public Boolean checkMIDBySendGroupDetailGroupId(Long groupId, String mid) throws Exception{
 		String result = groupGenerateRepository.checkMIDBySendGroupDetailGroupId(groupId, mid);
-		logger.debug("checkMIDBySendGroupDetailGroupId:" + result);
+		logger.info("checkMIDBySendGroupDetailGroupId:" + result);
 		if(StringUtils.isBlank(result)){
 			return false;
 		}
@@ -44,7 +44,7 @@ public class GroupGenerateService {
 	}
 
 	public List<String> findMIDBySendGroupDetail(List<SendGroupDetail> sendGroupDetails) throws Exception{
-		logger.debug("findMIDBySendGroupDetail");
+		logger.info("findMIDBySendGroupDetail");
 		return groupGenerateRepository.findMIDBySendGroupDetail(sendGroupDetails);
 	}
 }

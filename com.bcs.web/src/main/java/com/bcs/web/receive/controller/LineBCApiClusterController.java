@@ -49,7 +49,7 @@ public class LineBCApiClusterController {
 	public void lineBCApiClusterSend(@RequestBody AsyncSendingClusterModel modelInput, @PathVariable String ChannelId, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("-------lineBCApiClusterSend-------");
 		Date start = new Date();
-		logger.debug("modelInput:" + modelInput);
+		logger.info("modelInput:" + modelInput);
 		
 		String sendMsg = ObjectUtil.objectToJsonStr(modelInput);
 		

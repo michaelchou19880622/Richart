@@ -65,9 +65,10 @@ public class ExportToExcelForPushApiEffects {
 		Row row = sheet.createRow(0);
 		
 		row.createCell(0).setCellValue("發送時間");
-		row.createCell(1).setCellValue("產品");
-		row.createCell(2).setCellValue("發送成功數");
-		row.createCell(3).setCellValue("發送失敗數");
+		row.createCell(1).setCellValue("發送類型");
+		row.createCell(2).setCellValue("部門名稱");
+		row.createCell(3).setCellValue("發送成功數");
+		row.createCell(4).setCellValue("發送失敗數");
 		
 		List<Map<String, String>> pushEffects = pushMessageRecordService.getPushMessageEffects(startDateString, endDateString);
 		
@@ -83,10 +84,11 @@ public class ExportToExcelForPushApiEffects {
 			Cell createTimeCell = row.createCell(0);		
 			createTimeCell.setCellValue(pushEffect.get("createTime"));
 			createTimeCell.setCellStyle(cellStyle);
-			
-			row.createCell(1).setCellValue(pushEffect.get("department"));
-			row.createCell(2).setCellValue(pushEffect.get("successCount"));
-			row.createCell(3).setCellValue(pushEffect.get("failCount"));
+
+			row.createCell(1).setCellValue(pushEffect.get("sendType"));
+			row.createCell(2).setCellValue(pushEffect.get("department"));
+			row.createCell(3).setCellValue(pushEffect.get("successCount"));
+			row.createCell(4).setCellValue(pushEffect.get("failCount"));
 			
 			rowNumber += 1;
 		}
@@ -100,7 +102,7 @@ public class ExportToExcelForPushApiEffects {
 	private void getPushApiEffectDetail(Workbook workbook, Sheet sheet, String createTime) {
 		Row row = sheet.createRow(0);
 		
-		row.createCell(0).setCellValue("產品");
+		row.createCell(0).setCellValue("部門名稱");
 		row.createCell(1).setCellValue("發送類型");
 		row.createCell(2).setCellValue("發送時間");
 		row.createCell(3).setCellValue("UID");

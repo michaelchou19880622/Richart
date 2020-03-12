@@ -118,7 +118,7 @@ public class FileUtil {
 	        if (out != null) {
 	        	out.close();
 	        }
-			logger.debug("finally");
+			logger.info("finally");
 		}
 		
 		if(isBcsNoticeException){
@@ -329,7 +329,7 @@ public class FileUtil {
 	        if (out != null) {
 	        	out.close();
 	        }
-			logger.debug("finally");
+			logger.info("finally");
 		}
 		
 		if(isBcsNoticeException){
@@ -344,9 +344,9 @@ public class FileUtil {
 		try {
 			BufferedImage originalImage = ImageIO.read(file);
 			Long height = Long.valueOf(originalImage.getHeight());
-			logger.debug("height:" + height);
+			logger.info("height:" + height);
 			Long width =Long.valueOf(originalImage.getWidth());
-			logger.debug("width:" + width);
+			logger.info("width:" + width);
 			
 			resource.setResourceHeight(height);
 			resource.setResourceWidth(width);
@@ -398,7 +398,7 @@ public class FileUtil {
 	        if (out != null) {
 	        	out.close();
 	        }
-			logger.debug("finally");
+			logger.info("finally");
 		}
 	}
 	
@@ -418,32 +418,32 @@ public class FileUtil {
 	}
 	
 	private static BufferedImage resizeImageForPreview(File file){
-		logger.debug("resizeImageForPreview");
+		logger.info("resizeImageForPreview");
 
 		try {
 			BufferedImage originalImage = ImageIO.read(file);
 			int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 			
 			int height = originalImage.getHeight();
-			logger.debug("height:" + height);
+			logger.info("height:" + height);
 			int width = originalImage.getWidth();
-			logger.debug("width:" + width);
+			logger.info("width:" + width);
 			
 			int toHeight = 240;
 			int toWidth = 240;
 			if(height >= width){
 				toHeight = 240;
-				logger.debug(new BigDecimal((width+0.0)/(height+0.0)));
+				logger.info(new BigDecimal((width+0.0)/(height+0.0)));
 				toWidth = new BigDecimal((width+0.0)/(height+0.0)).multiply(new BigDecimal(240)).intValue();
 			}
 			else{
 				toWidth = 240;
-				logger.debug(new BigDecimal((height+0.0)/(width+0.0)));
+				logger.info(new BigDecimal((height+0.0)/(width+0.0)));
 				toHeight = new BigDecimal((height+0.0)/(width+0.0)).multiply(new BigDecimal(240)).intValue();
 			}
 
-			logger.debug("toWidth:" + toWidth);
-			logger.debug("toHeight:" + toHeight);
+			logger.info("toWidth:" + toWidth);
+			logger.info("toHeight:" + toHeight);
 			BufferedImage resizedImage = new BufferedImage(toWidth, toHeight, type);
 
 			Graphics2D g = resizedImage.createGraphics();
@@ -459,7 +459,7 @@ public class FileUtil {
 	}
 	
 	private static void createVideoPreview(File file, File outFile) throws Exception{
-		logger.debug("createVideoPreview");
+		logger.info("createVideoPreview");
 		
         try {
             FileChannelWrapper ch = NIOUtils.readableFileChannel(file);
@@ -628,7 +628,7 @@ public class FileUtil {
 			if (out != null) {
 				out.close();
 			}
-			logger.debug("finally");
+			logger.info("finally");
 	    }
 		
 		throw new Exception(errorMsg);

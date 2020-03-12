@@ -72,7 +72,7 @@ public class BCSResourceController extends BCSBaseController {
 
 		try{
 			if(ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType)){
-				logger.debug("response default image");
+				logger.info("response default image");
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 			}
 		}
@@ -80,7 +80,7 @@ public class BCSResourceController extends BCSBaseController {
 			logger.error(ErrorRecord.recordError(e));
 
 			if(ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType)){
-				logger.debug("response default image");
+				logger.info("response default image");
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 			}
 		}
@@ -102,7 +102,7 @@ public class BCSResourceController extends BCSBaseController {
 			}
 
 			if(ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType)){
-				logger.debug("response default image");
+				logger.info("response default image");
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 				return;
 			}
@@ -111,7 +111,7 @@ public class BCSResourceController extends BCSBaseController {
 			logger.error(ErrorRecord.recordError(e));
 
 			if(ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType)){
-				logger.debug("response default image");
+				logger.info("response default image");
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 				return;
 			}
@@ -152,7 +152,7 @@ public class BCSResourceController extends BCSBaseController {
 			}
 
 			if(ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType) || ContentResource.RESOURCE_TYPE_IMAGE.equals(resourcePreview)){
-				logger.debug("response default image");
+				logger.info("response default image");
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 			}
 		}
@@ -160,7 +160,7 @@ public class BCSResourceController extends BCSBaseController {
 			logger.error(ErrorRecord.recordError(e));
 
 			if(ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType) || ContentResource.RESOURCE_TYPE_IMAGE.equals(resourcePreview)){
-				logger.debug("response default image");
+				logger.info("response default image");
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 			}
 		}
@@ -251,7 +251,7 @@ public class BCSResourceController extends BCSBaseController {
 						// getLink ClickLinkModel
 						akkaCoreService.recordMsgs(new ClickLinkModel(linkId, new Date())); 
 
-						logger.debug("getLink linkUrl:" + linkUrl);
+						logger.info("getLink linkUrl:" + linkUrl);
 						
 						linkUrl = UriHelper.getRedirectUri(URLEncoder.encode(linkUrl, "UTF-8"));
 						response.sendRedirect(linkUrl);
@@ -304,14 +304,14 @@ public class BCSResourceController extends BCSBaseController {
 		try{
 			if(filePart != null){
 				String resourceType = request.getParameter("resourceType");
-				logger.debug("resourceType:" + resourceType);
+				logger.info("resourceType:" + resourceType);
 				
-				logger.debug("getOriginalFilename:" + filePart.getOriginalFilename());
-				logger.debug("getContentType:" + filePart.getContentType());
-				logger.debug("getSize:" + filePart.getSize());
+				logger.info("getOriginalFilename:" + filePart.getOriginalFilename());
+				logger.info("getContentType:" + filePart.getContentType());
+				logger.info("getSize:" + filePart.getSize());
 				
 				String modifyUser = customUser.getAccount();
-				logger.debug("modifyUser:" + modifyUser);
+				logger.info("modifyUser:" + modifyUser);
 				
 				ContentResource resource = contentResourceService.uploadFile(filePart, resourceType, modifyUser);
 				

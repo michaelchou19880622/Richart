@@ -41,11 +41,11 @@ public class GroupGenerateRepository{
 		Query query = buildFindQuery(sendGroupDetails, "COUNT(DISTINCT MID)");
 		Object result = query.getSingleResult();
 		if(result instanceof  BigInteger){
-			logger.debug("findMidCountBySendGroupDetail : BigInteger:" + result);
+			logger.info("findMidCountBySendGroupDetail : BigInteger:" + result);
 			return (BigInteger) result;
 		}
 		else if(result instanceof  Integer){
-			logger.debug("findMidCountBySendGroupDetail : Integer:" + result);
+			logger.info("findMidCountBySendGroupDetail : Integer:" + result);
 			return BigInteger.valueOf(new Long((Integer)result));
 		}
 		else{

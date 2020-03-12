@@ -222,7 +222,7 @@ public class SendMsgUIService {
 	
 	private void checkStatus(Response<BotApiResponse> response, String mid, Long msgId) throws Exception{
 
-		logger.debug("status:" + response.code());
+		logger.info("status:" + response.code());
 
 		if(response.code() != 200){
 			List<Object> content = new ArrayList<Object>();
@@ -775,7 +775,7 @@ public class SendMsgUIService {
 	@SuppressWarnings("unchecked")
 	public void setDetailContent(Map<String, Object> result,  List<MsgDetail> details){
 		try{
-			logger.debug("setDetailContent:" + details);
+			logger.info("setDetailContent:" + details);
 			Map<String, Object> resourceMap = (Map<String, Object>) result.get("ResourceMap");
 			if(resourceMap == null){
 				resourceMap = new HashMap<String, Object>();

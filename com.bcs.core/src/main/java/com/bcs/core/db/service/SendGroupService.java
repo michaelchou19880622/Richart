@@ -177,7 +177,7 @@ public class SendGroupService {
 	 */
 	public Map<Long, String> findGroupTitleMap(){
 		List<Object[]> groups = sendGroupRepository.findAllGroupIdAndGroupTitle();
-		logger.debug("findGroupTitleMap:" + ObjectUtil.objectToJsonStr(groups));
+		logger.info("findGroupTitleMap:" + ObjectUtil.objectToJsonStr(groups));
 		Map<Long, String> result = new LinkedHashMap<Long, String>();
 		
 		List<SendGroup> defaults = generateDefaultGroup();
@@ -224,7 +224,7 @@ public class SendGroupService {
 	
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public void delete(Long groupId) throws BcsNoticeException{
-		logger.debug("delete:" + groupId);
+		logger.info("delete:" + groupId);
 		if(groupId < 0){
 			throw new BcsNoticeException("預設群組無法刪除");
 		}

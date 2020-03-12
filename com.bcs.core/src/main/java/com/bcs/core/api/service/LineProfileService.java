@@ -38,7 +38,7 @@ public class LineProfileService {
 	}
 
 	public ObjectNode callGetProfileAPI(Date start, String access_token, int retryCount) throws Exception{
-		logger.debug("callGetProfileAPI");
+		logger.info("callGetProfileAPI");
 
 		int status = 0;
 		try{
@@ -47,23 +47,23 @@ public class LineProfileService {
 			String uri = CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_PROFILE);
 			
 			HttpGet requestGet = new HttpGet(uri);
-			logger.debug("URI : " + requestGet.getURI());
+			logger.info("URI : " + requestGet.getURI());
 			
 			requestGet.addHeader("Authorization", "Bearer " + access_token);
-			logger.debug("Authorization : Bearer " + access_token);
+			logger.info("Authorization : Bearer " + access_token);
 			
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestGet);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
-			logger.debug("clientResponse StatusCode : " + status);
+			logger.info("clientResponse StatusCode : " + status);
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
 				
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
-			logger.debug("clientResponse result : " + result);
+			logger.info("clientResponse result : " + result);
 			
 			requestGet.releaseConnection();
 

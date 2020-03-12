@@ -69,7 +69,7 @@ public class UpdateUserStatusUIService {
 			logger.info("existMids.size():" + existMids.size());
 
 			if(existMids != null && existMids.size() > 0){
-				logger.debug("existMids:" + existMids);
+				logger.info("existMids:" + existMids);
 				
 				Integer count = 0;
 				

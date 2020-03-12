@@ -39,7 +39,7 @@ public class LineWebLoginApiService {
 	}
 
 	public ObjectNode callRetrievingAPI(Date start, String client_id, String client_secret, String code, String redirect_uri, int retryCount) throws Exception{
-		logger.debug("callRetrievingAPI");
+		logger.info("callRetrievingAPI");
 
 		int status = 0;
 		try{
@@ -110,7 +110,7 @@ public class LineWebLoginApiService {
 	}
 
 	public ObjectNode callRetrievingAPIforMGM(Date start, String client_id, String client_secret, String code, String redirect_uri, int retryCount) throws Exception{
-		logger.debug("callRetrievingAPIforMGM");
+		logger.info("callRetrievingAPIforMGM");
 
 		int status = 0;
 		try{

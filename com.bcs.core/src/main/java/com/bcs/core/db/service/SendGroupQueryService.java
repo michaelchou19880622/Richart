@@ -36,7 +36,7 @@ public class SendGroupQueryService {
 	
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public void delete(String queryFieldId){
-		logger.debug("queryFieldId:" + queryFieldId);
+		logger.info("queryFieldId:" + queryFieldId);
 		SendGroupQuery sendGroupQuery = sendGroupQueryRepository.findOne(queryFieldId);
 		
 		sendGroupQueryRepository.delete(sendGroupQuery);

@@ -48,7 +48,7 @@ public class SmartRobotBotApiService {
 			requestPost.addHeader("X-Line-Signature", channelSignature);
 	
 			// print requestPost
-			logger.debug("postMsg : " + postMsg);
+			logger.info("postMsg : " + postMsg);
 	
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestPost);

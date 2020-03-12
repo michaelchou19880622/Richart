@@ -60,8 +60,8 @@ public class InteractiveReportService {
 			calendarEnd.add(Calendar.DATE, 1);
 
 			endDate = sdf.format(calendarEnd.getTime());
-			logger.debug("startDate:" + startDate);
-			logger.debug("endDate:" + endDate);
+			logger.info("startDate:" + startDate);
+			logger.info("endDate:" + endDate);
 			
 			// Query CONTENT_TYPE_INTERACTIVE
 			Map<String, Map<String, Long>> interactiveList = recordReportService

@@ -127,15 +127,15 @@ public class MsgSendMainService {
 
 	public void flushIncrease(){
 		synchronized (INIT_FLAG) {
-			logger.debug("MsgSendMainService flushTimer execute");
+			logger.info("MsgSendMainService flushTimer execute");
 			for(Map.Entry<Long, AtomicLong> map : increaseMap.entrySet()){
 				if(map.getValue().longValue() != 0){
-					logger.debug("MsgSendMainService flushTimer execute:" + map.getKey() + "," + map.getValue().longValue());
+					logger.info("MsgSendMainService flushTimer execute:" + map.getKey() + "," + map.getValue().longValue());
 					this.increaseSendCountByMsgSendIdAndCheck(map.getKey(), map.getValue().longValue());
 					map.getValue().set(0);
 				}
 			}
-			logger.debug("MsgSendMainService flushTimer end");
+			logger.info("MsgSendMainService flushTimer end");
 		}
 	}
 
@@ -151,7 +151,7 @@ public class MsgSendMainService {
 
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public MsgSendMain copyFromMsgMain(Long msgId, Long sendTotalCount, String groupTitle, String status, String statusNotice){
-		logger.debug("copyFromMsgMain:" + msgId);
+		logger.info("copyFromMsgMain:" + msgId);
 		
 		MsgMain msgMain = msgMainRepository.findOne(msgId);
 		
@@ -202,7 +202,7 @@ public class MsgSendMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgSendMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -214,7 +214,7 @@ public class MsgSendMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgSendMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -226,7 +226,7 @@ public class MsgSendMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgSendMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -236,15 +236,15 @@ public class MsgSendMainService {
 		Map<MsgSendMain, List<MsgDetail>> map = new LinkedHashMap<MsgSendMain, List<MsgDetail>>();
 
 	    for(Object[] o : list){
-	    	logger.debug("length:" + o.length);
-	    	logger.debug(o[0]);
+	    	logger.info("length:" + o.length);
+	    	logger.info(o[0]);
 	    	if(o[0] !=null){
 	    		List<MsgDetail> details = map.get(o[0]);
 	    		if(details == null){
 	    			map.put((MsgSendMain) o[0], new ArrayList<MsgDetail>());
 	    		}
 	    	}
-	    	logger.debug(o[1]);
+	    	logger.info(o[1]);
 	    	if(o[1] != null){
 	    		List<MsgDetail> details = map.get(o[0]);
 	    		details.add((MsgDetail) o[1]);

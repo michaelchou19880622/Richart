@@ -63,7 +63,7 @@ public class SmartRobotApiService {
 			requestPost.setEntity(entity);
 	
 			// print requestPost
-			logger.debug("postMsg : " + postMsg);
+			logger.info("postMsg : " + postMsg);
 	
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestPost);
@@ -76,7 +76,7 @@ public class SmartRobotApiService {
 				
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
-			logger.debug("clientResponse result : " + result);
+			logger.info("clientResponse result : " + result);
 			
 			requestPost.releaseConnection();
 

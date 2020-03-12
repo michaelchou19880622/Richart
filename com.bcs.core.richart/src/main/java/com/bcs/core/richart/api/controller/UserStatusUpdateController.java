@@ -76,7 +76,7 @@ public class UserStatusUpdateController {
 			error = e.getMessage();
 			logger.info(ErrorRecord.recordError(e));
 		}
-		logger.debug("-------userStatusUpdate Fail-------");
+		logger.info("-------userStatusUpdate Fail-------");
 		response.setStatus(500);
 		SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_BcsApi, LOG_TARGET_ACTION_TYPE.ACTION_BcsApi_UpdateStatus, start, 500, updateModel, "500");
 		return new ResponseEntity<>(createResult(500, error), HttpStatus.INTERNAL_SERVER_ERROR);

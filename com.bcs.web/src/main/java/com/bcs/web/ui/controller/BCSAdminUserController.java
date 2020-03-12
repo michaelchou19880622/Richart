@@ -96,7 +96,7 @@ public class BCSAdminUserController extends BCSBaseController {
 				adminUser.setPassword(null);
 			}
 			
-			logger.debug("list:" +ObjectUtil.objectToJsonStr(list));
+			logger.info("list:" +ObjectUtil.objectToJsonStr(list));
 			
 			Map<String, Object> result = new HashMap<>();
 			result.put("adminUserList", list);

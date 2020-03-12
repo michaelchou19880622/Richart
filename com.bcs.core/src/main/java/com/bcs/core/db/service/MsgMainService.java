@@ -57,7 +57,7 @@ public class MsgMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -69,7 +69,7 @@ public class MsgMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -81,7 +81,7 @@ public class MsgMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -91,15 +91,15 @@ public class MsgMainService {
 		Map<MsgMain, List<MsgDetail>> map = new LinkedHashMap<MsgMain, List<MsgDetail>>();
 
 	    for(Object[] o : list){
-	    	logger.debug("length:" + o.length);
-	    	logger.debug(o[0]);
+	    	logger.info("length:" + o.length);
+	    	logger.info(o[0]);
 	    	if(o[0] !=null){
 	    		List<MsgDetail> details = map.get(o[0]);
 	    		if(details == null){
 	    			map.put((MsgMain) o[0], new ArrayList<MsgDetail>());
 	    		}
 	    	}
-	    	logger.debug(o[1]);
+	    	logger.info(o[1]);
 	    	if(o[1] != null){
 	    		List<MsgDetail> details = map.get(o[0]);
 	    		details.add((MsgDetail) o[1]);

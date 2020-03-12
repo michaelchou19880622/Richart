@@ -83,7 +83,7 @@ public class BCSCampaignController extends BCSBaseController {
 
         List<Campaign> result = campaignService.findByIsActive(Boolean.valueOf(isActive));
         
-        logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+        logger.info("result:" + ObjectUtil.objectToJsonStr(result));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 	

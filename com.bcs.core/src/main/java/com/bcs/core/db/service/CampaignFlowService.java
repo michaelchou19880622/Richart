@@ -27,7 +27,7 @@ public class CampaignFlowService {
     
     @Transactional(rollbackFor=Exception.class, timeout = 30)
     public void delete(String mid) throws Exception{
-        logger.debug("delete:" + mid);
+        logger.info("delete:" + mid);
         
         campaignFlowRepository.delete(mid);
     }

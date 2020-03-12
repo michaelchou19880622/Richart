@@ -63,7 +63,7 @@ public class MsgInteractiveCampaignService {
 
     @Transactional(rollbackFor=Exception.class, timeout = 30)
     public List<Map<String, Object>> findCampaignUserList(Long iMsgId, String startDate, String endDate) {
-        logger.debug("findCampaignUserList:" + iMsgId);
+        logger.info("findCampaignUserList:" + iMsgId);
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 //        MsgInteractiveCampaign iMsgCampaign = msgInteractiveCampaignService.findByiMsgId(iMsgId);
 //        

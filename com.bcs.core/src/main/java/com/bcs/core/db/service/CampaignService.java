@@ -125,7 +125,7 @@ public class CampaignService {
     
     @Transactional(rollbackFor=Exception.class, timeout = 30)
     public void delete(String campaignId) throws BcsNoticeException{
-        logger.debug("delete:" + campaignId);
+        logger.info("delete:" + campaignId);
         
         Campaign campaign = campaignRepository.findOne(campaignId);
         

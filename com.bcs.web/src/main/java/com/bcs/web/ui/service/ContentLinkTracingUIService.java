@@ -40,7 +40,7 @@ public class ContentLinkTracingUIService {
 	}
 	
 	public Long generateTracingLink(Long tracingId, SendMsgDetailModel linkData, SendMsgDetailModel linkBindedData, SendMsgDetailModel linkUnMobileData, String adminUserAccount) throws Exception{
-		logger.debug("generateTracingLink:" + linkData);
+		logger.info("generateTracingLink:" + linkData);
 
 		String detailType = linkData.getDetailType();
 		if(MsgGenerator.MSG_TYPE_LINK.equals(detailType)){

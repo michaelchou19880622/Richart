@@ -91,7 +91,7 @@ public class LinePointMainService {
 //		List<Object[]> list = query.getResultList();
 //		
 //		Map<LinePointSendMain, List<LinePointSend>> map = parseListToMap(list);
-//    	logger.debug(map);
+//    	logger.info(map);
 //		
 //		return map;
 //	}
@@ -101,15 +101,15 @@ public class LinePointMainService {
 //		Map<LinePointSendMain, List<LinePointSend>> map = new LinkedHashMap<LinePointSendMain, List<LinePointSend>>();
 //
 //	    for(Object[] o : list){
-//	    	logger.debug("length:" + o.length);
-//	    	logger.debug(o[0]);
+//	    	logger.info("length:" + o.length);
+//	    	logger.info(o[0]);
 //	    	if(o[0] !=null){
 //	    		List<LinePointSend> details = map.get(o[0]);
 //	    		if(details == null){
 //	    			map.put((LinePointSendMain) o[0], new ArrayList<LinePointSend>());
 //	    		}
 //	    	}
-//	    	logger.debug(o[1]);
+//	    	logger.info(o[1]);
 //	    	if(o[1] != null){
 //	    		List<LinePointSend> details = map.get(o[0]);
 //	    		details.add((LinePointSend) o[1]);

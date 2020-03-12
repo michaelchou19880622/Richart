@@ -123,7 +123,7 @@ public class LineUserService {
 	public Boolean checkMIDAllActive(String mid) {
 		
 		String result =  lineUserRepository.checkMIDAllActive(mid);
-		logger.debug("checkMIDAllActive:" + result);
+		logger.info("checkMIDAllActive:" + result);
 		if(StringUtils.isBlank(result)){
 			return false;
 		}
@@ -158,7 +158,7 @@ public class LineUserService {
 	public Boolean checkMIDByStatus(String status, String mid) {
 		
 		String result =  lineUserRepository.checkMIDByStatus(status, mid);
-		logger.debug("checkMIDByStatus:" + result);
+		logger.info("checkMIDByStatus:" + result);
 		if(StringUtils.isBlank(result)){
 			return false;
 		}

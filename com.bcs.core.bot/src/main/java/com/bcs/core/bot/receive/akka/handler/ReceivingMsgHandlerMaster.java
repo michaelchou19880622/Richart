@@ -15,7 +15,7 @@ import com.bcs.core.utils.AkkaRouterFactory;
 
 public class ReceivingMsgHandlerMaster extends UntypedActor {
 	
-	public final static AtomicLong taskCount= new AtomicLong(0L);
+	public final static AtomicLong taskCount = new AtomicLong(0L);
 	public static Date updateDate;
 
 	/** Logger */
@@ -37,12 +37,12 @@ public class ReceivingMsgHandlerMaster extends UntypedActor {
 	public void onReceive(Object message) throws Exception {
 
 		if (message instanceof ReceivedModelOriginal) {
-			logger.debug("-------onReceive Step1-------");
+			logger.info("-------onReceive Step1-------");
 			
 			routerEventTypeActor.tell(message, getSelf());
 		}
 		else if(message instanceof Map){
-			logger.debug("-------onReceive Step2-------");
+			logger.info("-------onReceive Step2-------");
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>) message;
 			String target = (String) map.get("Target");

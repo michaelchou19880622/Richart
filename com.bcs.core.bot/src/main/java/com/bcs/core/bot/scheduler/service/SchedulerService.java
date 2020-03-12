@@ -120,7 +120,7 @@ public class SchedulerService {
 	}
 	
 	public void loadScheduleFromDB() throws Exception{
-		logger.debug("loadScheduleFromDB");
+		logger.info("loadScheduleFromDB");
 		
 		if(!CoreConfigReader.isMainSystem()){
 			return;
@@ -130,13 +130,13 @@ public class SchedulerService {
 		for(MsgMain msgMain : list){
 			String statusNotice = "";
 			try{
-				logger.debug("msgMain:" + msgMain);
+				logger.info("msgMain:" + msgMain);
 				
 				String sendType = msgMain.getSendType();
-				logger.debug("sendType:" + sendType);
+				logger.info("sendType:" + sendType);
 				if(MsgMain.SENDING_MSG_TYPE_DELAY.equals(sendType)){
 					Date startTime = parseToDate(msgMain.getScheduleTime());
-					logger.debug("startTime:" + startTime);
+					logger.info("startTime:" + startTime);
 					
 					// Overtime Skip
 					if((new Date()).getTime() > startTime.getTime()){
@@ -152,7 +152,7 @@ public class SchedulerService {
 				}
 				else if(MsgMain.SENDING_MSG_TYPE_SCHEDULE.equals(sendType)){
 					String cronExpression = parseToCronExpression(msgMain.getScheduleTime());
-					logger.debug("cronExpression:" + cronExpression);
+					logger.info("cronExpression:" + cronExpression);
 					
 					addMsgSendSchedule(msgMain.getMsgId(), cronExpression);
 					continue;
@@ -294,7 +294,7 @@ public class SchedulerService {
         triggerFactory.setName(UUID.randomUUID().toString());
         triggerFactory.setJobDetail(jobDetail);
         try {
-        	logger.debug("createSimpleTrigger:" + startTime);
+        	logger.info("createSimpleTrigger:" + startTime);
         	triggerFactory.setStartTime(startTime);
         	triggerFactory.setRepeatCount(0);
         	triggerFactory.setRepeatInterval(1000);
@@ -317,7 +317,7 @@ public class SchedulerService {
 	 * @throws Exception
 	 */
 	public void addMsgSendSchedule(Long msgId, Date startTime) throws Exception{
-		logger.debug("addMsgSendSchedule:" + msgId);
+		logger.info("addMsgSendSchedule:" + msgId);
 
 		String detailName = createDetailName(msgId);
 
@@ -325,14 +325,14 @@ public class SchedulerService {
          * Create JobDetail
          */
         JobDetail jobDetail = createJobDetail(msgId);
-        logger.debug(jobDetail);
+        logger.info(jobDetail);
        JobKey jobKey =  jobDetail.getKey();
 
        /**
         * Create SimpleTrigger
         */
        Trigger trigger = createSimpleTrigger(startTime, jobDetail);
-        logger.debug(trigger);
+        logger.info(trigger);
 
     	try {
     		synchronized (SCHEDULER_FLAG) {
@@ -341,8 +341,8 @@ public class SchedulerService {
     			
     			Date result = scheduler.scheduleJob(jobDetail, trigger);
 
-    			logger.debug("addCommandSchedule result:" + result);
-    			logger.debug("addCommandSchedule detailName:" + detailName);
+    			logger.info("addCommandSchedule result:" + result);
+    			logger.info("addCommandSchedule detailName:" + detailName);
     			onSchedulerList.put(detailName, jobKey);
     		}
 		} catch (SchedulerException e) { // Handle
@@ -358,7 +358,7 @@ public class SchedulerService {
 	 * @throws Exception
 	 */
 	public void addMsgSendSchedule(Long msgId, String cronExpression) throws Exception{
-		logger.debug("addMsgSendSchedule:" + msgId);
+		logger.info("addMsgSendSchedule:" + msgId);
 
 		String detailName = createDetailName(msgId);
 
@@ -366,14 +366,14 @@ public class SchedulerService {
          * Create JobDetail
          */
         JobDetail jobDetail = createJobDetail(msgId);
-        logger.debug(jobDetail);
+        logger.info(jobDetail);
        JobKey jobKey =  jobDetail.getKey();
 
        /**
         * Create CronTrigger
         */
        Trigger trigger = createCronTrigger(cronExpression, jobDetail);
-        logger.debug(trigger);
+        logger.info(trigger);
 
     	try {
     		synchronized (SCHEDULER_FLAG) {
@@ -382,8 +382,8 @@ public class SchedulerService {
     			
     			Date result = scheduler.scheduleJob(jobDetail, trigger);
 
-    			logger.debug("addCommandSchedule result:" + result);
-    			logger.debug("addCommandSchedule detailName:" + detailName);
+    			logger.info("addCommandSchedule result:" + result);
+    			logger.info("addCommandSchedule detailName:" + detailName);
     			onSchedulerList.put(detailName, jobKey);
     		}
 		} catch (SchedulerException e) { // Handle
@@ -430,15 +430,15 @@ public class SchedulerService {
 	}
 	
 	public void addScheduleEvent(String detailName, JobDetail jobDetail, Trigger trigger) throws Exception{
-		logger.debug("addScheduleEvent:" + detailName);
+		logger.info("addScheduleEvent:" + detailName);
 
-        logger.debug(jobDetail);
+        logger.info(jobDetail);
        JobKey jobKey =  jobDetail.getKey();
 
        /**
         * Create SimpleTrigger
         */
-        logger.debug(trigger);
+        logger.info(trigger);
 
     	try {
     		synchronized (SCHEDULER_FLAG) {
@@ -447,8 +447,8 @@ public class SchedulerService {
     			
     			Date result = scheduler.scheduleJob(jobDetail, trigger);
 
-    			logger.debug("addScheduleEvent result:" + result);
-    			logger.debug("addScheduleEvent detailName:" + detailName);
+    			logger.info("addScheduleEvent result:" + result);
+    			logger.info("addScheduleEvent detailName:" + detailName);
     			onSchedulerList.put(detailName, jobKey);
     		}
 		} catch (SchedulerException e) { // Handle

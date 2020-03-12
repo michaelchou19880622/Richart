@@ -78,10 +78,10 @@ public class LinePointApiService {
 			logger.info("LineAudienceMatchApiService URI : " + requestPost.getURI());
 			requestPost.setHeader("Authorization", "Bearer " +  channelToken);
 			requestPost.setEntity(entity);
-			logger.debug("LineAudienceMatchApiService requestPost : " + requestPost.toString());
+			logger.info("LineAudienceMatchApiService requestPost : " + requestPost.toString());
 			
 			// print requestPost
-			logger.debug("LineAudienceMatchApiService requestContent : " + requestContent);
+			logger.info("LineAudienceMatchApiService requestContent : " + requestContent);
 	
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestPost);
@@ -93,19 +93,19 @@ public class LinePointApiService {
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){				
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
-			logger.debug("LineAudienceMatchApiService clientResponse result : " + result);
+			logger.info("LineAudienceMatchApiService clientResponse result : " + result);
 			
 			requestPost.releaseConnection();
 
 			// MsgAudienceMatchSendService amService =ApplicationContextProvider.getApplicationContext().getBean(MsgAudienceMatchSendService.class);
 			//update Status
 			if (status == 200) {
-				logger.debug("LineAudienceMatchApiService clientResponse Success result : " + result + "!!!");	
+				logger.info("LineAudienceMatchApiService clientResponse Success result : " + result + "!!!");	
 				//for(String uid: uids)
 				//	amService.updateStautsAndRespCodeByPhoneAndId(msgSendId, 8, status, uid);
 			}
 			else {
-				logger.debug("LineAudienceMatchApiService clientResponse Failure result : " + result + "!!!");				
+				logger.info("LineAudienceMatchApiService clientResponse Failure result : " + result + "!!!");				
 			}
 			// SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_MissionStickersApi, start, status, requestContent.toString(), status + "");
 			return (ObjectNode)(new ObjectMapper()).readTree(result);

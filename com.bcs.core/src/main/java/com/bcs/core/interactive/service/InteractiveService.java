@@ -497,7 +497,7 @@ public class InteractiveService {
 	 * @return
 	 */
 	private Long randomOneMsg(List<Long> list){
-		logger.debug("randomOneMsg Size:" + list.size());
+		logger.info("randomOneMsg Size:" + list.size());
 
         int index = new Random().nextInt(list.size());
         return list.get(index);

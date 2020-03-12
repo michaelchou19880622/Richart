@@ -291,7 +291,7 @@ public class BCSGameController {
 			throws IOException {
 		logger.info("getGameNameList");
 		Map<String, String> map = contentGameService.findGameNameMap();
-		logger.debug("map:" + ObjectUtil.objectToJsonStr(map));
+		logger.info("map:" + ObjectUtil.objectToJsonStr(map));
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 	

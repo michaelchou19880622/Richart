@@ -182,7 +182,7 @@ public class ContentGameService {
 			gameModels.add(gameModel);
 		}
 
-		logger.debug(gameModels);
+		logger.info(gameModels);
 
 		return gameModels;
 	}
@@ -220,7 +220,7 @@ public class ContentGameService {
 		 * 
 		 * prizeModels.add(prizeModel); }
 		 * 
-		 * logger.debug(prizeModels);
+		 * logger.info(prizeModels);
 		 * 
 		 * return prizeModels;
 		 */
@@ -244,7 +244,7 @@ public class ContentGameService {
     
     public Map<String, String> findGameNameMap(){
         List<Object[]> games = contentGameRepository.findAllGameIdAndGameName();
-        logger.debug("findGroupTitleMap:" + ObjectUtil.objectToJsonStr(games));
+        logger.info("findGroupTitleMap:" + ObjectUtil.objectToJsonStr(games));
         Map<String, String> result = new LinkedHashMap<String, String>();
         
         for(Object[] game : games){

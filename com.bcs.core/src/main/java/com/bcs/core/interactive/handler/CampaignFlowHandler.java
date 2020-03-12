@@ -90,9 +90,9 @@ public class CampaignFlowHandler {
 	 * @return
 	 */
 	public List<MsgDetail> checkIsOnCampaign(String MID, MsgInteractiveMain main, List<MsgDetail> details){
-		logger.debug("checkIsInteractive");
+		logger.info("checkIsInteractive");
 		if(MsgInteractiveMain.INTERACTIVE_TYPE_INTERACTIVE.equals(main.getInteractiveType())){
-			logger.debug("Interactive Detail Record Step 1");
+			logger.info("Interactive Detail Record Step 1");
 			List<MsgDetail> list = new ArrayList<MsgDetail>();
 			for(MsgDetail detail : details){
 				if(MsgGeneratorExtend.MSG_TYPE_INTERACTIVE_LINK.equals(detail.getMsgType())){

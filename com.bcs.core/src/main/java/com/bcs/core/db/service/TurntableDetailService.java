@@ -213,7 +213,7 @@ public class TurntableDetailService {
 		
 		gameModel.setPrizes(prizeModels);
 		
-    	logger.debug(gameModel);
+    	logger.info(gameModel);
 		if(notNull(gameModel)){
 			dataCache.put(gameId.toString(), gameModel);
 		}

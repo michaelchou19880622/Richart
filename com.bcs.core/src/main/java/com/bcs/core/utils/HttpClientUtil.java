@@ -68,7 +68,7 @@ public class HttpClientUtil {
 	}
 	
 	private static CloseableHttpClient randomClient(){
-		logger.debug("randomClient Size:" + httpClientList.size());
+		logger.info("randomClient Size:" + httpClientList.size());
 
         int index = new Random().nextInt(httpClientList.size());
         return httpClientList.get(index);

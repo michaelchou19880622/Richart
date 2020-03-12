@@ -96,8 +96,8 @@ public class ContentCouponReportService {
 			calendarEnd.add(Calendar.DATE, 1);
 
 			endDate = sdf.format(calendarEnd.getTime());
-			logger.debug("startDate:" + startDate);
-			logger.debug("endDate:" + endDate);
+			logger.info("startDate:" + startDate);
+			logger.info("endDate:" + endDate);
 
 			// Query By Coupon
 			String CONTENT_TYPE = reportType.toString();
@@ -128,11 +128,11 @@ public class ContentCouponReportService {
 						distinctCount = mapCoupon.get(RECORD_REPORT_TYPE.DATA_TYPE_COUPON_DISTINCT_COUNT.toString());
 					}
 					if(count == null || distinctCount == null){
-						logger.debug("calendarStart:" + calendarStart.getTime());
-						logger.debug("calendarBreak:" + calendarBreak.getTime());
+						logger.info("calendarStart:" + calendarStart.getTime());
+						logger.info("calendarBreak:" + calendarBreak.getTime());
 						List<Object[]> list = actionUserCouponService.countMidByCouponIdAndActionTypeAndTime(couponId, actionType, calendarStart.getTime(), calendarBreak.getTime());
 
-						logger.debug("countMidByCouponIdAndActionTypeAndTime:" + ObjectUtil.objectToJsonStr(list));
+						logger.info("countMidByCouponIdAndActionTypeAndTime:" + ObjectUtil.objectToJsonStr(list));
 						for(Object[] objArray : list){
 							count = DBResultUtil.caseCountResult(objArray[0], false).longValue();
 							distinctCount = DBResultUtil.caseCountResult(objArray[1], false).longValue();

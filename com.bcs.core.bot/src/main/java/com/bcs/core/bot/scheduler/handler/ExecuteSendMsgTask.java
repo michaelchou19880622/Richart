@@ -33,7 +33,7 @@ public class ExecuteSendMsgTask {
 	private static Logger logger = Logger.getLogger(ExecuteSendMsgTask.class);
 
 	public void executeSendMsg(Long msgId) throws Exception{
-		logger.debug("executeSendMsg msgId ============ :" + msgId);
+		logger.info("executeSendMsg msgId ============ :" + msgId);
 
 		GroupGenerateService groupGenerateService = ApplicationContextProvider.getApplicationContext().getBean(GroupGenerateService.class);
 		SendGroupService sendGroupService = ApplicationContextProvider.getApplicationContext().getBean(SendGroupService.class);
@@ -62,7 +62,7 @@ public class ExecuteSendMsgTask {
 					try{
 						List<String> mids =  groupGenerateService.findMIDBySendGroupDetailGroupId(groupId);
 						if(mids != null && mids.size() >0){
-							logger.debug("executeSendMsg mids ============ :" + mids.size());
+							logger.info("executeSendMsg mids ============ :" + mids.size());
 							/**
 							 * Copy From MsgMain to MsgSendMain
 							 */
@@ -108,7 +108,7 @@ public class ExecuteSendMsgTask {
 				// 預設群祖
 				else{
 					Long totalCount = sendGroupService.countDefaultGroupSize(groupId);
-					logger.debug("countDefaultGroupSize:" + totalCount);
+					logger.info("countDefaultGroupSize:" + totalCount);
 
 					/**
 					 * Copy From MsgMain to MsgSendMain
@@ -117,7 +117,7 @@ public class ExecuteSendMsgTask {
 					
 					List<MsgDetail> details = msgDetailService.findByMsgIdAndMsgParentType(msgSendMain.getMsgSendId(), MsgSendMain.THIS_PARENT_TYPE);
 
-					logger.debug("findByMsgIdAndMsgParentType");
+					logger.info("findByMsgIdAndMsgParentType");
 
 					/**
 					 * Send To Test Group for Check Send
@@ -136,7 +136,7 @@ public class ExecuteSendMsgTask {
 					while(true){
 						List<String> list = sendGroupService.queryDefaultGroup(groupId, page, pageSize);
 						if(list != null && list.size() > 0){
-							logger.debug("queryDefaultGroup:" + list.size());
+							logger.info("queryDefaultGroup:" + list.size());
 							// Handle : Sending
 							sendMsgToMids(list, details, msgSendMain.getMsgSendId());
 						}

@@ -150,15 +150,15 @@ public class MsgInteractiveMainService {
 	
 	public void flushIncrease(){
 		synchronized (INIT_FLAG) {
-			logger.debug("MsgInteractiveMainService flushTimer execute");
+			logger.info("MsgInteractiveMainService flushTimer execute");
 			for(Map.Entry<Long, AtomicLong> map : increaseMap.entrySet()){
 				if(map.getValue().longValue() != 0){
-					logger.debug("MsgInteractiveMainService flushTimer execute:" + map.getKey() + "," + map.getValue().longValue());
+					logger.info("MsgInteractiveMainService flushTimer execute:" + map.getKey() + "," + map.getValue().longValue());
 					this.increaseSendCountByMsgInteractiveId(map.getKey(), map.getValue().longValue());
 					map.getValue().set(0);
 				}
 			}
-			logger.debug("MsgInteractiveMainService flushTimer end");
+			logger.info("MsgInteractiveMainService flushTimer end");
 		}
 	}
 
@@ -173,7 +173,7 @@ public class MsgInteractiveMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -185,7 +185,7 @@ public class MsgInteractiveMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -197,7 +197,7 @@ public class MsgInteractiveMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -246,7 +246,7 @@ public class MsgInteractiveMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.debug(map);
+    	logger.info(map);
 		
 		return map;
 	}
@@ -256,15 +256,15 @@ public class MsgInteractiveMainService {
 		Map<MsgInteractiveMain, List<MsgDetail>> map = new LinkedHashMap<MsgInteractiveMain, List<MsgDetail>>();
 
 	    for(Object[] o : list){
-	    	logger.debug("length:" + o.length);
-	    	logger.debug(o[0]);
+	    	logger.info("length:" + o.length);
+	    	logger.info(o[0]);
 	    	if(o[0] !=null){
 	    		List<MsgDetail> details = map.get(o[0]);
 	    		if(details == null){
 	    			map.put((MsgInteractiveMain) o[0], new ArrayList<MsgDetail>());
 	    		}
 	    	}
-	    	logger.debug(o[1]);
+	    	logger.info(o[1]);
 	    	if(o[1] != null){
 	    		List<MsgDetail> details = map.get(o[0]);
 	    		details.add((MsgDetail) o[1]);

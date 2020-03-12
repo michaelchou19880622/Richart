@@ -60,10 +60,10 @@ public class InteractiveHandler {
 	}
 	
 	public Map<Long, List<MsgDetail>> checkJoinInteractive(String MID, String keyword) throws Exception{
-		logger.debug("checkJoinInteractive");
+		logger.info("checkJoinInteractive");
 		Long iMsgId = linkJoin.get(MID);
 		if(iMsgId > 0L){
-			logger.debug("Interactive Detail Create Step 2");
+			logger.info("Interactive Detail Create Step 2");
 			Map<Long, List<MsgDetail>> result = new HashMap<Long, List<MsgDetail>>();
 			List<MsgDetail> list = new ArrayList<MsgDetail>();
 			List<MsgDetail> details = interactiveService.getMsgDetails(iMsgId);
@@ -81,7 +81,7 @@ public class InteractiveHandler {
 			linkJoin.put(MID, 0L);
 			
 			if(list.size() > 0){
-				logger.debug("Interactive Detail Create Step 2 Success");
+				logger.info("Interactive Detail Create Step 2 Success");
 				result.put(iMsgId, list);
 				
 				return result;
@@ -96,9 +96,9 @@ public class InteractiveHandler {
 	 * @return
 	 */
 	public List<MsgDetail> checkIsInteractive(String MID, MsgInteractiveMain main, List<MsgDetail> details){
-		logger.debug("checkIsInteractive");
+		logger.info("checkIsInteractive");
 		if(MsgInteractiveMain.INTERACTIVE_TYPE_INTERACTIVE.equals(main.getInteractiveType())){
-			logger.debug("Interactive Detail Record Step 1");
+			logger.info("Interactive Detail Record Step 1");
 			List<MsgDetail> list = new ArrayList<MsgDetail>();
 			for(MsgDetail detail : details){
 				if(MsgGeneratorExtend.MSG_TYPE_INTERACTIVE_LINK.equals(detail.getMsgType())){

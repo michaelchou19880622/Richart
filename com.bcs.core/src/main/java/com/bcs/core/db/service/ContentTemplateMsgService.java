@@ -190,7 +190,7 @@ public class ContentTemplateMsgService {
 			}
 		}
 		
-    	logger.debug(map);
+    	logger.info(map);
 		if(map != null){
 			dataCache.put(templateId, map);
 		}
@@ -235,7 +235,7 @@ public class ContentTemplateMsgService {
 			}
 		}
 		
-    	logger.debug(map);
+    	logger.info(map);
     	
 		return map;
     }

@@ -43,7 +43,7 @@ public class GettingMsgContentService {
 		try{
 			UserLiveChat userLiveChat = userLiveChatService.findByUID(MID);
 			String channelName = userLiveChat!=null ? CONFIG_STR.ManualReply.toString() : CONFIG_STR.AutoReply.toString();
-			logger.debug("sendType:" + SEND_TYPE.REPLY_MSG.toString());
+			logger.info("sendType:" + SEND_TYPE.REPLY_MSG.toString());
 			Response<ResponseBody> response = LineAccessApiService.getImageFromLine(ChannelId, channelName, receiveMsgId);
 
 			ResponseBody content = response.body();
@@ -75,7 +75,7 @@ public class GettingMsgContentService {
 	
 	private void checkStatus(Response<ResponseBody> response, String mid, String receiveMsgId) throws Exception{
 
-		logger.debug("status:" + response.code());
+		logger.info("status:" + response.code());
 		
 		if(response.code() != 200){
 			List<Object> content = new ArrayList<Object>();

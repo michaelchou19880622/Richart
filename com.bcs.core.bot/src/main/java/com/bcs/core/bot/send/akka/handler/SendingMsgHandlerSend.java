@@ -46,7 +46,7 @@ public class SendingMsgHandlerSend extends UntypedActor {
 
 		if (message instanceof AsyncSendingModel) {
 			AsyncSendingModel msgs = (AsyncSendingModel) message;
-			logger.debug("AsyncSendingModel onReceive:" + msgs);
+			logger.info("AsyncSendingModel onReceive:" + msgs);
 
 			if(msgs.getMids() != null){
 				
@@ -57,7 +57,7 @@ public class SendingMsgHandlerSend extends UntypedActor {
 					msgSendMain = ApplicationContextProvider.getApplicationContext().getBean(MsgSendMainService.class).findOne(msgSendId);
 				}
 				
-				logger.debug("Size:" + msgs.getMids().size());
+				logger.info("Size:" + msgs.getMids().size());
 				List<String[]> successMid = new ArrayList<String[]>();
 				
 				List<MsgGenerator> msgGenerators = msgs.getMsgGenerators();
@@ -119,11 +119,11 @@ public class SendingMsgHandlerSend extends UntypedActor {
 					getSender().tell(success, getSelf());
 				}
 			}
-			logger.debug("AsyncSendingModel End");
+			logger.info("AsyncSendingModel End");
 		}
 		else if (message instanceof AsyncSendingModelError) {
 			AsyncSendingModelError msgs = (AsyncSendingModelError) message;
-			logger.debug("AsyncSendingModelError onReceive:" + msgs);
+			logger.info("AsyncSendingModelError onReceive:" + msgs);
 
 			if(msgs.getMids() != null){
 
@@ -133,7 +133,7 @@ public class SendingMsgHandlerSend extends UntypedActor {
 					msgSendMain = ApplicationContextProvider.getApplicationContext().getBean(MsgSendMainService.class).findOne(msgSendId);
 				}
 				
-				logger.debug("Size:" + msgs.getMids().size());
+				logger.info("Size:" + msgs.getMids().size());
 				
 				List<MsgGenerator> msgGenerators = msgs.getMsgGenerators();
 				
@@ -192,13 +192,13 @@ public class SendingMsgHandlerSend extends UntypedActor {
 					getSender().tell(success, getSelf());
 				}
 			}
-			logger.debug("AsyncSendingModelError End");
+			logger.info("AsyncSendingModelError End");
 		}
 	}
 	
 	private String checkStatus(Response<BotApiResponse> response, String recordStatus, String mid, Long msgId) throws Exception{
 
-		logger.debug("status:" + response.code());
+		logger.info("status:" + response.code());
 		recordStatus += response.code() + "-";
 		
 		if(response.code() != 200){

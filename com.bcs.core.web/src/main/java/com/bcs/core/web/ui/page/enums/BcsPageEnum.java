@@ -23,8 +23,11 @@ public enum BcsPageEnum {
 	LinePointDetailPage("/BCS/Views/PageLPD"),
 	LinePointSchedulePage("/BCS/Views/PageLPS"),
 	
-	//RichMenu Page
+	// HPI Richmenu Page
 	HpiRichMenuListPage("/BCS/Views/PageHpiRchmnu"),
+	HpiRichMenuGroupListPage("/BCS/Views/PageHpiRichmenuGroupList"),
+	
+	//RichMenu Page
 	RichMenuGroupListPage("/BCS/Views/PageRMgL"),
 	RichMenuMemberListPage("/BCS/Views/PageRMmL"),
 	RichMenuCreatePage("/BCS/Views/PageRMC"),

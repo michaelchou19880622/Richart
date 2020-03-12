@@ -50,13 +50,13 @@ public class EntityManagerControlService {
 	}
 	
 	public void fluchAll(){
-		logger.debug("EntityManagerControl flushTimer execute");
+		logger.info("EntityManagerControl flushTimer execute");
 		try{
 			entityManagerControl.fluchAll();
 		}
 		catch(Throwable e){
 			logger.error(ErrorRecord.recordError(e));
 		}
-		logger.debug("EntityManagerControl flushTimer end");
+		logger.info("EntityManagerControl flushTimer end");
 	}
 }

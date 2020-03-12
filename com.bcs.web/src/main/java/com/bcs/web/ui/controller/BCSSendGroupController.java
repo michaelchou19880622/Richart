@@ -136,7 +136,7 @@ public class BCSSendGroupController extends BCSBaseController {
 			@CurrentUser CustomUser customUser) throws IOException {
 		logger.info("getSendGroupTitleList");		
 		Map<Long, String> map = sendGroupService.findGroupTitleMap();
-		logger.debug("map:" + ObjectUtil.objectToJsonStr(map));
+		logger.info("map:" + ObjectUtil.objectToJsonStr(map));
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 
@@ -645,7 +645,7 @@ public class BCSSendGroupController extends BCSBaseController {
 				List<String> list = sendGroupService.queryDefaultGroup(groupId, page);
 				if(list != null && list.size() > 0){
 					mids.addAll(list);
-					logger.debug("queryDefaultGroup:" + list.size());
+					logger.info("queryDefaultGroup:" + list.size());
 				}
 				else{
 					break;

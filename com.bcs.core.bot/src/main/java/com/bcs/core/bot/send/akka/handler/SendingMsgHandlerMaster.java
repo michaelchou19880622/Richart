@@ -39,7 +39,7 @@ public class SendingMsgHandlerMaster extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object message) throws Exception {
-		logger.debug("SendingMsgHandlerMaster onReceive");
+		logger.info("SendingMsgHandlerMaster onReceive");
 
 		if (message instanceof AsyncSendingModel) {
 			AsyncSendingModel msg = (AsyncSendingModel)message;

@@ -100,7 +100,7 @@ public class SendingMsgService {
 	}
 	
 	public void sendToLineAsync(String ChannelId, List<MsgGenerator> msgGenerators, List<MsgDetail> details, List<String> mids, API_TYPE apiType, Long updateMsgId) throws Exception{
-		logger.debug("sendToLineAsync");
+		logger.info("sendToLineAsync");
 		if(ChannelId == null){
 			ChannelId = CONFIG_STR.Default.toString();
 		}
@@ -112,7 +112,7 @@ public class SendingMsgService {
 		else{
 			msgs = new AsyncSendingModel(ChannelId, msgGenerators, mids, apiType);
 		}
-		logger.debug("sendToLineAsync:Mids:" + mids.size());
+		logger.info("sendToLineAsync:Mids:" + mids.size());
 		
 		// Share Sending Action to Different Server
 		if(details != null){
@@ -219,7 +219,7 @@ public class SendingMsgService {
 				Response<BotApiResponse> response = LineAccessApiService.sendToLine(sendToBotModel);
 				logger.info("status:" + response.code());
 				
-				if(response.code() == 400){
+				if (response.code() == 400) {
 					codeError = "400Error";
 				}
 
@@ -239,6 +239,8 @@ public class SendingMsgService {
 				}
 				else{
 					// Call Line Fail >= 5
+
+					logger.info("Call Line Fail >= 5");
 				}
 			}
 			
@@ -303,7 +305,7 @@ public class SendingMsgService {
 				sendToBotModel.setPushMessage(pushMessage);
 				
 				Response<BotApiResponse> response = LineAccessApiService.sendToLine(sendToBotModel);
-				logger.debug("status:" + response.code());
+				logger.info("status:" + response.code());
 
 				// Check Response Status
 				checkStatus(response, MID, iMsgId);
@@ -330,7 +332,7 @@ public class SendingMsgService {
 	
 	public void sendEventMessage(String mid, String SendEvent){
 		try{
-			logger.debug("sendEventMessage:" + SendEvent);
+			logger.info("sendEventMessage:" + SendEvent);
 			if(StringUtils.isNotBlank(SendEvent)){
 				
 		    	// Record Match Message 
@@ -338,7 +340,7 @@ public class SendingMsgService {
 				
 				// 取得 關鍵字回應 設定
 				Long iMsgId = interactiveService.getEventWelcomeResponse(lineUser.getStatus());
-				logger.debug("Get Event Welcome iMsgId:" + iMsgId);
+				logger.info("Get Event Welcome iMsgId:" + iMsgId);
 
 				if(iMsgId != null){
 					// 傳送 關鍵字回應
@@ -385,7 +387,7 @@ public class SendingMsgService {
 	
 	private String checkStatus(Response<BotApiResponse> response, String mid, Long msgId) throws Exception{
 
-		logger.debug("status:" + response.code());
+		logger.info("status:" + response.code());
 		String recordStatus = response.code() + "-";
 		
 		if(response.code() != 200){

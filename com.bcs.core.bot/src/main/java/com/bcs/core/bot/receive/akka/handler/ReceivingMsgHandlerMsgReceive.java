@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bcs.core.api.service.LineProfileService;
 import com.bcs.core.api.service.model.LocationModel;
@@ -39,8 +39,8 @@ import akka.actor.UntypedActor;
 
 public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 
-	/** Logger */
-	private static Logger logger = Logger.getLogger(ReceivingMsgHandlerMsgReceive.class);
+	/** Logger **/
+	private static Logger logger = LoggerFactory.getLogger(ReceivingMsgHandlerMsgReceive.class);
 	
 	@Override
 	public void onReceive(Object message){
@@ -61,7 +61,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 			LineUserService lineUserService = ApplicationContextProvider.getApplicationContext().getBean(LineUserService.class);
 			
 			String MID = receive.getSourceId();
-			logger.debug("MID:" + MID);
+			logger.info("MID:" + MID);
 			
 			LineUser lineUser = lineUserService.findByMidAndCreateUnbind(MID);
 			
@@ -145,20 +145,22 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				String displayName = lineProfileService.getUserNickName(MID);
 				logger.info("displayName = " + displayName);
 			}
+
+			logger.info("userStatus = {}", userStatus);
 			
 			logger.info("=== Check content's event type and postback data. ===");
-			logger.info("content.getEventType() = " + content.getEventType());
+			logger.info("content.getEventType() = {}", content.getEventType());
 			
 			if (MsgBotReceive.EVENT_TYPE_POSTBACK.equals(content.getEventType())) {
 				text = content.getPostbackData();
 				
 				logger.info("=== Check is received text match to richmenu custom id? ===");
-				logger.info("1-1 text = " + text);
+				logger.info("1-1 text = {}", text);
 				
 				// 判斷是否為Richmenu關鍵字 (long格式, 去 richmenu_list table 比對) 
 				RichMenuService richMenuService = ApplicationContextProvider.getApplicationContext().getBean(RichMenuService.class);
 				Boolean isRichmenuCustomId = richMenuService.onCustomIdReceiving(ChannelId, MID, text);
-				logger.info("isRichmenuCustomId = " + isRichmenuCustomId);
+				logger.info("isRichmenuCustomId = {}", isRichmenuCustomId);
 				
 				if (isRichmenuCustomId) {
 					return -2L;
@@ -185,7 +187,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				} else if (text.contains("leaveMessageAction=")) {
 					String leaveMessageAction = text.split("leaveMessageAction=")[1];
 
-					logger.info(">>> 使用者選擇：" + leaveMessageAction);
+					logger.info(">>> 使用者選擇：{}", leaveMessageAction);
 
 					liveChatService.handleLeaveMessageAction(leaveMessageAction, ChannelId, MID, replyToken);
 
@@ -202,7 +204,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 			}
 			
 			logger.info("=== Check content's msg type ===");
-			logger.info("content.getMsgType() = " + content.getMsgType());
+			logger.info("content.getMsgType() = {}", content.getMsgType());
 			// 問泰咪段邏輯保留
 			if(MsgBotReceive.MESSAGE_TYPE_LOCATION.equals(content.getMsgType())) {
 				String address = content.getLocationAddress();		// 地址
@@ -215,7 +217,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 			}
 
 			logger.info("=== Check is in the campaign flow? ===");
-			logger.info("1-2 text = " + text);
+			logger.info("1-2 text = {}", text);
 			
             //處理活動流程(如果先前有觸發過，否則一律回傳空值)
 			Map<Long, List<MsgDetail>> result = new HashMap<>();
@@ -223,22 +225,34 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
             result = handleCampaignFlow(MID, text, content.getReplyToken(), ChannelId, ApiType, content.getMsgId(), content.getMsgType());
             
 			if (StringUtils.isNotBlank(text) || (result != null && result.size() > 0)) {
+
+				logger.info("check 1-1 text = {}", text);
+				logger.info("check 1-1 result = {}", result);
+				logger.info("check 1-1 result.size() = {}", result.size());
+				
 				if (recordText) {
-					logger.info("Get Keyword:" + text);
+					logger.info("Get Keyword:{}", text);
 				}
 
 				// 判斷是否不在活動處理流程中
 				if (result == null || result.size() == 0) {
 					// 取得關鍵字回應 設定
+
+					logger.info("check 1-1 MID = {}", MID);
+					logger.info("check 1-1 userStatus = {}", userStatus);
+					logger.info("check 1-1 text = {}", text);
+					
 					result = interactiveService.getMatchKeyword(MID, userStatus, text);
+					logger.info("result = {}", result);
 				}
 
 				if (result != null && result.size() == 1) {
 					for (Long iMsgId : result.keySet()) {
+						
 						List<MsgDetail> details = result.get(iMsgId);
 
 						if (recordText) {
-							logger.info("Match Keyword:" + text + ", iMsgId:" + iMsgId);
+							logger.info("Match Keyword:{}, iMsgId:{}", text, iMsgId);
 						}
 						
 						// 傳送 關鍵字回應
@@ -252,25 +266,28 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					Long iMsgIdBlack = interactiveService.getMatchBlackKeywordMsgId(userStatus, text);
 					
 					if (iMsgIdBlack != null) {
+						logger.info("iMsgIdBlack = {}", iMsgIdBlack);
+						
 						// Update 關鍵字回應 記數
 						ApplicationContextProvider.getApplicationContext().getBean(MsgInteractiveMainService.class).increaseSendCountByMsgInteractiveId(iMsgIdBlack);
-						logger.info("Match BlackKeyword:" + text + ", iMsgIdBlack:" + iMsgIdBlack);
+						logger.info("Match BlackKeyword:{}, iMsgIdBlack:{}", text, iMsgIdBlack);
 						return iMsgIdBlack;
 					} else {
 						// 未設定 預設回應
-						logger.info("◎ 不符合任何關鍵字，把訊息丟給碩網處理: " + text);
+						logger.info("◎ 不符合任何關鍵字，把訊息丟給碩網處理: {}", text);
 
 						UserLiveChat userLiveChat = ApplicationContextProvider.getApplicationContext().getBean(UserLiveChatService.class).findLeaveMsgUserByUIDAndState(MID,
 								UserLiveChat.LEAVE_MESSAGE);
 
 						if (userLiveChat == null) {
+							logger.info("userLiveChat == null");
 							// 20190126 新增參數content.getMsgType()供碩網判斷。
 							// 20190126機器人應答狀況下，如使用者傳圖片，須判斷type後在qa-ajax多帶一個參數給碩網判斷
 							ApplicationContextProvider.getApplicationContext().getBean(MessageTransmitService.class).transmitToBOT(ChannelId, MID, replyToken, text, content.getMsgId(),
 									content.getMsgType());
 							return -2L;
 						} else {
-							logger.info("◎ 使用者 " + MID + " 留言，留言內容為： " + text);
+							logger.info("◎ 使用者 {} 留言，留言內容為：{}", MID, text);
 
 							liveChatService.leaveMessage(ChannelId, replyToken, userLiveChat, text);
 
@@ -279,13 +296,14 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					}
 				}
 			} else {
-				logger.info("MID = " + MID);
-				logger.info("userStatus = " + userStatus);
+				
+				logger.info("MID = {}", MID);
+				logger.info("userStatus = {}", userStatus);
 				
 				MsgInteractiveMain main = interactiveService.getAutoResponse(MID, userStatus);
 
 				if (main != null) {
-					logger.info("main = " + main.toString());
+					logger.info("main = {}", main.toString());
 					
 					Long iMsgId = main.getiMsgId();
 					List<MsgDetail> details = interactiveService.getMsgDetails(iMsgId);
@@ -297,12 +315,12 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					return iMsgId;
 				} else {
 
-					logger.info("ChannelId = " + ChannelId);
-					logger.info("MID = " + MID);
-					logger.info("replyToken = " + replyToken);
-					logger.info("text = " + text);
-					logger.info("content.getMsgId() = " + content.getMsgId());
-					logger.info("content.getMsgType() = " + content.getMsgType());
+					logger.info("ChannelId = {}", ChannelId);
+					logger.info("MID = {}", MID);
+					logger.info("replyToken = {}", replyToken);
+					logger.info("text = {}", text);
+					logger.info("content.getMsgId() = {}", content.getMsgId());
+					logger.info("content.getMsgType() = {}", content.getMsgType());
 					
 //					ChannelId, MID, replyToken, text, content.getMsgId(), content.getMsgType()
 					
@@ -349,17 +367,25 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 	public static void trasmitToCustomerService(MsgBotReceive msg, String ChannelId, String ChannelName,String ApiType) throws Exception {
 		MessageTransmitService messageTransmitService = ApplicationContextProvider.getApplicationContext().getBean(MessageTransmitService.class);
 		
-		logger.info(">>> 要傳送給真人客服的訊息：" + msg);
+		logger.info(">>> 要傳送給真人客服的訊息：{}", msg);
 		Map<Long, List<MsgDetail>> errResult = messageTransmitService.transmitToLiveChat(msg);
 		
-		//error message response
-		if(errResult != null){
+		// error message response
+		if (errResult != null) {
+			logger.info("errResult = {}", errResult);
+			
 			String replyToken = msg.getReplyToken();
+			logger.info("replyToken = {}", replyToken);
+			
 			String MID = msg.getSourceId();
-			for(Long iMsgId : errResult.keySet()){
+			logger.info("MID = {}", MID);
+			
+			for (Long iMsgId : errResult.keySet()) {
 				List<MsgDetail> details = errResult.get(iMsgId);
+				logger.info("details = {}", details);
+				
 				// 傳送關鍵字回應
-		    	ApplicationContextProvider.getApplicationContext().getBean(SendingMsgService.class).sendMatchMessage(replyToken, iMsgId, details, ChannelId, MID, ApiType, msg.getMsgId());
+				ApplicationContextProvider.getApplicationContext().getBean(SendingMsgService.class).sendMatchMessage(replyToken, iMsgId, details, ChannelId, MID, ApiType, msg.getMsgId());
 			}
 		}
 	}

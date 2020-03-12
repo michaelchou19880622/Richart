@@ -26,7 +26,7 @@ public class MobilePageService {
 	private UserTraceLogService userTraceLogService;
 	
 	public void visitPageLog(String MID, String page, String msg){
-		logger.debug("visitPageLog:" + MID + ":" + page + ":" + msg);
+		logger.info("visitPageLog:" + MID + ":" + page + ":" + msg);
 
 		try{
 			if(StringUtils.isNotBlank(MID)){

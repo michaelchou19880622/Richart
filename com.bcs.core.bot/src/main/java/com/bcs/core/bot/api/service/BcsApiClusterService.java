@@ -67,7 +67,7 @@ public class BcsApiClusterService {
 			HttpEntity<String> httpEntity = new HttpEntity<String>(postMsg, headers);
 			
 			// print requestPost
-			logger.debug("postMsg : " + postMsg);
+			logger.info("postMsg : " + postMsg);
 	
 			// execute Call
 			RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.POST, url, httpEntity, CoreConfigReader.getBoolean(CONFIG_STR.SYSTEM_USE_PROXY.toString()));
@@ -76,10 +76,10 @@ public class BcsApiClusterService {
 			
 			JSONObject responseObject = restfulUtil.execute();
 			logger.info(responseObject);
-			logger.debug("clientResponse StatusCode : " + status);
+			logger.info("clientResponse StatusCode : " + status);
 			status = Integer.parseInt(restfulUtil.getStatusCode());
 			String result = responseObject!=null ? responseObject.toString():"";
-			logger.debug("clientResponse result : " + result);			
+			logger.info("clientResponse result : " + result);			
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBCApiCluster, LOG_TARGET_ACTION_TYPE.ACTION_Send, start, status, postMsg, status + "");
 			return new PostLineResponse(status, result);
 		}

@@ -173,7 +173,7 @@ public class LineAccessApiService {
 	}
 	
 	private static LineMessagingService randomOne(List<LineMessagingService> lineMessagingServices){
-		logger.debug("randomOne Size:" + lineMessagingServices.size());
+		logger.info("randomOne Size:" + lineMessagingServices.size());
 
         int index = new Random().nextInt(lineMessagingServices.size());
         return lineMessagingServices.get(index);
@@ -189,7 +189,7 @@ public class LineAccessApiService {
 	}
 
 	public static Response<BotApiResponse> sendToLine(SendToBotModel sendToBotModel) throws Exception{
-		logger.debug("sendToLine:" + sendToBotModel);
+		logger.info("sendToLine:" + sendToBotModel);
 		String ChannelId = sendToBotModel.getChannelId();
 		String ChannelName = sendToBotModel.getChannelName();
 		
@@ -206,7 +206,7 @@ public class LineAccessApiService {
 				Response<BotApiResponse> response = getService(ChannelId,ChannelName)
 				        .replyMessage(sendToBotModel.getReplyMessage())
 				        .execute();
-				logger.debug(response.code());
+				logger.info(response.code());
 				
 				status = response.code();
 
@@ -237,7 +237,7 @@ public class LineAccessApiService {
 				Response<BotApiResponse> response = getService(ChannelId, ChannelName)
 				        .pushMessage(sendToBotModel.getPushMessage())
 				        .execute();
-				logger.debug(response.code());
+				logger.info(response.code());
 				
 				status = response.code();
 
@@ -273,7 +273,7 @@ public class LineAccessApiService {
 			                .getMessageContent(msgId)
 			                .execute();
 			logger.info("response:"+response);
-			logger.debug(response.code());
+			logger.info(response.code());
 			
 			status = response.code();
 
@@ -302,6 +302,7 @@ public class LineAccessApiService {
 		logger.info("callVerifyResult:" + callVerifyResult);
 
 		JsonNode expires_in = callVerifyResult.get("expires_in");
+		logger.info("expires_in:" + expires_in);
 		
 		boolean isReIssue = false;
 		if(expires_in != null){
@@ -311,13 +312,13 @@ public class LineAccessApiService {
 			
 			callVerifyResult.put("hr", sec);
 			
-			if(sec > 0 && sec < 24){
+			if(sec > 0 && sec < 24){ // Token Expired
 				if(reIssue){
 					isReIssue = callRefreshingAPI(channelId);
 				}
 			}
 		}
-		else{
+		else{ // Token Expired
 			if(reIssue){
 				isReIssue = callRefreshingAPI(channelId);
 			}
@@ -335,18 +336,21 @@ public class LineAccessApiService {
 		LineTokenApiService lineTokenApiService = ApplicationContextProvider.getApplicationContext().getBean(LineTokenApiService.class);
 		SystemConfigService systemConfigService = ApplicationContextProvider.getApplicationContext().getBean(SystemConfigService.class);
 		ObjectNode callRefreshingResult = lineTokenApiService.callRefreshingAPI(client_id, client_secret);
-		logger.info("callRefreshingResult:" + callRefreshingResult);
+		logger.info("callRefreshingResult: " + callRefreshingResult);
 
 		JsonNode access_token = callRefreshingResult.get("access_token");
+		logger.info("access_token: " + access_token);
 
-		if(access_token != null){
+		if (access_token != null) {
 			String token = access_token.asText();
-			
+
 			SystemConfig config = systemConfigService.findSystemConfig(channelId + "." + CONFIG_STR.ChannelToken.toString());
+			config.setModifyTime(new Date());
 			config.setValue(token);
 			systemConfigService.save(config);
 			systemConfigService.clearData();
-			SystemLogUtil.saveLogDebug(LOG_TARGET_ACTION_TYPE.TARGET_LineApi.toString(), LOG_TARGET_ACTION_TYPE.ACTION_RefreshingApi.toString(), SystemLog.SYSTEM_EVENT, callRefreshingResult, channelId);
+			SystemLogUtil.saveLogDebug(LOG_TARGET_ACTION_TYPE.TARGET_LineApi.toString(), LOG_TARGET_ACTION_TYPE.ACTION_RefreshingApi.toString(), SystemLog.SYSTEM_EVENT, callRefreshingResult,
+					channelId);
 			return true;
 		}
 		

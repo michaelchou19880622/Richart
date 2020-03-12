@@ -175,7 +175,7 @@ public class ContentReportService {
 			logger.error(ErrorRecord.recordError(e));
 		}
 		
-		logger.debug(resultList);
+		logger.info(resultList);
 		
 		return resultList;
 	}
@@ -225,7 +225,7 @@ public class ContentReportService {
 	public PushReport getPushReportForEdit(Long reportId){
 		PushReport pushReport = pushReportRepository.findOne(reportId);
 		
-    	logger.debug(pushReport);
+    	logger.info(pushReport);
     	
 		return pushReport;
 	}
@@ -275,7 +275,7 @@ public class ContentReportService {
 			}
 		}
 		
-    	logger.debug(result);
+    	logger.info(result);
     	
 		return result;
 	}
@@ -293,7 +293,7 @@ public class ContentReportService {
 			pushReport.setReportPushUrlProductView(null);
 			pushReport.setReportPushUrlVisit(null);
 		}
-    	logger.debug(pushReport);
+    	logger.info(pushReport);
     	
 		return pushReport;
 	}
@@ -397,7 +397,7 @@ public class ContentReportService {
 			logger.error(ErrorRecord.recordError(e));
 		}
 		
-    	logger.debug(list);
+    	logger.info(list);
     	
 		return list;
 	}
@@ -705,7 +705,7 @@ public class ContentReportService {
 			
 			synchronized (SYNC_FLAG) {
 				List<String> richIds = contentRichMsgDetailRepository.getRichIdByLinkId(linkId);
-				logger.debug("richId:" + richIds);
+				logger.info("richId:" + richIds);
 				
 				List<Object[]> list = new ArrayList<Object[]>();
 				//此linkId屬於richMsg
@@ -732,7 +732,7 @@ public class ContentReportService {
 			    	Query query = entityManager.createNativeQuery(queryString).setParameter(1, richIds.get(0));
 					query.setHint("javax.persistence.query.timeout", 30000);
 					list = query.getResultList();
-					logger.debug("list:" + list);
+					logger.info("list:" + list);
 					
 					if(list != null && list.size() > 0){
 					
@@ -742,10 +742,10 @@ public class ContentReportService {
 						
 						for (Object[] objs : list) {
 							String LinkId = objs[0].toString();
-							logger.debug("LinkId:" + LinkId);
+							logger.info("LinkId:" + LinkId);
 							
 							Long reportMsgSendId = DBResultUtil.caseCountResult(objs[8]).longValue();
-							logger.debug("MSG_SEND_ID:" + reportMsgSendId);
+							logger.info("MSG_SEND_ID:" + reportMsgSendId);
 							
 							String dateString = objs[1].toString();
 							Date pushTime = DateUtils.parseDate(dateString.substring(0, dateString.lastIndexOf(".")), "yyyy-MM-dd HH:mm:ss");
@@ -804,7 +804,7 @@ public class ContentReportService {
 							BigDecimal ctrValue = BigDecimal.valueOf(totalClick).divide(new BigDecimal(pushNumber), 4, RoundingMode.HALF_UP).multiply(new BigDecimal("100"));//四捨五入至小數點第二位
 							pushReport.setReportPushCtrValue(ctrValue);
 		
-							logger.debug("pushReport:" + pushReport);
+							logger.info("pushReport:" + pushReport);
 							pushReport.setModifyTime(new Date());
 							pushReport.setModifyUser("System");
 							updateList.add(pushReport);
@@ -835,9 +835,9 @@ public class ContentReportService {
 						
 						Date lastTime = null;
 						for (Object[] objs : list) {
-							logger.debug("LinkId:" + linkId);
+							logger.info("LinkId:" + linkId);
 							Long reportMsgSendId = DBResultUtil.caseCountResult(objs[5]).longValue();
-							logger.debug("MSG_SEND_ID:" + reportMsgSendId);
+							logger.info("MSG_SEND_ID:" + reportMsgSendId);
 							
 							String dateString = objs[0].toString();
 							Date pushTime = DateUtils.parseDate(dateString.substring(0, dateString.lastIndexOf(".")), "yyyy-MM-dd HH:mm:ss");
@@ -886,7 +886,7 @@ public class ContentReportService {
 							BigDecimal ctrValue = BigDecimal.valueOf(totalClick).divide(new BigDecimal(pushNumber), 4, RoundingMode.HALF_UP).multiply(new BigDecimal("100"));//四捨五入至小數點第二位
 							pushReport.setReportPushCtrValue(ctrValue);
 
-							logger.debug("pushReport:" + pushReport);
+							logger.info("pushReport:" + pushReport);
 							pushReport.setModifyTime(new Date());
 							pushReport.setModifyUser("System");
 							

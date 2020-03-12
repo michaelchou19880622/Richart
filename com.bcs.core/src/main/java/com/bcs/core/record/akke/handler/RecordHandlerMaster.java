@@ -22,12 +22,12 @@ public class RecordHandlerMaster extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object message) throws Exception {
-		logger.debug("RecordHandlerMaster onReceive");
+		logger.info("RecordHandlerMaster onReceive");
 		if (message instanceof RecordMsg) {
 			RecordMsg msg = (RecordMsg)message;
 			if(msg.isSuccess()){
 				// Record Success
-				logger.debug("RecordHandlerMaster onReceive Record Success");
+				logger.info("RecordHandlerMaster onReceive Record Success");
 			}
 			else{
 				int retry = msg.getRetry();

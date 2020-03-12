@@ -130,7 +130,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindAll();		
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
@@ -143,7 +143,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindManual();
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -156,7 +156,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindAuto();
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -171,7 +171,7 @@ public class BCSLinePointController extends BCSBaseController {
 			List<LinePointMain> result = new ArrayList();
 			List<LinePointMain> list = linePointUIService.linePointMainFindAll(searchText);
 			result.addAll(list);
-			logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+			logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}catch(Exception e) {
 			logger.info("Error1: " + e.getMessage());
@@ -189,7 +189,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindManual(searchText);
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -202,7 +202,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindAuto(searchText);
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	//----
@@ -215,7 +215,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindUndoneManual();
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -228,7 +228,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindUndoneAuto();
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -243,7 +243,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointDetail> result = new ArrayList();
 		List<LinePointDetail> list = linePointUIService.findSuccess(mainId);
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
@@ -258,7 +258,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointDetail> result = new ArrayList();
 		List<LinePointDetail> list = linePointUIService.findFail(mainId);
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -272,7 +272,7 @@ public class BCSLinePointController extends BCSBaseController {
 		List<LinePointScheduledDetail> result = new ArrayList();
 		List<LinePointScheduledDetail> list = linePointUIService.findScheduledDetailList(mainId);
 		result.addAll(list);
-		logger.debug("result:" + ObjectUtil.objectToJsonStr(result));
+		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	

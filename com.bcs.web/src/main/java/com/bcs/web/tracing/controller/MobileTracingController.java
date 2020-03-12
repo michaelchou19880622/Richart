@@ -6,10 +6,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,14 +67,13 @@ public class MobileTracingController extends BCSBaseController {
 	private UserValidateService userValidateService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MobileTracingController.class);
+	private static Logger logger = LoggerFactory.getLogger(MobileTracingController.class);
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{tracingIdStr}")
-	public String startTracing(@PathVariable String tracingIdStr, 
-			HttpServletRequest request, 
-			HttpServletResponse response, 
-			Model model) throws Exception {
-		logger.info("startTracing:" + tracingIdStr );
+	public String startTracing(@PathVariable String tracingIdStr, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+		logger.info("DEBUG CHECK - MobileTracingController - startTracing : tracingIdStr = " + tracingIdStr);
+		
+		logger.info("startTracing:" + tracingIdStr);
 		
 		try{
 			String code = request.getParameter("code");
@@ -84,6 +83,7 @@ public class MobileTracingController extends BCSBaseController {
 			logger.info("startTracing event:" + event);
 			
 			Long tracingId = Long.parseLong(tracingIdStr);
+			logger.info("tracingId:" + tracingId);
 			
 			String sessionMID = (String) request.getSession().getAttribute("MID");
 			logger.info("sessionMID:" + sessionMID);
@@ -100,21 +100,26 @@ public class MobileTracingController extends BCSBaseController {
 			if(contentLinkTracing == null){
 				throw new Exception("TracingId Error:" + tracingId);
 			}
+
+			logger.info("startTracing contentLinkTracing:" + contentLinkTracing);
 			
 			String linkId = contentLinkTracing.getLinkId();
 			if(StringUtils.isBlank(linkId)){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkId:" + linkId);
 			}
+			logger.info("startTracing linkId:" + linkId);
 			
 			String linkIdBinded = contentLinkTracing.getLinkIdBinded();
 			if(StringUtils.isBlank(linkIdBinded)){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkIdBinded:" + linkIdBinded);
 			}
+			logger.info("startTracing linkIdBinded:" + linkIdBinded);
 			
 			String linkIdUnMobile = contentLinkTracing.getLinkIdUnMobile();
 			if(StringUtils.isBlank(linkIdUnMobile)){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkIdUnMobile:" + linkIdUnMobile);
 			}
+			logger.info("startTracing linkIdUnMobile:" + linkIdUnMobile);
 			
 			ContentLink contentLink = contentLinkService.findOne(linkId);
 			logger.info("After contentLinkService findOne linkId:"  + linkId);
@@ -122,6 +127,7 @@ public class MobileTracingController extends BCSBaseController {
 			if(contentLink == null){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkId:" + linkId);
 			}
+			logger.info("startTracing contentLink = {}", contentLink);
 			
 			ContentLink contentLinkBinded = contentLinkService.findOne(linkIdBinded);
 			logger.info("After contentLinkService findOne linkIdBinded:" + linkIdBinded);
@@ -129,6 +135,7 @@ public class MobileTracingController extends BCSBaseController {
 			if(contentLinkBinded == null){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkIdBinded:" + linkIdBinded);
 			}
+			logger.info("startTracing contentLinkBinded = {}", contentLinkBinded);
 			
 			ContentLink contentLinkUnMobile = contentLinkService.findOne(linkIdUnMobile);
 			logger.info("After contentLinkService findOne linkIdUnMobile:"  + linkIdUnMobile);
@@ -136,13 +143,19 @@ public class MobileTracingController extends BCSBaseController {
 			if(contentLinkUnMobile == null){
 				throw new Exception("TracingId Error:" + tracingId + ", LinkIdUnMobile:" + linkIdUnMobile);
 			}
+			logger.info("startTracing contentLinkUnMobile = {}", contentLinkUnMobile);
 
 			String lineoauthLink = "";
 			String bcsTargetLink = "";
 
 			boolean isGetFromSession = CoreConfigReader.getBoolean(CONFIG_STR.TRACING_CONFIG_GET_FROM_SESSION, true);
+			logger.info("isGetFromSession = " + isGetFromSession);
+			
 			boolean useSwitch = CoreConfigReader.getBoolean(CONFIG_STR.TRACING_CONFIG_USE_SWITCH, true);
+			logger.info("useSwitch = " + useSwitch);
+			
 			boolean checkMobile = CoreConfigReader.getBoolean(CONFIG_STR.TRACING_CONFIG_CHECK_MOBILE, true);
+			logger.info("checkMobile = " + checkMobile);
 			
 			if (StringUtils.isNotBlank(sessionMID) && isGetFromSession){
 				boolean isbinded = userValidateService.isBinding(sessionMID);
@@ -160,6 +173,7 @@ public class MobileTracingController extends BCSBaseController {
 				
 				if(useSwitch){
 					String ChannelID = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelID.toString(), true);
+					logger.info("ChannelID = " + ChannelID);
 					
 					lineoauthLink = CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL);
 					lineoauthLink = lineoauthLink.replace("{ChannelID}", ChannelID);
@@ -188,24 +202,30 @@ public class MobileTracingController extends BCSBaseController {
 						}
 					}
 				}
+
+				logger.info("useSwitch = " + useSwitch + ", lineoauthLink = " + lineoauthLink);
 				
 				bcsTargetLink = this.getTargetUrl(contentLinkUnMobile);
+				logger.info("1-1 bcsTargetLink = " + bcsTargetLink);
 				
-				if(UriHelper.checkWithMidReplace(bcsTargetLink)){
+				if (UriHelper.checkWithMidReplace(bcsTargetLink)) {
 					bcsTargetLink = UriHelper.bcsMPage;
+					logger.info("1-2 bcsTargetLink = " + bcsTargetLink);
 				}
 			}
 			
 			model.addAttribute("lineoauthLink", lineoauthLink);
-			if(!checkMobile){
+			
+			if (!checkMobile) {
 				model.addAttribute("bcsTargetLink", lineoauthLink);
-			}
-			else{
+			} else {
 				model.addAttribute("bcsTargetLink", bcsTargetLink);
 			}
-			logger.info("before visitPageLog MID:"  + sessionMID);
+			
+			logger.info("Before visitPageLog sessionMID = "  + sessionMID);
 			mobilePageService.visitPageLog(sessionMID, MobilePageEnum.UserTracingStartPage.getName(), "tracing");
-			logger.info("After visitPageLog tracingId:"  + tracingId);
+			logger.info("After visitPageLog tracingId = "  + tracingId);
+			
 			return MobilePageEnum.UserTracingStartPage.toString();
 
 		} catch (Exception e) {
@@ -320,6 +340,7 @@ public class MobileTracingController extends BCSBaseController {
 			logger.info("contentLinkTracing.getLinkIdBinded()　：" +contentLinkTracing.getLinkIdBinded());
 			logger.info("contentLinkTracing.getLinkIdUnMobile()：　" +contentLinkTracing.getLinkIdUnMobile());
 			logger.info("contentLinkTracing.getTracingId()　：　" +contentLinkTracing.getTracingId());
+			
 			if(contentLinkTracing == null){
 				throw new Exception("TracingId Error:" + tracingId);
 			}

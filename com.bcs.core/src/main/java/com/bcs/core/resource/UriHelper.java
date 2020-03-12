@@ -506,7 +506,7 @@ public class UriHelper {
 	
 	public static boolean checkIsBcsPage(String patternUri){
 
-		logger.debug("checkIsBcsPage:" + patternUri);
+		logger.info("checkIsBcsPage:" + patternUri);
 
 		// Pattern BcsPage:Type:resourceId
 		if(patternUri.startsWith(BCS_PAGE_TYPE.PATTERN_START.toString())){

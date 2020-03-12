@@ -17,7 +17,7 @@ public class PushReportService {
 	private PushReportRepository pushReportRepository;
 	
 	public PushReport findOne(Long reportId){
-		logger.debug("findOne:" + reportId);
+		logger.info("findOne:" + reportId);
 		return pushReportRepository.findOne(reportId);
 	}
 }

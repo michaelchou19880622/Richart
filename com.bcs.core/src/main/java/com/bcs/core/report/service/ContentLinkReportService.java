@@ -78,8 +78,8 @@ public class ContentLinkReportService {
 			calendarEnd.add(Calendar.DATE, 1);
 
 			endDate = sdf.format(calendarEnd.getTime());
-			logger.debug("startDate:" + startDate);
-			logger.debug("endDate:" + endDate);
+			logger.info("startDate:" + startDate);
+			logger.info("endDate:" + endDate);
 
 			// Query By linkUrl
 			String CONTENT_TYPE_LINK_URL = RECORD_REPORT_TYPE.CONTENT_TYPE_LINK_URL.toString();
@@ -207,8 +207,8 @@ public class ContentLinkReportService {
 			calendarEnd.add(Calendar.DATE, 1);
 
 			endDate = sdf.format(calendarEnd.getTime());
-			logger.debug("startDate:" + startDate);
-			logger.debug("endDate:" + endDate);
+			logger.info("startDate:" + startDate);
+			logger.info("endDate:" + endDate);
 
 			// Query By linkUrl
 			String CONTENT_TYPE_LINK_ID = RECORD_REPORT_TYPE.CONTENT_TYPE_LINK_ID.toString();

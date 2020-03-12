@@ -36,7 +36,7 @@ public class RichartValidateService {
 	
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public void bindedLineUser(UpdateStatusModel model) throws Exception{
-		logger.debug("bindedLineUser");
+		logger.info("bindedLineUser");
 
 		if(LineIdUtil.isLineUID(model.getUid())){
 			// Validate

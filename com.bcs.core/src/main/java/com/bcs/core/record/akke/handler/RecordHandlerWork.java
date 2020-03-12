@@ -46,7 +46,7 @@ public class RecordHandlerWork  extends UntypedActor {
 
 	@Override
 	public void onReceive(Object recordMsgObj){
-		logger.debug("RecordHandlerWork onReceive");
+		logger.info("RecordHandlerWork onReceive");
 
 		try{
 			if (recordMsgObj instanceof RecordMsg) {
@@ -95,7 +95,7 @@ public class RecordHandlerWork  extends UntypedActor {
 					try {
 						Thread.sleep(5000);
 					} catch (InterruptedException e) {}
-					logger.debug("RouterTestModel End");
+					logger.info("RouterTestModel End");
 				}
 				// Record SystemLog
 				else if (message instanceof SystemLog) {

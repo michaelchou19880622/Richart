@@ -27,7 +27,7 @@ public class RecordReportService {
 	}
 
 	public RecordReport saveByReferenceIdAndContentTypeAndDataTypeAndRecordTime(String recordTimeStr, String referenceId, String contentType, String dataType, Long recordCount) throws Exception{
-		logger.debug("saveByReferenceIdAndContentTypeAndDataTypeAndRecordTime");
+		logger.info("saveByReferenceIdAndContentTypeAndDataTypeAndRecordTime");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date recordTime = sdf.parse(recordTimeStr);

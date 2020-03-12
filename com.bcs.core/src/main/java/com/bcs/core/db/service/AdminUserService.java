@@ -64,7 +64,7 @@ public class AdminUserService {
 	
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public void delete(String account){
-		logger.debug("delete:" + account);
+		logger.info("delete:" + account);
 		adminUserRepository.delete(account);
 	}
 }

@@ -203,7 +203,7 @@ public class ContentResourceService {
             if (out != null) {
                 out.close();
             }
-            logger.debug("finally");
+            logger.info("finally");
 	    }
 	    if(isBcsNoticeException){
             throw new BcsNoticeException(errorMsg);

@@ -28,7 +28,7 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object message) throws Exception {
-		logger.debug("ReceivingMsgHandlerEventType onReceive");
+		logger.info("ReceivingMsgHandlerEventType onReceive");
 
 		if (message instanceof ReceivedModelOriginal) {
 			ReceivedModelOriginal original = (ReceivedModelOriginal) message;
@@ -43,7 +43,7 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 					ReceivingMsgHandlerMaster.taskCount.addAndGet(1L);
 					
 					String eventType = msg.getEventType();
-					logger.debug("eventType:" + eventType);
+					logger.info("eventType:" + eventType);
 					
 					String channelId = original.getChannelId();
 					String channelName = original.getChannelName();
@@ -113,6 +113,6 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 				SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_ReceivingMsgHandler, LOG_TARGET_ACTION_TYPE.ACTION_HandleMsgReceiveAll, original.getStart(), 200, 15000, "count:" + count + "-" + original.getReceivingMsg(), "200-" + count);
 			}
 		}
-		logger.debug("ReceivingMsgHandlerEventType End");
+		logger.info("ReceivingMsgHandlerEventType End");
 	}
 }

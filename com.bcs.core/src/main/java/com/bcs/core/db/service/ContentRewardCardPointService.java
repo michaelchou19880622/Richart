@@ -72,7 +72,7 @@ public class ContentRewardCardPointService {
 			            }  
 			        }
 			        
-			        Logger.debug("actionUserRewardCardPointDetail isLimitNumber=" + isLimitNumber);
+			        Logger.info("actionUserRewardCardPointDetail isLimitNumber=" + isLimitNumber);
 			        
 			        if(isLimitNumber) {
 			            return "失敗:此集點卡在" + contentRewardCard.getLimitGetTime() + "小時內, 只能集" + contentRewardCard.getLimitGetNumber() + "點";
@@ -81,7 +81,7 @@ public class ContentRewardCardPointService {
 			       
 			        //驗證是否領過此QRCode點數
 			        boolean exists = actionUserRewardCardPointDetailService.existsByUserRewardCardIdAndRewardCardPointId(actionUserRewardCard.getId(), rewardCardPointId);
-			        Logger.debug("actionUserRewardCardPointDetail exists=" + exists);
+			        Logger.info("actionUserRewardCardPointDetail exists=" + exists);
 			        
 			        //是否超過設定點數
 			        Integer havePoint = actionUserRewardCardPointDetailService.sumActionUserRewardCardGetPoint(actionUserRewardCard.getId());

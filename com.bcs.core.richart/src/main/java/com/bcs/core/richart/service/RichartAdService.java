@@ -28,7 +28,7 @@ public class RichartAdService {
 	
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public void syncAdUser(AdUserSyncModel model) throws Exception{
-		logger.debug("syncAdUser");
+		logger.info("syncAdUser");
 		
 		String account = model.getUserId();
 		if(StringUtils.isBlank(account)){
