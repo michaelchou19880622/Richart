@@ -11,8 +11,8 @@ $(function(){
 	});
 	var nowDate = moment(); //取得現在時間
 	
-	$('#reportStartDate').val(nowDate.format('YYYY-MM-DD'));
-	$('#reportEndDate').val(nowDate.format('YYYY-MM-DD'));
+//	$('#reportStartDate').val(nowDate.format('YYYY-MM-DD'));
+//	$('#reportEndDate').val(nowDate.format('YYYY-MM-DD'));
 	
 	var validateTimeRange = function() {
 		var startDate = moment($('#reportStartDate').val(), "YYYY-MM-DD");
@@ -39,14 +39,19 @@ $(function(){
 		$('.LyMain').unblock();
     });
 	
-	$('.btn_add').click(function(){
+	$('.btn_save').click(function(){
+		
+		console.info("test")
 		
 		if(!validateTimeRange()){
 			return false;
 		}
 		
 		var startDate = $('#reportStartDate').val();
+		console.info("startDate = " + startDate)
+		
 		var endDate = $('#reportEndDate').val();
+		console.info("endDate = " + endDate)
 
 		var url =  bcs.bcsContextPath + '/edit/exportToExcelForShareUserRecord?campaignId=' + campaignId + '&startDate=' + startDate + '&endDate=' + endDate + '&reportType=' + $(this).attr('reportType');
 		

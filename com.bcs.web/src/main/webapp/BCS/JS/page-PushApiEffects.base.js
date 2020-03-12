@@ -57,6 +57,7 @@ $(function(){
 					rowDOM.find('.product').text(element.department);
 					rowDOM.find('.successCount').text(element.successCount);
 					rowDOM.find('.failCount').text(element.failCount);
+					rowDOM.find('.sendType').text(element.sendType);
 					
 					rowDOM.appendTo($('#tableBody'));
 				});
