@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"  
       th:with="strList = ${ {'NULL'} }">
-<head th:replace="/BCS/Views/Common/Head :: head ('Rich Menu List Page', ${strList})" >
+<head th:replace="/BCS/Views/Common/HeadForHpiRichmenu :: head ('Rich Menu List Page', ${strList})" >
 </head>
 
 <body>
@@ -24,14 +24,14 @@
 					<script>
 							
 						function getLocationOriginRichmenuListPage() {
-							$('#IframeContent').attr("src", window.location.origin + "/bcsweb/#/RichmenuList");
-							return window.location.origin + "/bcsweb/#/RichmenuList";
+							var srcURL = window.location.origin + "/bcsweb/#/RichmenuList";
+							console.info("srcURL = " + srcURL);
+							
+							$('#IframeContent').attr("src", srcURL);
+							return srcURL;
 						}
-
-						var locationOrigin = getLocationOriginRichmenuListPage()
-						console.info("locationOrigin = " + locationOrigin);
 						
-						$('#IframeContent').attr("src", getLocationOriginRichmenuListPage);
+						getLocationOriginRichmenuListPage();
 						
 					</script>
 				</section>
