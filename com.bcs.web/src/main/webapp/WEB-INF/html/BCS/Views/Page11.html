@@ -19,7 +19,7 @@
                         <h3 class="CHTtl">成效頁面</h3>
                     </header>
                     <div class="CHBtnSet">
-                    	<div style="float:left">
+                    	<div class="CHLeft">
 	                    	<span>日期區間：</span>
 	                    	<div class="option date">
 	                        	<input type="text" 
@@ -37,64 +37,64 @@
 	                      	<input class="btn_save query" type="button" value="查詢"  style="cursor: pointer;">
 	                    </div>
                         <div class="CHRight">
-                        	<input class="btn_add create" type="button" value="建立發送成效"  style="cursor: pointer;">
-                        	<a class="btn_add exportToExcel" style="cursor: pointer; padding: 7px 12px; text-decoration: none">匯出EXCEL</a>
+                        	<input class="btn_add create" type="button" value="建立發送成效"  style="cursor: pointer; margin-left: 10px;">
+                        	<input class="btn_add exportToExcel" type="button" value="匯出EXCEL"  style="cursor: pointer;">
+<!--                         	<a class="btn_add exportToExcel" style="cursor: pointer; text-decoration: none">匯出EXCEL</a> -->
                         	<iframe id="downloadReport" style='display:none' ></iframe>
                        	</div>
                     </div>
-                    <p class="MdTxtNotice01 MdAC pad10">顯示以下來源的七天資料 2016-03-20 ~ 2016-03-26</p>
-                     <div>
-                        <div class="Lreport" style="margin-left: 0px; width:45%">
-                            <table>
-                                <tr>
-                                    <th colspan="2">LINE好友數</th>
-                                </tr>
-                                <tr>
-                                    <th>總有效好友數</th>
-                                    <td class="totalCount" style="text-align: right;"></td>
-                                </tr>
-                                <tr>
-                                    <th>已串聯有效好友數</th>
-                                    <td class="bindedCount" style="text-align: right;"></td>
-                                </tr>
-                                <tr>
-                                    <th>未串聯有效好友數</th>
-                                    <td class="unbindCount" style="text-align: right;"></td>
-                                </tr>
-                                <tr>
-                                    <th>串聯後封鎖好友數</th>
-                                    <td class="binded2BlockCount" style="text-align: right;"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        本週好友新增與封鎖人數
-                                        <div id="catchRecordOpReceiveList" ></div>
-                                    </td>
-                                </tr>
-                            </table>
+					<p class="MdTxtNotice01 MdAC pad10">顯示以下來源的七天資料 2016-03-20 ~ 2016-03-26</p>
+					<div>
+						<div class="Lreport" style="margin-left: 0px; width: 45%">
+							<table>
+								<tr>
+									<th colspan="2">LINE好友數</th>
+								</tr>
+								<tr>
+									<th>總有效好友數</th>
+									<td class="totalCount" style="text-align: right;"></td>
+								</tr>
+								<tr>
+									<th>已串聯有效好友數</th>
+									<td class="bindedCount" style="text-align: right;"></td>
+								</tr>
+								<tr>
+									<th>未串聯有效好友數</th>
+									<td class="unbindCount" style="text-align: right;"></td>
+								</tr>
+								<tr>
+									<th>串聯後封鎖好友數</th>
+									<td class="binded2BlockCount" style="text-align: right;"></td>
+								</tr>
+								<tr>
+									<td colspan="2">本週好友新增與封鎖人數
+										<div id="catchRecordOpReceiveList"></div>
+									</td>
+								</tr>
+							</table>
 						</div>
-                        <div class="Rreport" style="margin-right: 0px; width:45%">
-                            <table>
-                                <tr>
-                                    <th colspan="2">訊息點擊狀況</th>
-                                </tr>
-                                <tr>
-                                    <th rowspan="2">本週平均點擊率</th>
-                                    <td id="ctrForThisWeek" style="text-align:center;border-bottom:0" ></td>
-                                </tr>
-                                <tr>
-                                    <td id="ctrChangePercentage" style="color:red;text-align:center;border-top:0"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" id="clickSituation">
-                                     	<div>本週與上週點擊率比較</div>
-                                       	<div id="compareClickRate"></div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="mainFrame">
+						<div class="Rreport" style="margin-right: 0px; width: 45%">
+							<table>
+								<tr>
+									<th colspan="2">訊息點擊狀況</th>
+								</tr>
+								<tr>
+									<th rowspan="2">本週平均點擊率</th>
+									<td id="ctrForThisWeek" style="text-align: center; border-bottom: 0"></td>
+								</tr>
+								<tr>
+									<td id="ctrChangePercentage" style="color: red; text-align: center; border-top: 0"></td>
+								</tr>
+								<tr>
+									<td colspan="2" id="clickSituation">
+										<div>本週與上週點擊率比較</div>
+										<div id="compareClickRate"></div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div class="mainFrame">
                         <table border="1" id="reportList">
                             <colgroup>
                             	<col width="8%">
