@@ -75,20 +75,20 @@
                 </li>
                 
                 <!-- 使用 iframe 嵌入仁大版本的 Richmenu ( 仍在開發中，若要上台新正式環境，需要先關閉 ) -->
-                <li>
-                    <a href="" style="cursor: pointer;"><span>圖文選單</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
+<!--                 <li> -->
+<!--                     <a href="" style="cursor: pointer;"><span>圖文選單</span></a> -->
+<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
 <!--                     	<li th:classappend="${currentPage == 'PageHpiRichmenuGroupList'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/edit/hpiRichMenuGroupListPage}"><span>群組列表(開發中)</span></a> -->
 <!--                         </li> -->
 <!--                     	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'"> -->
 <!--                         	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>建立群組(開發中)</span></a> -->
 <!--                         </li> -->
-                    	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>選單列表</span></a>
-                        </li>
-                    </ul>
-                </li>
+<!--                     	<li th:classappend="${currentPage == 'PageHpiRchmnu'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/edit/hpiRichMenuListPage}"><span>選單列表</span></a> -->
+<!--                         </li> -->
+<!--                     </ul> -->
+<!--                 </li> -->
                 
                 <!-- 上台新測試/正式環境，需要先關閉 -->
 <!--                 <li> -->
@@ -130,20 +130,20 @@
                     </ul>
                 </li>
                 
-                <li sec:authorize="hasAnyRole('NotShowRole')">
-                    <a href="" style="cursor: pointer;"><span>活動</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'Page27'} ? 'ExSelected'" sec:authorize="hasAnyRole('NotShowRole')">
-                        	<a th:href="@{/bcs/edit/mgmSettingPage}"><span>MGM設定</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page29'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/edit/serialSettingListPage}"><span>電子序號列表</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page28'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/edit/serialSettingPage}"><span>電子序號設定</span></a>
-                        </li>
-                    </ul>
-                </li>
+<!--                 <li sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                     <a href="" style="cursor: pointer;"><span>活動</span></a> -->
+<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
+<!--                         <li th:classappend="${currentPage == 'Page27'} ? 'ExSelected'" sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                         	<a th:href="@{/bcs/edit/mgmSettingPage}"><span>MGM設定</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page29'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/edit/serialSettingListPage}"><span>電子序號列表</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page28'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/edit/serialSettingPage}"><span>電子序號設定</span></a> -->
+<!--                         </li> -->
+<!--                     </ul> -->
+<!--                 </li> -->
                 <li sec:authorize="hasAnyRole('ROLE_EDIT', 'ROLE_ADMIN')">
                     <a href="" style="cursor: pointer;"><span>集點卡</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
@@ -178,44 +178,44 @@
                         <li th:classappend="${currentPage == 'Page12'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/edit/interactiveResponsePage}"><span>互動式回覆</span></a>
                         </li>
-                        <li th:classappend="${currentPage == 'Page35'} ? 'ExSelected'" sec:authorize="hasAnyRole('NotShowRole')">
-                        	<a th:href="@{/bcs/edit/campaignResponsePage}"><span>活動互動式回覆</span></a>
-                        </li>
+<!--                         <li th:classappend="${currentPage == 'Page35'} ? 'ExSelected'" sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                         	<a th:href="@{/bcs/edit/campaignResponsePage}"><span>活動互動式回覆</span></a> -->
+<!--                         </li> -->
                     </ul>
                 </li>
-                <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')">
-                    <a href="" style="cursor: pointer;"><span>滿額活動</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'Page30'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/campaignListPage}"><span>滿額活動列表</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page34'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/campaignCreatePage}"><span>建立滿額活動</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')">
-                    <a href="" style="cursor: pointer;"><span>通路管理</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'Page39'} ? 'ExSelected'">
-                            <a th:href="@{/bcs/admin/businessGroupListPage}"><span>通路群組列表</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page38'} ? 'ExSelected'">
-                            <a th:href="@{/bcs/admin/businessGroupCreatePage}"><span>建立通路群組</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')">
-                    <a href="" style="cursor: pointer;"><span>商品管理</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'Page32'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/productGroupListPage}"><span>商品組合列表</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page33'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/productGroupCreatePage}"><span>建立商品組合</span></a>
-                        </li>
-                    </ul>
-                </li>
+<!--                 <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                     <a href="" style="cursor: pointer;"><span>滿額活動</span></a> -->
+<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
+<!--                         <li th:classappend="${currentPage == 'Page30'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/campaignListPage}"><span>滿額活動列表</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page34'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/campaignCreatePage}"><span>建立滿額活動</span></a> -->
+<!--                         </li> -->
+<!--                     </ul> -->
+<!--                 </li> -->
+<!--                 <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                     <a href="" style="cursor: pointer;"><span>通路管理</span></a> -->
+<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
+<!--                         <li th:classappend="${currentPage == 'Page39'} ? 'ExSelected'"> -->
+<!--                             <a th:href="@{/bcs/admin/businessGroupListPage}"><span>通路群組列表</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page38'} ? 'ExSelected'"> -->
+<!--                             <a th:href="@{/bcs/admin/businessGroupCreatePage}"><span>建立通路群組</span></a> -->
+<!--                         </li> -->
+<!--                     </ul> -->
+<!--                 </li> -->
+<!--                 <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                     <a href="" style="cursor: pointer;"><span>商品管理</span></a> -->
+<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
+<!--                         <li th:classappend="${currentPage == 'Page32'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/productGroupListPage}"><span>商品組合列表</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page33'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/productGroupCreatePage}"><span>建立商品組合</span></a> -->
+<!--                         </li> -->
+<!--                     </ul> -->
+<!--                 </li> -->
                 <li sec:authorize="hasAnyRole('ROLE_EDIT', 'ROLE_ADMIN')">
                     <a href="" style="cursor: pointer;"><span>遊戲</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
@@ -250,12 +250,12 @@
                         <li th:classappend="${currentPage == 'Page20'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/admin/reportLinkClickPage}"><span>連結成效頁面</span></a>
                         </li>
-                        <li th:classappend="${currentPage == 'Page22'} ? 'ExSelected'" sec:authorize="hasAnyRole('NotShowRole')">
-                        	<a th:href="@{/bcs/admin/reportPageVisitPage}"><span>頁面訪問成效頁面</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page23'} ? 'ExSelected'" sec:authorize="hasAnyRole('NotShowRole')">
-                        	<a th:href="@{/bcs/admin/otherPage}"><span>其他頁面</span></a>
-                        </li>
+<!--                         <li th:classappend="${currentPage == 'Page22'} ? 'ExSelected'" sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                         	<a th:href="@{/bcs/admin/reportPageVisitPage}"><span>頁面訪問成效頁面</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page23'} ? 'ExSelected'" sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                         	<a th:href="@{/bcs/admin/otherPage}"><span>其他頁面</span></a> -->
+<!--                         </li> -->
                         <li th:classappend="${currentPage == 'Page-PushApiEffects'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/admin/reportPushApiEffectsPage}"><span>Push API 成效頁面</span></a>
                         </li>
@@ -280,9 +280,9 @@
                         <li th:classappend="${currentPage == 'PageWinningLetterList'} ? 'ExSelected'">
                         	<a th:href="@{/bcs/admin/winningLetterListPage}"><span>中獎回函列表</span></a>
                         </li>
-                        <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'">
-                        	<a th:href="@{/m/wl/winningLetterReplyPage}"><span>資料填寫(手機模擬測試)</span></a>
-                        </li>
+<!--                         <li th:classappend="${currentPage == 'PageWinningLetterReply_ClickUpload'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/m/wl/winningLetterReplyPage}"><span>資料填寫(手機模擬測試)</span></a> -->
+<!--                         </li> -->
                     </ul>
                 </li>
                         
@@ -302,23 +302,23 @@
 <!--                     </ul> -->
 <!--                 </li> -->
 
-                <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')">
-                    <a href="" style="cursor: pointer;"><span>測試區</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'Page98'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/lineUserUploadPage}"><span>使用者資料匯入</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page99'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/uploadPicturePage}"><span>電子發票測試</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page97'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/admin/refreshInvoicePage}"><span>手動同步電子發票</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'Page100'} ? 'ExSelected'">
-                            <a th:href="@{/bcs/admin/excelExportTestPage}"><span>輸出Excel測試</span></a>
-                        </li>
-                    </ul>
-                </li>
+<!--                 <li class="fnMenu" sec:authorize="hasAnyRole('NotShowRole')"> -->
+<!--                     <a href="" style="cursor: pointer;"><span>測試區</span></a> -->
+<!--                     <ul class="MdNonDisp subMenu" style="display:none"> -->
+<!--                         <li th:classappend="${currentPage == 'Page98'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/lineUserUploadPage}"><span>使用者資料匯入</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page99'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/uploadPicturePage}"><span>電子發票測試</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page97'} ? 'ExSelected'"> -->
+<!--                         	<a th:href="@{/bcs/admin/refreshInvoicePage}"><span>手動同步電子發票</span></a> -->
+<!--                         </li> -->
+<!--                         <li th:classappend="${currentPage == 'Page100'} ? 'ExSelected'"> -->
+<!--                             <a th:href="@{/bcs/admin/excelExportTestPage}"><span>輸出Excel測試</span></a> -->
+<!--                         </li> -->
+<!--                     </ul> -->
+<!--                 </li> -->
 
             </ul>
         </nav>
