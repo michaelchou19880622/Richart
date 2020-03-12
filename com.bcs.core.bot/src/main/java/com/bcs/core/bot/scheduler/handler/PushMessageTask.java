@@ -70,6 +70,7 @@ public class PushMessageTask implements Job {
 				
 				record.setProduct(pushApiModel.getDepartment());
 				record.setUID(uids.get(i).toString());
+				record.setSourceType(PushMessageRecord.SOURCE_TYPE_API);
 				record.setSendMessage(pushApiModel.getMessages().toString());
 				record.setStatusCode(HttpStatus.OK.toString());
 				record.setMainMessage("Success");
@@ -86,6 +87,7 @@ public class PushMessageTask implements Job {
 					if(errorMessage.has("message")) {
 						record.setProduct(pushApiModel.getDepartment());
 						record.setUID(uids.get(i).toString());
+						record.setSourceType(PushMessageRecord.SOURCE_TYPE_API);
 						record.setSendMessage(pushApiModel.getMessages().toString());
 						record.setStatusCode(exception.getStatusCode().toString());
 						record.setMainMessage(errorMessage.getString("message"));

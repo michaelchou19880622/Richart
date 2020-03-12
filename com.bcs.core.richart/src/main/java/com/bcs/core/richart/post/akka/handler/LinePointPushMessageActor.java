@@ -4,9 +4,10 @@ import java.security.MessageDigest;
 import java.util.Date;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.jcodec.common.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,16 +25,22 @@ import com.bcs.core.richart.db.entity.LinePointPushMessageRecord;
 import com.bcs.core.richart.db.repository.LinePointMainRepository;
 import com.bcs.core.richart.db.service.LinePointDetailService;
 import com.bcs.core.richart.db.service.LinePointPushMessageRecordService;
+import com.bcs.core.bot.api.service.LineAccessApiService;
+import com.bcs.core.bot.send.akka.handler.PushMessageActor;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.enums.LINE_HEADER;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.RestfulUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import akka.actor.UntypedActor;
 
 public class LinePointPushMessageActor extends UntypedActor {
+
+	/** Logger **/
+	private static Logger logger = LoggerFactory.getLogger(LinePointPushMessageActor.class);
 
 	@Override
 	public void onReceive(Object object) throws Exception {
@@ -44,21 +51,35 @@ public class LinePointPushMessageActor extends UntypedActor {
 			
 			// get push data
 			LinePointPushModel pushApiModel = (LinePointPushModel) object;
+			logger.info("pushApiModel : {}", pushApiModel);
+			
 			Long eventId = pushApiModel.getEventId();
+			logger.info("eventId : {}", eventId);
+			
 			JSONArray uids = pushApiModel.getUid();
+			logger.info("uids : {}", uids);
+
+			ObjectNode callRefreshingResult = LineAccessApiService.callVerifyAPIAndIssueToken(CONFIG_STR.Default.toString(), true);
+			logger.info("callRefreshingResult : {}", callRefreshingResult);
 			
 			// initialize request header
 			HttpHeaders headers = new HttpHeaders();
 			String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true); // Richart.ChannelToken
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+			logger.info("headers : {}", headers);
 			
 			// initialize request body
 			JSONObject requestBody = new JSONObject();
 			String url = CoreConfigReader.getString(CONFIG_STR.LINE_POINT_MESSAGE_PUSH_URL.toString(), true); // https://api.line.me/pointConnect/v1/issue
-		    String clientId = CoreConfigReader.getString(CONFIG_STR.LINE_POINT_API_CLIENT_ID.toString(), true); // 10052
+			logger.info("url : {}", url);
+			
+			String clientId = CoreConfigReader.getString(CONFIG_STR.LINE_POINT_API_CLIENT_ID.toString(), true); // 10052
+			logger.info("clientId : {}", clientId);
+			
 		    requestBody.put("clientId", clientId);
 			requestBody.put("amount", pushApiModel.getAmount());
+			logger.info("1-1 requestBody : {}", requestBody);
 			
 			for(Integer i = 0; i < uids.length(); i++) {
 				// count examine
@@ -86,38 +107,48 @@ public class LinePointPushMessageActor extends UntypedActor {
 				
 				// memberId
 				requestBody.put("memberId", uids.get(i));
+				logger.info("1-2 requestBody : {}", requestBody);
 				
 				// orderKey
 				MessageDigest salt = MessageDigest.getInstance("SHA-256");
 				String hashStr = "" + uids.get(i) + (new Date()).getTime() + pushApiModel.getEventId();
+				logger.info("hashStr : {}", hashStr);
+				
 				String hash = DigestUtils.md5Hex(hashStr);
+				logger.info("hash : {}", hash);
+				
 			    salt.update(hash.toString().getBytes("UTF-8"));
+			    
 			    String orderKey = bytesToHex(salt.digest()).substring(0, 48);
+				logger.info("orderKey : {}", orderKey);
+			    
 			    requestBody.put("orderKey", orderKey);
+				logger.info("1-3 requestBody : {}", requestBody);
 
 			    // applicationTime
 			    Long applicationTime = System.currentTimeMillis();
+				logger.info("applicationTime : {}", applicationTime);
+			    
 			    requestBody.put("applicationTime", applicationTime);
+				logger.info("1-4 requestBody : {}", requestBody);
 			    
 				// HttpEntity by header and body
 				HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody.toString(), headers);
+				logger.info("httpEntity : {}", httpEntity);
+				
 				RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.POST, url, httpEntity);
+				logger.info("restfulUtil.getStatusCode() : {}", restfulUtil.getStatusCode());
 				
 				// set detail
 				try {
 					JSONObject responseObject = restfulUtil.execute();
-					Logger.info("RO1:"+responseObject.toString());
+					logger.info("responseObject = {}", responseObject.toString());
 					
 					String Id = responseObject.getString("transactionId");
 					Long Time = responseObject.getLong("transactionTime");
 					String Type = responseObject.getString("transactionType");
 					Integer Amount = responseObject.getInt("transactionAmount");					
 					Integer Balance = responseObject.getInt("balance");
-//					Logger.info(Id);
-//					Logger.info(Time.toString());					
-//					Logger.info(Type);					
-//					Logger.info(Amount.toString());					
-//					Logger.info(Balance.toString());
 					
 					linePointMain.setSuccessfulCount(linePointMain.getSuccessfulCount() + 1);
 					if(linePointMain.getSuccessfulCount() >= linePointMain.getTotalCount()) {
@@ -144,7 +175,7 @@ public class LinePointPushMessageActor extends UntypedActor {
 				detail.setApplicationTime(applicationTime);
 				detail.setSendTime(new Date());
 
-				Logger.info("detail1: " + detail.toString());
+				logger.info("detail1: {}", detail.toString());
 				linePointDetailService.save(detail);
 			}
 		}

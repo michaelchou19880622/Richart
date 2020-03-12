@@ -61,6 +61,7 @@ public class PushMessageRecordService {
 			map.put("department", (o[1] == null) ? null : o[1].toString());
 			map.put("successCount", (o[2] == null) ? null : o[2].toString());
 			map.put("failCount", (o[3] == null) ? null : o[3].toString());
+			map.put("sendType", (o[4] == null) ? null : o[4].toString());
 			
 			result.add(map);
 		}
