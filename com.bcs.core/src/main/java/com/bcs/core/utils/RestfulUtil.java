@@ -15,7 +15,6 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -27,8 +26,11 @@ import org.springframework.web.client.RestTemplate;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.resource.CoreConfigReader;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class RestfulUtil {
-	private static Logger logger = Logger.getLogger(RestfulUtil.class);
+//	private static log log = log.getlog(RestfulUtil.class);
 	
 	private RestTemplate restTemplate;
 	private HttpMethod method;
@@ -86,9 +88,9 @@ public class RestfulUtil {
 	
 	public JSONObject execute() throws Exception {
 		try {
-			logger.info("---------- Start to execute the request ----------");
-			logger.info("[RestUtil execute] Target url: " + url);
-			logger.info("[RestUtil execute] Request body: " + httpEntity.getBody());
+			log.info("---------- Start to execute the request ----------");
+			log.info("[RestUtil execute] Target url: " + url);
+			log.info("[RestUtil execute] Request body: " + httpEntity.getBody());
 
 			ResponseEntity<String> gatewayResponse = this.restTemplate.exchange(url, method, httpEntity, String.class);
 			
@@ -96,24 +98,39 @@ public class RestfulUtil {
 
 			statusCode = gatewayResponse.getStatusCode().toString();
 			
-			logger.info("[RestUtil execute] Status code: " + statusCode);
-			logger.info("[RestUtil execute] Response body: " + responseBody);
+			log.info("[RestUtil execute] Status code: " + statusCode);
+			log.info("[RestUtil execute] Response body: " + responseBody);
 			
 			if(responseBody!=null){
 				int i = responseBody.indexOf("{");
 				responseBody = responseBody.substring(i);
 			}
 			
+//			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Request body = {}", httpEntity.getBody());
+			
+			if (url != null && url.equals(CONFIG_STR.LINE_MESSAGE_PUSH_URL.toString())) {
+				log.warn("[RestUtil execute] LINE PUSH MESSAGE : Request body = {}", httpEntity.getBody());
+				log.warn("[RestUtil execute] LINE PUSH MESSAGE : Status Code = {}", statusCode);
+				log.warn("[RestUtil execute] LINE PUSH MESSAGE : Response body = {}", responseBody);
+			}
+			
 			return responseBody == null ? null : new JSONObject(responseBody);
 		} catch (HttpClientErrorException e) {
-			logger.info("[RestUtil execute] Status code: " + e.getStatusCode());
-			logger.info("[RestUtil execute] Response body: " + e.getResponseBodyAsString());
+			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Request body = {}", httpEntity.getBody());
+			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Status Code = {}", e.getStatusCode());
+			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Response body = {}", e.getResponseBodyAsString());
 			
-			logger.error(ErrorRecord.recordError(e));
+			log.info("[RestUtil execute] Status code: " + e.getStatusCode());
+			log.info("[RestUtil execute] Response body: " + e.getResponseBodyAsString());
+			
+			log.error(ErrorRecord.recordError(e));
 			throw e;
 		} catch (Exception e) {
-			logger.info("[RestUtil execute] Exception: " + e.getMessage());
-			logger.error(ErrorRecord.recordError(e));
+			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Request body = {}", httpEntity.getBody());
+			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Exception = {}", e);
+			
+			log.info("[RestUtil execute] Exception: " + e.getMessage());
+			log.error(ErrorRecord.recordError(e));
 			
 			throw e;
 		}
@@ -143,7 +160,7 @@ public class RestfulUtil {
 		String proxyUrl = CoreConfigReader.getString(CONFIG_STR.RICHART_PROXY_URL.toString(), true); // Proxy Server 的位置
 		
 		if (useProxy && StringUtils.isNotBlank(proxyUrl)) {
-			logger.info("[RestUtil execute] Use proxy and proxy url is: " + proxyUrl);
+			log.info("[RestUtil execute] Use proxy and proxy url is: " + proxyUrl);
 			clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClientBuilder.setProxy(new HttpHost(proxyUrl, 80, "http")).build());
 		} else {
 			clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClientBuilder.build());

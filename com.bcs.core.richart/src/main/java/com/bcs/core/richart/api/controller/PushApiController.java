@@ -95,40 +95,6 @@ public class PushApiController {
 
 			return new ResponseEntity<>("{\"result\": 1, \"msg\": \"Success.\"}", HttpStatus.OK);
 		} catch (Exception e) {
-			JSONArray uids = pushApiModel.getUid();
-			logger.info("uids = {}", uids);
-			logger.info("uids.length() = {}", uids.length());
-			
-			for (Integer i = 0; i < uids.length(); i++) {
-				String sendMessage = pushApiModel.getMessages().toString();
-				logger.info("sendMessage = {}", sendMessage);
-				logger.info("sendMessage.length() = {}", sendMessage.length());
-				
-				if (sendMessage.length() >= 200) {  // 因為DB欄位設定的關係(nvarchar 255)，暫時修改最多只取200長度的data。
-					sendMessage = sendMessage.substring(0, 200);
-				}
-				
-				// save record
-				PushMessageRecord record = new PushMessageRecord();
-				record.setProduct(pushApiModel.getDepartment());
-				record.setUID(uids.get(i).toString());
-				record.setSourceType(PushMessageRecord.SOURCE_TYPE_API);
-				record.setSendType(pushApiModel.getSendTimeType());
-				
-				Date dateSendTime = new Date();
-				if (pushApiModel.getSendTimeType().equals(PushApiModel.SEND_TYPE_DELAY)) {
-					dateSendTime = pushApiModel.getSendTimeSet();
-				}
-				
-				record.setSendTime(dateSendTime);
-				record.setCreateTime(pushApiModel.getTriggerTime());
-				record.setMainMessage("Error");
-				record.setSendMessage(sendMessage);
-				record.setDetailMessage(e.getClass().getName() + " occurred, please check the log.");
-				
-				PushMessageRecordService pushMessageRecordService = ApplicationContextProvider.getApplicationContext().getBean(PushMessageRecordService.class);
-				pushMessageRecordService.save(record);
-			}
 
 			logger.error("[pushMessage] Exception = {}", e);
 			

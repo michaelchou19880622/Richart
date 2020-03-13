@@ -6,11 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.JSONArray;
+
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,25 +24,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bcs.core.utils.ErrorRecord;
-import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.resource.CoreConfigReader;
+import com.bcs.core.richart.akka.service.LinePointPushAkkaService;
+import com.bcs.core.richart.api.model.LinePointPushModel;
+import com.bcs.core.richart.db.entity.LinePointDetail;
+import com.bcs.core.richart.db.entity.LinePointMain;
+import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
+import com.bcs.core.richart.service.ExportToExcelForLinePointPushApiEffects;
+import com.bcs.core.utils.ErrorRecord;
+import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.web.security.CurrentUser;
 import com.bcs.core.web.security.CustomUser;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 import com.bcs.web.aop.ControllerLog;
-
 import com.bcs.web.ui.service.LinePointUIService;
 import com.bcs.web.ui.service.LoadFileUIService;
-import com.bcs.core.richart.api.model.LinePointPushModel;
-import com.bcs.core.richart.akka.service.LinePointPushAkkaService;
-import com.bcs.core.richart.db.entity.LinePointDetail;
-import com.bcs.core.richart.db.entity.LinePointMain;
-import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
-import com.bcs.core.richart.service.ExportToExcelForLinePointPushApiEffects;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/bcs")
 public class BCSLinePointController extends BCSBaseController {
@@ -52,50 +55,46 @@ public class BCSLinePointController extends BCSBaseController {
 	private LinePointPushAkkaService linePointPushAkkaService;
 	@Autowired
 	private ExportToExcelForLinePointPushApiEffects exportToExcelForLinePointPushApiEffects;
-	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSLinePointController.class);
-
-	
 	
 	@ControllerLog(description = "建立 Line Point 活動")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/linePointCreatePage")
 	public String linePointCreatePage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("linePointCreatePage");
+		log.info("linePointCreatePage");
 		return BcsPageEnum.LinePointCreatePage.toString();
 	}
 
 	@ControllerLog(description = "Line Point 活動列表")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/linePointListPage")
 	public String linePointListPage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("linePointListPage");
+		log.info("linePointListPage");
 		return BcsPageEnum.LinePointListPage.toString();
 	}
 
 	@ControllerLog(description = "發送 Line Point 活動")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/linePointPushPage")
 	public String linePointPushPage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("linePointPushPage");
+		log.info("linePointPushPage");
 		return BcsPageEnum.LinePointPushPage.toString();
 	}
 
 	@ControllerLog(description = "Line Point 活動報表")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/linePointReportPage")
 	public String linePointReportPage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("linePointReportPage");
+		log.info("linePointReportPage");
 		return BcsPageEnum.LinePointReportPage.toString();
 	}
 
 	@ControllerLog(description = "Line Point 活動明細")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/linePointDetailPage")
 	public String linePointDetailPage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("linePointDetailPage");
+		log.info("linePointDetailPage");
 		return BcsPageEnum.LinePointDetailPage.toString();
 	}
 	
 	@ControllerLog(description = "Line Point 排程明細")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/linePointSchedulePage")
 	public String linePointSchedulePage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("linePointDetailPage");
+		log.info("linePointDetailPage");
 		return BcsPageEnum.LinePointSchedulePage.toString();
 	}
 	
@@ -104,7 +103,7 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> createLinePointMain(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @RequestBody LinePointMain linePointMain) throws IOException {
-		logger.info("createLinePointMain");
+		log.info("createLinePointMain");
 		try {
 			if (linePointMain != null) {
 				String adminUserAccount = customUser.getAccount();
@@ -113,7 +112,7 @@ public class BCSLinePointController extends BCSBaseController {
 			} else 
 				throw new Exception("LinePointMain is Null");
 		} catch (Exception e) {
-			logger.error(ErrorRecord.recordError(e));
+			log.error(ErrorRecord.recordError(e));
 			if (e instanceof BcsNoticeException) 
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
 			else 
@@ -126,11 +125,11 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getAllLinePointMainList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser) throws IOException {
-		logger.info("[getAllLinePointMainList]");
+		log.info("[getAllLinePointMainList]");
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindAll();		
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
@@ -139,11 +138,11 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getManualLinePointMainList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser) throws IOException {
-		logger.info("[getManualLinePointMainList]");
+		log.info("[getManualLinePointMainList]");
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindManual();
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -152,11 +151,11 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getAutoLinePointMainList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser) throws IOException {
-		logger.info("[getAutoLinePointMainList]");
+		log.info("[getAutoLinePointMainList]");
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindAuto();
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -166,15 +165,15 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getAllLinePointMainListSearch(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @PathVariable String searchText) throws IOException {
-		logger.info("[findAllLinePointMainList]");
+		log.info("[findAllLinePointMainList]");
 		try {
 			List<LinePointMain> result = new ArrayList();
 			List<LinePointMain> list = linePointUIService.linePointMainFindAll(searchText);
 			result.addAll(list);
-			logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+			log.info("result:" + ObjectUtil.objectToJsonStr(result));
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}catch(Exception e) {
-			logger.info("Error1: " + e.getMessage());
+			log.info("Error1: " + e.getMessage());
 			return new ResponseEntity<>("Error1: " + e.getMessage(), HttpStatus.OK);
 		}
 
@@ -185,11 +184,11 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getManualLinePointMainListSearch(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @PathVariable String searchText) throws IOException {
-		logger.info("[getManualLinePointMainListSearch]");
+		log.info("[getManualLinePointMainListSearch]");
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindManual(searchText);
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -198,11 +197,11 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getAutoLinePointMainListSearch(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @PathVariable String searchText) throws IOException {
-		logger.info("[getAutoLinePointMainListSearch]");
+		log.info("[getAutoLinePointMainListSearch]");
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindAuto(searchText);
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	//----
@@ -211,11 +210,11 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getUndoneManualLinePointMainList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser ) throws IOException {
-		logger.info("getUndoneManualLinePointMainList");
+		log.info("getUndoneManualLinePointMainList");
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindUndoneManual();
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -224,11 +223,11 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getUndoneAutoLinePointMainList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser ) throws IOException {
-		logger.info("getUndoneAutoLinePointMainList");
+		log.info("getUndoneAutoLinePointMainList");
 		List<LinePointMain> result = new ArrayList();
 		List<LinePointMain> list = linePointUIService.linePointMainFindUndoneAuto();
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -237,13 +236,13 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getSuccessLinePointDetailList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @PathVariable String linePointMainId) throws IOException {
-		logger.info("getSuccessLinePointDetailList");
+		log.info("getSuccessLinePointDetailList");
 		Long mainId = Long.parseLong(linePointMainId);
 		
 		List<LinePointDetail> result = new ArrayList();
 		List<LinePointDetail> list = linePointUIService.findSuccess(mainId);
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
@@ -252,13 +251,13 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getFailLinePointDetailList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @PathVariable String linePointMainId) throws IOException {
-		logger.info("getFailLinePointDetailList");
+		log.info("getFailLinePointDetailList");
 		Long mainId = Long.parseLong(linePointMainId);
 		
 		List<LinePointDetail> result = new ArrayList();
 		List<LinePointDetail> list = linePointUIService.findFail(mainId);
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -267,12 +266,12 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getLinePointScheduledDetailList(HttpServletRequest request, HttpServletResponse response,
 			@CurrentUser CustomUser customUser, @PathVariable Long mainId) throws IOException {
-		logger.info("getLinePointScheduledDetailList");
+		log.info("getLinePointScheduledDetailList");
 
 		List<LinePointScheduledDetail> result = new ArrayList();
 		List<LinePointScheduledDetail> list = linePointUIService.findScheduledDetailList(mainId);
 		result.addAll(list);
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+		log.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -281,16 +280,16 @@ public class BCSLinePointController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> deleteLinePointMain( HttpServletRequest request,  HttpServletResponse response, @CurrentUser CustomUser customUser,
 			@RequestParam(required=false) String campaignId, @RequestParam(required=false) String listType) throws IOException {
-		logger.info("deleteLinePointMain");
+		log.info("deleteLinePointMain");
 		try{
 			if(StringUtils.isNotBlank(campaignId)){
-				logger.info("campaignId:" + campaignId);
+				log.info("campaignId:" + campaignId);
 				linePointUIService.deleteFromUI(Long.parseLong(campaignId), customUser.getAccount(), listType);
 				return new ResponseEntity<>("Delete Success", HttpStatus.OK);
 			} else
 				throw new Exception("ID IS NULL");
 		} catch(Exception e) {
-			logger.error(ErrorRecord.recordError(e));
+			log.error(ErrorRecord.recordError(e));
 			if(e instanceof BcsNoticeException)
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
 			else
@@ -301,28 +300,46 @@ public class BCSLinePointController extends BCSBaseController {
 	@ControllerLog(description = "Push Line Point")
 	@RequestMapping(method = RequestMethod.POST, value = "/market/pushLinePoint", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> pushLinePoint(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser,
-			@RequestBody List<String> uids, @RequestParam Long eventId) throws IOException {
+	public ResponseEntity<?> pushLinePoint(HttpServletRequest request, HttpServletResponse response, 
+			@CurrentUser CustomUser customUser, @RequestBody List<String> uids, @RequestParam Long eventId)
+			throws IOException {
+
+		log.info("[pushLinePoint]");
+		log.info("[pushLinePoint] customUser = {}", customUser);
+		log.info("[pushLinePoint] uids = {}", uids);
+		log.info("[pushLinePoint] eventId = {}", eventId);
+		
 		try {
-				JSONArray uid = new JSONArray();
-				for(String u : uids) {
-					uid.put(u);
-				}
-				LinePointMain linePointMain = linePointUIService.linePointMainFindOne(eventId);				
-				LinePointPushModel linePointPushModel = new LinePointPushModel();
-				linePointPushModel.setAmount(linePointMain.getAmount());
-				linePointPushModel.setUid(uid);
-				linePointPushModel.setEventId(eventId);
-				linePointPushModel.setSource(LinePointPushModel.SOURCE_TYPE_BCS);
-				linePointPushModel.setSendTimeType(LinePointPushModel.SEND_TYPE_IMMEDIATE);
-				linePointPushModel.setTriggerTime(new Date());
-				linePointPushAkkaService.tell(linePointPushModel);
-				return new ResponseEntity<>("",HttpStatus.OK);
+			JSONArray uid = new JSONArray();
+			
+			for (String u : uids) {
+				uid.put(u);
+			}
+
+			log.info("[pushLinePoint] JSONArray uid = {}", uid);
+			
+			LinePointMain linePointMain = linePointUIService.linePointMainFindOne(eventId);
+			log.info("[pushLinePoint] linePointMain = {}", linePointMain);
+			
+			LinePointPushModel linePointPushModel = new LinePointPushModel();
+			linePointPushModel.setAmount(linePointMain.getAmount());
+			linePointPushModel.setUid(uid);
+			linePointPushModel.setEventId(eventId);
+			linePointPushModel.setSource(LinePointPushModel.SOURCE_TYPE_BCS);
+			linePointPushModel.setSendTimeType(LinePointPushModel.SEND_TYPE_IMMEDIATE);
+			linePointPushModel.setTriggerTime(new Date());
+			
+			log.info("[pushLinePoint] linePointPushModel = {}", linePointPushModel);
+			
+			linePointPushAkkaService.tell(linePointPushModel);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error(ErrorRecord.recordError(e));
-			if (e instanceof BcsNoticeException) 
+			log.info("[pushLinePoint] Exception = {}", e);
+			
+			log.error(ErrorRecord.recordError(e));
+			if (e instanceof BcsNoticeException)
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			else 
+			else
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -350,7 +367,7 @@ public class BCSLinePointController extends BCSBaseController {
             }
             exportToExcelForLinePointPushApiEffects.exportExcel(filePath, fileName);
         } catch (Exception e) {
-            logger.error(ErrorRecord.recordError(e));
+            log.error(ErrorRecord.recordError(e));
         }
 
         try {
@@ -384,7 +401,7 @@ public class BCSLinePointController extends BCSBaseController {
             }
             exportToExcelForLinePointPushApiEffects.exportExcel(filePath, fileName, mainId, status);
         } catch (Exception e) {
-            logger.error(ErrorRecord.recordError(e));
+            log.error(ErrorRecord.recordError(e));
         }
 
         try {
