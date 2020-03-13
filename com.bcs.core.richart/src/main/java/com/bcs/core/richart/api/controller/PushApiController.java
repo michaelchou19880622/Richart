@@ -56,7 +56,6 @@ public class PushApiController {
 			pushApiModel = new PushApiModel();
 
 			PushApiRequestValidator.validate(requestBodyString, pushApiModel);
-
 			logger.info("[pushMessage] pushApiModel = {}", pushApiModel);
 
 			if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
