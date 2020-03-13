@@ -26,6 +26,9 @@ $(function(){
     });
 	
 	$.BCS.getTracingLinkList = function(){
+		
+		$('.LyMain').block($.BCS.blockMsgRead);
+		
 		$.ajax({
 	        type: 'GET',
 	        url: bcs.bcsContextPath + "/edit/getTracingLinkList",
@@ -65,13 +68,17 @@ $(function(){
 				}
 				catch(err) {
 					console.error(err);
+					$('.LyMain').unblock();
+					$.FailResponse(response);
 				} 
 			});
 	
 		}).fail(function(response){
 			console.info(response);
+			$('.LyMain').unblock();
 			$.FailResponse(response);
 		}).done(function(){
+			$('.LyMain').unblock();
 		});
 	}
 	
