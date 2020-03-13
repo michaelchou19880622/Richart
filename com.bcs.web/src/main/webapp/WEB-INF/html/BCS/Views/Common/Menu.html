@@ -18,30 +18,29 @@
                         </li>
                     </ul>
                 </li>
-                
-                   <li >
-                    <a href="" style="cursor: pointer;"><span>Line Point 活動</span></a>
-                    <ul class="MdNonDisp subMenu" style="display:none">
-                        <li th:classappend="${currentPage == 'LinePointCreatePage'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/market/linePointCreatePage}"><span>建立 Line Point 活動</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'LinePointListPage'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/market/linePointListPage}"><span>Line Point 活動列表</span></a>
-                        </li>
-                         <li th:classappend="${currentPage == 'LinePointPushPage'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/market/linePointPushPage}"><span>發送 Line Point 活動</span></a>
-                        </li>
-                        <li th:classappend="${currentPage == 'LinePointReportPage'} ? 'ExSelected'">
-                        	<a th:href="@{/bcs/market/linePointReportPage}"><span>Line Point 發送報表</span></a>
-                        </li>
-                        <!-- 轉此頁面URL需要帶上相關參數，否則會報錯。( 上台新測試/正式環境，先隱藏 ) -->
-<!--                    <li th:classappend="${currentPage == 'LinePointDetailPage'} ? 'ExSelected'">-->
- <!--                         	<a th:href="@{/bcs/market/linePointDetailPage}"><span>Line Point 活動明細</span></a>-->
-<!--                         </li> -->
-                    </ul>
-                </li>
-                
-                <li sec:authorize="hasAnyRole('ROLE_EDIT', 'ROLE_ADMIN')">
+
+				<li><a href="" style="cursor: pointer;"><span>Line Point 活動</span></a>
+					<ul class="MdNonDisp subMenu" style="display: none">
+						<li th:classappend="${currentPage == 'LinePointCreatePage'} ? 'ExSelected'"><a
+							th:href="@{/bcs/market/linePointCreatePage}"><span>建立 Line Point 活動</span></a>
+						</li>
+						<li th:classappend="${currentPage == 'LinePointListPage'} ? 'ExSelected'"><a
+							th:href="@{/bcs/market/linePointListPage}"><span>Line Point 活動列表</span></a>
+						</li>
+						<li th:classappend="${currentPage == 'LinePointPushPage'} ? 'ExSelected'"><a
+							th:href="@{/bcs/market/linePointPushPage}"><span>發送 Line Point 活動</span></a>
+						</li>
+						<li th:classappend="${currentPage == 'LinePointReportPage'} ? 'ExSelected'"><a
+							th:href="@{/bcs/market/linePointReportPage}"><span>Line Point 發送報表</span></a>
+						</li>
+						<!-- 轉此頁面URL需要帶上相關參數，否則會報錯。( 上台新測試/正式環境，先隱藏 ) -->
+<!-- 						<li th:classappend="${currentPage == 'LinePointDetailPage'} ? 'ExSelected'"><a -->
+<!-- 							th:href="@{/bcs/market/linePointDetailPage}"><span>Line Point 活動明細</span></a> -->
+<!-- 						</li> -->
+					</ul>
+				</li>
+
+				<li sec:authorize="hasAnyRole('ROLE_EDIT', 'ROLE_ADMIN')">
                     <a href="" style="cursor: pointer;"><span>訊息</span></a>
                     <ul class="MdNonDisp subMenu" style="display:none">
                         <li th:classappend="${currentPage == 'Page4-1'} ? 'ExSelected'">
