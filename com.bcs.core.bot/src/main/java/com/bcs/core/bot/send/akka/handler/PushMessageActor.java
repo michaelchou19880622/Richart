@@ -70,7 +70,7 @@ public class PushMessageActor extends UntypedActor {
 				headers.set(LINE_HEADER.HEADER_BOT_ServiceCode.toString(), serviceCode);
 				logger.info("[PushMessageActor] [IMMEDIATE] headers = {}", headers);
 
-				requestBody.put("[PushMessageActor] [IMMEDIATE] messages", pushApiModel.getMessages());
+				requestBody.put("messages", pushApiModel.getMessages());
 
 				JSONArray uids = pushApiModel.getUid();
 				logger.info("[PushMessageActor] [IMMEDIATE] uids = {}", uids);
