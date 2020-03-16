@@ -106,8 +106,6 @@ public class RestfulUtil {
 				responseBody = responseBody.substring(i);
 			}
 			
-//			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Request body = {}", httpEntity.getBody());
-			
 			if (url != null && url.equals(CONFIG_STR.LINE_MESSAGE_PUSH_URL.toString())) {
 				log.warn("[RestUtil execute] LINE PUSH MESSAGE : Request body = {}", httpEntity.getBody());
 				log.warn("[RestUtil execute] LINE PUSH MESSAGE : Status Code = {}", statusCode);
