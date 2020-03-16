@@ -46,6 +46,7 @@ import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richart.service.WinningLetterRecordService;
 import com.bcs.core.richart.service.WinningLetterService;
+import com.bcs.core.utils.DataSyncUtil;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.web.ui.page.enums.MobilePageEnum;
 
@@ -217,6 +218,7 @@ public class MobileWinningLetterReplyController {
 		winningLetterRecordData.setResidentAddress(winningLetterRecord.getResidentAddress());
 		winningLetterRecordData.setMailingAddress(winningLetterRecord.getMailingAddress());
 		winningLetterRecordData.setRecordTime(currentDateTime);
+		logger.info("winningLetterRecordData = {}", winningLetterRecordData);
 
 		Long winningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
 		logger.info("winningLetterRecordId = {}", winningLetterRecordId);
@@ -260,54 +262,6 @@ public class MobileWinningLetterReplyController {
 			}
 
 			return new ResponseEntity<>(resourceId, HttpStatus.OK);
-
-//			if (filePart != null) {
-//
-//				logger.info("filePart.toString() = {}", filePart.toString());
-//				logger.info("filePart.getOriginalFilename = {}", filePart.getOriginalFilename());
-//				logger.info("filePart.getContentType = {}", filePart.getContentType());
-//				logger.info("filePart.getSize = {}", filePart.getSize());
-//
-//				ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
-//
-//				String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "IMAGE";
-//				logger.info("filePath = {}", filePath);
-//
-//				String srcFile = filePath + System.getProperty("file.separator") + resource.getResourceId();
-//				logger.info("srcFile = {}", srcFile);
-//
-//				String waterMarkPath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "DEFAULT";
-//
-//				File fileWatermark = new File(waterMarkPath + System.getProperty("file.separator") + "richart_use_only_watermark.png");
-//				logger.info("fileWatermark = {}", fileWatermark);
-//
-//				addImageWatermark(fileWatermark, new File(srcFile), new File(srcFile));
-//
-//				if (resource != null) {
-//					logger.info("resource.getResourceId() = {}", resource.getResourceId());
-//
-//					WinningLetterRecord winningLetterRecordData = winningLetterRecordService.findById(Long.valueOf(winningLetterRecordId));
-//
-//					if (winningLetterRecordData != null) {
-//						switch (type) {
-//						case "f":
-//							winningLetterRecordData.setIdCardCopyFront(resource.getResourceId());
-//							break;
-//						case "b":
-//							winningLetterRecordData.setIdCardCopyBack(resource.getResourceId());
-//							break;
-//						}
-//
-//						Long savedWinningLetterRecordId = winningLetterRecordService.save(winningLetterRecordData);
-//						logger.info("savedWinningLetterRecordId = {}", savedWinningLetterRecordId);
-//					}
-//				}
-//
-//				return new ResponseEntity<>(resource, HttpStatus.OK);
-//			} else {
-////				throw new Exception("Update Winner Id Card Error");
-//				return new ResponseEntity<>("Update Winner Id Card Error", HttpStatus.INTERNAL_SERVER_ERROR);
-//			}
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
@@ -451,46 +405,52 @@ public class MobileWinningLetterReplyController {
 	@ResponseBody
 	public ResponseEntity<?> addWatermark(HttpServletRequest request, HttpServletResponse response, @RequestPart MultipartFile filePart)
 			throws IOException {
-		logger.info("addWatermark");
 
-		try {
-			if (filePart != null) {
+		synchronized (this) {
+		
+			logger.info("addWatermark");
+	
+			try {
+				if (filePart != null) {
+	
+					logger.info("filePart.toString() = {}", filePart.toString());
+					logger.info("filePart.getOriginalFilename = {}", filePart.getOriginalFilename());
+					logger.info("filePart.getContentType = {}", filePart.getContentType());
+					logger.info("filePart.getSize = {}", filePart.getSize());
+	
+					ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
+	
+					if (resource != null) {
+						logger.info("resource.getResourceId() = {}", resource.getResourceId());
+						
+						String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "IMAGE";
+						logger.info("filePath = {}", filePath);
+	
+						String srcFile = filePath + System.getProperty("file.separator") + resource.getResourceId();
+						logger.info("srcFile = {}", srcFile);
+	
+						String waterMarkPath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "DEFAULT";
+	
+						File fileWatermark = new File(waterMarkPath + System.getProperty("file.separator") + "richart_use_only_watermark.png");
+						logger.info("fileWatermark = {}", fileWatermark);
+	
+						addImageWatermark(fileWatermark, new File(srcFile), new File(srcFile));
 
-				logger.info("filePart.toString() = {}", filePart.toString());
-				logger.info("filePart.getOriginalFilename = {}", filePart.getOriginalFilename());
-				logger.info("filePart.getContentType = {}", filePart.getContentType());
-				logger.info("filePart.getSize = {}", filePart.getSize());
-
-				ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
-
-				if (resource != null) {
-					logger.info("resource.getResourceId() = {}", resource.getResourceId());
-					
-					String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "IMAGE";
-					logger.info("filePath = {}", filePath);
-
-					String srcFile = filePath + System.getProperty("file.separator") + resource.getResourceId();
-					logger.info("srcFile = {}", srcFile);
-
-					String waterMarkPath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + "DEFAULT";
-
-					File fileWatermark = new File(waterMarkPath + System.getProperty("file.separator") + "richart_use_only_watermark.png");
-					logger.info("fileWatermark = {}", fileWatermark);
-
-					addImageWatermark(fileWatermark, new File(srcFile), new File(srcFile));
+						DataSyncUtil.settingReSync(ContentResourceService.RESOURCE_SYNC);
+					}
+	
+					return new ResponseEntity<>(resource.getResourceId(), HttpStatus.OK);
+				} else {
+					return new ResponseEntity<>("Add watermark error", HttpStatus.INTERNAL_SERVER_ERROR);
 				}
-
-				return new ResponseEntity<>(resource.getResourceId(), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>("Add watermark error", HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		} catch (Exception e) {
-			logger.error(ErrorRecord.recordError(e));
-
-			if (e instanceof BcsNoticeException) {
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			} else {
-				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			} catch (Exception e) {
+				logger.error(ErrorRecord.recordError(e));
+	
+				if (e instanceof BcsNoticeException) {
+					return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+				} else {
+					return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+				}
 			}
 		}
 	}
