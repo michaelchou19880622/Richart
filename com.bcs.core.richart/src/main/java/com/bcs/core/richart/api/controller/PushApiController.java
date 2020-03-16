@@ -102,7 +102,7 @@ public class PushApiController {
 				return new ResponseEntity<>("{\"result\": 0, \"msg\": \"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
 			}
 			else if (e instanceof BadPaddingException || e instanceof IllegalBlockSizeException) {
-				return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity<>("{\"result\": 0, \"msg\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
 			}
 
 			return new ResponseEntity<>("{\"result\": 0, \"msg\": \"" + e.getMessage() + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);

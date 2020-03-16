@@ -90,7 +90,7 @@ public class PushMessageActor extends UntypedActor {
 					
 					try {
 						JSONObject jsonObjOfRestfulExcuted = restfulUtil.execute();
-						logger.info("[PushMessageActor] [IMMEDIATE] jsonObjOfRestfulExcuted = {}", jsonObjOfRestfulExcuted);
+						logger.info("[PushMessageActor] [IMMEDIATE] jsonObjOfRestfulExcuted = {}", jsonObjOfRestfulExcuted.toString());
 						
 						String sendMessage = pushApiModel.getMessages().toString();
 						logger.info("[PushMessageActor] [IMMEDIATE] sendMessage = {}", sendMessage);
