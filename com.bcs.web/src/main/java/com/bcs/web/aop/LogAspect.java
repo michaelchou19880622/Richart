@@ -44,7 +44,7 @@ public class LogAspect {
 	@After("controllerAspect()")
 	public void doBefore(JoinPoint joinPoint) {
 		try {
-			logger.info("=====前置通知開始=====");
+			logger.debug("========== 前置通知開始");
 
 			String methodName = joinPoint.getSignature().getName();
 			String description = getControllerMethodDescription(joinPoint);			
@@ -92,9 +92,9 @@ public class LogAspect {
 				richartAkkaService.excuteLogApi(logApiModel);
 			}
 
-			logger.info("=====前置通知结束=====");
+			logger.debug("========== 前置通知结束");
 		} catch (Exception e) {
-			logger.error("==前置通知異常==" + e);
+			logger.error("========== 前置通知異常 : " + e);
 		}
 	}
 
