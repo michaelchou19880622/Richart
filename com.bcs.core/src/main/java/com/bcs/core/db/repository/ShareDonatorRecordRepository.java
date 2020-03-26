@@ -14,6 +14,9 @@ import com.bcs.core.db.persistence.EntityRepository;
 public interface ShareDonatorRecordRepository extends EntityRepository<ShareDonatorRecord, String>{
 	@Transactional(readOnly = true, timeout = 60)
 	List<ShareDonatorRecord> findByDonatorUid(String donatorUid);
+
+	@Transactional(readOnly = true, timeout = 60)
+	List<ShareDonatorRecord> findByDonatorUidAndShareUserRecordId(String donatorUid, String shareUserRecordId);
 	
 	@Transactional(readOnly = true, timeout = 60)
 	List<ShareDonatorRecord> findByDonatorUidAndDonateLevel(String donatorUid, String donateLevel);

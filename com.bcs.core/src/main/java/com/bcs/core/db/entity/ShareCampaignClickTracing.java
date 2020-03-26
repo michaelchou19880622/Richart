@@ -33,6 +33,9 @@ public class ShareCampaignClickTracing extends AbstractBcsEntity{
 	
     @Column(name = "MODIFY_TIME")
     private Date modifyTime;
+
+    @Column(name = "SHARED_TIME")
+    private Date sharedTime;
     
     public ShareCampaignClickTracing() {
         
@@ -69,4 +72,13 @@ public class ShareCampaignClickTracing extends AbstractBcsEntity{
     public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
     }
+
+	public Date getSharedTime() {
+		return sharedTime;
+	}
+
+	public void setSharedTime(Date sharedTime) {
+		this.sharedTime = sharedTime;
+	}
+    
 }

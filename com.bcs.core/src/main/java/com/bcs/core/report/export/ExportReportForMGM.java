@@ -19,8 +19,12 @@ import com.bcs.core.db.service.ShareCampaignService;
 import com.bcs.core.db.service.ShareUserRecordService;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.SQLDateFormatUtil;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 
+@Slf4j
 @Service
 public class ExportReportForMGM {
 	
@@ -44,18 +48,26 @@ public class ExportReportForMGM {
 	 */
 	public void exportToExcel(String exportPath, String fileName, String startDate, String endDate, String campaignId, String reportType) throws Exception {
 		try {
+	        log.info("[exportToExcel] exportPath = {}", exportPath);
+	        log.info("[exportToExcel] fileName = {}", fileName);
+	        log.info("[exportToExcel] startDate = {}", startDate);
+	        log.info("[exportToExcel] endDate = {}", endDate);
+	        log.info("[exportToExcel] campaignId = {}", campaignId);
+	        log.info("[exportToExcel] reportType = {}", reportType);
+			
 			Workbook wb = new XSSFWorkbook(); //→xls // new XSSFWorkbook()→xlsx
 			
 	        ShareCampaign shareCampaign = shareCampaignService.findOne(campaignId);
+	        log.info("[exportToExcel] shareCampaign = {}", shareCampaign);
 			
 			Sheet sheetLink = wb.createSheet(shareCampaign.getCampaignName()); // create a new sheet
 			
-			if(REPORT_TYPE_COMPLETED.equals(reportType)) {
-			    this.exportCompleted(wb, sheetLink, startDate, endDate, campaignId, reportType);
-			}else if(REPORT_TYPE_UNCOMPLETED.equals(reportType)) {
+			if (REPORT_TYPE_COMPLETED.equals(reportType)) {
+				this.exportCompleted(wb, sheetLink, startDate, endDate, campaignId, reportType);
+			} else if (REPORT_TYPE_UNCOMPLETED.equals(reportType)) {
 				this.exportUncompleted(wb, sheetLink, startDate, endDate, campaignId, reportType);
-			}else {
-			    this.exportDetail(wb, sheetLink, startDate, endDate, campaignId);
+			} else {
+				this.exportDetail(wb, sheetLink, startDate, endDate, campaignId);
 			}
 			
 			// Save
@@ -93,16 +105,16 @@ public class ExportReportForMGM {
             row.createCell(0).setCellValue("分享者UID");
             row.createCell(1).setCellValue("分享時間");
             row.createCell(2).setCellValue("被分享者UID");
-            row.createCell(3).setCellValue("被分享者加好友");
+            row.createCell(3).setCellValue("被分享者好友狀態");
             row.createCell(4).setCellValue("被分享者是否完成活動");
-            row.createCell(5).setCellValue("點擊時間");
+            row.createCell(5).setCellValue("被分享者點擊時間");
         }else if(JUDGEMENT.equals(REPORT_TYPE_DISABLE)) {
         	 row.createCell(0).setCellValue("分享者UID");
              row.createCell(1).setCellValue("分享時間");
              row.createCell(2).setCellValue("被分享者UID");
-             row.createCell(3).setCellValue("被分享者加好友");
+             row.createCell(3).setCellValue("被分享者好友狀態");
              row.createCell(4).setCellValue("被分享者是否完成活動");
-             row.createCell(5).setCellValue("點擊時間");
+             row.createCell(5).setCellValue("被分享者點擊時間");
              
              int seqNo = 1; //序號
              
@@ -122,9 +134,9 @@ public class ExportReportForMGM {
 	       	 row.createCell(0).setCellValue("分享者UID");
 	         row.createCell(1).setCellValue("分享時間");
 	         row.createCell(2).setCellValue("被分享者UID");
-	         row.createCell(3).setCellValue("被分享者加好友");
+	         row.createCell(3).setCellValue("被分享者好友狀態");
 	         row.createCell(4).setCellValue("被分享者是否完成活動");
-	         row.createCell(5).setCellValue("加好友時間");
+	         row.createCell(5).setCellValue("被分享者加好友時間");
 	         
 	         int seqNo = 1; //序號
              
@@ -143,9 +155,9 @@ public class ExportReportForMGM {
           	 row.createCell(0).setCellValue("分享者UID");
              row.createCell(1).setCellValue("分享時間");
              row.createCell(2).setCellValue("被分享者UID");
-             row.createCell(3).setCellValue("被分享者綁定");
+             row.createCell(3).setCellValue("被分享者綁定狀態");
              row.createCell(4).setCellValue("被分享者是否完成活動");
-             row.createCell(5).setCellValue("綁定時間");
+             row.createCell(5).setCellValue("被分享者綁定時間");
              
              int seqNo = 1; //序號
              

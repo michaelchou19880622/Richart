@@ -44,10 +44,10 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
     
     @Transactional(readOnly = true, timeout = 30)
     @Query(value = "select SUR.UID as SUR_UID, "
-            + "SUR.MODIFY_TIME as SUR_MODIFY_TIME, "
+            + "SCCT.SHARED_TIME as SCCT_SHARED_TIME, "
             + "SCCT.UID as SCCT_UID, "
             //測試  SUN 新增是否為新的好友
-			+ "IIF ( SLU.CREATE_TIME > BSC.START_TIME, 1, 0)  as IS_NEWUSER, "
+			+ "IIF ( SLU.CREATE_TIME > SCCT.SHARED_TIME, 1, 0)  as IS_NEWUSER, "
 			+ "IIF ( SLU.BIND_TIME > BSC.START_TIME, 1, 0) AS IS_BIND, "
 			+ "IIF ( SLU.BIND_TIME is null, 0, 1 ) as BINEISNULL, "
 			
@@ -66,7 +66,7 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
 			+ "left join BCS_SHARE_CAMPAIGN BSC on BSC.CAMPAIGN_ID = SUR.CAMPAIGN_ID "
 			
             + "where SUR.MODIFY_TIME >= ?1 and SUR.MODIFY_TIME < ?2 and SUR.CAMPAIGN_ID = ?3 "
-            + "order by SUR.UID, SUR.MODIFY_TIME", nativeQuery = true)
+            + "order by SUR.UID, SCCT.SHARED_TIME", nativeQuery = true)
     List<Object[]> findByModifyTimeAndCampaignIdWithDonateStatus(Date start, Date end, String campaignId);
     
     @Transactional(readOnly = true, timeout = 60)

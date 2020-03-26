@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,14 +37,14 @@ import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 import com.bcs.web.ui.service.LoadFileUIService;
 import com.bcs.web.ui.service.ShareCampaignUIService;
 
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @Controller
 @RequestMapping("/bcs")
 public class BCSShareCampaignController extends BCSBaseController {
 	
-	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSShareCampaignController.class);
-
 	@Autowired
 	private ShareCampaignUIService shareCampaignUIService;
 	@Autowired
@@ -57,26 +56,26 @@ public class BCSShareCampaignController extends BCSBaseController {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/shareCampaignCreatePage")
 	public String shareCampaignCreatePage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("shareCampaignCreatePage");
+		log.info("shareCampaignCreatePage");
 		return BcsPageEnum.ShareCampaignCreatePage.toString();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/shareCampaignListPage")
 	public String shareCampaignListPage(HttpServletRequest request, HttpServletResponse response, Model model) {
-		logger.info("shareCampaignListPage");
+		log.info("shareCampaignListPage");
 		model.addAttribute("mgmTracingUrlPre", UriHelper.getMgmTracingUrl());
 		return BcsPageEnum.ShareCampaignListPage.toString();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/shareCampaignListDisablePage")
 	public String shareCampaignListDisablePage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("shareCampaignListDisablePage");		
+		log.info("shareCampaignListDisablePage");		
 		return BcsPageEnum.ShareCampaignListDisablePage.toString();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/shareCampaignReportPage")
 	public String shareCampaignReportPage(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("shareCampaignReportPage");		
+		log.info("shareCampaignReportPage");		
 		return BcsPageEnum.ShareCampaignReportPage.toString();
 	}
 	
@@ -92,7 +91,7 @@ public class BCSShareCampaignController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getShareCampaignList(
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("getShareCampaignList");
+		log.info("getShareCampaignList");
 		
 		try {
 
@@ -101,7 +100,7 @@ public class BCSShareCampaignController extends BCSBaseController {
 			return new ResponseEntity<>(shareCampaigns, HttpStatus.OK);
 		}
 		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
+			log.error(ErrorRecord.recordError(e));
 			
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
@@ -124,7 +123,7 @@ public class BCSShareCampaignController extends BCSBaseController {
 	@ResponseBody
 	public ResponseEntity<?> getShareCampaignListDisable(
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("getShareCampaignListDisable");
+		log.info("getShareCampaignListDisable");
 		
 		try {
 
@@ -133,7 +132,7 @@ public class BCSShareCampaignController extends BCSBaseController {
             return new ResponseEntity<>(shareCampaigns, HttpStatus.OK);
 		}
 		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
+			log.error(ErrorRecord.recordError(e));
 			
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
@@ -158,11 +157,11 @@ public class BCSShareCampaignController extends BCSBaseController {
 			@RequestParam String campaignId,  
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException {
-		logger.info("getShareCampaign");				
+		log.info("getShareCampaign");				
 		
 		try{
 			if(campaignId != null){
-				logger.info("campaignId:" + campaignId);
+				log.info("campaignId:" + campaignId);
 				ShareCampaign shareCampaign = shareCampaignService.findOne(campaignId);
 				
 				if(shareCampaign != null){
@@ -173,7 +172,7 @@ public class BCSShareCampaignController extends BCSBaseController {
 			throw new Exception("ShareCampaign Null");
 		}
 		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
+			log.error(ErrorRecord.recordError(e));
 			
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
@@ -201,7 +200,7 @@ public class BCSShareCampaignController extends BCSBaseController {
 			@CurrentUser CustomUser customUser, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException {
-		logger.info("saveShareCampaign");
+		log.info("saveShareCampaign");
 		
 		try{
 		    shareCampaignUIService.checkShareCampaign(shareCampaign);
@@ -209,7 +208,7 @@ public class BCSShareCampaignController extends BCSBaseController {
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		}
 		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
+			log.error(ErrorRecord.recordError(e));
 			
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
@@ -237,14 +236,14 @@ public class BCSShareCampaignController extends BCSBaseController {
 			@CurrentUser CustomUser customUser,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException {
-		logger.info("deleteShareCampaign");
+		log.info("deleteShareCampaign");
 		
 		try{
 			shareCampaignUIService.deleteFromUI(campaignId, customUser.getAccount());
 			return new ResponseEntity<>("Delete Success", HttpStatus.OK);
 		}
 		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
+			log.error(ErrorRecord.recordError(e));
 			
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
@@ -270,24 +269,24 @@ public class BCSShareCampaignController extends BCSBaseController {
 			@CurrentUser CustomUser customUser, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException {
-		logger.info("redesignShareCampaign");
+		log.info("redesignShareCampaign");
 
 		String campaignId = request.getParameter("campaignId");
 		
 		try{
 			if(StringUtils.isNotBlank(campaignId)){
-				logger.info("campaignId:" + campaignId);
+				log.info("campaignId:" + campaignId);
 				shareCampaignUIService.switchShareCampaignStatus(campaignId, customUser.getAccount());
 				
 				return new ResponseEntity<>("Change Success", HttpStatus.OK);
 			}
 			else{
-				logger.error("campaignId Null");
+				log.error("campaignId Null");
 				throw new BcsNoticeException("請選擇正確的MGM活動");
 			}
 		}
 		catch(Exception e){
-			logger.error(ErrorRecord.recordError(e));
+			log.error(ErrorRecord.recordError(e));
 			
 			if(e instanceof BcsNoticeException){
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
@@ -303,7 +302,7 @@ public class BCSShareCampaignController extends BCSBaseController {
     public ResponseEntity<?> countShareUserRecord(  
             HttpServletRequest request, 
             HttpServletResponse response) throws IOException {
-        logger.info("countShareUserRecord");                
+        log.info("countShareUserRecord");                
         String campaignId = request.getParameter("campaignId");
         
         try{ 
@@ -318,7 +317,7 @@ public class BCSShareCampaignController extends BCSBaseController {
             throw new Exception("result Null");
         }
         catch(Exception e){
-            logger.error(ErrorRecord.recordError(e));
+            log.error(ErrorRecord.recordError(e));
             
             if(e instanceof BcsNoticeException){
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
@@ -337,32 +336,35 @@ public class BCSShareCampaignController extends BCSBaseController {
         String endDate = request.getParameter("endDate");
         String reportType = request.getParameter("reportType");
         
+        log.info("[exportToExcelForShareUserRecord] campaignId = {}", campaignId);
+        log.info("[exportToExcelForShareUserRecord] startDate = {}", startDate);
+        log.info("[exportToExcelForShareUserRecord] endDate = {}", endDate);
+        log.info("[exportToExcelForShareUserRecord] reportType = {}", reportType);
+        
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
         String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
         
         Date date = new Date();
         String fileName = sdf.format(date) + ".xlsx";
 
-        if(ExportReportForMGM.REPORT_TYPE_COMPLETED.equals(reportType)) {
-            fileName = "MGM_COMPLETED_"+ fileName;
-        }
-        else if(ExportReportForMGM.REPORT_TYPE_UNCOMPLETED.equals(reportType)) {
-            fileName = "MGM_UNCOMPLETED_"+ fileName;
-        }
-        else {
-            fileName = "MGM_DETAIL_"+ fileName;
-        }
+		if (ExportReportForMGM.REPORT_TYPE_COMPLETED.equals(reportType)) {
+			fileName = "MGM_COMPLETED_" + fileName;
+		} else if (ExportReportForMGM.REPORT_TYPE_UNCOMPLETED.equals(reportType)) {
+			fileName = "MGM_UNCOMPLETED_" + fileName;
+		} else {
+			fileName = "MGM_DETAIL_" + fileName;
+		}
         
-        try {
-            File folder = new File(filePath);
-            if(!folder.exists()){
-                folder.mkdirs();
-            }
-            
-            exportReportForMGM.exportToExcel(filePath, fileName, startDate, endDate, campaignId, reportType);
-        } catch (Exception e) {
-            logger.error(ErrorRecord.recordError(e));
-        }
+		try {
+			File folder = new File(filePath);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+
+			exportReportForMGM.exportToExcel(filePath, fileName, startDate, endDate, campaignId, reportType);
+		} catch (Exception e) {
+			log.error(ErrorRecord.recordError(e));
+		}
 
         LoadFileUIService.loadFileToResponse(filePath, fileName, response);
     }
