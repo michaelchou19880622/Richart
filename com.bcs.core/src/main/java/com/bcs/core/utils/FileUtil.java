@@ -532,25 +532,25 @@ public class FileUtil {
 	
 	public static Boolean loadFromDB(ContentResource resource) throws Exception{
 
-		if(resource != null){
-		    String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + resource.getResourceType();
-		    
-			File file = new File(filePath + System.getProperty("file.separator") , resource.getResourceId());
-	
-			if(!file.exists()){
+		if (resource != null) {
+			String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath) + System.getProperty("file.separator") + resource.getResourceType();
+
+			File file = new File(filePath + System.getProperty("file.separator"), resource.getResourceId());
+
+			if (!file.exists()) {
 				// File Missing Load From DB
-			    ContentResourceFile resourceFile = ApplicationContextProvider.getApplicationContext().getBean(ContentResourceFileService.class).findOne(resource.getResourceId());
-			    
-			    if(resourceFile != null){
-			    	ByteArrayInputStream inputStream = new ByteArrayInputStream(resourceFile.getFileData());
-			    	uploadFile(inputStream, resource.getResourceTitle(), resource.getResourceSize(), 
-			    			resource.getContentType(), resource.getResourceType(), resource.getModifyUser(), 
-			    			resource.getResourceId(), false, true);
+				ContentResourceFile resourceFile = ApplicationContextProvider.getApplicationContext().getBean(ContentResourceFileService.class).findOne(resource.getResourceId());
+
+				if (resourceFile != null) {
+					ByteArrayInputStream inputStream = new ByteArrayInputStream(resourceFile.getFileData());
+					uploadFile(inputStream, resource.getResourceTitle(), resource.getResourceSize(), resource.getContentType(), resource.getResourceType(), resource.getModifyUser(),
+							resource.getResourceId(), false, true);
 					logger.info("loadFromDB success:" + resource);
-			    	return true;
-			    }
+					return true;
+				}
 			}
 		}
+		
 		return false;
 	}
 	

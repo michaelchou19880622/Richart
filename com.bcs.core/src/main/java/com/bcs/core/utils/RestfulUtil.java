@@ -101,7 +101,7 @@ public class RestfulUtil {
 			log.info("[RestUtil execute] Status code: " + statusCode);
 			log.info("[RestUtil execute] Response body: " + responseBody);
 			
-			if(responseBody!=null){
+			if (responseBody != null) {
 				int i = responseBody.indexOf("{");
 				responseBody = responseBody.substring(i);
 			}

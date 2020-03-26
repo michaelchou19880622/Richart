@@ -40,23 +40,23 @@ public class EntityManagerControlService {
 	@PreDestroy
 	public void preDestroy(){
 		flushTimer.cancel();
-		logger.info("[DESTROY] EntityManagerControlService flushTimer destroyed");
+		logger.debug("[DESTROY] EntityManagerControlService flushTimer destroyed");
 	}
 	
 	public EntityManagerControlService(){
-		logger.info("EntityManagerControlService Constructor");
+		logger.debug("EntityManagerControlService Constructor");
 
 		flushTimer.schedule(new CustomTask(), 120000, 30000);
 	}
 	
 	public void fluchAll(){
-		logger.info("EntityManagerControl flushTimer execute");
+		logger.debug("EntityManagerControl flushTimer execute");
 		try{
 			entityManagerControl.fluchAll();
 		}
 		catch(Throwable e){
 			logger.error(ErrorRecord.recordError(e));
 		}
-		logger.info("EntityManagerControl flushTimer end");
+		logger.debug("EntityManagerControl flushTimer end");
 	}
 }

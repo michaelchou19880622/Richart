@@ -50,7 +50,7 @@ public class EntityManagerControl {
 
 	public void persist(Object obj){
 		queueAdd.add(obj);
-		logger.info("persistAdd:" + obj);
+		logger.debug("persistAdd:" + obj);
 		if(queueAdd.size() >= batchSize){
 			if(isRun.compareAndSet(false, true)){
 				try{
@@ -66,12 +66,12 @@ public class EntityManagerControl {
 
 	@Transactional(rollbackFor=Exception.class, timeout = 3000)
 	public void persistFlush(){
-//		logger.info("EntityManagerControl persistFlush execute");
+//		logger.debug("EntityManagerControl persistFlush execute");
 
 		try{
 			synchronized (INIT_FLAG) {
 				boolean isPersistAdd = false;
-				logger.info("EntityManagerControl persistFlush execute:" + queueAdd.size());
+				logger.debug("EntityManagerControl persistFlush execute:" + queueAdd.size());
 
 				int i = 0;
 				while(!queueAdd.isEmpty()){
@@ -109,7 +109,7 @@ public class EntityManagerControl {
 		}
 		
 		isRun.set(false);
-		logger.info("EntityManagerControl persistFlush end");
+		logger.debug("EntityManagerControl persistFlush end");
 	}
 
 	@Transactional(rollbackFor=Exception.class, timeout = 30)

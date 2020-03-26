@@ -66,7 +66,7 @@ public class MsgInteractiveMainService {
 	
 	@PreDestroy
 	public void cleanUp() {
-		logger.info("[DESTROY] MsgInteractiveMainService cleaning up...");
+		logger.debug("[DESTROY] MsgInteractiveMainService cleaning up...");
 		try{
 			if(dataCache != null){
 				dataCache.invalidateAll();
@@ -78,7 +78,7 @@ public class MsgInteractiveMainService {
 		flushTimer.cancel();
 		
 		System.gc();
-		logger.info("[DESTROY] MsgInteractiveMainService destroyed.");
+		logger.debug("[DESTROY] MsgInteractiveMainService destroyed.");
 	}
 	
 	private boolean notNull(MsgInteractiveMain result){
@@ -150,15 +150,15 @@ public class MsgInteractiveMainService {
 	
 	public void flushIncrease(){
 		synchronized (INIT_FLAG) {
-			logger.info("MsgInteractiveMainService flushTimer execute");
+			logger.debug("MsgInteractiveMainService flushTimer execute");
 			for(Map.Entry<Long, AtomicLong> map : increaseMap.entrySet()){
 				if(map.getValue().longValue() != 0){
-					logger.info("MsgInteractiveMainService flushTimer execute:" + map.getKey() + "," + map.getValue().longValue());
+					logger.debug("MsgInteractiveMainService flushTimer execute:" + map.getKey() + "," + map.getValue().longValue());
 					this.increaseSendCountByMsgInteractiveId(map.getKey(), map.getValue().longValue());
 					map.getValue().set(0);
 				}
 			}
-			logger.info("MsgInteractiveMainService flushTimer end");
+			logger.debug("MsgInteractiveMainService flushTimer end");
 		}
 	}
 
@@ -173,7 +173,7 @@ public class MsgInteractiveMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.info(map);
+    	logger.debug(map);
 		
 		return map;
 	}
@@ -185,7 +185,7 @@ public class MsgInteractiveMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.info(map);
+    	logger.debug(map);
 		
 		return map;
 	}
@@ -197,7 +197,7 @@ public class MsgInteractiveMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.info(map);
+    	logger.debug(map);
 		
 		return map;
 	}
@@ -221,7 +221,7 @@ public class MsgInteractiveMainService {
 		}
 		countQuerySQL.append("SELECT COUNT(*) FROM (" + dataQuerySQL.toString() + ") AS COUNT");
 		dataQuerySQL.append(" ORDER BY CASE WHEN INTERACTIVE_INDEX IS NULL THEN 1 ELSE 0 END, INTERACTIVE_INDEX, MAIN_KEYWORD, USER_STATUS, MODIFY_TIME, MSG_DETAIL_ID ");
-		logger.info("dataQuery=" + dataQuerySQL.toString());
+		logger.debug("dataQuery=" + dataQuerySQL.toString());
 		Query dataQuery = entityManager.createNativeQuery(dataQuerySQL.toString(), "MsgInteractiveMainDetails");
 		if(StringUtils.isNotBlank(type)) {
 		    dataQuery.setParameter("interactiveType", type);
@@ -235,7 +235,7 @@ public class MsgInteractiveMainService {
 		dataQuery.setHint("javax.persistence.query.timeout", 30000);
 		List<Object[]> list = dataQuery.getResultList();
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.info(map);
+    	logger.debug(map);
 		return map;
 	}
 	
@@ -246,7 +246,7 @@ public class MsgInteractiveMainService {
 		List<Object[]> list = query.getResultList();
 		
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
-    	logger.info(map);
+    	logger.debug(map);
 		
 		return map;
 	}
@@ -256,15 +256,15 @@ public class MsgInteractiveMainService {
 		Map<MsgInteractiveMain, List<MsgDetail>> map = new LinkedHashMap<MsgInteractiveMain, List<MsgDetail>>();
 
 	    for(Object[] o : list){
-	    	logger.info("length:" + o.length);
-	    	logger.info(o[0]);
+	    	logger.debug("length:" + o.length);
+	    	logger.debug(o[0]);
 	    	if(o[0] !=null){
 	    		List<MsgDetail> details = map.get(o[0]);
 	    		if(details == null){
 	    			map.put((MsgInteractiveMain) o[0], new ArrayList<MsgDetail>());
 	    		}
 	    	}
-	    	logger.info(o[1]);
+	    	logger.debug(o[1]);
 	    	if(o[1] != null){
 	    		List<MsgDetail> details = map.get(o[0]);
 	    		details.add((MsgDetail) o[1]);

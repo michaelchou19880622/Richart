@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,12 +18,12 @@ import com.bcs.core.db.entity.UserTraceLog;
 import com.bcs.core.db.repository.LineUserRepository;
 import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class LineUserService {
 	
-	/** Logger */
-	private static Logger logger = Logger.getLogger(LineUserService.class);
-
 //	protected LoadingCache<String, LineUser> dataCache;
 	
 	public LineUserService(){
@@ -42,7 +41,7 @@ public class LineUserService {
 	
 	@PreDestroy
 	public void cleanUp() {
-		logger.info("[DESTROY] LineUserService cleaning up...");
+		log.info("[DESTROY] LineUserService cleaning up...");
 		try{
 //			if(dataCache != null){
 //				dataCache.invalidateAll();
@@ -52,7 +51,7 @@ public class LineUserService {
 		catch(Throwable e){}
 		
 		System.gc();
-		logger.info("[DESTROY] LineUserService destroyed.");
+		log.info("[DESTROY] LineUserService destroyed.");
 	}
 	
 	@Autowired
@@ -61,10 +60,12 @@ public class LineUserService {
 	private UserTraceLogService userTraceLogService;
 	
 	public List<String> findMidByMidIn(List<String> mids) {
+		log.info("[findMidByMidIn] mids = {}", mids);
 		return lineUserRepository.findMidByMidIn(mids);
 	}
 	
 	public List<String> findMidByMidInAndActive(List<String> mids) {
+		log.info("[findMidByMidInAndActive] mids = {}", mids);
 		return lineUserRepository.findMidByMidInAndActive(mids);
 	}
 	
@@ -76,6 +77,7 @@ public class LineUserService {
 //	}
 	
 	public LineUser findByMid(String mid) {
+		log.info("[findByMid] mid = {}", mid);
 //		try {
 //			LineUser result = dataCache.get(mid);
 //			if(notNull(result)){
@@ -91,6 +93,7 @@ public class LineUserService {
 	}
 	
 	public LineUser findByMidAndCreateUnbind(String mid) {
+		log.info("[findByMidAndCreateUnbind] mid = {}", mid);
 		LineUser lineUser = findByMid(mid);
 		if(lineUser == null){
 			
@@ -111,23 +114,26 @@ public class LineUserService {
 	}
 
 	public List<LineUser> findAll() {
+		log.info("[findAll]");
 		return lineUserRepository.findAll();
 	}
 
 	public Page<String> findMIDAllActive(int page , int pageSize) {
+		log.info("[findMIDAllActive] page = {}, pageSize = {}", page, pageSize);
 		Pageable pageable = new PageRequest(page, pageSize);
 		
 		return lineUserRepository.findMIDAllActive(pageable);
 	}
 	
 	public Boolean checkMIDAllActive(String mid) {
+		log.info("[checkMIDAllActive] mid = {}", mid);
 		
 		String result =  lineUserRepository.checkMIDAllActive(mid);
-		logger.info("checkMIDAllActive:" + result);
-		if(StringUtils.isBlank(result)){
+		log.info("[checkMIDAllActive] result = {}", result);
+		
+		if (StringUtils.isBlank(result)) {
 			return false;
-		}
-		else{
+		} else {
 			return true;
 		}
 	}
@@ -158,7 +164,7 @@ public class LineUserService {
 	public Boolean checkMIDByStatus(String status, String mid) {
 		
 		String result =  lineUserRepository.checkMIDByStatus(status, mid);
-		logger.info("checkMIDByStatus:" + result);
+		log.info("checkMIDByStatus:" + result);
 		if(StringUtils.isBlank(result)){
 			return false;
 		}

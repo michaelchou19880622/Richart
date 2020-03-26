@@ -70,7 +70,7 @@ public class DataSyncUtil {
 
 	    	String systemId = CoreConfigReader.getString(CONFIG_STR.SYSTEM_ID);
 	    	ip += systemId;
-			logger.info("thisServerIp:" + ip);
+			logger.debug("thisServerIp:" + ip);
 			return ip;
 		}
 		catch(Throwable e){
@@ -89,7 +89,7 @@ public class DataSyncUtil {
 	    	ip += systemId;
 	    	
 			String isReSyncData = CoreConfigReader.getString(ip, input, true, false);
-			logger.info("isReSyncData:" + ip + "." + input);
+			logger.debug("isReSyncData:" + ip + "." + input);
 			return Boolean.parseBoolean(isReSyncData);
 		}
 		catch(Throwable e){
@@ -112,7 +112,7 @@ public class DataSyncUtil {
 			config.setModifyTime(new Date());
 			
 			ApplicationContextProvider.getApplicationContext().getBean(SystemConfigService.class).save(config);
-			logger.info("syncDataFinish:" + ip + "." + input);
+			logger.debug("syncDataFinish:" + ip + "." + input);
 		}
 		catch(Throwable e){
 			logger.error(ErrorRecord.recordError(e));
@@ -133,7 +133,7 @@ public class DataSyncUtil {
 			config.setModifyTime(new Date());
 			
 			ApplicationContextProvider.getApplicationContext().getBean(SystemConfigService.class).save(config);
-			logger.info("[REGISTER_SYNC] registerServer:" + ip);
+			logger.debug("[REGISTER_SYNC] registerServer:" + ip);
 		}
 		catch(Throwable e){
 			logger.error(ErrorRecord.recordError(e));
@@ -151,7 +151,7 @@ public class DataSyncUtil {
 			config.setModifyTime(new Date());
 			
 			ApplicationContextProvider.getApplicationContext().getBean(SystemConfigService.class).save(config);
-			logger.info("[REGISTER_MAIN] registerServer:" + ip);
+			logger.debug("[REGISTER_MAIN] registerServer:" + ip);
 		}
 		catch(Throwable e){
 			logger.error(ErrorRecord.recordError(e));
@@ -208,7 +208,7 @@ public class DataSyncUtil {
 					config.setModifyTime(new Date());
 					
 					ApplicationContextProvider.getApplicationContext().getBean(SystemConfigService.class).save(config);
-					logger.info("settingReSync:" + ip + "." + input);
+					logger.debug("settingReSync:" + ip + "." + input);
 				}
 			}
 		}
