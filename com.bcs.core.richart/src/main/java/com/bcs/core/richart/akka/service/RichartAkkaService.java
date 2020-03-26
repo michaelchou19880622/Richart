@@ -36,7 +36,7 @@ public class RichartAkkaService {
 	
 	
 	private ActorRef randomMaster(List<ActorRef> masters){
-		logger.info("randomMaster Size:" + masters.size());
+		logger.debug("randomMaster Size:" + masters.size());
         int index = new Random().nextInt(masters.size());
         return masters.get(index);
 	}
