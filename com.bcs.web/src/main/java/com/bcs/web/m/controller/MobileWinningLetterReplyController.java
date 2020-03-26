@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -19,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +40,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bcs.core.db.entity.ContentResource;
+import com.bcs.core.db.entity.ContentResourceFile;
 import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.entity.WinningLetterRecord;
+import com.bcs.core.db.repository.ContentResourceRepository;
+import com.bcs.core.db.service.ContentResourceFileService;
 import com.bcs.core.db.service.ContentResourceService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richart.service.WinningLetterRecordService;
 import com.bcs.core.richart.service.WinningLetterService;
+import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.DataSyncUtil;
 import com.bcs.core.utils.ErrorRecord;
+import com.bcs.core.utils.FileUtil;
 import com.bcs.core.web.ui.page.enums.MobilePageEnum;
 
 @Controller
@@ -65,7 +72,10 @@ public class MobileWinningLetterReplyController {
 
 	@Autowired
 	private ContentResourceService contentResourceService;
-
+	
+	@Autowired
+	private ContentResourceFileService contentResourceFileService;
+	
 	/** WinningLetter Reply Page **/
 	@RequestMapping(method = RequestMethod.GET, value = "/wl/winningLetterReplyPage")
 	public String winningLetterReplyPage(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -418,8 +428,8 @@ public class MobileWinningLetterReplyController {
 					logger.info("filePart.getContentType = {}", filePart.getContentType());
 					logger.info("filePart.getSize = {}", filePart.getSize());
 	
-					ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null);
-	
+					ContentResource resource = contentResourceService.uploadFile(filePart, ContentResource.RESOURCE_TYPE_IMAGE, null, false);
+					
 					if (resource != null) {
 						logger.info("resource.getResourceId() = {}", resource.getResourceId());
 						
@@ -434,9 +444,38 @@ public class MobileWinningLetterReplyController {
 						File fileWatermark = new File(waterMarkPath + System.getProperty("file.separator") + "richart_use_only_watermark.png");
 						logger.info("fileWatermark = {}", fileWatermark);
 	
-						addImageWatermark(fileWatermark, new File(srcFile), new File(srcFile));
+						File fileSrcImage = new File(srcFile);
+						
+						addImageWatermark(fileWatermark, fileSrcImage, fileSrcImage);
+						
+						ContentResourceFile contentResourceFile = contentResourceFileService.findOne(resource.getResourceId());
+					
+						if (contentResourceFile != null) { // For Debug Used
+							logger.info("1-1 contentResourceFile.getResourceId() = {}", contentResourceFile.getResourceId());
+							logger.info("1-1 contentResourceFile.getModifyTime() = {}", contentResourceFile.getModifyTime());
+						}
+						else if (contentResourceFile == null) {
+							contentResourceFile = new ContentResourceFile(resource.getResourceId());
+						}
+
+				        byte[] bFile = new byte[(int) fileSrcImage.length()];
+				        FileInputStream fileInputStream = new FileInputStream(fileSrcImage);
+				        fileInputStream.read(bFile);
+				        fileInputStream.close();
+				        
+				        contentResourceFile.setFileData(bFile);
+				        contentResourceFile.setModifyTime(new Date());
+						
+				        contentResourceFile = contentResourceFileService.saveAndGetReturn(contentResourceFile);
+				        
+				    	if (contentResourceFile != null) { // For Debug Used
+							logger.info("1-2 contentResourceFile.getResourceId() = {}", contentResourceFile.getResourceId());
+							logger.info("1-2 contentResourceFile.getModifyTime() = {}", contentResourceFile.getModifyTime());
+						}
 
 						DataSyncUtil.settingReSync(ContentResourceService.RESOURCE_SYNC);
+						
+						contentResourceService.syncResourceFile();
 					}
 	
 					return new ResponseEntity<>(resource.getResourceId(), HttpStatus.OK);

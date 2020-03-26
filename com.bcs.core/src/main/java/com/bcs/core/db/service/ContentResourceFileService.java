@@ -26,6 +26,10 @@ public class ContentResourceFileService {
 		contentResourceFileRepository.save(contentResourceFile);
 	}
 	
+	public ContentResourceFile saveAndGetReturn(ContentResourceFile contentResourceFile){
+		return contentResourceFileRepository.save(contentResourceFile);
+	}
+	
 	public ContentResourceFile findOne(String resourceId){
 		return contentResourceFileRepository.findOne(resourceId);
 	}

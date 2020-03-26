@@ -65,7 +65,7 @@ public class ContentResourceService {
 		}
 	}
 	
-	private void syncResourceFile(){
+	public void syncResourceFile(){
 		List<ContentResource> list = contentResourceRepository.findAll();
 		for(ContentResource contentResource : list){
 			try{
@@ -115,6 +115,21 @@ public class ContentResourceService {
 			dataCache.put(resource.getResourceId(), resource);
 		}
 		DataSyncUtil.settingReSync(RESOURCE_SYNC);
+		
+		return resource;
+	}
+	
+	public ContentResource uploadFile(MultipartFile filePart, String resourceType, String modifyUser, Boolean setReSync) throws Exception {
+		ContentResource resource = FileUtil.uploadFile(filePart, null, resourceType, modifyUser);
+		contentResourceRepository.save(resource);
+
+		if(resource != null){
+			dataCache.put(resource.getResourceId(), resource);
+		}
+		
+		if (setReSync) {
+			DataSyncUtil.settingReSync(RESOURCE_SYNC);
+		}
 		
 		return resource;
 	}
@@ -221,4 +236,15 @@ public class ContentResourceService {
         }
         return resourceId;
     }
+    
+	public void saveResourceAndPutDataCache(ContentResource resource){
+		
+		contentResourceRepository.save(resource);
+
+		if(resource != null){
+			dataCache.put(resource.getResourceId(), resource);
+		}
+		
+		DataSyncUtil.settingReSync(RESOURCE_SYNC);
+	}
 }
