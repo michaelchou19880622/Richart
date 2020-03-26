@@ -325,23 +325,24 @@ public class ServiceExportWinnerInfoToPDF {
 	private static String addPictureData(String image, CustomXWPFDocument doc) throws InvalidFormatException {
 		
 		InputStream images = null;
-		
+
 		try {
-			
+
 			if (!FileUtils.getFile(image).exists()) {
 				image = CoreConfigReader.getString("file.default.image.path");
-			} 
+			}
 			logger.info("image = ", image);
-				
+
 			images = new FileInputStream(image);
-			
+
 			return doc.addPictureData(images, XWPFDocument.PICTURE_TYPE_PNG);
 		} catch (FileNotFoundException e) {
 			logger.info("FileNotFoundException = ", e);
 
 			return null;
-			
-		}finally {
+
+		} finally {
+			logger.info("addPictureData completed");
 		}
 	}
 
