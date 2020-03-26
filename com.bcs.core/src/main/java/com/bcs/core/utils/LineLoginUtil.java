@@ -1,6 +1,8 @@
 package com.bcs.core.utils;
 
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +25,9 @@ import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.spring.ApplicationContextProvider;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class LineLoginUtil {
 	/** Logger */
 	private static Logger logger = Logger.getLogger(LineLoginUtil.class);
@@ -33,16 +38,48 @@ public class LineLoginUtil {
     
     public static void addLineoauthLinkInModel(String target, Model model, String RedirectUrl, String tracingIdStr) throws Exception {
         String ChannelID = CoreConfigReader.getString(target, CONFIG_STR.ChannelID.toString(), true);
-
+        
         String lineoauthLink = "";
         lineoauthLink = CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_V2_1);
         lineoauthLink = lineoauthLink.replace("{ChannelID}", ChannelID);
-        lineoauthLink = lineoauthLink.replace("{RedirectUrl}",
-                URLEncoder.encode(RedirectUrl, "UTF-8"));
+        lineoauthLink = lineoauthLink.replace("{RedirectUrl}", URLEncoder.encode(RedirectUrl, "UTF-8"));
         lineoauthLink = lineoauthLink.replace("{TracingId}", tracingIdStr);
         logger.info("lineoauthLink : " + lineoauthLink);
         model.addAttribute("lineoauthLink", lineoauthLink);
     }
+
+    public static void addLineoauthLinkInModelForMGMClickTracing(Model model, String RedirectUrl, String tracingIdStr) throws Exception {
+		log.info("model = {}", model);
+		log.info("RedirectUrl = {}", RedirectUrl);
+		log.info("tracingIdStr = {}", tracingIdStr);
+    	
+    	addLineoauthLinkInModelForMGMClickTracing(CONFIG_STR.Default.toString(), model, RedirectUrl, tracingIdStr);
+    }
+    
+    public static void addLineoauthLinkInModelForMGMClickTracing(String target, Model model, String RedirectUrl, String tracingIdStr) throws Exception {
+		log.info("target = {}", target);
+		log.info("model = {}", model);
+		log.info("RedirectUrl = {}", RedirectUrl);
+		log.info("tracingIdStr = {}", tracingIdStr);
+    	
+    	Map<String,Object> modelMap = model.asMap();
+		log.info("modelMap = {}", modelMap);
+		
+		String strSharedTime = (String) modelMap.get("sharedTime");
+		log.info("strSharedTime = {}", strSharedTime);
+		
+    	String ChannelID = CoreConfigReader.getString(target, CONFIG_STR.ChannelID.toString(), true);
+		log.info("ChannelID = {}", ChannelID);
+        
+        String lineoauthLink = "";
+        lineoauthLink = CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_V2_1);
+        lineoauthLink = lineoauthLink.replace("{ChannelID}", ChannelID);
+        lineoauthLink = lineoauthLink.replace("{RedirectUrl}", URLEncoder.encode(RedirectUrl, "UTF-8"));
+        lineoauthLink = lineoauthLink.replace("{TracingId}", tracingIdStr + "_" + strSharedTime);
+		log.info("lineoauthLink = {}", lineoauthLink);
+        model.addAttribute("lineoauthLink", lineoauthLink);
+    }
+    
     public static Map<String, String> callRetrievingAPI(String code, String redirectUrl, String state) throws Exception {
     	return callRetrievingAPI(CONFIG_STR.Default.toString(), code, redirectUrl, state);
     }
