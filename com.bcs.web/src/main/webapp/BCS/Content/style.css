@@ -1459,3 +1459,18 @@ pictureDUF {
     width: 100%;
     height: 150px;
 }
+
+.searchInput_RichmenuGroupName {
+	box-shadow: none;
+	padding: 10px 10px;
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid #ced2db;
+	position: relative;
+	display: inline-block;
+	width: 350px;
+	height: 36px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+}
