@@ -8,38 +8,45 @@ import com.bcs.core.db.service.SystemConfigService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.spring.ApplicationContextProvider;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class CoreConfigReader {
 
 	/** configuration reader */
 	private static CoreConfigReader reader;
 	
-	public static boolean isSystemTypeProduction(){
+	public static boolean isSystemTypeProduction() {
 		String systemType = getString(CONFIG_STR.SYSTEM_TYPE);
-		if("PRODUCTION".equals(systemType)){
+		log.info("bcs.system.type = {}", systemType);
+		if ("PRODUCTION".equals(systemType)) {
 			return true;
 		}
 		return false;
 	}
 	
-	public static boolean isMainSystem(){
-		String isMain = getString(CONFIG_STR.IS_MAIN_SYSTEM);
-		if(StringUtils.isNotBlank(isMain) && "true".equals(isMain)){
+	public static boolean isMainSystem() {
+		String isMainSystem = getString(CONFIG_STR.IS_MAIN_SYSTEM);
+		log.info("is.main.system = {}", isMainSystem);
+		if (StringUtils.isNotBlank(isMainSystem) && "true".equals(isMainSystem)) {
 			return true;
 		}
 		return false;
 	}
 	
-	public static boolean isSystemTypeTest(){
+	public static boolean isSystemTypeTest() {
 		String systemType = getString(CONFIG_STR.SYSTEM_TYPE);
-		if("TEST".equals(systemType)){
+		log.info("bcs.system.type = {}", systemType);
+		if ("TEST".equals(systemType)) {
 			return true;
 		}
 		return false;
 	}
 	
-	public static boolean isSystemTypeDevelop(){
+	public static boolean isSystemTypeDevelop() {
 		String systemType = getString(CONFIG_STR.SYSTEM_TYPE);
-		if("DEVELOP".equals(systemType)){
+		log.info("bcs.system.type = {}", systemType);
+		if ("DEVELOP".equals(systemType)) {
 			return true;
 		}
 		return false;

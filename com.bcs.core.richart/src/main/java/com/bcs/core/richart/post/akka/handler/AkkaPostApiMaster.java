@@ -24,13 +24,24 @@ import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.ObjectUtil;
 
 import akka.actor.UntypedActor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AkkaPostApiMaster extends UntypedActor{
 	private static Logger logger = Logger.getLogger(AkkaPostApiMaster.class);
 
 	@Override
 	public void onReceive(Object message) throws Exception {
 		if (message instanceof LogApiModel) {
+			
+			String systemId = CoreConfigReader.getString(CONFIG_STR.SYSTEM_ID.toString());
+			log.info("systemId = {}", systemId);
+			
+			if (systemId.equals("develop")) {
+				log.info("Current system.id is [{}], ignore checking ap logs.", systemId);
+				return;
+			}
+			
 			LogApiModel logApiModel =(LogApiModel) message;
 			
 			Date start = new Date();

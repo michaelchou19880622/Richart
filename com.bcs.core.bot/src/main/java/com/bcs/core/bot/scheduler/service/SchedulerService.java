@@ -34,6 +34,9 @@ import com.bcs.core.log.util.SystemLogUtil;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.utils.ErrorRecord;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class SchedulerService {
 	private static final String MSG_SEND_GROUP = "MSG_SEND_GROUP";
@@ -41,136 +44,136 @@ public class SchedulerService {
 
 	@Autowired
 	private MsgMainService msgMainService;
-	
+
 	/** Logger */
 	private static Logger logger = Logger.getLogger(SchedulerService.class);
 
 	private SchedulerFactory sfb = new StdSchedulerFactory();
 	private Scheduler scheduler;
-	
+
 	private Map<String, JobKey> onSchedulerList = new HashMap<String, JobKey>();
-	
-	public SchedulerService() throws Exception{
+
+	public SchedulerService() throws Exception {
 		logger.info("Constructor SchedulerService");
 		scheduler = sfb.getScheduler();
 		scheduler.start();
 	}
-	
+
 	/**
 	 * Start Schedule
+	 * 
 	 * @throws SchedulerException
 	 */
-	public void startSchedule() throws SchedulerException{
+	public void startSchedule() throws SchedulerException {
 		synchronized (SCHEDULER_FLAG) {
 			logger.info("startSchedule");
 			scheduler.start();
-			if(onSchedulerList == null){
+			if (onSchedulerList == null) {
 				onSchedulerList = new HashMap<String, JobKey>();
 			}
 		}
 	}
-	
+
 	/**
 	 * Stop Schedule : Wait for Executing Jobs to Finish
+	 * 
 	 * @throws SchedulerException
 	 */
 	@PreDestroy
-	public void stopSchedule(){
+	public void stopSchedule() {
 		synchronized (SCHEDULER_FLAG) {
 			logger.info("[DESTROY] SchedulerService cleaning up...");
-			try{
+			try {
 				scheduler.shutdown(true);
 				onSchedulerList.clear();
 				scheduler = null;
 				onSchedulerList = null;
+			} catch (Throwable e) {
 			}
-			catch(Throwable e){}
 
 			System.gc();
 			logger.info("[DESTROY] SchedulerService destroyed");
 		}
 	}
-	
-	private void checkSchedule(String action, Long msgId) throws SchedulerException{
 
-		if(scheduler == null || scheduler.isShutdown()){
+	private void checkSchedule(String action, Long msgId) throws SchedulerException {
+
+		if (scheduler == null || scheduler.isShutdown()) {
 			restartSchedule();
 			SystemLogUtil.saveLogError("Scheduler", action, "Scheduler Restart", msgId.toString());
 		}
 	}
-	
-	private void checkSchedule(String action, String message) throws SchedulerException{
 
-		if(scheduler == null || scheduler.isShutdown()){
+	private void checkSchedule(String action, String message) throws SchedulerException {
+
+		if (scheduler == null || scheduler.isShutdown()) {
 			restartSchedule();
 			SystemLogUtil.saveLogError("Scheduler", action, "Scheduler Restart", message);
 		}
 	}
-	
-	private void restartSchedule(){
+
+	private void restartSchedule() {
 		logger.info("[RESTART] SchedulerService restartSchedule");
-		try{
+		try {
 			scheduler = sfb.getScheduler();
 			scheduler.start();
 			onSchedulerList = new HashMap<String, JobKey>();
+		} catch (Throwable e) {
 		}
-		catch(Throwable e){}
 
 		logger.info("[RESTART] SchedulerService restartSchedule success");
 	}
-	
-	public void loadScheduleFromDB() throws Exception{
-		logger.info("loadScheduleFromDB");
-		
-		if(!CoreConfigReader.isMainSystem()){
+
+	public void loadScheduleFromDB() throws Exception {
+
+		boolean isMainSystem = CoreConfigReader.isMainSystem();
+		log.info("isMainSystem = {}", isMainSystem);
+
+		if (!isMainSystem) {
 			return;
 		}
-		
-		List<MsgMain> list = msgMainService.findByStatus( MsgMain.MESSAGE_STATUS_SCHEDULED);
-		for(MsgMain msgMain : list){
+
+		List<MsgMain> list = msgMainService.findByStatus(MsgMain.MESSAGE_STATUS_SCHEDULED);
+		for (MsgMain msgMain : list) {
 			String statusNotice = "";
-			try{
+			try {
 				logger.info("msgMain:" + msgMain);
-				
+
 				String sendType = msgMain.getSendType();
 				logger.info("sendType:" + sendType);
-				if(MsgMain.SENDING_MSG_TYPE_DELAY.equals(sendType)){
+				if (MsgMain.SENDING_MSG_TYPE_DELAY.equals(sendType)) {
 					Date startTime = parseToDate(msgMain.getScheduleTime());
 					logger.info("startTime:" + startTime);
-					
+
 					// Overtime Skip
-					if((new Date()).getTime() > startTime.getTime()){
+					if ((new Date()).getTime() > startTime.getTime()) {
 						// Change Status to OverTime
 						statusNotice = "設定預約發送超時";
 						throw new Exception("OverTime");
-					}
-					else{
+					} else {
 						// Schedule Send Message Delay
 						addMsgSendSchedule(msgMain.getMsgId(), startTime);
 						continue;
 					}
-				}
-				else if(MsgMain.SENDING_MSG_TYPE_SCHEDULE.equals(sendType)){
+				} else if (MsgMain.SENDING_MSG_TYPE_SCHEDULE.equals(sendType)) {
 					String cronExpression = parseToCronExpression(msgMain.getScheduleTime());
 					logger.info("cronExpression:" + cronExpression);
-					
+
 					addMsgSendSchedule(msgMain.getMsgId(), cronExpression);
 					continue;
-				}
-				else{
+				} else {
 					throw new Exception("Error SendType:" + sendType);
 				}
-			}
-			catch(Exception e){
+			} catch (Exception e) {
 				logger.error(ErrorRecord.recordError(e));
 				Map<String, Object> logContent = new HashMap<String, Object>();
 				logContent.put("MsgMain", msgMain);
 				logContent.put("ErrorMsg", e.getMessage());
 				statusNotice = e.getMessage();
-				
+
 				this.saveLog(logContent, msgMain.getMsgId().toString());
 			}
-			
+
 			// Schedule Send Message Fail, Include OverTime
 			msgMain.setStatus(MsgMain.MESSAGE_STATUS_FAIL);
 			msgMain.setStatusNotice(statusNotice);
@@ -178,32 +181,31 @@ public class SchedulerService {
 			msgMainService.save(msgMain);
 		}
 	}
-	
-	private void saveLog(Map<String, Object> logContent, String referenceId){
+
+	private void saveLog(Map<String, Object> logContent, String referenceId) {
 		SystemLogUtil.saveLogError("ScheduleMsg", "LoadScheduleFromDB", SystemLog.SYSTEM_EVENT, logContent, referenceId);
 	}
-	
-	public Date parseToDate(String sendingMsgTime) throws Exception{
 
-		try{
+	public Date parseToDate(String sendingMsgTime) throws Exception {
+
+		try {
 			DateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 			return format.parse(sendingMsgTime);
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			throw new Exception("SendingMsgTime Parse Error:" + sendingMsgTime);
 		}
 	}
-	
-	public String parseToCronExpression(String sendingMsgTime) throws Exception{
-		
+
+	public String parseToCronExpression(String sendingMsgTime) throws Exception {
+
 		String result = "0 ";
-		
+
 		String[] split = sendingMsgTime.split(" ");
 		String type = split[0];
 		/**
 		 * EveryMonth 11 12:13:00
 		 */
-		if(MsgMain.SENDING_MSG_SCHEDULED_TYPE_EVERY_MONTH.equals(type)){
+		if (MsgMain.SENDING_MSG_SCHEDULED_TYPE_EVERY_MONTH.equals(type)) {
 			String day = split[1];
 			String min = split[2].split(":")[1];
 			String hour = split[2].split(":")[0];
@@ -212,7 +214,7 @@ public class SchedulerService {
 		/**
 		 * EveryWeek 1 12:13:00
 		 */
-		else if(MsgMain.SENDING_MSG_SCHEDULED_TYPE_EVERY_WEEK.equals(type)){
+		else if (MsgMain.SENDING_MSG_SCHEDULED_TYPE_EVERY_WEEK.equals(type)) {
 			String week = split[1];
 			String min = split[2].split(":")[1];
 			String hour = split[2].split(":")[0];
@@ -221,25 +223,25 @@ public class SchedulerService {
 		/**
 		 * EveryDay 12:13:00
 		 */
-		else if(MsgMain.SENDING_MSG_SCHEDULED_TYPE_EVERY_DAY.equals(type)){
+		else if (MsgMain.SENDING_MSG_SCHEDULED_TYPE_EVERY_DAY.equals(type)) {
 			String min = split[1].split(":")[1];
 			String hour = split[1].split(":")[0];
 			result = generateCronExpression("0", min, hour, "*", "*", "?", "*");
 		}
-		logger.info("parseToCronExpression:" + result );
-		
+		logger.info("parseToCronExpression:" + result);
+
 		return result;
 	}
-	
-	private String generateCronExpression(String sec, String min, String hour, String day, String month, String week, String year){
+
+	private String generateCronExpression(String sec, String min, String hour, String day, String month, String week, String year) {
 		return sec + " " + min + " " + hour + " " + day + " " + month + " " + week + " " + year;
 	}
-	
-	private JobDetail createJobDetail(Long msgId){
+
+	private JobDetail createJobDetail(Long msgId) {
 
 		String detailName = createDetailName(msgId);
-		String detailGroup = MSG_SEND_GROUP; 
-		
+		String detailGroup = MSG_SEND_GROUP;
+
 		/**
 		 * Setting JobDetailFactoryBean
 		 */
@@ -247,210 +249,213 @@ public class SchedulerService {
 		detailFactory.setName(detailName);
 		detailFactory.setGroup(detailGroup);
 		detailFactory.setBeanName(detailName);
-        
+
 		detailFactory.setJobClass(SendMessageJob.class);
-        
-        Map<String, Object> jobDataAsMap = new HashMap<String, Object>();
-        ExecuteSendMsgTask runTask = new ExecuteSendMsgTask();
-        jobDataAsMap.put("sendMsgTask", runTask);
-        jobDataAsMap.put("msgId", msgId);
-        detailFactory.setJobDataAsMap(jobDataAsMap);
-        
-        /**
-         * Create JobDetail
-         */
-        detailFactory.afterPropertiesSet();
-        return (JobDetail) detailFactory.getObject();   
-	}
-	
-	private CronTrigger createCronTrigger(String cronExpression, JobDetail jobDetail) throws Exception{
 
-        /**
-         * Setting CronTriggerFactoryBean
-         */
-        CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
-        triggerFactory.setName(UUID.randomUUID().toString());
-        triggerFactory.setJobDetail(jobDetail);
-        try {
-        	triggerFactory.setCronExpression(cronExpression);
+		Map<String, Object> jobDataAsMap = new HashMap<String, Object>();
+		ExecuteSendMsgTask runTask = new ExecuteSendMsgTask();
+		jobDataAsMap.put("sendMsgTask", runTask);
+		jobDataAsMap.put("msgId", msgId);
+		detailFactory.setJobDataAsMap(jobDataAsMap);
+
+		/**
+		 * Create JobDetail
+		 */
+		detailFactory.afterPropertiesSet();
+		return (JobDetail) detailFactory.getObject();
+	}
+
+	private CronTrigger createCronTrigger(String cronExpression, JobDetail jobDetail) throws Exception {
+
+		/**
+		 * Setting CronTriggerFactoryBean
+		 */
+		CronTriggerFactoryBean triggerFactory = new CronTriggerFactoryBean();
+		triggerFactory.setName(UUID.randomUUID().toString());
+		triggerFactory.setJobDetail(jobDetail);
+		try {
+			triggerFactory.setCronExpression(cronExpression);
 		} catch (Exception e) { // Handle
 			logger.error(ErrorRecord.recordError(e));
 			throw new Exception("CronExpression Error");
 		}
-        /**
-         * Create CronTrigger
-         */
-        triggerFactory.afterPropertiesSet();
-        
-        return triggerFactory.getObject();
-	}
-	
-	private Trigger createSimpleTrigger(Date startTime, JobDetail jobDetail) throws Exception{
+		/**
+		 * Create CronTrigger
+		 */
+		triggerFactory.afterPropertiesSet();
 
-        /**
-         * Setting CronTriggerFactoryBean
-         */
+		return triggerFactory.getObject();
+	}
+
+	private Trigger createSimpleTrigger(Date startTime, JobDetail jobDetail) throws Exception {
+
+		/**
+		 * Setting CronTriggerFactoryBean
+		 */
 		SimpleTriggerFactoryBean triggerFactory = new SimpleTriggerFactoryBean();
-        triggerFactory.setName(UUID.randomUUID().toString());
-        triggerFactory.setJobDetail(jobDetail);
-        try {
-        	logger.info("createSimpleTrigger:" + startTime);
-        	triggerFactory.setStartTime(startTime);
-        	triggerFactory.setRepeatCount(0);
-        	triggerFactory.setRepeatInterval(1000);
+		triggerFactory.setName(UUID.randomUUID().toString());
+		triggerFactory.setJobDetail(jobDetail);
+		try {
+			logger.info("createSimpleTrigger:" + startTime);
+			triggerFactory.setStartTime(startTime);
+			triggerFactory.setRepeatCount(0);
+			triggerFactory.setRepeatInterval(1000);
 		} catch (Exception e) { // Handle
 			logger.error(ErrorRecord.recordError(e));
 			throw new Exception("CronExpression Error");
 		}
-        /**
-         * Create SimpleTrigger
-         */
-        triggerFactory.afterPropertiesSet();
-        
-        return triggerFactory.getObject();
+		/**
+		 * Create SimpleTrigger
+		 */
+		triggerFactory.afterPropertiesSet();
+
+		return triggerFactory.getObject();
 	}
-	
+
 	/**
 	 * Add Send Message Schedule
+	 * 
 	 * @param command
 	 * @return Trigger
 	 * @throws Exception
 	 */
-	public void addMsgSendSchedule(Long msgId, Date startTime) throws Exception{
+	public void addMsgSendSchedule(Long msgId, Date startTime) throws Exception {
 		logger.info("addMsgSendSchedule:" + msgId);
 
 		String detailName = createDetailName(msgId);
 
-        /**
-         * Create JobDetail
-         */
-        JobDetail jobDetail = createJobDetail(msgId);
-        logger.info(jobDetail);
-       JobKey jobKey =  jobDetail.getKey();
+		/**
+		 * Create JobDetail
+		 */
+		JobDetail jobDetail = createJobDetail(msgId);
+		logger.info(jobDetail);
+		JobKey jobKey = jobDetail.getKey();
 
-       /**
-        * Create SimpleTrigger
-        */
-       Trigger trigger = createSimpleTrigger(startTime, jobDetail);
-        logger.info(trigger);
+		/**
+		 * Create SimpleTrigger
+		 */
+		Trigger trigger = createSimpleTrigger(startTime, jobDetail);
+		logger.info(trigger);
 
-    	try {
-    		synchronized (SCHEDULER_FLAG) {
-    			
-    			checkSchedule("AddMsgSendSchedule", msgId);
-    			
-    			Date result = scheduler.scheduleJob(jobDetail, trigger);
+		try {
+			synchronized (SCHEDULER_FLAG) {
 
-    			logger.info("addCommandSchedule result:" + result);
-    			logger.info("addCommandSchedule detailName:" + detailName);
-    			onSchedulerList.put(detailName, jobKey);
-    		}
+				checkSchedule("AddMsgSendSchedule", msgId);
+
+				Date result = scheduler.scheduleJob(jobDetail, trigger);
+
+				logger.info("addCommandSchedule result:" + result);
+				logger.info("addCommandSchedule detailName:" + detailName);
+				onSchedulerList.put(detailName, jobKey);
+			}
 		} catch (SchedulerException e) { // Handle
 			logger.error(ErrorRecord.recordError(e));
 			throw new Exception("Schedule Error");
 		}
 	}
-	
+
 	/**
 	 * Add Send Message Schedule
+	 * 
 	 * @param command
 	 * @return Trigger
 	 * @throws Exception
 	 */
-	public void addMsgSendSchedule(Long msgId, String cronExpression) throws Exception{
+	public void addMsgSendSchedule(Long msgId, String cronExpression) throws Exception {
 		logger.info("addMsgSendSchedule:" + msgId);
 
 		String detailName = createDetailName(msgId);
 
-        /**
-         * Create JobDetail
-         */
-        JobDetail jobDetail = createJobDetail(msgId);
-        logger.info(jobDetail);
-       JobKey jobKey =  jobDetail.getKey();
+		/**
+		 * Create JobDetail
+		 */
+		JobDetail jobDetail = createJobDetail(msgId);
+		logger.info(jobDetail);
+		JobKey jobKey = jobDetail.getKey();
 
-       /**
-        * Create CronTrigger
-        */
-       Trigger trigger = createCronTrigger(cronExpression, jobDetail);
-        logger.info(trigger);
+		/**
+		 * Create CronTrigger
+		 */
+		Trigger trigger = createCronTrigger(cronExpression, jobDetail);
+		logger.info(trigger);
 
-    	try {
-    		synchronized (SCHEDULER_FLAG) {
+		try {
+			synchronized (SCHEDULER_FLAG) {
 
-    			checkSchedule("AddMsgSendSchedule", msgId);
-    			
-    			Date result = scheduler.scheduleJob(jobDetail, trigger);
+				checkSchedule("AddMsgSendSchedule", msgId);
 
-    			logger.info("addCommandSchedule result:" + result);
-    			logger.info("addCommandSchedule detailName:" + detailName);
-    			onSchedulerList.put(detailName, jobKey);
-    		}
+				Date result = scheduler.scheduleJob(jobDetail, trigger);
+
+				logger.info("addCommandSchedule result:" + result);
+				logger.info("addCommandSchedule detailName:" + detailName);
+				onSchedulerList.put(detailName, jobKey);
+			}
 		} catch (SchedulerException e) { // Handle
 			logger.error(ErrorRecord.recordError(e));
 			throw new Exception("Schedule Error");
 		}
 	}
-	
+
 	/**
 	 * Delete Send Message Schedule
+	 * 
 	 * @param command
 	 * @return true if the Job was found and deleted.
 	 * @throws Exception
 	 */
-	public boolean deleteMsgSendSchedule(Long msgId) throws Exception{
+	public boolean deleteMsgSendSchedule(Long msgId) throws Exception {
 		logger.info("deleteMsgSendSchedule:" + msgId);
 
 		String detailName = createDetailName(msgId);
 
-		if(msgId != null){
+		if (msgId != null) {
 			logger.info("msgId : " + msgId);
 
 			synchronized (SCHEDULER_FLAG) {
 
-    			checkSchedule("DeleteMsgSendSchedule", msgId);
-    			
+				checkSchedule("DeleteMsgSendSchedule", msgId);
+
 				JobKey jobKey = onSchedulerList.get(detailName);
-				if(jobKey != null){
+				if (jobKey != null) {
 					boolean result = scheduler.deleteJob(jobKey);
-	
+
 					logger.info("deleteMsgSendSchedule Success msgId:" + msgId);
 					onSchedulerList.remove(detailName);
-					
+
 					return result;
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
-	private String createDetailName(Long msgId){
-		return  "MsgId:" + msgId;
+
+	private String createDetailName(Long msgId) {
+		return "MsgId:" + msgId;
 	}
-	
-	public void addScheduleEvent(String detailName, JobDetail jobDetail, Trigger trigger) throws Exception{
+
+	public void addScheduleEvent(String detailName, JobDetail jobDetail, Trigger trigger) throws Exception {
 		logger.info("addScheduleEvent:" + detailName);
 
-        logger.info(jobDetail);
-       JobKey jobKey =  jobDetail.getKey();
+		logger.info(jobDetail);
+		JobKey jobKey = jobDetail.getKey();
 
-       /**
-        * Create SimpleTrigger
-        */
-        logger.info(trigger);
+		/**
+		 * Create SimpleTrigger
+		 */
+		logger.info(trigger);
 
-    	try {
-    		synchronized (SCHEDULER_FLAG) {
-    			
-    			checkSchedule("addScheduleEvent", detailName);
-    			
-    			Date result = scheduler.scheduleJob(jobDetail, trigger);
+		try {
+			synchronized (SCHEDULER_FLAG) {
 
-    			logger.info("addScheduleEvent result:" + result);
-    			logger.info("addScheduleEvent detailName:" + detailName);
-    			onSchedulerList.put(detailName, jobKey);
-    		}
+				checkSchedule("addScheduleEvent", detailName);
+
+				Date result = scheduler.scheduleJob(jobDetail, trigger);
+
+				logger.info("addScheduleEvent result:" + result);
+				logger.info("addScheduleEvent detailName:" + detailName);
+				onSchedulerList.put(detailName, jobKey);
+			}
 		} catch (SchedulerException e) { // Handle
 			logger.error(ErrorRecord.recordError(e));
 			throw new Exception("Schedule Error");

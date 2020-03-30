@@ -38,12 +38,12 @@ public class CheckUserLiveChatStatus implements Job {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
 
 		try {
-			logger.info("[execute] Start at :" + sdf.format(new Date()));
+			logger.info("[ CheckUserLiveChatStatus ] execute START - " + sdf.format(new Date()));
 
 			String autoReplyChannelName = CoreConfigReader.getString(CONFIG_STR.AUTOREPLY_CHANNEL_NAME.toString(), true);
 			List<UserLiveChat> userList = userLiveChatService.findWaitingAndInProgressUser(); // 找出「等待中」以及「在客服流程中」的使用者
 
-			log.info("[findWaitingAndInProgressUser] userList = {}", userList);
+			log.info("[ CheckUserLiveChatStatus ] find Waiting And In Progress User, userList = {}", userList);
 
 			for (UserLiveChat user : userList) {
 				Long chatId = user.getChatId();
@@ -86,7 +86,7 @@ public class CheckUserLiveChatStatus implements Job {
 			logger.error(error);
 		} finally {
 
-			logger.info("[execute] End at :" + sdf.format(new Date()));
+			logger.info("[ CheckUserLiveChatStatus ] execute FINISH - " + sdf.format(new Date()));
 		}
 	}
 }
