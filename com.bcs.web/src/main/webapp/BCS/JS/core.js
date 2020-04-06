@@ -257,6 +257,7 @@ $(function(){
 	$.BCS.blockMsgRead = { "message" : "讀取資料中...."};
 	$.BCS.blockMsgUpload = { "message" : "上傳資料中...."};
 	$.BCS.blockMsgSave = { "message" : "儲存資料中...."};
+	$.BCS.blockMsgResultQuerying = { "message" : "結果查詢中...."};
 
 	$.BCS.blockWinningLetterCreating = { "message" : "中獎回函資料建立中..."};
 	$.BCS.blockWinningLetterUpdating = { "message" : "中獎回函資料更新中..."};
@@ -267,6 +268,12 @@ $(function(){
 	$.BCS.blockWinnerInfoUploading = { "message" : "用戶資料上傳中..."};
 	$.BCS.blockWinningLetterRecordExporting = { "message" : "正在匯出PDF檔案，請稍後..."};
 	$.BCS.blockIDCardUploading = { "message" : "圖片上傳處理中，請稍後..."};
+
+	$.BCS.blockRichmenuGroupListCreating = { "message" : "群組建立中，請稍後..."};
+	$.BCS.blockRichmenuGroupListLoading = { "message" : "群組列表載入中，請稍後..."};
+	$.BCS.blockRichmenuGroupListDeleting = { "message" : "刪除中，請稍後..."};
+	$.BCS.blockRichmenuGroupPageLoading = { "message" : "頁面載入中，請稍後..."};
+	
 	
 	$.BCS.formatNumber = function(number, size){
 

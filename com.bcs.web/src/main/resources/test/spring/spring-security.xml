@@ -31,6 +31,8 @@
 		<intercept-url pattern="/c/**" access="permitAll"/>
 		<intercept-url pattern="/campaign/**" access="permitAll"/>
 		
+		<intercept-url pattern="/bcs/edit/hpiRichMenuGetGroupList" access="permitAll" />
+		
 		<intercept-url pattern="/bcs/doLogin*" access="permitAll"/>
 		
 		<intercept-url pattern="/bcs/admin/**" access="hasRole('ROLE_ADMIN')" />

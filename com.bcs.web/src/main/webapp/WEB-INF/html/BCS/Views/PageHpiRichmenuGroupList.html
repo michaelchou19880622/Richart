@@ -18,26 +18,10 @@
                     <header class="ContentHead">
                         <h3 class="CHTtl">圖文選單群組列表</h3>
                     </header>
-                    <div class="CHBtnSet">
-						<div class="CHLeft">
-							<ul>
-								<li class="CHLeftBtn" id="ActiveBtn_li">
-									<input class="ActiveBtn" type="button" value="生效" style="cursor: pointer;">
-								</li>
-								<li class="CHLeftBtn" id="DisableBtn_li">
-									<input class="DisableBtn" type="button" value="取消" style="cursor: pointer;">
-								</li>
-							</ul>
-						</div>
-						<div class="CHRight">
-							<input class="searchInput_RichmenuGroupName" id="keywordInput" type="text" placeholder="請輸入欲查詢之群組名稱" maxlength="50" name="keywordInput" autocomplete="off">
-	                       	<input class="btn_name_query" type="button" value="查詢"  style="cursor: pointer;">
-						</div>
-					</div>
                     <div class="mainFrame">
                         <table border="1" id="tableBody">
                             <colgroup>
-	                            <col width="100">
+	                            <col width="150">
 	                            <col width="100">
 	                            <col width="100">
 	                            <col width="100">
@@ -45,14 +29,14 @@
                             </colgroup>
                             <tr class="tableHeader">
                                 <th>群組名稱</th>
-                                <th>狀態</th>
+                                <th>群組類型</th>
                                 <th>修改日期</th>
                                 <th>修改人員</th>
                                 <th>複製/刪除</th>
                             </tr>
                             <tr class="dataTemplate">
-                                <td class="groupTitle"><a href=""></a></td>
-                                <td class="groupStatus"></td>
+                                <td class="groupName"><a href=""></a></td>
+                                <td class="groupType"></td>
                                 <td class="modifyTime"></td>
                                 <td class="modifyUser"></td>
                                 <td>
@@ -76,7 +60,7 @@
 	                    	<label style="padding: 0px 0px 0px 5px; font-weight: bold; color: black;">每頁顯示資料筆數</label>
 							<div class="optionPageSize">
 								<div class="optionLabelPageSize">15</div>
-								<select id="keywordSelector" class="optionSelectPageSize" name="">
+								<select id="CountSelector" class="optionSelectPageSize" name="">
 									<option value="5">5</option>
 									<option value="10">10</option>
 									<option value="15" selected>15</option>

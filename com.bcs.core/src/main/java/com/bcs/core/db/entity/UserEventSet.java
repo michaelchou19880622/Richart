@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 	       @Index(name = "INDEX_0", columnList = "TARGET"),
 	       @Index(name = "INDEX_1", columnList = "ACTION"),
 	       @Index(name = "INDEX_2", columnList = "MID") ,
-	       @Index(name = "INDEX_3", columnList = "REFERENCE_ID") ,
+	       @Index(name = "INDEX_3", columnList = "REFERENCE_ID"),
 	})
 public class UserEventSet extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;

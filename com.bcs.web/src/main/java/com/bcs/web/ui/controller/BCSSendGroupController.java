@@ -17,6 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +36,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bcs.core.db.entity.SendGroup;
+import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.repository.GroupGenerateRepository;
 import com.bcs.core.db.service.GroupGenerateService;
 import com.bcs.core.db.service.SendGroupService;
 import com.bcs.core.db.service.UserFieldSetService;
 import com.bcs.core.enums.DEFAULT_SEND_GROUP;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.utils.DataUtils;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.web.security.CurrentUser;
@@ -50,7 +57,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import antlr.Utils;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/bcs")
 public class BCSSendGroupController extends BCSBaseController {
@@ -65,9 +75,11 @@ public class BCSSendGroupController extends BCSBaseController {
 	private GroupGenerateService groupGenerateService;
 	@Autowired
 	private ExportExcelUIService exportExcelUIService;
-	
+
 	/** Logger */
 	private static Logger logger = Logger.getLogger(BCSSendGroupController.class);
+	
+	private static final String DEFAULT_PAGE_SIZE = "15";
 
 	/**
 	 * 建立發送群組頁面
@@ -103,39 +115,79 @@ public class BCSSendGroupController extends BCSBaseController {
 	 * @return List<SendGroup>
 	 * @throws IOException
 	 */
-	@ControllerLog(description="查詢發送群組列表")
+	@ControllerLog(description = "查詢發送群組列表")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/getSendGroupList")
 	@ResponseBody
-	public ResponseEntity<?> getSendGroupList(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser) throws IOException {
-		logger.info("getSendGroupList");		
+	public ResponseEntity<?> getSendGroupList(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser) throws IOException {
+		logger.info("getSendGroupList");
 		List<SendGroup> result = sendGroupService.generateDefaultGroup();
-		
-		List<SendGroup> list = sendGroupService.findAll();
+
+		// TODO : 修改findAll() → findAllByGroupTypeNullOrDefault()
+//		List<SendGroup> list = sendGroupService.findAll();
+		List<SendGroup> list = sendGroupService.findAllByGroupTypeNull();
 		result.addAll(list);
-		
+
 		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-	
+
+	/**
+	 * 查詢圖文選單發送群組列表
+	 * 
+	 * @param request
+	 * @param response
+	 * @return List<SendGroup>
+	 * @throws IOException
+	 */
+	@ControllerLog(description = "查詢圖文選單發送群組列表")
+	@RequestMapping(method = RequestMethod.GET, value = "/market/getRichmenuSendGroupList")
+	@ResponseBody
+	public ResponseEntity<?> getRichmenuSendGroupList(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser,
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+	        @RequestParam(value = "size", defaultValue = DEFAULT_PAGE_SIZE) Integer size) throws IOException {
+		
+		logger.info("getSendGroupList");
+		
+//		List<SendGroup> result = sendGroupService.generateDefaultGroup();
+
+//		List<SendGroup> result = new ArrayList<SendGroup>();
+//		List<SendGroup> list = sendGroupService.findAllByGroupTypeNotNull();
+//		result.addAll(list);
+//		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+//		return new ResponseEntity<>(result, HttpStatus.OK);
+
+		log.info("page = {}", page);
+		log.info("size = {}", size);
+
+	    Sort sort = new Sort(Direction.ASC, "GROUP_ID");
+		log.info("sort = {}", sort);
+		
+	    Pageable pageable = new PageRequest(page, size, sort);
+		log.info("pageable = {}", pageable);
+		
+		Page<SendGroup> page_SendGroup = null;
+		
+		page_SendGroup = sendGroupService.findAllByGroupTypeNotNull(pageable);
+		log.info("page_SendGroup = {}", page_SendGroup);
+
+		return new ResponseEntity<>(page_SendGroup, HttpStatus.OK);
+	}
+
 	/**
 	 * Get GroupId Title Map
+	 * 
 	 * @param request
 	 * @param response
 	 * @return Map<Long, String>
 	 * @throws IOException
 	 */
-	@ControllerLog(description="getSendGroupTitleList")
+	@ControllerLog(description = "getSendGroupTitleList")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/getSendGroupTitleList")
 	@ResponseBody
-	public ResponseEntity<?> getSendGroupTitleList(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser) throws IOException {
-		logger.info("getSendGroupTitleList");		
-		Map<Long, String> map = sendGroupService.findGroupTitleMap();
+	public ResponseEntity<?> getSendGroupTitleList(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser) throws IOException {
+		logger.info("getSendGroupTitleList");
+//		Map<Long, String> map = sendGroupService.findGroupTitleMap();
+		Map<Long, String> map = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNull();
 		logger.info("map:" + ObjectUtil.objectToJsonStr(map));
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
@@ -148,36 +200,30 @@ public class BCSSendGroupController extends BCSBaseController {
 	 * @return
 	 * @throws IOException
 	 */
-	@ControllerLog(description="取得發送群組")
+	@ControllerLog(description = "取得發送群組")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/getSendGroup")
 	@ResponseBody
-	public ResponseEntity<?> getSendGroup(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestParam(required=false) String groupId
-			) throws IOException {
-		logger.info("getSendGroup");		
-		
-		try{
-			if(StringUtils.isNotBlank(groupId)){
+	public ResponseEntity<?> getSendGroup(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam(required = false) String groupId)
+			throws IOException {
+		logger.info("getSendGroup");
+
+		try {
+			if (StringUtils.isNotBlank(groupId)) {
 				logger.info("groupId:" + groupId);
 				SendGroup sendGroup = sendGroupService.findOne(Long.parseLong(groupId));
-				
-				if(sendGroup != null){
+
+				if (sendGroup != null) {
 					return new ResponseEntity<>(sendGroup, HttpStatus.OK);
 				}
 			}
-			
+
 			throw new Exception("Group Id Null");
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -191,34 +237,28 @@ public class BCSSendGroupController extends BCSBaseController {
 	 * @return
 	 * @throws IOException
 	 */
-	@ControllerLog(description="刪除發送群組")
+	@ControllerLog(description = "刪除發送群組")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteSendGroup")
 	@ResponseBody
-	public ResponseEntity<?> deleteSendGroup(			
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestParam(required=false) String groupId) throws IOException {
+	public ResponseEntity<?> deleteSendGroup(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam(required = false) String groupId)
+			throws IOException {
 		logger.info("deleteSendGroup");
-	
-		try{
-			if(StringUtils.isNotBlank(groupId)){
+
+		try {
+			if (StringUtils.isNotBlank(groupId)) {
 				logger.info("groupId:" + groupId);
 				sendGroupUIService.deleteFromUI(Long.parseLong(groupId), customUser.getAccount());
-				
+
 				return new ResponseEntity<>("Delete Success", HttpStatus.OK);
-			}
-			else{
+			} else {
 				throw new Exception("Group Id Null");
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -234,49 +274,41 @@ public class BCSSendGroupController extends BCSBaseController {
 	 * @return
 	 * @throws IOException
 	 */
-	@ControllerLog(description="新增或修改發送群組")
+	@ControllerLog(description = "新增或修改發送群組")
 	@RequestMapping(method = RequestMethod.POST, value = "/market/createSendGroup", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> createSendGroup(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestBody SendGroup sendGroup			
-			) throws IOException {
+	public ResponseEntity<?> createSendGroup(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestBody SendGroup sendGroup) throws IOException {
 		logger.info("createSendGroup");
-		
-		try{
-			if(sendGroup != null){
-				if(StringUtils.isBlank(sendGroup.getGroupTitle())){
+
+		try {
+			if (sendGroup != null) {
+				if (StringUtils.isBlank(sendGroup.getGroupTitle())) {
 					throw new Exception("GroupTitle Null");
 				}
-				
-				if(StringUtils.isBlank(sendGroup.getGroupDescription())){
+
+				if (StringUtils.isBlank(sendGroup.getGroupDescription())) {
 					throw new Exception("GroupDescription Null");
 				}
-				
+
 				String adminUserAccount = customUser.getAccount();
-				
+
 				SendGroup result = sendGroupUIService.saveFromUI(sendGroup, adminUserAccount);
-				
+
 				return new ResponseEntity<>(result, HttpStatus.OK);
-			}
-			else{
+			} else {
 				throw new Exception("SendGroup Null");
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
-	
+
 	/**
 	 * 取得群組條件各個下拉選項值
 	 * 
@@ -285,65 +317,65 @@ public class BCSSendGroupController extends BCSBaseController {
 	 * @return
 	 * @throws IOException
 	 */
-	@ControllerLog(description="取得群組條件各個下拉選項值")
+	@ControllerLog(description = "取得群組條件各個下拉選項值")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/getSendGroupCondition")
 	@ResponseBody
-	public ResponseEntity<?> getSendGroupCondition(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser) throws IOException {
+	public ResponseEntity<?> getSendGroupCondition(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser) throws IOException {
 		logger.info("getSendGroupCondition");
-		
-		try{
+
+		try {
 			ObjectMapper objectMapper = new ObjectMapper();
-			ObjectNode sendGroupCondition = objectMapper.createObjectNode();
-			List<Object[]> sendGroupQueryList = userFieldSetService.getFieldKeyAndNameAndType();
 			
+			ObjectNode sendGroupCondition = objectMapper.createObjectNode();
+			
+			List<Object[]> sendGroupQueryList = userFieldSetService.getFieldKeyAndNameAndType();
+			log.info("sendGroupQueryList.size() = {}", sendGroupQueryList.size());
+
 			for (Object[] sendGroupQuery : sendGroupQueryList) {
-				
-				if(StringUtils.isBlank((String)sendGroupQuery[0])){
+
+				if (StringUtils.isBlank((String) sendGroupQuery[0])) {
 					continue;
 				}
-				if(StringUtils.isBlank((String)sendGroupQuery[1])){
+				if (StringUtils.isBlank((String) sendGroupQuery[1])) {
 					continue;
 				}
-				if(StringUtils.isBlank((String)sendGroupQuery[2])){
+				if (StringUtils.isBlank((String) sendGroupQuery[2])) {
 					continue;
 				}
 
 				ObjectNode sendGroupQueryProperty = (new ObjectMapper()).createObjectNode();
+				
 				String queryFieldId = (String) sendGroupQuery[0];
 				String queryFieldName = (String) sendGroupQuery[1];
 				String queryFieldFormat = (String) sendGroupQuery[2];
-				sendGroupQueryProperty
-					.putPOJO("queryFieldOp", 
-							(ArrayNode) objectMapper.valueToTree(GroupGenerateRepository.validQueryOp));
+				
+				sendGroupQueryProperty.putPOJO("queryFieldOp", (ArrayNode) objectMapper.valueToTree(GroupGenerateRepository.validQueryOp));
 				sendGroupQueryProperty.put("queryFieldId", queryFieldId);
 				sendGroupQueryProperty.put("queryFieldName", queryFieldName);
 				sendGroupQueryProperty.put("queryFieldFormat", queryFieldFormat);
-				if("Date".equals(queryFieldFormat)){
+				
+				if ("Date".equals(queryFieldFormat)) {
 					sendGroupQueryProperty.put("queryFieldSet", "DatePicker");
-				}
-				else{
+				} else {
 					sendGroupQueryProperty.put("queryFieldSet", "Input");
 				}
 				sendGroupCondition.putPOJO(queryFieldId, sendGroupQueryProperty);
 			}
 			
+			log.info("sendGroupCondition = {}", DataUtils.toPrettyJsonUseJackson(sendGroupCondition));
+
 			return new ResponseEntity<>(sendGroupCondition, HttpStatus.OK);
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
-	
+
 	/**
 	 * 取得條件結果
 	 * 
@@ -353,29 +385,24 @@ public class BCSSendGroupController extends BCSBaseController {
 	 * @return
 	 * @throws IOException
 	 */
-	@ControllerLog(description="取得條件結果")
+	@ControllerLog(description = "取得條件結果")
 	@RequestMapping(method = RequestMethod.POST, value = "/market/getSendGroupConditionResult", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> getSendGroupConditionResult(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestBody SendGroup sendGroup,
-			@RequestParam(required=false) String startDate,
-			@RequestParam(required=false) String endDate) throws IOException {
+	public ResponseEntity<?> getSendGroupConditionResult(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestBody SendGroup sendGroup,
+			@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate) throws IOException {
 		logger.info("getSendGroupConditionResult");
-		
-		try{
-			Long groupId = sendGroup.getGroupId() ;
-			if(groupId == null){
+
+		try {
+			Long groupId = sendGroup.getGroupId();
+			if (groupId == null) {
 				BigInteger result = groupGenerateService.findMIDCountBySendGroupDetail(sendGroup.getSendGroupDetail());
-				
+
 				logger.info("getSendGroupConditionResult Success");
 				return new ResponseEntity<>(result, HttpStatus.OK);
-			}else{
-				Long result= 0L;
+			} else {
+				Long result = 0L;
 
-				if(StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)){
+				if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					Date time = sdf.parse(endDate);
 					Calendar calendar = Calendar.getInstance();
@@ -385,34 +412,30 @@ public class BCSSendGroupController extends BCSBaseController {
 					endDate = sdf.format(calendar.getTime());
 					logger.info("startDate:" + startDate);
 					logger.info("endDate:" + endDate);
-					
-					result= sendGroupService.countDefaultGroupSize(groupId, startDate, endDate);
+
+					result = sendGroupService.countDefaultGroupSize(groupId, startDate, endDate);
+				} else {
+					result = sendGroupService.countDefaultGroupSize(groupId);
 				}
-				else{
-					result= sendGroupService.countDefaultGroupSize(groupId);
-				}
-				if(result != null){
+				if (result != null) {
 					logger.info("getSendGroupConditionResult Success");
-					
+
 					return new ResponseEntity<>(result, HttpStatus.OK);
-				}
-				else{
+				} else {
 					throw new Exception("SendGroup Send Error");
 				}
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
-	
+
 	/**
 	 * 取得條件結果
 	 * 
@@ -422,238 +445,246 @@ public class BCSSendGroupController extends BCSBaseController {
 	 * @return
 	 * @throws IOException
 	 */
-	@ControllerLog(description="取得條件結果")
+	@ControllerLog(description = "取得條件結果")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/getSendGroupQueryResult")
 	@ResponseBody
-	public ResponseEntity<?> getSendGroupQueryResult(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser, 
-			@RequestParam Long groupId
-			) throws IOException {
+	public ResponseEntity<?> getSendGroupQueryResult(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam Long groupId) throws IOException {
 		logger.info("getSendGroupQueryResult");
-		
-		try{
+
+		try {
 
 			SendGroup sendGroup = sendGroupService.findOne(groupId);
-			if(sendGroup == null){
+			if (sendGroup == null) {
 
 				throw new Exception("SendGroup Error");
 			}
 
 			// 行銷人員設定 群組
-			if(groupId > 0){
-				try{
+			if (groupId > 0) {
+				try {
 					List<String> mids = groupGenerateService.findMIDBySendGroupDetailGroupId(groupId);
-					if(mids != null && mids.size() >0){
-	
+					if (mids != null && mids.size() > 0) {
+
 						return new ResponseEntity<>(mids.size(), HttpStatus.OK);
 					}
-				}
-				catch(Exception e){
+				} catch (Exception e) {
 					logger.error(ErrorRecord.recordError(e));
 					throw new Exception("SendGroup Send Error");
 				}
 			}
 			// 預設群祖
-			else if(groupId < 0){
-				Long result= sendGroupService.countDefaultGroupSize(groupId);
-				if(result != null){
+			else if (groupId < 0) {
+				Long result = sendGroupService.countDefaultGroupSize(groupId);
+				if (result != null) {
 					return new ResponseEntity<>(result, HttpStatus.OK);
-				}
-				else{
+				} else {
 					throw new Exception("SendGroup Send Error");
 				}
 			}
-			
+
 			return new ResponseEntity<>(0, HttpStatus.OK);
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
 
-	@ControllerLog(description="uploadMidSendGroup")
-	 @RequestMapping(method = RequestMethod.POST, value = "/market/uploadMidSendGroup")
-	 @ResponseBody
-	 public ResponseEntity<?> uploadMidSendGroup(
-	   HttpServletRequest request, 
-	   HttpServletResponse response,
-	   @CurrentUser CustomUser customUser,
-	   @RequestPart MultipartFile filePart
-	   ) throws IOException {
-	  logger.info("uploadMidSendGroup");
+	@ControllerLog(description = "uploadMidSendGroup")
+	@RequestMapping(method = RequestMethod.POST, value = "/market/uploadMidSendGroup")
+	@ResponseBody
+	public ResponseEntity<?> uploadMidSendGroup(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestPart MultipartFile filePart) throws IOException {
+		logger.info("uploadMidSendGroup");
 
-	  try{
-	   if(filePart != null){
-	    
-	    String modifyUser = customUser.getAccount();
-	    logger.info("modifyUser:" + modifyUser);
-	    
-	    Map<String, Object> result = sendGroupUIService.uploadMidSendGroup(filePart, modifyUser, new Date());
-	    logger.info("uploadMidSendGroupResult1:" + result);
-	    
-	    return new ResponseEntity<>(result, HttpStatus.OK);
-	   }
-	   else{
-	    throw new Exception("Upload Mid SendGroup Null");
-	   }
-	  }
-	  catch(Exception e){
+		try {
+			if (filePart != null) {
 
-	   logger.info("uploadMidSendGroup Exception : " +  e.getMessage().toString());
-	   if (e.getMessage().contains("RetrySaveUserEventSet"))
-	   {
-	    Map<String, Object> result = sendGroupUIService.RetrySaveUserEventSet();
-	    logger.info("uploadMidSendGroupResult1:" + result);
-	    
-	    return new ResponseEntity<>(result, HttpStatus.OK);
-	   }
-	   else if (e.getMessage().contains("TimeOut")) {
-	    return new ResponseEntity<>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-	   }
-	   
-	   logger.error(ErrorRecord.recordError(e));
+				String modifyUser = customUser.getAccount();
+				logger.info("modifyUser: " + modifyUser);
 
-	   if(e instanceof BcsNoticeException){
-	    return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-	   }
-	   else{
-	    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	   }
-	  }
-	 }
+				Map<String, Object> result = sendGroupUIService.uploadMidSendGroup(filePart, modifyUser, new Date());
+				logger.info("uploadMidSendGroupResult1: " + result);
+
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else {
+				throw new Exception("Upload Mid SendGroup Null");
+			}
+		} catch (Exception e) {
+
+			logger.info("uploadMidSendGroup Exception : " + e.getMessage().toString());
+			if (e.getMessage().contains("RetrySaveUserEventSet")) {
+				Map<String, Object> result = sendGroupUIService.RetrySaveUserEventSet();
+				logger.info("uploadMidSendGroupResult1:" + result);
+
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else if (e.getMessage().contains("TimeOut")) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+			}
+
+			logger.error(ErrorRecord.recordError(e));
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
 	
+	@ControllerLog(description = "uploadRichmenuMidSendGroup")
+	@RequestMapping(method = RequestMethod.POST, value = "/market/uploadRichmenuMidSendGroup")
+	@ResponseBody
+	public ResponseEntity<?> uploadRichmenuMidSendGroup(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestPart MultipartFile filePart) throws IOException {
+		logger.info("uploadRichmenuMidSendGroup");
+
+		try {
+			if (filePart != null) {
+
+				String modifyUser = customUser.getAccount();
+				logger.info("modifyUser : " + modifyUser);
+
+				Map<String, Object> result = sendGroupUIService.uploadRichmenuMidSendGroup(filePart, modifyUser, new Date());
+				logger.info("uploadRichmenuMidSendGroup Result : " + result);
+
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else {
+				throw new Exception("Upload Mid SendGroup Null");
+			}
+		} catch (Exception e) {
+
+			logger.info("uploadMidSendGroup Exception : " + e.getMessage().toString());
+			if (e.getMessage().contains("RetrySaveUserEventSet")) {
+				Map<String, Object> result = sendGroupUIService.RetrySaveUserEventSet();
+				logger.info("uploadMidSendGroupResult1:" + result);
+
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else if (e.getMessage().contains("TimeOut")) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+			}
+
+			logger.error(ErrorRecord.recordError(e));
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+
 	private Map<String, SendGroup> tempSendGroupMap = new HashMap<String, SendGroup>();
-	
-	@ControllerLog(description="createSendGroupMidExcelTemp")
+
+	@ControllerLog(description = "createSendGroupMidExcelTemp")
 	@RequestMapping(method = RequestMethod.POST, value = "/market/createSendGroupMidExcelTemp", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> createSendGroupMidExcelTemp(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser, 
-			@RequestBody SendGroup sendGroup
-) throws IOException {
+	public ResponseEntity<?> createSendGroupMidExcelTemp(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestBody SendGroup sendGroup)
+			throws IOException {
 		logger.info("createSendGroupMidExcelTemp");
-		
-		try{
-			Long groupId = sendGroup.getGroupId() ;
-			if(groupId == null){
+
+		try {
+			Long groupId = sendGroup.getGroupId();
+			if (groupId == null) {
 				BigInteger count = groupGenerateService.findMIDCountBySendGroupDetail(sendGroup.getSendGroupDetail());
-				
+
 				Map<String, Object> result = new HashMap<String, Object>();
 				result.put("count", count);
-				
+
 				String tempId = UUID.randomUUID().toString().toLowerCase();
 				tempSendGroupMap.put(tempId, sendGroup);
 				result.put("tempId", tempId);
-				
+
 				logger.info("createSendGroupMidExcelTemp Success");
 				return new ResponseEntity<>(result, HttpStatus.OK);
-			}
-			else{
+			} else {
 				Long count = 0L;
-				count= sendGroupService.countDefaultGroupSize(groupId);
-				if(count != null){
+				count = sendGroupService.countDefaultGroupSize(groupId);
+				if (count != null) {
 					Map<String, Object> result = new HashMap<String, Object>();
 					result.put("count", count);
-					
+
 					logger.info("createSendGroupMidExcelTemp Success");
-					
+
 					tempSendGroupMap.put(groupId + "", sendGroup);
 					result.put("tempId", groupId + "");
-					
+
 					return new ResponseEntity<>(result, HttpStatus.OK);
-				}
-				else{
+				} else {
 					throw new Exception("SendGroup Send Error");
 				}
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
-	
-	@ControllerLog(description="exportToExcelForSendGroup")
+
+	@ControllerLog(description = "exportToExcelForSendGroup")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/exportToExcelForSendGroup")
 	@ResponseBody
-	public void exportToExcelForSendGroup(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestParam String tempId) throws Exception {
+	public void exportToExcelForSendGroup(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam String tempId) throws Exception {
 		logger.info("exportToExcelForSendGroup");
-		
+
 		SendGroup sendGroup = tempSendGroupMap.get(tempId);
 
-		if(sendGroup == null){
+		if (sendGroup == null) {
 
 			throw new Exception("SendGroup Error");
 		}
-		
+
 		Long groupId = sendGroup.getGroupId();
 
 		// 行銷人員設定 群組
-		if(groupId == null){
-			try{
+		if (groupId == null) {
+			try {
 				List<String> mids = groupGenerateService.findMIDBySendGroupDetail(sendGroup.getSendGroupDetail());
-				logger.info("tempId1:"+tempId);
-				logger.info("mids1:"+mids.toString());
-				
-				if(mids != null && mids.size() >0){
+				logger.info("tempId1:" + tempId);
+				logger.info("mids1:" + mids.toString());
+
+				if (mids != null && mids.size() > 0) {
 
 					List<String> titles = new ArrayList<String>();
 					titles.add("MID");
 					List<List<String>> data = new ArrayList<List<String>>();
 					data.add(mids);
-					
+
 					String title = "SendGroup";
-					if(StringUtils.isNotBlank(sendGroup.getGroupTitle())){
+					if (StringUtils.isNotBlank(sendGroup.getGroupTitle())) {
 						title += ":" + sendGroup.getGroupTitle();
 					}
-					
-					exportExcelUIService.exportMidResultToExcel(request, response, "SendGroup", title , null, titles, data);
+
+					exportExcelUIService.exportMidResultToExcel(request, response, "SendGroup", title, null, titles, data);
 				}
-			}
-			catch(Exception e){
+			} catch (Exception e) {
 				logger.error(ErrorRecord.recordError(e));
 				throw new Exception("SendGroup Send Error");
 			}
 		}
 		// 預設群祖
-		else if(groupId < 0){
+		else if (groupId < 0) {
 			List<String> mids = new ArrayList<String>();
-			
+
 			int page = 0;
-			while(true){
+			while (true) {
 				List<String> list = sendGroupService.queryDefaultGroup(groupId, page);
-				if(list != null && list.size() > 0){
+				if (list != null && list.size() > 0) {
 					mids.addAll(list);
 					logger.info("queryDefaultGroup:" + list.size());
-				}
-				else{
+				} else {
 					break;
 				}
 				page++;
 			}
-			
-			if(mids != null && mids.size() >0){
+
+			if (mids != null && mids.size() > 0) {
 
 				List<String> titles = new ArrayList<String>();
 				titles.add("MID");

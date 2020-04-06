@@ -10,11 +10,13 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.SendGroup;
+import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.repository.SendGroupRepository;
 import com.bcs.core.enums.DEFAULT_SEND_GROUP;
 import com.bcs.core.exception.BcsNoticeException;
@@ -35,7 +37,19 @@ public class SendGroupService {
 	public List<SendGroup> findAll(){
 		return sendGroupRepository.findAll();
 	}
-	
+
+	public List<SendGroup> findAllByGroupTypeNull(){
+		return sendGroupRepository.findAllByGroupTypeNull();
+	}
+
+	public List<SendGroup> findAllByGroupTypeNotNull(){
+		return sendGroupRepository.findAllByGroupTypeNotNull();
+	}
+
+	public Page<SendGroup> findAllByGroupTypeNotNull(Pageable pageable){
+		return sendGroupRepository.findAllByGroupTypeNotNull(pageable);
+	}
+
 	/**
 	 * Create DefaultGroup
 	 * @return Map<Long, SendGroup>
@@ -177,7 +191,56 @@ public class SendGroupService {
 	 */
 	public Map<Long, String> findGroupTitleMap(){
 		List<Object[]> groups = sendGroupRepository.findAllGroupIdAndGroupTitle();
+		
 		logger.info("findGroupTitleMap:" + ObjectUtil.objectToJsonStr(groups));
+		Map<Long, String> result = new LinkedHashMap<Long, String>();
+		
+		List<SendGroup> defaults = generateDefaultGroup();
+		for(SendGroup group : defaults){
+			result.put(group.getGroupId(), group.getGroupTitle());
+		}
+		
+		for(Object[] group : groups){
+			BigInteger groupId = (BigInteger) group[0];
+			String groupTitle= (String) group[1];
+			result.put(groupId.longValue(), groupTitle);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * FindGroupTitleMap include Default Group
+	 * @return
+	 */
+	public Map<Long, String> findAllGroupIdAndGroupTitleByGroupTypeNull(){
+		List<Object[]> groups = sendGroupRepository.findAllGroupIdAndGroupTitleByGroupTypeNull();
+		
+		logger.info("findAllGroupIdAndGroupTitleByGroupTypeNullOrBCS : " + ObjectUtil.objectToJsonStr(groups));
+		Map<Long, String> result = new LinkedHashMap<Long, String>();
+		
+		List<SendGroup> defaults = generateDefaultGroup();
+		for(SendGroup group : defaults){
+			result.put(group.getGroupId(), group.getGroupTitle());
+		}
+		
+		for(Object[] group : groups){
+			BigInteger groupId = (BigInteger) group[0];
+			String groupTitle= (String) group[1];
+			result.put(groupId.longValue(), groupTitle);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * FindGroupTitleMap include Default Group
+	 * @return
+	 */
+	public Map<Long, String> findAllGroupIdAndGroupTitleByGroupTypeNotNull(){
+		List<Object[]> groups = sendGroupRepository.findAllGroupIdAndGroupTitleByGroupTypeNotNull();
+		
+		logger.info("findAllGroupIdAndGroupTitleByGroupTypeNotNull : " + ObjectUtil.objectToJsonStr(groups));
 		Map<Long, String> result = new LinkedHashMap<Long, String>();
 		
 		List<SendGroup> defaults = generateDefaultGroup();

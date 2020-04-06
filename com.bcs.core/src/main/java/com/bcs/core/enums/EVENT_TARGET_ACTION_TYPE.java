@@ -12,6 +12,10 @@ public enum EVENT_TARGET_ACTION_TYPE {
 		ACTION_UPLOAD_MID_SERIAL("UploadMidSerial"),
 		
 	EVENT_LINE_POINT_SEND("LinePointSend"),
+	
+	// For Hpi Richmenu 
+	TARGET_RICHMENU_SEND_GROUP("RichmenuSendGroup"),
+		ACTION_UPLOAD_RICHMENU_MID("UploadRichmenuMid")
 	;
 
     private final String str;

@@ -841,7 +841,8 @@ public class SendMsgUIService {
 	public void setGroups(Map<String, Object> result){
 
 		try{
-			Map<Long, String> groups = sendGroupService.findGroupTitleMap();
+//			Map<Long, String> groups = sendGroupService.findGroupTitleMap();
+			Map<Long, String> groups = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNull();
 			result.put("SendGroup", groups);
 		}
 		catch(Exception e){

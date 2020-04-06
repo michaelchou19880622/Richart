@@ -25,6 +25,7 @@ public enum BcsPageEnum {
 	
 	// HPI Richmenu Page
 	HpiRichMenuListPage("/BCS/Views/PageHpiRchmnu"),
+	HpiRichMenuCreateGroupPage("/BCS/Views/PageHpiRichmenuCreateGroup"),
 	HpiRichMenuGroupListPage("/BCS/Views/PageHpiRichmenuGroupList"),
 	
 	//RichMenu Page

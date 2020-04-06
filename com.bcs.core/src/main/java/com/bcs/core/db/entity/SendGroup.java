@@ -20,6 +20,9 @@ import com.bcs.core.json.AbstractBcsEntity;
 public class SendGroup extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
 
+	public static final String GROUP_TYPE_BCS = "BCS";
+	public static final String GROUP_TYPE_DEPEND_ON_STATUS = "RICHMENU";
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "GROUP_ID")
@@ -36,6 +39,9 @@ public class SendGroup extends AbstractBcsEntity{
 
 	@Column(name = "MODIFY_TIME")
 	private Date modifyTime;
+	
+	@Column(name = "GROUP_TYPE", columnDefinition="nvarchar(32)")
+	private String groupType;
 
 	@OneToMany(mappedBy="sendGroup",cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	private List<SendGroupDetail> sendGroupDetail;
@@ -87,5 +93,12 @@ public class SendGroup extends AbstractBcsEntity{
 	public void setSendGroupDetail(List<SendGroupDetail> sendGroupDetail) {
 		this.sendGroupDetail = sendGroupDetail;
 	}
-	
+
+	public String getGroupType() {
+		return groupType;
+	}
+
+	public void setGroupType(String groupType) {
+		this.groupType = groupType;
+	}
 }

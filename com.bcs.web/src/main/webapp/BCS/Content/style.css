@@ -327,6 +327,14 @@ input:focus, textarea:focus {
 	text-align: left;
 }
 
+.rchmenuGroup table td {
+	text-align: left;
+}
+
+.rchmenuGroup table td th {
+	text-align: center;
+}
+
 .TInput {
 	display: block;
 	border-color: #ced2dc;
@@ -426,6 +434,50 @@ input:focus, textarea:focus {
 	opacity: 0;
 }
 
+/* 下拉式選單-自定義選項  for Richmenu Create Group*/
+.optionForRichmenuCreateGroup {
+	position: relative;
+	display: inline-block;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+/* 	min-width: 90px; */
+	width: 90%;
+	background: white url(../images/ico_mdFRM03Select.png) no-repeat right
+		center;
+	border: 1px solid #ced2dc;
+	border-radius: 0;
+	padding: 9px 9px 8px 9px;
+}
+
+.optionForRichmenuCreateGroup .optionLabel {
+	font-size: 13px;
+	color: #a1a7b5;
+}
+
+.optionForRichmenuCreateGroup .optionSelect {
+	display: block;
+	position: absolute;
+	top: 7px;
+	left: 10px;
+	width: 100%;
+	opacity: 0;
+}
+
+.optionForRichmenuCreateGroup .date {
+	width: 90%;
+	background: white url(../images/ico_mdFRM01Date.png) no-repeat 100%
+		center;
+}
+
+.optionForRichmenuCreateGroup .date>input {
+	border: 0;
+	width: 90px;
+}
+
+.optionForRichmenuCreateGroup .time {
+	min-width: 60px;
+}
+
 
 input[id="winningLetterStartTime"]:disabled {
 	background-color: transparent;
@@ -517,6 +569,21 @@ div.btn_delete {
 
 .btn_save {
 	background: #005AA9;
+}
+
+.btn_richmenu_query, .btn_richmenu_save, .btn_richmenu_cancel, .btn_richmenu_exportMid {
+	color: #fff;
+	padding: 10px 15px;
+	margin-bottom: 10px;
+	box-shadow: none;
+	border: 0;
+	min-width: 80px;
+	background: #808080;
+}
+
+.btn_richmenu_query:hover, .btn_richmenu_save:hover, .btn_richmenu_cancel:hover, .btn_richmenu_exportMid:hover {
+  background-color: #005AA9;
+  color: #ffffff
 }
 
 .btn_name_query, .btn_export_pdf, .btn_export_excel {

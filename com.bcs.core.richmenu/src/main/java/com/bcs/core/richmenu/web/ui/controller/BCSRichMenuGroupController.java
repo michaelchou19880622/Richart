@@ -1,13 +1,21 @@
 package com.bcs.core.richmenu.web.ui.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bcs.core.db.service.SendGroupService;
+import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 
@@ -18,11 +26,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/bcs")
 public class BCSRichMenuGroupController extends BCSBaseController {
 	
+	@Autowired
+	private SendGroupService sendGroupService;
+	
 	// Hpi RichMenu List Page
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/hpiRichMenuListPage")
 	public String hpiRichMenuListPage(HttpServletRequest request, HttpServletResponse response) {
 		log.info("hpiRichMenuListPage");
 		return BcsPageEnum.HpiRichMenuListPage.toString();
+	}
+	
+	// Hpi RichMenu Create Group Page
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/hpiRichMenuCreateGroupPage")
+	public String hpiRichMenuCreateGroupPage(HttpServletRequest request, HttpServletResponse response) {
+		log.info("hpiRichMenuCreateGroupPage");
+		return BcsPageEnum.HpiRichMenuCreateGroupPage.toString();
 	}
 
 	// Hpi RichMenu Group List Page
@@ -33,29 +51,29 @@ public class BCSRichMenuGroupController extends BCSBaseController {
 	}
 	
 	// Hpi RichMenu Get Group List
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/hpiRichMenuGetGroupList")
 	@ResponseBody
-	@RequestMapping(method = RequestMethod.GET, value = "/edit/getHpiRichMenuGroupList")
-	public String getHpiRichMenuGroupList(HttpServletRequest request, HttpServletResponse response) {
-		log.info("getHpiRichMenuGroupList");
+	public ResponseEntity<?> hpiRichMenuGetGroupList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		log.info("hpiRichMenuGetGroupList");
 		
-//		try {
-//			List<RichMenuGroup> result = new ArrayList();
-//			List<RichMenuGroup> list = richMenuGroupService.findAllActiveListTimeDesc();
-//			result.addAll(list);
-//			logger.info("getRichMenuGroupList result:" + ObjectUtil.objectToJsonStr(result));
-//			return new ResponseEntity<>(result, HttpStatus.OK);
-//		} catch (Exception e) {
-//			logger.error(ErrorRecord.recordError(e));
-//			if (e instanceof BcsNoticeException)
-//				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-//			else
-//				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-		
-		return BcsPageEnum.HpiRichMenuGroupListPage.toString();
+		try {
+			
+			Map<Long, String> map = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNotNull();
+			
+			log.info("map = {}", ObjectUtil.objectToJsonStr(map));
+			
+			return new ResponseEntity<>(map, HttpStatus.OK);
+		} catch (Exception e) {
+
+			log.info("Exception : ", e);
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 	}
-	
-	
 	
 	
 	

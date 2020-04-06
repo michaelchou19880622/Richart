@@ -2,14 +2,21 @@
  * 
  */
 $(function(){
-	$('.btn_add').click(function(){
- 		window.location.replace(bcs.bcsContextPath + '/market/sendGroupCreatePage');
-	});
+	
+	var totalPageSize = document.getElementById('totalPageSize');
+	
+	var valTotalPageSize = 0;
+	
+	var currentPageIndex = document.getElementById('currentPageIndex');
+	
+	var valCurrentPageIndex = 1;
+	
+	var perPageSize = $(this).find('option:selected').text();
 	
 	var btn_copyFunc = function(){
 		var groupId = $(this).attr('groupId');
 		console.info('btn_copyFunc groupId:' + groupId);
- 		window.location.replace(bcs.bcsContextPath + '/market/sendGroupCreatePage?groupId=' + groupId + '&actionType=Copy');
+ 		window.location.replace(bcs.bcsContextPath + '/edit/hpiRichMenuCreateGroupPage?groupId=' + groupId + '&actionType=Copy');
 	};
 	
 	var btn_deteleFunc = function(){
@@ -22,7 +29,8 @@ $(function(){
 		} else {
 		    return;
 		}
-		
+
+		$('.LyMain').block($.BCS.blockRichmenuGroupListDeleting);
 		$.ajax({
 			type : "DELETE",
 			url : bcs.bcsContextPath + '/admin/deleteSendGroup?groupId=' + groupId
@@ -33,24 +41,83 @@ $(function(){
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
+			$('.LyMain').unblock();
 		}).done(function(){
+			$('.LyMain').unblock();
 		});
 	};
+	
+	/* < Button > 上一頁 */
+	$('#btn_PreviousPage').click(function() {
+		valCurrentPageIndex = (valCurrentPageIndex - 1 <= 0)? valCurrentPageIndex : valCurrentPageIndex - 1;
+		
+		loadDataFunc();
+	});
+	
+	/* < Button > 下一頁 */
+	$('#btn_NextPage').click(function() {
+		valCurrentPageIndex = (valCurrentPageIndex + 1 > valTotalPageSize)? valCurrentPageIndex : valCurrentPageIndex + 1;
+		
+		loadDataFunc();
+	});
+
+	/* 更新每頁顯示數量下拉選單 */
+	var func_optionSelectChanged = function(){
+		var selectValue = $(this).find('option:selected').text();
+		
+		$(this).closest('.optionPageSize').find('.optionLabelPageSize').html(selectValue);
+		
+		perPageSize = selectValue;
+		
+		loadDataFunc();
+	};
+
+	$('.optionSelectPageSize').change(func_optionSelectChanged);
 
 	var loadDataFunc = function(){
 		
+		$('.LyMain').block($.BCS.blockRichmenuGroupListLoading);
+		
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/market/getSendGroupList'
+			url : encodeURI(bcs.bcsContextPath + '/market/getRichmenuSendGroupList?&page=' + (valCurrentPageIndex - 1) +'&size=' + perPageSize)
 		}).success(function(response){
 			$('.dataTemplate').remove();
 			console.info(response);
+			
+			if (response.totalElements == 0) {
+				totalPageSize.innerText = '-';
+				currentPageIndex.innerText = '-';
+				
+				$('.LyMain').unblock();
+				
+				return;
+			}
+			
+			valTotalPageSize = response.totalPages;
+			valCurrentPageIndex = (response.number + 1);
+			
+			totalPageSize.innerText = valTotalPageSize;
+			currentPageIndex.innerText = valCurrentPageIndex;
+
+			if (valCurrentPageIndex > valTotalPageSize) {
+				valCurrentPageIndex = valTotalPageSize;
+				currentPageIndex.innerText = valCurrentPageIndex;
+				
+				loadDataFunc();
+				
+				return;
+			}
 	
-			$.each(response, function(i, o){
+			$.each(response.content, function(i, o){
 				var groupData = templateBody.clone(true);
 
-				groupData.find('.groupTitle a').attr('href', bcs.bcsContextPath + '/market/sendGroupCreatePage?groupId=' + o.groupId + '&actionType=Edit');
-				groupData.find('.groupTitle a').html(o.groupTitle);
+				groupData.find('.groupName a').attr('href', encodeURI(bcs.bcsContextPath + '/edit/hpiRichMenuCreateGroupPage?groupId=' + o.groupId + '&actionType=Edit'));
+				groupData.find('.groupName a').html(o.groupTitle);
+				
+				var groupTypeDisplay = (o.groupType == 'CONDITIONS')? "依照設定條件" : "依照匯入名單";
+				
+				groupData.find('.groupType').html(groupTypeDisplay);
 				
 				if(o.modifyTime){
 					groupData.find('.modifyTime').html(moment(o.modifyTime).format('YYYY-MM-DD HH:mm:ss'));
@@ -81,7 +148,9 @@ $(function(){
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
+			$('.LyMain').unblock();
 		}).done(function(){
+			$('.LyMain').unblock();
 		});
 	};
 

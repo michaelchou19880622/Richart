@@ -365,7 +365,8 @@ public class BCSMsgSendController extends BCSBaseController {
 				 * SendGroup Result
 				 */
 				try{
-					Map<Long, String> groups = sendGroupService.findGroupTitleMap();
+//					Map<Long, String> groups = sendGroupService.findGroupTitleMap();
+					Map<Long, String> groups = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNull();
 					result.put("SendGroup", groups);
 				}
 				catch(Exception e){

@@ -258,7 +258,7 @@ public class GroupGenerateRepository{
 
 			if(sendGroupDetails.size() > 1){
 				for(int i = 1; i < sendGroupDetails.size(); i++){
-					sqlString += " AND s" + i + ".REFERENCE_ID = ?" + (i+params) + " ";
+					sqlString += " OR s" + i + ".REFERENCE_ID = ?" + (i+params) + " ";
 				}
 			}
 			

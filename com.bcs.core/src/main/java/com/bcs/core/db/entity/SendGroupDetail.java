@@ -40,6 +40,9 @@ public class SendGroupDetail extends AbstractBcsEntity{
 
 	@Column(name = "QUERY_VALUE", columnDefinition="nvarchar(50)")
 	private String queryValue;
+	
+	@Column(name = "GROUP_TYPE", columnDefinition="nvarchar(32)")
+	private String groupType;
 
 	public Long getGroupDetailId() {
 		return groupDetailId;
@@ -80,5 +83,12 @@ public class SendGroupDetail extends AbstractBcsEntity{
 	public void setQueryValue(String queryValue) {
 		this.queryValue = queryValue;
 	}
-	
+
+	public String getGroupType() {
+		return groupType;
+	}
+
+	public void setGroupType(String groupType) {
+		this.groupType = groupType;
+	}
 }
