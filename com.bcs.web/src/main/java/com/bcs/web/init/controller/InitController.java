@@ -34,26 +34,36 @@ public class InitController {
 
 	@Autowired
 	private SchedulerService schedulerService;
+	
 	@Autowired
 	private InteractiveService interactiveService;
+	
 	@Autowired
 	private CatchRecordBinded catchRecordBinded;
+	
 	@Autowired
 	private CatchRecordOpAddReceive catchRecordOpAddReceive;
+	
 	@Autowired
 	private CatchRecordOpBlockedReceive catchRecordOpBlockedReceive;
+	
 	@Autowired
 	private CatchHandleMsgReceiveTimeout catchHandleMsgReceiveTimeout;
+	
 	@Autowired
 	private CatchRecordReceive catchRecordReceive;
+	
 	@Autowired
 	private LiveChatTaskService liveChatTaskService;
+	
 	@Autowired
 	private LinePointAMSchedulerService linePointAMSchedulerService;
-	@Autowired
-	private LinePointPMSchedulerService linePointPMSchedulerService;
-	@Autowired
-	private MGMTaskService mgmTaskService;
+	
+//	@Autowired
+//	private LinePointPMSchedulerService linePointPMSchedulerService;
+//	
+//	@Autowired
+//	private MGMTaskService mgmTaskService;
 	
 	/** Logger */
 	private static Logger logger = Logger.getLogger(InitController.class);
@@ -66,21 +76,21 @@ public class InitController {
 	public void init(){
 
 		try {
-			logger.info("init registerServer");
+			logger.info("[init] DataSyncUtil registerServer");
 			DataSyncUtil.registerServer();
 		} catch (Throwable e) {
 			logger.error(ErrorRecord.recordError(e));
 		}
 		
 		try {
-			logger.info("init loadScheduleFromDB");
+			logger.info("[init] SchedulerService loadScheduleFromDB");
 			schedulerService.loadScheduleFromDB();
 		} catch (Throwable e) {
 			logger.error(ErrorRecord.recordError(e));
 		}
 		
 		try {
-			logger.info("init loadInteractiveMap");
+			logger.info("[init] InteractiveService loadInteractiveMap");
 			interactiveService.loadInteractiveMap();
 		} catch (Throwable e) {
 			logger.error(ErrorRecord.recordError(e));
@@ -89,10 +99,19 @@ public class InitController {
 		try {
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
+					logger.info("[init] CatchRecordBinded loadInitData");
 					catchRecordBinded.loadInitData();
+
+					logger.info("[init] CatchRecordOpAddReceive loadInitData");
 					catchRecordOpAddReceive.loadInitData();
+
+					logger.info("[init] CatchRecordOpBlockedReceive loadInitData");
 					catchRecordOpBlockedReceive.loadInitData();
+
+					logger.info("[init] CatchRecordReceive loadInitData");
 					catchRecordReceive.loadInitData();
+
+					logger.info("[init] CatchHandleMsgReceiveTimeout loadInitData");
 					catchHandleMsgReceiveTimeout.loadInitData();
 				}
 			});
@@ -104,9 +123,10 @@ public class InitController {
 		
 		/* 定期檢查 User 的 status，避免卡在真人客服頻道 */
 		try {
+			logger.info("[init] LiveChatTaskService checkUserStatus");
 			liveChatTaskService.checkUserStatus();
 		} catch(Exception e) {
-			e.printStackTrace();
+			logger.error(ErrorRecord.recordError(e));
 		}
 
 		// MGM CheckLinePoint Task
@@ -118,7 +138,7 @@ public class InitController {
 		
 		// LinePoint AM Push flow
 		try {
-			logger.info("init LinePoint AM Push flow");
+			logger.info("[init] LinePointAMSchedulerService startCircle");
 			linePointAMSchedulerService.startCircle();
 		} catch (Throwable e) {
 			logger.error(ErrorRecord.recordError(e));
