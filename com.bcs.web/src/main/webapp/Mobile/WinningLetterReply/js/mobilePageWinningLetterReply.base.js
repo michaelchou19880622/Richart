@@ -410,6 +410,14 @@ $(function() {
 			alert("很抱歉，身分證影本反面未正確上傳。");
 			return;
 		}
+
+		// 簽名檔
+		var isSignatureBlank = isCanvasBlank(canvas);
+		
+		if (isSignatureBlank) {
+			alert("很抱歉，簽名欄位不能為空。");
+			return;
+		}
 		
 		$('.columnUploadImage').block($.BCS.blockWinnerInfoUploading);
 		

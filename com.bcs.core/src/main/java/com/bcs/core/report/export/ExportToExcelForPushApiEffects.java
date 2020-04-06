@@ -66,7 +66,7 @@ public class ExportToExcelForPushApiEffects {
 		
 		row.createCell(0).setCellValue("發送時間");
 		row.createCell(1).setCellValue("發送類型");
-		row.createCell(2).setCellValue("部門名稱");
+		row.createCell(2).setCellValue("產品名稱");
 		row.createCell(3).setCellValue("發送成功數");
 		row.createCell(4).setCellValue("發送失敗數");
 		

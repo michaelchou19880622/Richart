@@ -199,8 +199,8 @@ public class ExportToExcelForWinningLetterService {
 			row.createCell(5).setCellValue("中獎贈品");
 			row.createCell(6).setCellValue("戶籍地址");
 			row.createCell(7).setCellValue("通訊地址");
-			row.createCell(8).setCellValue("身分證反面");
-			row.createCell(9).setCellValue("身分證正面");
+			row.createCell(8).setCellValue("身分證正面");
+			row.createCell(9).setCellValue("身分證反面");
 			row.createCell(10).setCellValue("簽名檔");
 			row.createCell(11).setCellValue("客戶回覆時間");
 
