@@ -167,7 +167,7 @@ public class ProductGroupService {
     
     public Map<String, String> findGroupNameMap(){
         List<Object[]> groups = productGroupRepository.findAllGroupIdAndGroupName();
-        logger.debug("findGroupTitleMap:" + ObjectUtil.objectToJsonStr(groups));
+        logger.debug("findGroupNameMap:" + ObjectUtil.objectToJsonStr(groups));
         Map<String, String> result = new LinkedHashMap<String, String>();
         
         for(Object[] group : groups){

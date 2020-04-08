@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.service.SendGroupService;
 import com.bcs.core.exception.BcsNoticeException;
-import com.bcs.core.utils.ObjectUtil;
+import com.bcs.core.utils.DataUtils;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 
@@ -58,9 +58,9 @@ public class BCSRichMenuGroupController extends BCSBaseController {
 		
 		try {
 			
-			Map<Long, String> map = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNotNull();
+			Map<Long, String> map = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNotNullAndNotEmpty();
 			
-			log.info("map = {}", ObjectUtil.objectToJsonStr(map));
+			log.info("map = {}", DataUtils.toPrettyJsonUseJackson(map));
 			
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} catch (Exception e) {

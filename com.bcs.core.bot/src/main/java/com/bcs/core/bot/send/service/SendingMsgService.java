@@ -83,94 +83,90 @@ public class SendingMsgService {
 	/** Logger */
 	private static Logger logger = Logger.getLogger(SendingMsgService.class);
 
-	public void sendToLineAsync(MsgGenerator msgGenerator, List<String> mids, API_TYPE apiType) throws Exception{
+	public void sendToLineAsync(MsgGenerator msgGenerator, List<String> mids, API_TYPE apiType) throws Exception {
 		List<MsgGenerator> msgGenerators = new ArrayList<MsgGenerator>();
 		msgGenerators.add(msgGenerator);
 		sendToLineAsync(CONFIG_STR.Default.toString(), msgGenerators, null, mids, apiType, null);
 	}
 
-	public void sendToLineAsync(MsgGenerator msgGenerator, List<MsgDetail> details, List<String> mids, API_TYPE apiType, Long updateMsgId) throws Exception{
+	public void sendToLineAsync(MsgGenerator msgGenerator, List<MsgDetail> details, List<String> mids, API_TYPE apiType, Long updateMsgId) throws Exception {
 		List<MsgGenerator> msgGenerators = new ArrayList<MsgGenerator>();
 		msgGenerators.add(msgGenerator);
 		sendToLineAsync(CONFIG_STR.Default.toString(), msgGenerators, details, mids, apiType, updateMsgId);
 	}
 
-	public void sendToLineAsync(List<MsgGenerator> msgGenerators, List<MsgDetail> details, List<String> mids, API_TYPE apiType, Long updateMsgId) throws Exception{
+	public void sendToLineAsync(List<MsgGenerator> msgGenerators, List<MsgDetail> details, List<String> mids, API_TYPE apiType, Long updateMsgId) throws Exception {
 		sendToLineAsync(CONFIG_STR.Default.toString(), msgGenerators, details, mids, apiType, updateMsgId);
 	}
-	
-	public void sendToLineAsync(String ChannelId, List<MsgGenerator> msgGenerators, List<MsgDetail> details, List<String> mids, API_TYPE apiType, Long updateMsgId) throws Exception{
+
+	public void sendToLineAsync(String ChannelId, List<MsgGenerator> msgGenerators, List<MsgDetail> details, List<String> mids, API_TYPE apiType, Long updateMsgId) throws Exception {
 		logger.info("sendToLineAsync");
-		if(ChannelId == null){
+		if (ChannelId == null) {
 			ChannelId = CONFIG_STR.Default.toString();
 		}
-		
+
 		AsyncSendingModel msgs;
-		if(updateMsgId != null){
+		if (updateMsgId != null) {
 			msgs = new AsyncSendingModel(ChannelId, msgGenerators, mids, apiType, updateMsgId);
-		}
-		else{
+		} else {
 			msgs = new AsyncSendingModel(ChannelId, msgGenerators, mids, apiType);
 		}
 		logger.info("sendToLineAsync:Mids:" + mids.size());
-		
+
 		// Share Sending Action to Different Server
-		if(details != null){
-			logger.info("sendToLineAsync start, time=" + new Date().getTime());			
+		if (details != null) {
+			logger.info("sendToLineAsync start, time=" + new Date().getTime());
 			boolean sendThis = CoreConfigReader.getBoolean(CONFIG_STR.BCS_API_CLUSTER_SEND_THIS.toString());
 			String url = CoreConfigReader.getString(CONFIG_STR.BCS_API_CLUSTER_SEND.toString());
 
-			if(sendThis){
+			if (sendThis) { // For SIT & UAT
 				logger.info("sendToLineAsync:This Server:Mids:" + mids.size());
 				akkaBotService.sendingMsgs(msgs);
-			}
-			else{
-				if(StringUtils.isNotBlank(url)){
-					try{// Call Different Server
+			} else { // For PROD
+				if (StringUtils.isNotBlank(url)) {
+					try {// Call Different Server
 						logger.info("sendToLineAsync:Different Server:Mids:" + mids.size());
 						AsyncSendingClusterModel model = new AsyncSendingClusterModel(ChannelId, details, mids, apiType.toString(), updateMsgId);
 						PostLineResponse response = BcsApiClusterService.clusterApiSend(model);
-						if(200 != response.getStatus()){
+						if (200 != response.getStatus()) {
 							throw new Exception(response.toString());
 						}
-					}
-					catch(Exception e){
+					} catch (Exception e) {
 						logger.error(ErrorRecord.recordError(e));
 						logger.info("Cluster send message failed,Use this server sendToLineAsync:This Server:Mids:" + mids.size());
 						akkaBotService.sendingMsgs(msgs);
 					}
-				}else{
+				} else {
 					logger.info("Cluster url is empty,sendToLineAsync:This Server:Mids:" + mids.size());
 					akkaBotService.sendingMsgs(msgs);
 				}
 			}
 			logger.info("sendToLineAsync stop, time=" + new Date().getTime());
-		}
-		else{
+		} else {
 			logger.info("sendToLineAsync:This Server:Mids:" + mids.size());
 			akkaBotService.sendingMsgs(msgs);
 		}
 	}
-	
-	public void sendMatchMessage(String replyToken, Long iMsgId, String ChannelId, String MID, String ApiType, String targetId) throws Exception{
+
+	public void sendMatchMessage(String replyToken, Long iMsgId, String ChannelId, String MID, String ApiType, String targetId) throws Exception {
 		this.sendMatchMessage(replyToken, iMsgId, ChannelId, MID, ApiType, targetId, 0);
 	}
-	
-	public void sendMatchMessage(String replyToken, Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId) throws Exception{
+
+	public void sendMatchMessage(String replyToken, Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId) throws Exception {
 		this.sendMatchMessage(replyToken, iMsgId, details, ChannelId, MID, ApiType, targetId, 0);
 	}
-	
-	public void sendMatchMessage(String replyToken, Long iMsgId, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception{
 
-		if(iMsgId != null){
+	public void sendMatchMessage(String replyToken, Long iMsgId, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception {
+
+		if (iMsgId != null) {
 			// 關鍵字回應 內容
 			List<MsgDetail> details = msgDetailService.findByMsgIdAndMsgParentType(iMsgId, MsgInteractiveMain.THIS_PARENT_TYPE);
 
 			this.sendMatchMessage(replyToken, iMsgId, details, ChannelId, MID, ApiType, targetId, retryCount);
 		}
 	}
-	
-	public void sendMatchMessage(String replyToken, Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception{
+
+	public void sendMatchMessage(String replyToken, Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception {
 		logger.info("sendMatchMessage");
 		logger.info(">> replyToken = " + replyToken);
 		logger.info(">> iMsgId = " + iMsgId);
@@ -180,185 +176,183 @@ public class SendingMsgService {
 		logger.info(">> ApiType = " + ApiType);
 		logger.info(">> targetId = " + targetId);
 		logger.info(">> retryCount = " + retryCount);
-		
+
 		if (details != null && details.size() > 0) {
 
 			MsgInteractiveMain msgInteractiveMain = null;
-			if(iMsgId != null){
+			if (iMsgId != null) {
 				msgInteractiveMain = msgInteractiveMainService.findOne(iMsgId);
 			}
-			
+
 			Map<String, String> replaceParam = null;
-			
-			if(msgInteractiveMain != null){
-				
-				if(StringUtils.isNotBlank(msgInteractiveMain.getSerialId())){
+
+			if (msgInteractiveMain != null) {
+
+				if (StringUtils.isNotBlank(msgInteractiveMain.getSerialId())) {
 					replaceParam = serialSettingService.getSerialSettingReplaceParam(msgInteractiveMain.getSerialId(), MID);
-					if(replaceParam == null){
+					if (replaceParam == null) {
 						return;
 					}
 				}
 			}
-			
+
 			List<Message> messageList = MsgGeneratorFactory.validateMessagesWichMessage(details, MID, replaceParam);
-			
+
 			SendToBotModel sendToBotModel = new SendToBotModel();
 
 			sendToBotModel.setChannelId(ChannelId);
 			sendToBotModel.setSendType(SEND_TYPE.REPLY_MSG);
 			sendToBotModel.setChannelName(CONFIG_STR.AutoReply.toString());
-			
+
 			String codeError = "";
-			
+
 			// 回覆關鍵字回應內容
-			try{
-				
+			try {
+
 				ReplyMessage replyMessage = new ReplyMessage(replyToken, messageList);
 				sendToBotModel.setReplyMessage(replyMessage);
-				
+
 				Response<BotApiResponse> response = LineAccessApiService.sendToLine(sendToBotModel);
 				logger.info("status:" + response.code());
-				
+
 				if (response.code() == 400) {
 					codeError = "400Error";
 				}
 
 				// Check Response Status
 				checkStatus(response, MID, iMsgId);
-				
+
 				this.saveLog(MID, response, iMsgId, targetId, targetId, LOG_TARGET_ACTION_TYPE.TARGET_InteractiveMsg, LOG_TARGET_ACTION_TYPE.ACTION_SendMatchMessage);
-			}
-			catch(Exception e){
+			} catch (Exception e) {
 				logger.error(ErrorRecord.recordError(e));
 
 				logger.info("retryCount = " + retryCount);
 				logger.info("codeError = " + codeError);
-				
-				if(retryCount < 5 && StringUtils.isBlank(codeError)){
+
+				if (retryCount < 5 && StringUtils.isBlank(codeError)) {
 					this.sendMatchMessage(replyToken, iMsgId, details, ChannelId, MID, ApiType, targetId, retryCount + 1);
-				}
-				else{
+				} else {
 					// Call Line Fail >= 5
 
 					logger.info("Call Line Fail >= 5");
 				}
 			}
-			
-			if(retryCount == 0){
+
+			if (retryCount == 0) {
 				// Update 關鍵字回應 記數
 				msgInteractiveMainService.increaseSendCountByMsgInteractiveId(iMsgId);
 //				ApplicationContextProvider.getApplicationContext().getBean(AkkaCoreService.class).recordMsgs(new MsgInteractiveRecord(iMsgId));
 			}
 		}
 	}
-	
-	public void sendMatchMessage(Long iMsgId, String ChannelId, String MID, String ApiType, String targetId) throws Exception{
+
+	public void sendMatchMessage(Long iMsgId, String ChannelId, String MID, String ApiType, String targetId) throws Exception {
 		this.sendMatchMessage(iMsgId, ChannelId, MID, ApiType, targetId, 0);
 	}
-	
-	public void sendMatchMessage(Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId) throws Exception{
+
+	public void sendMatchMessage(Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId) throws Exception {
 		this.sendMatchMessage(iMsgId, details, ChannelId, MID, ApiType, targetId, 0);
 	}
-	
-	public void sendMatchMessage(Long iMsgId, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception{
 
-		if(iMsgId != null){
+	public void sendMatchMessage(Long iMsgId, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception {
+
+		if (iMsgId != null) {
 			// 關鍵字回應 內容
 			List<MsgDetail> details = msgDetailService.findByMsgIdAndMsgParentType(iMsgId, MsgInteractiveMain.THIS_PARENT_TYPE);
 
 			this.sendMatchMessage(iMsgId, details, ChannelId, MID, ApiType, targetId, retryCount);
 		}
 	}
-	
-	public void sendMatchMessage(Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception{
 
-		if(details != null && details.size() > 0){
+	public void sendMatchMessage(Long iMsgId, List<MsgDetail> details, String ChannelId, String MID, String ApiType, String targetId, int retryCount) throws Exception {
+
+		if (details != null && details.size() > 0) {
 
 			MsgInteractiveMain msgInteractiveMain = null;
-			if(iMsgId != null){
+			if (iMsgId != null) {
 				msgInteractiveMain = msgInteractiveMainService.findOne(iMsgId);
 			}
-			
+
 			Map<String, String> replaceParam = null;
-			
-			if(msgInteractiveMain != null){
-				
-				if(StringUtils.isNotBlank(msgInteractiveMain.getSerialId())){
+
+			if (msgInteractiveMain != null) {
+
+				if (StringUtils.isNotBlank(msgInteractiveMain.getSerialId())) {
 					replaceParam = serialSettingService.getSerialSettingReplaceParam(msgInteractiveMain.getSerialId(), MID);
-					if(replaceParam == null){
+					if (replaceParam == null) {
 						return;
 					}
 				}
 			}
-			
+
 			List<Message> messageList = MsgGeneratorFactory.validateMessagesWichMessage(details, MID, replaceParam);
-			
+
 			SendToBotModel sendToBotModel = new SendToBotModel();
 
 			sendToBotModel.setChannelId(ChannelId);
 			sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
 			sendToBotModel.setChannelName(CONFIG_STR.AutoReply.toString());
-			
+
 			// 回覆 關鍵字回應內容
-			try{
+			try {
 				PushMessage pushMessage = new PushMessage(MID, messageList);
 				sendToBotModel.setPushMessage(pushMessage);
-				
+
 				Response<BotApiResponse> response = LineAccessApiService.sendToLine(sendToBotModel);
 				logger.info("status:" + response.code());
 
 				// Check Response Status
 				checkStatus(response, MID, iMsgId);
-				
+
 				this.saveLog(MID, response, iMsgId, targetId, targetId, LOG_TARGET_ACTION_TYPE.TARGET_InteractiveMsg, LOG_TARGET_ACTION_TYPE.ACTION_SendMatchMessage);
-			}
-			catch(Exception e){
+			} catch (Exception e) {
 				logger.error(ErrorRecord.recordError(e));
-				if(retryCount < 5){
+				if (retryCount < 5) {
 					this.sendMatchMessage(iMsgId, details, ChannelId, MID, ApiType, targetId, retryCount + 1);
-				}
-				else{
+				} else {
 					// Call Line Fail >= 5
 				}
 			}
-			
-			if(retryCount == 0){
+
+			if (retryCount == 0) {
 				// Update 關鍵字回應 記數
 				msgInteractiveMainService.increaseSendCountByMsgInteractiveId(iMsgId);
 //				ApplicationContextProvider.getApplicationContext().getBean(AkkaCoreService.class).recordMsgs(new MsgInteractiveRecord(iMsgId));
 			}
 		}
 	}
-	
-	public void sendEventMessage(String mid, String SendEvent){
-		try{
+
+	public void sendEventMessage(String mid, String SendEvent) {
+		try {
 			logger.info("sendEventMessage:" + SendEvent);
-			if(StringUtils.isNotBlank(SendEvent)){
-				
-		    	// Record Match Message 
+			if (StringUtils.isNotBlank(SendEvent)) {
+
+				// Record Match Message
 				LineUser lineUser = lineUserService.findByMidAndCreateUnbind(mid);
-				
+
 				// 取得 關鍵字回應 設定
 				Long iMsgId = interactiveService.getEventWelcomeResponse(lineUser.getStatus());
 				logger.info("Get Event Welcome iMsgId:" + iMsgId);
 
-				if(iMsgId != null){
+				if (iMsgId != null) {
 					// 傳送 關鍵字回應
 					List<MsgDetail> details = interactiveService.getMsgDetails(iMsgId);
-					
-			    	ApplicationContextProvider.getApplicationContext().getBean(SendingMsgService.class).sendMatchMessage(iMsgId, details, CONFIG_STR.Default.toString(), mid, API_TYPE.BOT.toString(), SendEvent);
-					
+
+					ApplicationContextProvider.getApplicationContext().getBean(SendingMsgService.class).sendMatchMessage(iMsgId, details, CONFIG_STR.Default.toString(), mid, API_TYPE.BOT.toString(),
+							SendEvent);
+
 					// incrementCount CatchRecord Receive
-					ApplicationContextProvider.getApplicationContext().getBean(CatchRecordReceive.class).incrementCount();;
-					
+					ApplicationContextProvider.getApplicationContext().getBean(CatchRecordReceive.class).incrementCount();
+					;
+
 					try {
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 						Date time = new Date();
-						
+
 						MsgBotReceive receive = new MsgBotReceive();
-						
+
 						receive.setChannel(CONFIG_STR.Default.toString());
-						
+
 						receive.setEventType(MsgBotReceive.EVENT_TYPE_BCSEVENT);
 						receive.setMsgId("-");
 						receive.setMsgType(MsgBotReceive.EVENT_TYPE_BCSEVENT);
@@ -368,50 +362,49 @@ public class SendingMsgService {
 						receive.setSourceId(mid);
 						receive.setSourceType(MsgBotReceive.SOURCE_TYPE_USER);
 						receive.setTimestamp(time.getTime());
-						
+
 						// Set User Status
 						receive.setUserStatus(lineUser.getStatus());
-						
-				    	// Save Record 
+
+						// Save Record
 						ApplicationContextProvider.getApplicationContext().getBean(MsgBotReceiveService.class).bulkPersist(receive);
 					} catch (Exception e) {
 						logger.error(ErrorRecord.recordError(e));
 					}
 				}
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 		}
 	}
-	
-	private String checkStatus(Response<BotApiResponse> response, String mid, Long msgId) throws Exception{
+
+	private String checkStatus(Response<BotApiResponse> response, String mid, Long msgId) throws Exception {
 
 		logger.info("status:" + response.code());
 		String recordStatus = response.code() + "-";
-		
-		if(response.code() != 200){
+
+		if (response.code() != 200) {
 			List<Object> content = new ArrayList<Object>();
 			content.add(mid);
 			content.add(msgId);
 			content.add(response.code());
 			content.add(response.body());
-			if(response.errorBody() != null){
+			if (response.errorBody() != null) {
 				content.add(response.errorBody().string());
 			}
 			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_SendToLineApiStatus, content, mid);
 			throw new BcsNoticeException("發送訊息錯誤請洽資訊人員:" + response.code());
 		}
-		
+
 		return recordStatus;
 	}
-	
-	private void saveLog(String mid, Response<BotApiResponse> responseMulti, Long iMsgId, String targetId, String referenceId, LOG_TARGET_ACTION_TYPE target, LOG_TARGET_ACTION_TYPE action){
 
-		try{
+	private void saveLog(String mid, Response<BotApiResponse> responseMulti, Long iMsgId, String targetId, String referenceId, LOG_TARGET_ACTION_TYPE target, LOG_TARGET_ACTION_TYPE action) {
+
+		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date now = new Date();
-			
+
 			// SendMatchMessage Log
 			UserTraceLog log = new UserTraceLog();
 			log.setTarget(target);
@@ -420,7 +413,7 @@ public class SendingMsgService {
 			log.setModifyUser(mid);
 			log.setLevel(UserTraceLog.USER_TRACE_LOG_LEVEL_TRACE);
 			log.setModifyDay(sdf.format(now));
-			
+
 			List<Object> content = new ArrayList<Object>();
 			content.add(iMsgId);
 			content.add(mid);
@@ -430,67 +423,64 @@ public class SendingMsgService {
 			log.setReferenceId(referenceId);
 			userTraceLogService.bulkPersist(log);
 //			ApplicationContextProvider.getApplicationContext().getBean(AkkaCoreService.class).recordMsgs(log);
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 		}
 	}
 
-	public void sendMsgToMids(List<String> mids, List<MsgGenerator> msgGenerators, List<MsgDetail> details, boolean async, Long updateMsgId, int retryCount, LOG_TARGET_ACTION_TYPE target, LOG_TARGET_ACTION_TYPE action, String referenceId) throws Exception{
+	public void sendMsgToMids(List<String> mids, List<MsgGenerator> msgGenerators, List<MsgDetail> details, boolean async, Long updateMsgId, int retryCount, LOG_TARGET_ACTION_TYPE target,
+			LOG_TARGET_ACTION_TYPE action, String referenceId) throws Exception {
 		logger.info("sendMsgToMid:" + mids);
-		
-		if(mids != null && mids.size() > 0 && msgGenerators != null && msgGenerators.size() > 0){
-			
-			if(async){
+
+		if (mids != null && mids.size() > 0 && msgGenerators != null && msgGenerators.size() > 0) {
+
+			if (async) {
 				this.sendToLineAsync(msgGenerators, details, mids, API_TYPE.BOT, updateMsgId);
-			}
-			else{
-				
+			} else {
+
 				SendToBotModel sendToBotModel = new SendToBotModel();
 
 				sendToBotModel.setChannelId(CONFIG_STR.Default.toString());
 				sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
 
 				List<Message> sendStrList = new ArrayList<Message>();
-				for(MsgGenerator msgGenerator : msgGenerators){
-					sendStrList.add(msgGenerator.getMessageBot(""));	
+				for (MsgGenerator msgGenerator : msgGenerators) {
+					sendStrList.add(msgGenerator.getMessageBot(""));
 				}
-				
+
 				Map<String, UserLiveChat> inprogressMids = userLiveChatService.findByStauts(UserLiveChat.IN_PROGRESS);
-				
+
 				String sendStr = ObjectUtil.objectToJsonStr(sendStrList);
-				for(String mid : mids){
-					try{
+				for (String mid : mids) {
+					try {
 
 						List<Message> messageList = new ArrayList<Message>();
-						for(MsgGenerator msgGenerator : msgGenerators){
-							messageList.add(msgGenerator.getMessageBot(mid));	
+						for (MsgGenerator msgGenerator : msgGenerators) {
+							messageList.add(msgGenerator.getMessageBot(mid));
 						}
-						
+
 						PushMessage pushMessage = new PushMessage(mid, messageList);
 						sendToBotModel.setPushMessage(pushMessage);
-						
-						String channelName = inprogressMids.get(mid) != null ? CONFIG_STR.InManualReplyButNotSendMsg.toString(): CONFIG_STR.AutoReply.toString();
+
+						String channelName = inprogressMids.get(mid) != null ? CONFIG_STR.InManualReplyButNotSendMsg.toString() : CONFIG_STR.AutoReply.toString();
 						sendToBotModel.setChannelName(channelName);
-						
+
 						Response<BotApiResponse> responseMulti = LineAccessApiService.sendToLine(sendToBotModel);
-						
+
 						logger.info("statusMulti:" + responseMulti.code());
-						
+
 						// Check Response Status
 						this.checkStatus(responseMulti, mid, null);
-						
-						this.saveLog(mid, responseMulti, -1L, sendStr, referenceId , target, action );
-					}
-					catch(Exception e){
+
+						this.saveLog(mid, responseMulti, -1L, sendStr, referenceId, target, action);
+					} catch (Exception e) {
 						logger.error(ErrorRecord.recordError(e));
-						if(retryCount < 5){
+						if (retryCount < 5) {
 							List<String> midsRetry = new ArrayList<String>();
 							midsRetry.add(mid);
 							this.sendMsgToMids(midsRetry, msgGenerators, details, async, updateMsgId, retryCount + 1, target, action, referenceId);
 							break;
-						}
-						else{
+						} else {
 							throw e;
 						}
 					}

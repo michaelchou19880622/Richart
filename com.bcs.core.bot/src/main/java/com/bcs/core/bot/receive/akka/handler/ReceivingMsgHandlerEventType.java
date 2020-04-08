@@ -49,11 +49,11 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 					String channelName = original.getChannelName();
 					String apiType = original.getApiType().toString();
 					
-					String referenceId = "";
-					
 					logger.info("ReceivingMsgHandlerEventType channelId :"+channelId);
 					logger.info("ReceivingMsgHandlerEventType channelName :"+channelName);
 					logger.info("ReceivingMsgHandlerEventType apiType :"+apiType);
+					
+					String referenceId = "";
 					
 					
 					if (channelName.equals(CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true))) {

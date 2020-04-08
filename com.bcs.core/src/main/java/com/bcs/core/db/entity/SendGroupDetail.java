@@ -35,7 +35,7 @@ public class SendGroupDetail extends AbstractBcsEntity{
 	@Column(name = "QUERY_FIELD", columnDefinition="nvarchar(50)")
 	private String queryField;
 
-	@Column(name = "QUERY_OP", columnDefinition="nvarchar(50)")
+	@Column(name = "QUERY_OP", columnDefinition="nvarchar(250)")
 	private String queryOp;
 
 	@Column(name = "QUERY_VALUE", columnDefinition="nvarchar(50)")

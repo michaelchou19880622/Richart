@@ -26,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bcs.core.db.entity.SendGroup;
-import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.repository.GroupGenerateRepository;
 import com.bcs.core.db.service.GroupGenerateService;
 import com.bcs.core.db.service.SendGroupService;
@@ -57,7 +55,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import antlr.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -187,7 +184,7 @@ public class BCSSendGroupController extends BCSBaseController {
 	public ResponseEntity<?> getSendGroupTitleList(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser) throws IOException {
 		logger.info("getSendGroupTitleList");
 //		Map<Long, String> map = sendGroupService.findGroupTitleMap();
-		Map<Long, String> map = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNull();
+		Map<Long, String> map = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNullOrEmpty();
 		logger.info("map:" + ObjectUtil.objectToJsonStr(map));
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}

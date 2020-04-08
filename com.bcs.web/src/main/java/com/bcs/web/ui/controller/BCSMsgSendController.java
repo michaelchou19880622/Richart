@@ -53,7 +53,6 @@ import com.bcs.web.ui.service.SendMsgUIService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
 @Controller
 @RequestMapping("/bcs")
 public class BCSMsgSendController extends BCSBaseController {
@@ -74,7 +73,7 @@ public class BCSMsgSendController extends BCSBaseController {
 	private ExportExcelUIService exportExcelUIService;
 	@Autowired
 	private MsgSendRecordService msgSendRecordService;
-	
+
 	/** Logger */
 	private static Logger logger = Logger.getLogger(BCSMsgSendController.class);
 
@@ -85,19 +84,19 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @param response
 	 * @return MsgCreatePage
 	 */
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/msgCreatePage")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/msgCreatePage")
 	public String msgCreatePage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("msgCreatePage");
 		return BcsPageEnum.MsgCreatePage.toString();
 	}
 
 	// CDN
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/cdnMsgCreatePage")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/cdnMsgCreatePage")
 	public String cdnMsgCreatePage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("cdnMsgCreatePage");
 		return BcsPageEnum.CdnMsgCreatePage.toString();
 	}
-	
+
 	/**
 	 * 訊息列表 導頁
 	 * 
@@ -105,10 +104,10 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @param response
 	 * @return MsgListDraftPage
 	 */
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/msgListPage")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/msgListPage")
 	public String msgListPage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("msgListPage");
-		
+
 		return BcsPageEnum.MsgListDraftPage.toString();
 	}
 
@@ -119,10 +118,10 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @param response
 	 * @return MsgListDraftPage
 	 */
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/msgListDraftPage")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/msgListDraftPage")
 	public String msgListDraftPage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("msgListDraftPage");
-		
+
 		return BcsPageEnum.MsgListDraftPage.toString();
 	}
 
@@ -133,7 +132,7 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @param response
 	 * @return MsgListDelayPage
 	 */
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/msgListDelayPage")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/msgListDelayPage")
 	public String msgListDelayPage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("msgListDelayPage");
 		return BcsPageEnum.MsgListDelayPage.toString();
@@ -146,7 +145,7 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @param response
 	 * @return MsgListSendedPage
 	 */
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/msgListSendedPage")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/msgListSendedPage")
 	public String msgListSendedPage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("msgListSendedPage");
 		return BcsPageEnum.MsgListSendedPage.toString();
@@ -159,7 +158,7 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @param response
 	 * @return MsgListSchedulePage
 	 */
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/msgListSchedulePage")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/msgListSchedulePage")
 	public String msgListSchedulePage(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("msgListSchedulePage");
 		return BcsPageEnum.MsgListSchedulePage.toString();
@@ -173,51 +172,23 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return Map<String, Object>
 	 * @throws IOException
 	 */
-	@ControllerLog(description="取得 訊息資料 by msgId or msgSendId")
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/getSendMsg")
+	@ControllerLog(description = "取得 訊息資料 by msgId or msgSendId")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/getSendMsg")
 	@ResponseBody
-	public ResponseEntity<?> getSendMsg(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestParam(required=false) String msgId,
-			@RequestParam(required=false) String msgSendId) throws IOException {
+	public ResponseEntity<?> getSendMsg(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam(required = false) String msgId,
+			@RequestParam(required = false) String msgSendId) throws IOException {
 		logger.info("getSendMsg");
 
-		try{
-			if(StringUtils.isNotBlank(msgId)){
+		try {
+			if (StringUtils.isNotBlank(msgId)) {
 				logger.info("msgId:" + msgId);
 				Map<String, Object> result = new LinkedHashMap<String, Object>();
-				
+
 				Map<MsgMain, List<MsgDetail>> map = msgMainService.queryGetMsgMainDetailByMsgId(Long.parseLong(msgId));
 
-				if(map != null && map.size() == 1){
+				if (map != null && map.size() == 1) {
 					result.put("MsgMain", map);
-					
-					/**
-					 * SendGroup Result
-					 */
-					sendMsgUIService.setGroups(result);
-					
-					/**
-					 * Set Detail Content
-					 */
-					for(List<MsgDetail> details : map.values()){
-						sendMsgUIService.setDetailContent(result, details);
-					}
-					
-					return new ResponseEntity<>(result, HttpStatus.OK);
-				}
-			}
-			else if(StringUtils.isNotBlank(msgSendId)){
-				logger.info("msgSendId:" + msgSendId);
-				Map<String, Object> result = new LinkedHashMap<String, Object>();
-				
-				Map<MsgSendMain, List<MsgDetail>> map = msgSendMainService.queryGetMsgSendMainDetailByMsgId(Long.parseLong(msgSendId));
-				
-				if(map != null && map.size() == 1){
-					result.put("MsgMain", map);
-					
+
 					/**
 					 * SendGroup Result
 					 */
@@ -226,25 +197,46 @@ public class BCSMsgSendController extends BCSBaseController {
 					/**
 					 * Set Detail Content
 					 */
-					for(List<MsgDetail> details : map.values()){
+					for (List<MsgDetail> details : map.values()) {
 						sendMsgUIService.setDetailContent(result, details);
 					}
-					
+
+					return new ResponseEntity<>(result, HttpStatus.OK);
+				}
+			} else if (StringUtils.isNotBlank(msgSendId)) {
+				logger.info("msgSendId:" + msgSendId);
+				Map<String, Object> result = new LinkedHashMap<String, Object>();
+
+				Map<MsgSendMain, List<MsgDetail>> map = msgSendMainService.queryGetMsgSendMainDetailByMsgId(Long.parseLong(msgSendId));
+
+				if (map != null && map.size() == 1) {
+					result.put("MsgMain", map);
+
+					/**
+					 * SendGroup Result
+					 */
+					sendMsgUIService.setGroups(result);
+
+					/**
+					 * Set Detail Content
+					 */
+					for (List<MsgDetail> details : map.values()) {
+						sendMsgUIService.setDetailContent(result, details);
+					}
+
 					return new ResponseEntity<>(result, HttpStatus.OK);
 				}
 			}
-			
+
 //			throw new Exception("Status Null");
 			logger.error("Status Null");
 			throw new BcsNoticeException("查詢參數錯誤");
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -258,32 +250,27 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return Map<String, Object>
 	 * @throws IOException
 	 */
-	@ControllerLog(description="取得訊息資料列表")
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/getSendMsgList")
+	@ControllerLog(description = "取得訊息資料列表")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/getSendMsgList")
 	@ResponseBody
-	public ResponseEntity<?> getSendMsgList(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestParam String status,
-    		@RequestParam(required=false) String sendType) throws IOException {
+	public ResponseEntity<?> getSendMsgList(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam String status,
+			@RequestParam(required = false) String sendType) throws IOException {
 		logger.info("getSendMsgList");
 
-		try{
-			if(StringUtils.isNotBlank(status)){
+		try {
+			if (StringUtils.isNotBlank(status)) {
 				logger.info("status:" + status);
 				Map<String, Object> result = new LinkedHashMap<String, Object>();
-				
+
 				Map<MsgMain, List<MsgDetail>> map = null;
 
-				if(StringUtils.isNotBlank(sendType)){
+				if (StringUtils.isNotBlank(sendType)) {
 					map = msgMainService.queryGetMsgMainDetailByStatusAndSendType(status, sendType);
-				}
-				else{
+				} else {
 					map = msgMainService.queryGetMsgMainDetailByStatus(status);
 				}
-				
-				if(map != null){
+
+				if (map != null) {
 					result.put("MsgMain", map);
 
 					/**
@@ -294,43 +281,40 @@ public class BCSMsgSendController extends BCSBaseController {
 					/**
 					 * AdminUser Result Map
 					 */
-					try{
+					try {
 						Map<String, AdminUser> admins = adminUserService.findAllMap();
 						Map<String, String> adminMap = new HashMap<String, String>();
-						for(MsgMain msg : map.keySet()){
+						for (MsgMain msg : map.keySet()) {
 							String userAccount = msg.getModifyUser();
-							if(admins.containsKey(userAccount)){
+							if (admins.containsKey(userAccount)) {
 								adminMap.put(userAccount, admins.get(userAccount).getUserName());
 							}
 						}
 						result.put("AdminUser", adminMap);
-					}
-					catch(Exception e){
+					} catch (Exception e) {
 						logger.error(ErrorRecord.recordError(e));
 					}
 
 					/**
 					 * Set Detail Content
 					 */
-					for(List<MsgDetail> details : map.values()){
+					for (List<MsgDetail> details : map.values()) {
 						sendMsgUIService.setDetailContent(result, details);
 					}
-					
+
 					return new ResponseEntity<>(result, HttpStatus.OK);
 				}
 			}
-			
+
 //			throw new Exception("Status Null");
 			logger.error("Status Null");
 			throw new BcsNoticeException("查詢參數錯誤");
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -344,74 +328,67 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return Map<String, Object>
 	 * @throws IOException
 	 */
-	@ControllerLog(description="取得訊息資料列表(已傳送)")
-	@RequestMapping(method = RequestMethod.GET, value ="/edit/getSendedMsgList")
+	@ControllerLog(description = "取得訊息資料列表(已傳送)")
+	@RequestMapping(method = RequestMethod.GET, value = "/edit/getSendedMsgList")
 	@ResponseBody
-	public ResponseEntity<?> getSendedMsgList(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser) throws IOException {
+	public ResponseEntity<?> getSendedMsgList(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser) throws IOException {
 		logger.info("getSendedMsgList");
 
-		try{
+		try {
 			Map<String, Object> result = new LinkedHashMap<String, Object>();
-				
+
 			Map<MsgSendMain, List<MsgDetail>> map = msgSendMainService.queryGetMsgSendMainDetailAll();
-			
-			if(map != null){
+
+			if (map != null) {
 				result.put("MsgMain", map);
-				
+
 				/**
 				 * SendGroup Result
 				 */
-				try{
+				try {
 //					Map<Long, String> groups = sendGroupService.findGroupTitleMap();
-					Map<Long, String> groups = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNull();
+					Map<Long, String> groups = sendGroupService.findAllGroupIdAndGroupTitleByGroupTypeNullOrEmpty();
 					result.put("SendGroup", groups);
-				}
-				catch(Exception e){
+				} catch (Exception e) {
 					logger.error(ErrorRecord.recordError(e));
 				}
 
 				/**
 				 * AdminUser Result Map
 				 */
-				try{
+				try {
 					Map<String, AdminUser> admins = adminUserService.findAllMap();
 					Map<String, String> adminMap = new HashMap<String, String>();
-					for(MsgSendMain msg : map.keySet()){
+					for (MsgSendMain msg : map.keySet()) {
 						String userAccount = msg.getModifyUser();
-						if(admins.containsKey(userAccount)){
+						if (admins.containsKey(userAccount)) {
 							adminMap.put(userAccount, admins.get(userAccount).getUserName());
 						}
 					}
 					result.put("AdminUser", adminMap);
-				}
-				catch(Exception e){
+				} catch (Exception e) {
 					logger.error(ErrorRecord.recordError(e));
 				}
 
 				/**
 				 * Set Detail Content
 				 */
-				for(List<MsgDetail> details : map.values()){
+				for (List<MsgDetail> details : map.values()) {
 					sendMsgUIService.setDetailContent(result, details);
 				}
-				
+
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			}
-			
+
 //			throw new Exception("Data Null");
 			logger.error("Data Null");
 			throw new BcsNoticeException("查詢參數錯誤");
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -426,100 +403,94 @@ public class BCSMsgSendController extends BCSBaseController {
 //		logger.info(context);
 //		logger.info(UriHelper.getCdnResourceUri("IMAGE", context));
 //	}
-	
+
 	// CDN
-	@ControllerLog(description="CDN 傳送,儲存訊息")
-	@RequestMapping(method = RequestMethod.POST, value ="/edit/sendingCdnMsg", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ControllerLog(description = "CDN 傳送,儲存訊息")
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/sendingCdnMsg", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> sendingCdnMsg(HttpServletRequest request, HttpServletResponse response,
-			@CurrentUser CustomUser customUser, @RequestBody SendMsgModel sendMsgModel) throws IOException {
+	public ResponseEntity<?> sendingCdnMsg(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestBody SendMsgModel sendMsgModel) throws IOException {
 		logger.info("sendingCdnMsg");
 		logger.info("sendMsgModel:" + sendMsgModel);
 		List<SendMsgDetailModel> details = sendMsgModel.getSendMsgDetails();
-		//logger.info("details:"+ details);
-		
+		// logger.info("details:"+ details);
+
 		List<SendMsgDetailModel> newD = new ArrayList();
-		for(int i = 0; i < details.size(); i++) {
+		for (int i = 0; i < details.size(); i++) {
 			SendMsgDetailModel detail = details.get(i);
-			//logger.info("di:"+detail);
+			// logger.info("di:"+detail);
 			detail.setDetailType("TEXT");
-			
+
 			String oldContext = detail.getDetailContent();
-			//logger.info("oldContext:"+oldContext);
+			// logger.info("oldContext:"+oldContext);
 			int i1 = oldContext.indexOf("Id") + 5;
 			int i2 = oldContext.indexOf("\"}");
-			//logger.info("i1,i2: "+i1 + " " + i2);
+			// logger.info("i1,i2: "+i1 + " " + i2);
 			String context = oldContext.substring(i1, i2);
-			
+
 			detail.setDetailContent("{\"Text\":\"" + UriHelper.getCdnResourceUri("IMAGE", context) + "\"}");
 			newD.add(detail);
-			//logger.info("dj:"+detail);
+			// logger.info("dj:"+detail);
 		}
-		
-		//logger.info("newD:"+ newD);
+
+		// logger.info("newD:"+ newD);
 		sendMsgModel.setSendMsgDetails(newD);
-		logger.info("new sendMsgModel:"+ sendMsgModel);
-		
+		logger.info("new sendMsgModel:" + sendMsgModel);
+
 		// --------------- //
-		try{
-			if(sendMsgModel != null){
-				if(StringUtils.isBlank(sendMsgModel.getActionType())){
+		try {
+			if (sendMsgModel != null) {
+				if (StringUtils.isBlank(sendMsgModel.getActionType())) {
 					throw new Exception("ActionType Null");
 				}
-				
+
 				/**
 				 * Send To Me Message
 				 */
-				if(SendMsgModel.ACTION_TYPE.SendToMe.toString().equals(sendMsgModel.getActionType())){
-					
+				if (SendMsgModel.ACTION_TYPE.SendToMe.toString().equals(sendMsgModel.getActionType())) {
+
 					return sendToMe(sendMsgModel, customUser);
 				}
 				/**
 				 * Send To Test Group Admin User
 				 */
-				else if(SendMsgModel.ACTION_TYPE.SendToTestGroup.toString().equals(sendMsgModel.getActionType())){
-					
+				else if (SendMsgModel.ACTION_TYPE.SendToTestGroup.toString().equals(sendMsgModel.getActionType())) {
+
 					return sendToTestGroup(sendMsgModel, customUser);
 				}
 				/**
 				 * Save Draft Message
 				 */
-				else if(SendMsgModel.ACTION_TYPE.SaveDraft.toString().equals(sendMsgModel.getActionType())){
+				else if (SendMsgModel.ACTION_TYPE.SaveDraft.toString().equals(sendMsgModel.getActionType())) {
 
 					return saveToDraft(sendMsgModel, customUser);
 				}
 				/**
 				 * Send Message or Save Draft
 				 */
-				else if(SendMsgModel.ACTION_TYPE.SendMsg.toString().equals(sendMsgModel.getActionType())){
+				else if (SendMsgModel.ACTION_TYPE.SendMsg.toString().equals(sendMsgModel.getActionType())) {
 
-					if(customUser.isAdmin()){
+					if (customUser.isAdmin()) {
 						return sendMsg(sendMsgModel, customUser);
-					}
-					else{
+					} else {
 						throw new BcsNoticeException("權限錯誤");
 					}
-				}
-				else{
+				} else {
 					throw new Exception("Validate ActionType Error");
 				}
-			}
-			else{
+			} else {
 				throw new Exception("SendMsgModel Null");
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
-	
+
 	/**
 	 * 傳送, 儲存 訊息
 	 * 
@@ -530,74 +501,65 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return String Result
 	 * @throws IOException
 	 */
-	@ControllerLog(description="傳送,儲存訊息")
-	@RequestMapping(method = RequestMethod.POST, value ="/edit/sendingMsg", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ControllerLog(description = "傳送,儲存訊息")
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/sendingMsg", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> sendingMsg(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,  
-			@RequestBody SendMsgModel sendMsgModel			
-			) throws IOException {
+	public ResponseEntity<?> sendingMsg(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestBody SendMsgModel sendMsgModel) throws IOException {
 		logger.info("sendingMsg");
 		logger.info("sendMsgModel:" + sendMsgModel);
-		List<SendMsgDetailModel> details   = sendMsgModel.getSendMsgDetails();
-		logger.info("details:"+ details);
 		
-		try{
-			if(sendMsgModel != null){
-				if(StringUtils.isBlank(sendMsgModel.getActionType())){
+		List<SendMsgDetailModel> details = sendMsgModel.getSendMsgDetails();
+		logger.info("details:" + details);
+
+		try {
+			if (sendMsgModel != null) {
+				if (StringUtils.isBlank(sendMsgModel.getActionType())) {
 					throw new Exception("ActionType Null");
 				}
-				
+
 				/**
 				 * Send To Me Message
 				 */
-				if(SendMsgModel.ACTION_TYPE.SendToMe.toString().equals(sendMsgModel.getActionType())){
-					
+				if (SendMsgModel.ACTION_TYPE.SendToMe.toString().equals(sendMsgModel.getActionType())) {
+
 					return sendToMe(sendMsgModel, customUser);
 				}
 				/**
 				 * Send To Test Group Admin User
 				 */
-				else if(SendMsgModel.ACTION_TYPE.SendToTestGroup.toString().equals(sendMsgModel.getActionType())){
-					
+				else if (SendMsgModel.ACTION_TYPE.SendToTestGroup.toString().equals(sendMsgModel.getActionType())) {
+
 					return sendToTestGroup(sendMsgModel, customUser);
 				}
 				/**
 				 * Save Draft Message
 				 */
-				else if(SendMsgModel.ACTION_TYPE.SaveDraft.toString().equals(sendMsgModel.getActionType())){
+				else if (SendMsgModel.ACTION_TYPE.SaveDraft.toString().equals(sendMsgModel.getActionType())) {
 
 					return saveToDraft(sendMsgModel, customUser);
 				}
 				/**
 				 * Send Message or Save Draft
 				 */
-				else if(SendMsgModel.ACTION_TYPE.SendMsg.toString().equals(sendMsgModel.getActionType())){
+				else if (SendMsgModel.ACTION_TYPE.SendMsg.toString().equals(sendMsgModel.getActionType())) {
 
-					if(customUser.isAdmin()){
+					if (customUser.isAdmin()) {
 						return sendMsg(sendMsgModel, customUser);
-					}
-					else{
+					} else {
 						throw new BcsNoticeException("權限錯誤");
 					}
-				}
-				else{
+				} else {
 					throw new Exception("Validate ActionType Error");
 				}
-			}
-			else{
+			} else {
 				throw new Exception("SendMsgModel Null");
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -613,46 +575,37 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return String Result
 	 * @throws IOException
 	 */
-	@RequestMapping(method = RequestMethod.POST, value ="/edit/redeisgnSendMsg", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/redeisgnSendMsg", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<?> redeisgnSendMsg(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,  
-			@RequestBody SendMsgModel sendMsgModel			
-			) throws IOException {
+	public ResponseEntity<?> redeisgnSendMsg(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestBody SendMsgModel sendMsgModel) throws IOException {
 		logger.info("redeisgnSendMsg");
 
-		try{
-			if(sendMsgModel != null){
-				if(StringUtils.isBlank(sendMsgModel.getActionType())){
+		try {
+			if (sendMsgModel != null) {
+				if (StringUtils.isBlank(sendMsgModel.getActionType())) {
 					throw new Exception("ActionType Null");
 				}
-				
+
 				/**
 				 * Redesign Msg
 				 */
-				if(SendMsgModel.ACTION_TYPE.RedesignMsg.toString().equals(sendMsgModel.getActionType())){
-					
+				if (SendMsgModel.ACTION_TYPE.RedesignMsg.toString().equals(sendMsgModel.getActionType())) {
+
 					return redesignMsg(sendMsgModel, customUser);
-				}
-				else{
+				} else {
 					throw new Exception("Validate ActionType Error");
 				}
-			}
-			else{
+			} else {
 //				throw new Exception("SendMsgModel Null");
 				logger.error("SendMsgModel Null");
 				throw new BcsNoticeException("請選擇正確的訊息");
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
 
-			if(e instanceof BcsNoticeException){
+			if (e instanceof BcsNoticeException) {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-			}
-			else{
+			} else {
 				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -667,58 +620,48 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return String
 	 * @throws IOException
 	 */
-	@ControllerLog(description="刪除訊息")
-	@RequestMapping(method = RequestMethod.DELETE, value ="/admin/deleteSendMsg")
+	@ControllerLog(description = "刪除訊息")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/admin/deleteSendMsg")
 	@ResponseBody
-	public ResponseEntity<?> deleteSendMsg(
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestParam(required=false) String msgId,
-			@RequestParam(required=false) String msgSendId
-			) throws IOException {
+	public ResponseEntity<?> deleteSendMsg(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam(required = false) String msgId,
+			@RequestParam(required = false) String msgSendId) throws IOException {
 		logger.info("deleteSendMsg");
-		
+
 		// Check Delete Right
 		boolean isAdmin = customUser.isAdmin();
-		if(isAdmin){
-			
-			try{
-				if(StringUtils.isNotBlank(msgId)){
+		if (isAdmin) {
+
+			try {
+				if (StringUtils.isNotBlank(msgId)) {
 					logger.info("msgId:" + msgId);
 					sendMsgUIService.deleteMessageMain(Long.parseLong(msgId));
-					
+
 					return new ResponseEntity<>("Delete Success", HttpStatus.OK);
-				}
-				else if(StringUtils.isNotBlank(msgSendId)){
+				} else if (StringUtils.isNotBlank(msgSendId)) {
 					logger.info("msgSendId:" + msgSendId);
 					sendMsgUIService.deleteMessageSendMain(Long.parseLong(msgSendId));
-					
+
 					return new ResponseEntity<>("Delete Success", HttpStatus.OK);
-				}
-				else{
+				} else {
 //					throw new Exception("msgId msgSendId Null");
 					logger.error("msgId msgSendId Null");
 					throw new BcsNoticeException("請選擇正確的訊息");
 				}
-			}
-			catch(Exception e){
+			} catch (Exception e) {
 				logger.error(ErrorRecord.recordError(e));
-				
-				if(e instanceof BcsNoticeException){
+
+				if (e instanceof BcsNoticeException) {
 					return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
-				}
-				else{
+				} else {
 					return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 			}
-		}
-		else{
+		} else {
 
 			return new ResponseEntity<>("User No Delete Right", HttpStatus.OK);
 		}
 	}
-	
+
 	/**
 	 * 傳送給我
 	 * 
@@ -727,27 +670,27 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return String
 	 * @throws Exception
 	 */
-	private ResponseEntity<?> sendToMe(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception{
+	private ResponseEntity<?> sendToMe(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception {
 
 		String account = customUser.getAccount();
 		String mid = customUser.getMid();
-		if(StringUtils.isBlank(mid)){
+		if (StringUtils.isBlank(mid)) {
 //			throw new Exception("You Not Setting LINE MID");
 			logger.error("You Not Setting LINE MID");
 			throw new BcsNoticeException("請設定綁定LINE帳號");
 		}
 
 		// 設定 Test Message Notice Start
-		 List<SendMsgDetailModel> details = sendMsgModel.getSendMsgDetails();
-		 details.add(0, generateTestMsgNotice());
-		
+		List<SendMsgDetailModel> details = sendMsgModel.getSendMsgDetails();
+		details.add(0, generateTestMsgNotice());
+
 		sendMsgUIService.sendMsgToMid(mid, sendMsgModel.getSendMsgDetails(), account, sendMsgModel);
-		
+
 		String result = "Sending Message To Me Success";
-		
+
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * 傳送給測試群組
 	 * 
@@ -755,36 +698,35 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return String
 	 * @throws Exception
 	 */
-	private ResponseEntity<?> sendToTestGroup(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception{
+	private ResponseEntity<?> sendToTestGroup(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception {
 
 		String account = customUser.getAccount();
-		
+
 		List<AdminUser> list = adminUserService.findByMidNotNull();
 		List<String> mids = new ArrayList<String>();
-		if(list != null && list.size() > 0){
-			for(AdminUser adminUser : list){
-				if(StringUtils.isNotBlank(adminUser.getMid())){
+		if (list != null && list.size() > 0) {
+			for (AdminUser adminUser : list) {
+				if (StringUtils.isNotBlank(adminUser.getMid())) {
 					mids.add(adminUser.getMid());
 				}
 			}
-		}
-		else{
+		} else {
 //			throw new Exception("No Test Group");
 			logger.error("No Test Group");
 			throw new BcsNoticeException("測試人員都沒有綁定LINE帳號");
 		}
-		
+
 		// 設定 Test Message Notice Start
-		 List<SendMsgDetailModel> details = sendMsgModel.getSendMsgDetails();
-		 details.add(0, generateTestMsgNotice());
+		List<SendMsgDetailModel> details = sendMsgModel.getSendMsgDetails();
+		details.add(0, generateTestMsgNotice());
 
 		sendMsgUIService.sendMsgToMids(mids, sendMsgModel.getSendMsgDetails(), account, sendMsgModel);
-		
+
 		String result = "Sending Message To Test Group Success";
-		
+
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * 儲存草稿
 	 * 
@@ -793,29 +735,29 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return String
 	 * @throws Exception
 	 */
-	private ResponseEntity<?> saveToDraft(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception{
+	private ResponseEntity<?> saveToDraft(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception {
 		String adminUserAccount = customUser.getAccount();
-		
+
 		sendMsgUIService.saveDraftMessage(sendMsgModel, adminUserAccount);
-		
+
 		String result = "Save Message Draft Success";
-		
+
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-	
-	private SendMsgDetailModel generateTestMsgNotice(){
 
-		 SendMsgDetailModel detail = new SendMsgDetailModel();
-		 detail.setDetailType(MsgGenerator.MSG_TYPE_TEXT);
+	private SendMsgDetailModel generateTestMsgNotice() {
+
+		SendMsgDetailModel detail = new SendMsgDetailModel();
+		detail.setDetailType(MsgGenerator.MSG_TYPE_TEXT);
 
 		ObjectNode content = (new ObjectMapper()).createObjectNode();
 		content.put("Text", "***此為測試訊息***");
-		 
-		 detail.setDetailContent(ObjectUtil.objectToJsonStr(content));
-		 
-		 return detail;
+
+		detail.setDetailContent(ObjectUtil.objectToJsonStr(content));
+
+		return detail;
 	}
-	
+
 	/**
 	 * 傳送訊息
 	 * 
@@ -824,16 +766,16 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return String
 	 * @throws Exception
 	 */
-	private ResponseEntity<?> sendMsg(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception{
+	private ResponseEntity<?> sendMsg(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception {
 		String adminUserAccount = customUser.getAccount();
-		
+
 		sendMsgUIService.sendMessage(sendMsgModel, adminUserAccount);
-		
+
 		String result = "Send Message Success";
-		
+
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * 重設訊息
 	 * 
@@ -842,60 +784,57 @@ public class BCSMsgSendController extends BCSBaseController {
 	 * @return String
 	 * @throws Exception
 	 */
-	private ResponseEntity<?> redesignMsg(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception{
+	private ResponseEntity<?> redesignMsg(SendMsgModel sendMsgModel, CustomUser customUser) throws Exception {
 		String adminUserAccount = customUser.getAccount();
-		
+
 		sendMsgUIService.redesignMsg(sendMsgModel, adminUserAccount);
-		
+
 		String result = "Redesign Message Success";
-		
+
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-	
-	@ControllerLog(description="exportToExcelForSendedMsg")
+
+	@ControllerLog(description = "exportToExcelForSendedMsg")
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportToExcelForSendedMsg")
 	@ResponseBody
-	public void exportToExcelForSendedMsg(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@CurrentUser CustomUser customUser,
-			@RequestParam(required=false) String msgSendId) throws Exception {
+	public void exportToExcelForSendedMsg(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam(required = false) String msgSendId)
+			throws Exception {
 		logger.info("exportToExcelForSendedMsg");
-		
-		 if(StringUtils.isNotBlank(msgSendId)){
-				logger.info("msgSendId:" + msgSendId);
-				List<MsgDetail> details = msgDetailService.findByMsgIdAndMsgParentType(Long.parseLong(msgSendId), MsgSendMain.THIS_PARENT_TYPE);
-				
-				String title = "";
-				for(MsgDetail detail : details){
-					if(StringUtils.isNotBlank(detail.getText())){
-						title += detail.getText();
-					}
-				}
 
-				List<MsgSendRecord> records = msgSendRecordService.findByMsgSendId(Long.parseLong(msgSendId));
-				
-				if(records != null && records.size() > 0){
-					
-					Set<String> mids = new HashSet<String>();
-					for(MsgSendRecord record : records){
-						String sendRecord = record.getSendRecord();
-						if(StringUtils.isNotBlank(sendRecord) && sendRecord.equals("\"200-\"")){
-							mids.add(record.getMid());
-						}
-					}
-					List<String> midsList = new ArrayList<String>();
-					midsList.addAll(mids);
-					
-					List<String> titles = new ArrayList<String>();
-					titles.add("收訊人UID");
-					List<List<String>> data = new ArrayList<List<String>>();
-					data.add(midsList);
-	
-					exportExcelUIService.exportMidResultToExcel(request, response, "SendedMsg", "發送訊息:" + title , null, titles, data);
-					return;
+		if (StringUtils.isNotBlank(msgSendId)) {
+			logger.info("msgSendId:" + msgSendId);
+			List<MsgDetail> details = msgDetailService.findByMsgIdAndMsgParentType(Long.parseLong(msgSendId), MsgSendMain.THIS_PARENT_TYPE);
+
+			String title = "";
+			for (MsgDetail detail : details) {
+				if (StringUtils.isNotBlank(detail.getText())) {
+					title += detail.getText();
 				}
-		 }
-		 throw new Exception("資料產生錯誤");
+			}
+
+			List<MsgSendRecord> records = msgSendRecordService.findByMsgSendId(Long.parseLong(msgSendId));
+
+			if (records != null && records.size() > 0) {
+
+				Set<String> mids = new HashSet<String>();
+				for (MsgSendRecord record : records) {
+					String sendRecord = record.getSendRecord();
+					if (StringUtils.isNotBlank(sendRecord) && sendRecord.equals("\"200-\"")) {
+						mids.add(record.getMid());
+					}
+				}
+				List<String> midsList = new ArrayList<String>();
+				midsList.addAll(mids);
+
+				List<String> titles = new ArrayList<String>();
+				titles.add("收訊人UID");
+				List<List<String>> data = new ArrayList<List<String>>();
+				data.add(midsList);
+
+				exportExcelUIService.exportMidResultToExcel(request, response, "SendedMsg", "發送訊息:" + title, null, titles, data);
+				return;
+			}
+		}
+		throw new Exception("資料產生錯誤");
 	}
 }

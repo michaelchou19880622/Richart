@@ -1,5 +1,6 @@
 package com.bcs.core.bot.scheduler.handler;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,9 @@ import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.ErrorRecord;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ExecuteSendMsgTask {
 
 	/** Logger */
@@ -73,6 +77,7 @@ public class ExecuteSendMsgTask {
 							/**
 							 * Send To Test Group for Check Send
 							 */
+							log.info("----- Send Msg To Admin Group -----");
 							this.sendToAdminGroup(msgSendMain, details);
 							
 							// Reset Message
@@ -81,6 +86,8 @@ public class ExecuteSendMsgTask {
 							int pageSize = SendGroupService.pageSize;
 							
 							List<String> sendMids = new ArrayList<String>();
+							
+							log.info("----- Send Msg To Uid List -----");
 							for(String mid : mids){
 								sendMids.add(mid);
 								
@@ -201,7 +208,7 @@ public class ExecuteSendMsgTask {
 	 * @param details
 	 */
 	private void sendToAdminGroup(MsgSendMain msgSendMain, List<MsgDetail> details){
-
+		
 		try{
 			AdminUserService adminUserService = ApplicationContextProvider.getApplicationContext().getBean(AdminUserService.class);
 			

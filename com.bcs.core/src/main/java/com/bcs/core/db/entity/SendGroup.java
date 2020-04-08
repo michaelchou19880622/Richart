@@ -20,8 +20,8 @@ import com.bcs.core.json.AbstractBcsEntity;
 public class SendGroup extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
 
-	public static final String GROUP_TYPE_BCS = "BCS";
-	public static final String GROUP_TYPE_DEPEND_ON_STATUS = "RICHMENU";
+	public static final String GROUP_TYPE_UID_LIST = "UID_LIST";
+	public static final String GROUP_TYPE_CONDITIONS = "CONDITIONS";
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

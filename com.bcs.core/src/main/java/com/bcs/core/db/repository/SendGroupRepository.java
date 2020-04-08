@@ -17,12 +17,12 @@ public interface SendGroupRepository extends EntityRepository<SendGroup, Long>{
 	public List<Object[]> findAllGroupIdAndGroupTitle();
 
 	@Transactional(readOnly = true, timeout = 300)
-	@Query(value = "SELECT GROUP_ID, GROUP_TITLE FROM BCS_SEND_GROUP WHERE GROUP_TYPE IS NULL ORDER BY GROUP_ID ASC", nativeQuery = true)
-	public List<Object[]> findAllGroupIdAndGroupTitleByGroupTypeNull();
+	@Query(value = "SELECT GROUP_ID, GROUP_TITLE FROM BCS_SEND_GROUP WHERE (GROUP_TYPE IS NULL OR GROUP_TYPE = '') ORDER BY GROUP_ID ASC", nativeQuery = true)
+	public List<Object[]> findAllGroupIdAndGroupTitleByGroupTypeNullOrEmpty();
 	
 	@Transactional(readOnly = true, timeout = 300)
-	@Query(value = "SELECT GROUP_ID, GROUP_TITLE FROM BCS_SEND_GROUP WHERE GROUP_TYPE IS NOT NULL ORDER BY GROUP_ID ASC", nativeQuery = true)
-	public List<Object[]> findAllGroupIdAndGroupTitleByGroupTypeNotNull();
+	@Query(value = "SELECT GROUP_ID, GROUP_TITLE FROM BCS_SEND_GROUP WHERE (GROUP_TYPE IS NOT NULL AND GROUP_TYPE <> '') ORDER BY GROUP_ID ASC", nativeQuery = true)
+	public List<Object[]> findAllGroupIdAndGroupTitleByGroupTypeNotNullAndNotEmpty();
 
 	@Transactional(readOnly = true, timeout = 30)
 	@Query("select x.groupTitle from SendGroup x where x.groupId = ?1")

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/BCS/Views/Common/Head :: head ('HpiRichmenu Send Group Create Page', '/BCS/JS/pageHpiRichmenuCreateGroup.base.js')">
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+    <div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageHpiRichmenuCreateGroup')"></div>
+
+        <!-- Right Content -->  
+        <div class="LyMain" role="main">
+            <form id="formSendGroup">
+                <section>
+                    <header class="ContentHead">
+                        <h3 class="CHTtl">圖文選單建立群組</h3>
+                        <p class="CHDesc">您可透過條件搜尋建立客製化群組分類。</p>
+                    </header>
+                    <div class="mainFrame rchmenuGroup">
+                        <table border="1">
+                            <colgroup><col width="190"><col></colgroup>
+                            <tbody >
+                                <tr>
+                                    <th>群組名稱</th>
+                                    <td>
+                                        <input type="text" id="groupTitle" name="groupTitle" value="" maxlength="50" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>群組說明</th>
+                                    <td>
+                                        <div class="TInput">
+                                            <textarea id="groupDescription" name="groupDescription" cols="" rows="4" placeholder="請輸入群組說明" maxlength="700"></textarea>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>群組類型</th>
+                                    <td>
+                                        <div>
+											<ul>
+												<li>
+													<label class="MdFRM02Check"> 
+														<input id="groupType_UIDLIST" type="radio" name="groupType" value="UIDLIST">依照匯入名單 ( 選擇此類型，圖文選單只會針對名單內的UID進行更新。 )
+													</label>
+												</li>
+												<li>
+													<label class="MdFRM02Check"> 
+														<input id="groupType_CONDITIONS" type="radio" name="groupType" value="CONDITIONS">依照設定條件 ( 選擇此類型，圖文選單會持續更新對應條件或狀態之用戶。 )
+													</label>
+												</li>
+											</ul>
+										</div>
+									</td>
+                                </tr>
+                                <tr id="queryContent">
+                                    <th>群組條件</th>
+                                    <td>
+										<input id="upload_mid_btn" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/plain" name="file" type="file" style="display:none">
+                        				<input class="btn_add add_rule" style="cursor: pointer;" type="button" value="加入條件">
+                        				<input class="btn_add upload_mid" id="btnUploadMid" style="cursor: pointer; margin-right: 3px;" type="button" value="匯入UID" title="目前僅支持檔案類型(xls, xlsx, txt)">
+                                        <table class="subTable" id="tableBody" >
+				                            <colgroup>
+					                            <col width="100">
+					                            <col width="100">
+					                            <col width="100">
+					                            <col width="50">
+				                            </colgroup>
+                                            <tr>
+                                                <th>欄位</th>
+                                                <th>條件</th>
+                                                <th>數值</th>
+                                                <th></th>
+                                            </tr>
+                                            <tr class="dataTemplate">
+                                                <td>
+                                                    <div class="labelField" style="display: none;"></div>
+                                                    
+                                                    <div class="optionForRichmenuCreateGroup">
+                                                        <div class="optionLabel">請選擇</div>
+                                                        <select class="optionSelect queryField" name="queryField">
+                                                            <option value="">請選擇</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="labelOp" style="display: none;"></div>
+                                                    
+                                                    <div class="optionForRichmenuCreateGroup">
+                                                        <div class="optionLabel">請選擇</div>
+                                                        <select class="optionSelect queryOp" name="queryOp">
+                                                            <option value="">請選擇</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td class='queryValueComponent'>
+                                                
+                                                	<!-- SelectList -->
+                                                    <div class="optionForRichmenuCreateGroup queryValueComponentSelectList" style="display: none;">
+                                                        <div class="optionLabel">請選擇</div>
+                                                        <select class="optionSelect queryValue" name="queryValue">
+                                                            <option value="">請選擇</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <!-- Input -->
+													<div class="queryValueComponentInput" style="display: none;">
+														<input class="queryValue" type="text" name="queryValue" value="" placeholder="請輸入" style="width: 90%; padding: 9px 9px 8px 9px;"/>
+													</div> 
+													
+													<!-- DatePicker -->
+                                                    <div class="optionForRichmenuCreateGroup date queryValueComponentDatepicker" style="display: none;">
+                                                    	<input class="datepicker queryValue" type="text" name="queryValue" placeholder="YYYY-MM-DD" style="width: 90%;"/>
+                                                    </div>
+                                                    
+                                                    
+													<!-- Label Value -->
+                                                    <div class="labelValue" style="display: none;"></div>
+                                                </td>
+                                                <td>
+                                                    <div class="btn_delete" style="cursor: pointer;"></div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+                <div class="BtnSet">
+                    <div>
+                        <input class="btn_richmenu_query" style="cursor: pointer;" type="button" value="條件結果">
+                        <input class="btn_richmenu_exportMid" style="cursor: pointer;" type="button" value="匯出UID" >
+                        <input class="btn_richmenu_save" style="cursor: pointer;" type="button" value="儲存">
+                        <input class="btn_richmenu_cancel" style="cursor: pointer;" type="button" value="取消">
+                    </div>
+                    <iframe id="downloadReport" style='display:none' ></iframe>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

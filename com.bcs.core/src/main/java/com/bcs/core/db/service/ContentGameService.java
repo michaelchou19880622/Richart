@@ -244,7 +244,7 @@ public class ContentGameService {
     
     public Map<String, String> findGameNameMap(){
         List<Object[]> games = contentGameRepository.findAllGameIdAndGameName();
-        logger.info("findGroupTitleMap:" + ObjectUtil.objectToJsonStr(games));
+        logger.info("findGameNameMap:" + ObjectUtil.objectToJsonStr(games));
         Map<String, String> result = new LinkedHashMap<String, String>();
         
         for(Object[] game : games){
