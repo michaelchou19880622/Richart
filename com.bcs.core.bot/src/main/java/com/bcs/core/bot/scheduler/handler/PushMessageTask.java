@@ -57,8 +57,8 @@ public class PushMessageTask implements Job {
 		String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
 		logger.info("[PushMessageTask] accessToken = {}", accessToken);
 		
-		String serviceCode = CoreConfigReader.getString(CONFIG_STR.AutoReply.toString(), CONFIG_STR.ChannelServiceCode.toString(), true);
-		logger.info("[PushMessageTask] serviceCode = {}", serviceCode);
+//		String serviceCode = CoreConfigReader.getString(CONFIG_STR.AutoReply.toString(), CONFIG_STR.ChannelServiceCode.toString(), true);
+//		logger.info("[PushMessageTask] serviceCode = {}", serviceCode);
 		
 		PushApiModel pushApiModel = null;
 		RestfulUtil restfulUtil = null;
@@ -69,7 +69,7 @@ public class PushMessageTask implements Job {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-		headers.set(LINE_HEADER.HEADER_BOT_ServiceCode.toString(), serviceCode);
+//		headers.set(LINE_HEADER.HEADER_BOT_ServiceCode.toString(), serviceCode);
 		logger.info("[PushMessageTask] headers = {}", headers);
 		
 		try {

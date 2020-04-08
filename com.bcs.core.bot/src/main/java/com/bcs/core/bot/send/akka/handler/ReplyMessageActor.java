@@ -12,26 +12,35 @@ import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.utils.RestfulUtil;
 
 import akka.actor.UntypedActor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ReplyMessageActor extends UntypedActor {
 
 	@Override
 	public void onReceive(Object message) throws Exception {
 		if(message instanceof JSONObject) {
+			log.info("ReplyMessageActor onReceive = {}", message);
+			
 			String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
 			String serviceCode = CoreConfigReader.getString(CONFIG_STR.AutoReply.toString(), CONFIG_STR.ChannelServiceCode.toString(), true);
+			log.info("ReplyMessageActor accessToken = {}", accessToken);
+			log.info("ReplyMessageActor serviceCode = {}", serviceCode);
+			
 			/* 設定 request headers */
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 			headers.set(LINE_HEADER.HEADER_BOT_ServiceCode.toString(), serviceCode);
+			log.info("ReplyMessageActor headers = {}", headers);
 			
 			/* 將 headers 跟 body 塞進 HttpEntity 中 */
 			HttpEntity<String> httpEntity = new HttpEntity<String>(message.toString(), headers);
 			
 			RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.POST, CoreConfigReader.getString(CONFIG_STR.LINE_MESSAGE_REPLY_URL.toString()), httpEntity);
 			
-			restfulUtil.execute();
+			JSONObject jsonObjectResult = restfulUtil.execute();
+			log.info("ReplyMessageActor restfulUtil execute result = {}", jsonObjectResult);
 		}
 	}
 }

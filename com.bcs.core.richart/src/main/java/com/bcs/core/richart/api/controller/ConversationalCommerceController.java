@@ -5,7 +5,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +29,12 @@ import com.bcs.core.smartrobot.service.SwitchIconService;
 import com.bcs.core.utils.CryptUtil;
 import com.bcs.core.utils.RestfulUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/api")
 public class ConversationalCommerceController {
-	private static Logger logger = Logger.getLogger(ConversationalCommerceController.class);
 	
 	@Autowired
 	private SwitchIconService switchIconService; 
@@ -42,7 +43,7 @@ public class ConversationalCommerceController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/pushMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> pushMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
-		logger.info("[pushMessage] Requestbody: " + requestBodyString);
+		log.info("[pushMessage] Requestbody : {}", requestBodyString);
 		
 		try {
 			if(request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
@@ -50,30 +51,49 @@ public class ConversationalCommerceController {
 			}
 			
 			String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+			log.info("[pushMessage] authorization : {}", authorization);
 			
 			if(authorization.split("Basic ").length != 2) {
 				return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid authorization format\"}", HttpStatus.UNAUTHORIZED);
 			}
 			
 			String token = authorization.split("Basic ")[1];
-			String secret = CoreConfigReader.getString(CONFIG_STR.AES_SECRET_KEY, true);
-			String iv = CoreConfigReader.getString(CONFIG_STR.AES_INITIALIZATION_VECTOR, true);
-			String originalToken = CoreConfigReader.getString(CONFIG_STR.API_ORIGINAL_TOKEN, true);
+			log.info("[pushMessage] token : {}", token);
 			
-			if(!CryptUtil.Decrypt(CryptUtil.AES, token, secret, iv).equals(originalToken)) {
+			String secret = CoreConfigReader.getString(CONFIG_STR.AES_SECRET_KEY, true);
+			log.info("[pushMessage] secret : {}", secret);
+			
+			String iv = CoreConfigReader.getString(CONFIG_STR.AES_INITIALIZATION_VECTOR, true);
+			log.info("[pushMessage] iv : {}", iv);
+			
+			String originalToken = CoreConfigReader.getString(CONFIG_STR.API_ORIGINAL_TOKEN, true);
+			log.info("[pushMessage] originalToken : {}", originalToken);
+			
+			String decryptedToken = CryptUtil.Decrypt(CryptUtil.AES, token, secret, iv);
+			log.info("[pushMessage] decryptedToken : {}", decryptedToken);
+			
+			if(!decryptedToken.equals(originalToken)) {
 				return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
 			}
 			
 			JSONObject requestBody = new JSONObject(requestBodyString);
+			log.info("[pushMessage] requestBody : {}", requestBody);
+			
 			String url = CoreConfigReader.getString(CONFIG_STR.LINE_MESSAGE_PUSH_URL.toString());
+			log.info("[pushMessage] url : {}", url);
+			
 			String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
+			log.info("[pushMessage] accessToken : {}", accessToken);
+			
 			String serviceCode = CoreConfigReader.getString(CONFIG_STR.AutoReply.toString(), CONFIG_STR.ChannelServiceCode.toString(), true);
+			log.info("[pushMessage] serviceCode : {}", serviceCode);
 			
 			/* 設定 request headers */
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 			headers.set(LINE_HEADER.HEADER_BOT_ServiceCode.toString(), serviceCode);
+			log.info("[pushMessage] headers : {}", headers);
 			
 			switchIconService.appendSender(CONFIG_STR.AutoReply.toString(), requestBody);
 			
@@ -82,15 +102,22 @@ public class ConversationalCommerceController {
 			
 			RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.POST, url, httpEntity);
 			
-			restfulUtil.execute();
+			JSONObject jsonObjectResult = restfulUtil.execute();
+			log.info("[pushMessage] RestfulUtil execute result = {}", jsonObjectResult);
 			
 			return new ResponseEntity<>("{\"error\": \"false\", \"message\": \"success\"}", HttpStatus.OK);
 		} catch(Exception e) {
+			log.info("[pushMessage] Exception = {}", e);
+			
 			if(e instanceof BadPaddingException || e instanceof IllegalBlockSizeException || e instanceof IllegalArgumentException) {
 				return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
 			} else if(e instanceof HttpClientErrorException) {
+				
 				String responseMessage = ((HttpClientErrorException) e).getResponseBodyAsString();
+				log.info("[pushMessage] responseMessage = {}", responseMessage);
+				
 				HttpStatus responseStatusCode = ((HttpClientErrorException) e).getStatusCode();
+				log.info("[pushMessage] responseStatusCode = {}", responseStatusCode);
 				
 				if(responseMessage.contains("{\"message\"")) {
 					JSONObject responseMessageObject = new JSONObject(responseMessage);

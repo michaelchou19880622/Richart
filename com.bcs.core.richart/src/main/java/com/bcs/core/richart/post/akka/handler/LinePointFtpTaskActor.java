@@ -36,7 +36,7 @@ public class LinePointFtpTaskActor extends UntypedActor {
 			
 			String url = CoreConfigReader.getString(CONFIG_STR.LINE_POINT_MESSAGE_PUSH_URL.toString());
 			String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
-			String serviceCode = CoreConfigReader.getString(CONFIG_STR.AutoReply.toString(), CONFIG_STR.ChannelServiceCode.toString(), true);
+//			String serviceCode = CoreConfigReader.getString(CONFIG_STR.AutoReply.toString(), CONFIG_STR.ChannelServiceCode.toString(), true);
 			
 			LinePointPushMessageRecord record = null;
 			
@@ -44,7 +44,7 @@ public class LinePointFtpTaskActor extends UntypedActor {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-			headers.set(LINE_HEADER.HEADER_BOT_ServiceCode.toString(), serviceCode);
+//			headers.set(LINE_HEADER.HEADER_BOT_ServiceCode.toString(), serviceCode);
 			
 			for(String requestBodyString : requestBodiesString) {
 				JSONObject requestBody = new JSONObject(requestBodyString);

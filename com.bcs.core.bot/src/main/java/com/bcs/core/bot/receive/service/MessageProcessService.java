@@ -283,6 +283,78 @@ public class MessageProcessService {
 		LineAccessApiService.sendToLine(sendToBotModel);
 	}
 	
+	public void replyTextMessageWithServiceCode(String channelId, String channelName, List<String> textList, String replyToken) throws Exception {
+		List<Message> sendMsgList = new ArrayList<Message>();
+		Message message = null;
+		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString()); 
+		
+		for(String text : textList) {
+			message = new TextMessage(text, sender);
+			
+			sendMsgList.add(message);
+		}
+		
+		SendToBotModel sendToBotModel = new SendToBotModel();
+		
+		sendToBotModel.setChannelId(channelId);
+		sendToBotModel.setSendType(SEND_TYPE.REPLY_MSG);
+		sendToBotModel.setChannelName(channelName);
+		
+		ReplyMessage replyMessage = new ReplyMessage(replyToken, sendMsgList);
+		sendToBotModel.setReplyMessage(replyMessage);
+		
+		LineAccessApiService.sendToLineWithServiceCode(sendToBotModel);
+	}
+	
+	public void pushTextMsgAsyncWithServiceCode(String UID, String text,String channelName) throws Exception {
+		logger.info("pushTextMsgAsyncWithServiceCode");
+				
+		MsgDetail sendMsgDetail = new MsgDetail();
+
+		sendMsgDetail.setText(text);
+		sendMsgDetail.setMsgType(MsgGenerator.MSG_TYPE_TEXT);
+		
+		Sender sender = switchIconService.generateSenderModel(channelName); 
+		
+		TextMessage textMesage = new TextMessage(text, sender);
+		PushMessage pushMessage = new PushMessage(UID, textMesage);
+
+		SendToBotModel sendToBotModel = new SendToBotModel();
+		sendToBotModel.setChannelId(CONFIG_STR.Default.toString());
+		sendToBotModel.setChannelName(channelName);
+		sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
+		sendToBotModel.setPushMessage(pushMessage);
+		LineAccessApiService.sendToLineWithServiceCode(sendToBotModel);
+	}
+	
+	public void pushMessageWithServiceCode(String UID, List<Message> messageList, String channelName) throws Exception {
+		logger.info("pushMessageWithServiceCode");
+		SendToBotModel sendToBotModel = new SendToBotModel();
+
+		sendToBotModel.setChannelId(CONFIG_STR.Default.toString());
+		sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
+		sendToBotModel.setChannelName(channelName);
+		
+		PushMessage pushMessage = new PushMessage(UID, messageList);					
+		sendToBotModel.setPushMessage(pushMessage);
+		
+		LineAccessApiService.sendToLineWithServiceCode(sendToBotModel);
+	}
+	
+	public void replyMessageWithServiceCode(String channelId, String replyToken, List<Message> messageList, String channelName) throws Exception {
+		logger.info("replyMessageWithServiceCode");
+		SendToBotModel sendToBotModel = new SendToBotModel();
+
+		sendToBotModel.setChannelId(channelId);
+		sendToBotModel.setSendType(SEND_TYPE.REPLY_MSG);
+		sendToBotModel.setChannelName(channelName);
+
+		ReplyMessage replyMessage = new ReplyMessage(replyToken, messageList);
+		sendToBotModel.setReplyMessage(replyMessage);
+
+		LineAccessApiService.sendToLineWithServiceCode(sendToBotModel);
+	}
+	
 	public JSONObject defaultReplyMessage() {
 		JSONObject defaultMessage = new JSONObject();
 		
