@@ -29,14 +29,14 @@ public interface SendGroupRepository extends EntityRepository<SendGroup, Long>{
 	public String findGroupTitleByGroupId(Long groupId);
 	
 	@Transactional(readOnly = true, timeout = 300)
-	@Query(value = "SELECT * FROM BCS_SEND_GROUP WHERE GROUP_TYPE IS NULL ORDER BY GROUP_ID ASC;", nativeQuery = true)
+	@Query(value = "SELECT * FROM BCS_SEND_GROUP WHERE (GROUP_TYPE IS NULL OR GROUP_TYPE = '') ORDER BY GROUP_ID ASC;", nativeQuery = true)
 	public List<SendGroup> findAllByGroupTypeNull();
 	
 	@Transactional(readOnly = true, timeout = 300)
-	@Query(value = "SELECT * FROM BCS_SEND_GROUP WHERE GROUP_TYPE IS NOT NULL ORDER BY GROUP_ID ASC;", nativeQuery = true)
+	@Query(value = "SELECT * FROM BCS_SEND_GROUP WHERE (GROUP_TYPE IS NOT NULL AND GROUP_TYPE <> '') ORDER BY GROUP_ID ASC;", nativeQuery = true)
 	public List<SendGroup> findAllByGroupTypeNotNull();
 	
 	@Transactional(readOnly = true, timeout = 300)
-	@Query(value = "SELECT * FROM BCS_SEND_GROUP bsg WHERE bsg.GROUP_TYPE IS NOT NULL /*#pageable*/", nativeQuery = true)
+	@Query(value = "SELECT * FROM BCS_SEND_GROUP bsg WHERE (bsg.GROUP_TYPE IS NOT NULL AND bsg.GROUP_TYPE <> '') /*#pageable*/", nativeQuery = true)
 	public Page<SendGroup> findAllByGroupTypeNotNull(Pageable pageable);
 }
