@@ -91,15 +91,15 @@ public class LineAccessApiService {
 				if (channels != null && channels.size() > 0) {
 					for (Object[] channel : channels) {
 						String configId = (String) channel[0];
-						logger.info("callVerifyAPIAndIssueToken configId:" + configId);
+						logger.debug("callVerifyAPIAndIssueToken configId:" + configId);
 
 						if (StringUtils.isNotBlank(configId) && configId.indexOf(".") > 0) {
 							String[] split = configId.split("\\.");
 							if (split != null && split.length == 2) {
 								String channelId = split[0];
 								ObjectNode node = LineAccessApiService.callVerifyAPIAndIssueToken(channelId, true);
-								logger.info("callVerifyAPIAndIssueToken:" + channelId + ", isReIssue: " + node.get("isReIssue"));
-								logger.info("callVerifyAPIAndIssueToken:" + ObjectUtil.objectToJsonStr(node));
+								logger.debug("callVerifyAPIAndIssueToken:" + channelId + ", isReIssue: " + node.get("isReIssue"));
+								logger.debug("callVerifyAPIAndIssueToken:" + ObjectUtil.objectToJsonStr(node));
 							}
 						}
 					}
@@ -112,11 +112,11 @@ public class LineAccessApiService {
 
 	@PreDestroy
 	public void cleanUp() {
-		logger.info("[DESTROY] LineAccessApiService cleaning up...");
+		logger.debug("[DESTROY] LineAccessApiService cleaning up...");
 
 		flushTimer.cancel();
 		checkTokenTimer.cancel();
-		logger.info("[DESTROY] LineAccessApiService destroyed.");
+		logger.debug("[DESTROY] LineAccessApiService destroyed.");
 	}
 
 	/** Logger */
@@ -125,13 +125,13 @@ public class LineAccessApiService {
 	private static Map<String, List<LineMessagingService>> lineMessagingServiceMap = new HashMap<String, List<LineMessagingService>>();
 
 	private static LineMessagingService getServiceWithServiceCode(String ChannelId, String ChannelName) {
-		log.info("getServiceWithServiceCode");
+		log.debug("getServiceWithServiceCode");
 		
-		log.info("ChannelId = {}", ChannelId);
-		log.info("ChannelName = {}", ChannelName);
+		log.debug("ChannelId = {}", ChannelId);
+		log.debug("ChannelName = {}", ChannelName);
 		
 		String Channel = ChannelId + ChannelName;
-		log.info("Channel = {}", Channel);
+		log.debug("Channel = {}", Channel);
 
 		List<LineMessagingService> lineMessagingServices = lineMessagingServiceMap.get(Channel);
 
@@ -182,13 +182,13 @@ public class LineAccessApiService {
 	}
 
 	private static LineMessagingService getService(String ChannelId, String ChannelName) {
-		log.info("getService");
+		log.debug("getService");
 		
-		log.info("ChannelId = {}", ChannelId);
-		log.info("ChannelName = {}", ChannelName);
+		log.debug("ChannelId = {}", ChannelId);
+		log.debug("ChannelName = {}", ChannelName);
 		
 		String Channel = ChannelId + ChannelName;
-		log.info("Channel = {}", Channel);
+		log.debug("Channel = {}", Channel);
 
 		List<LineMessagingService> lineMessagingServices = lineMessagingServiceMap.get(Channel);
 
@@ -239,10 +239,10 @@ public class LineAccessApiService {
 	}
 
 	private static LineMessagingService randomOne(List<LineMessagingService> lineMessagingServices) {
-		logger.info("LineMessagingService Size = " + lineMessagingServices.size());
+		logger.debug("LineMessagingService Size = " + lineMessagingServices.size());
 
 		int index = new Random().nextInt(lineMessagingServices.size());
-		logger.info("Get Random One, index = " + index);
+		logger.debug("Get Random One, index = " + index);
 		
 		return lineMessagingServices.get(index);
 	}
@@ -261,8 +261,8 @@ public class LineAccessApiService {
 		
 		String ChannelId = sendToBotModel.getChannelId();
 		String ChannelName = sendToBotModel.getChannelName();
-		log.info("ChannelId : {}", ChannelId);
-		log.info("ChannelName : {}", ChannelName);
+		log.debug("ChannelId : {}", ChannelId);
+		log.debug("ChannelName : {}", ChannelName);
 
 		if (ChannelName.equals(CONFIG_STR.InManualReplyButNotSendMsg.toString())) {
 			throw new BcsNoticeException("使用者在真人客服無法推播");
@@ -412,7 +412,7 @@ public class LineAccessApiService {
 	}
 
 	public static Response<ResponseBody> getImageFromLine(String channelId, String channelName, String msgId) throws Exception {
-		logger.info("getImageFromLine:" + msgId);
+		logger.debug("getImageFromLine:" + msgId);
 
 		Date start = new Date();
 		int status = 0;
@@ -446,10 +446,10 @@ public class LineAccessApiService {
 
 		LineTokenApiService lineTokenApiService = ApplicationContextProvider.getApplicationContext().getBean(LineTokenApiService.class);
 		ObjectNode callVerifyResult = lineTokenApiService.callVerifyAPI(access_token);
-		logger.info("callVerifyResult:" + callVerifyResult);
+		logger.debug("callVerifyResult:" + callVerifyResult);
 
 		JsonNode expires_in = callVerifyResult.get("expires_in");
-		logger.info("expires_in:" + expires_in);
+		logger.debug("expires_in:" + expires_in);
 
 		boolean isReIssue = false;
 		if (expires_in != null) {
@@ -482,10 +482,10 @@ public class LineAccessApiService {
 		LineTokenApiService lineTokenApiService = ApplicationContextProvider.getApplicationContext().getBean(LineTokenApiService.class);
 		SystemConfigService systemConfigService = ApplicationContextProvider.getApplicationContext().getBean(SystemConfigService.class);
 		ObjectNode callRefreshingResult = lineTokenApiService.callRefreshingAPI(client_id, client_secret);
-		logger.info("callRefreshingResult: " + callRefreshingResult);
+		logger.debug("callRefreshingResult: " + callRefreshingResult);
 
 		JsonNode access_token = callRefreshingResult.get("access_token");
-		logger.info("access_token: " + access_token);
+		logger.debug("access_token: " + access_token);
 
 		if (access_token != null) {
 			String token = access_token.asText();

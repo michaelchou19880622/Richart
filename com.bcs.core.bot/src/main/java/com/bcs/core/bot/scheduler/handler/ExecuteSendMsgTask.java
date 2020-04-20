@@ -115,7 +115,7 @@ public class ExecuteSendMsgTask {
 				// 預設群祖
 				else{
 					Long totalCount = sendGroupService.countDefaultGroupSize(groupId);
-					logger.info("countDefaultGroupSize:" + totalCount);
+					logger.debug("countDefaultGroupSize:" + totalCount);
 
 					/**
 					 * Copy From MsgMain to MsgSendMain
@@ -124,7 +124,7 @@ public class ExecuteSendMsgTask {
 					
 					List<MsgDetail> details = msgDetailService.findByMsgIdAndMsgParentType(msgSendMain.getMsgSendId(), MsgSendMain.THIS_PARENT_TYPE);
 
-					logger.info("findByMsgIdAndMsgParentType");
+					logger.debug("findByMsgIdAndMsgParentType");
 
 					/**
 					 * Send To Test Group for Check Send

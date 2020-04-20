@@ -18,7 +18,7 @@ public class CoreConfigReader {
 	
 	public static boolean isSystemTypeProduction() {
 		String systemType = getString(CONFIG_STR.SYSTEM_TYPE);
-		log.info("bcs.system.type = {}", systemType);
+		log.debug("bcs.system.type = {}", systemType);
 		if ("PRODUCTION".equals(systemType)) {
 			return true;
 		}
@@ -27,7 +27,7 @@ public class CoreConfigReader {
 	
 	public static boolean isMainSystem() {
 		String isMainSystem = getString(CONFIG_STR.IS_MAIN_SYSTEM);
-		log.info("is.main.system = {}", isMainSystem);
+		log.debug("is.main.system = {}", isMainSystem);
 		if (StringUtils.isNotBlank(isMainSystem) && "true".equals(isMainSystem)) {
 			return true;
 		}
@@ -36,7 +36,7 @@ public class CoreConfigReader {
 	
 	public static boolean isSystemTypeTest() {
 		String systemType = getString(CONFIG_STR.SYSTEM_TYPE);
-		log.info("bcs.system.type = {}", systemType);
+		log.debug("bcs.system.type = {}", systemType);
 		if ("TEST".equals(systemType)) {
 			return true;
 		}
@@ -45,7 +45,7 @@ public class CoreConfigReader {
 	
 	public static boolean isSystemTypeDevelop() {
 		String systemType = getString(CONFIG_STR.SYSTEM_TYPE);
-		log.info("bcs.system.type = {}", systemType);
+		log.debug("bcs.system.type = {}", systemType);
 		if ("DEVELOP".equals(systemType)) {
 			return true;
 		}

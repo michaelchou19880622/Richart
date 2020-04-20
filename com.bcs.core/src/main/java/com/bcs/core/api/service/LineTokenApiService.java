@@ -9,7 +9,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.log4j.Logger;
 import org.jcodec.common.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +22,11 @@ import com.bcs.core.utils.InputStreamUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class LineTokenApiService {
-
-	/** Logger */
-	private static Logger logger = Logger.getLogger(LineTokenApiService.class);
 
 	public ObjectNode callVerifyAPI(String access_token) throws Exception{
 		Date start = new Date();
@@ -35,7 +34,9 @@ public class LineTokenApiService {
 	}
 
 	public ObjectNode callVerifyAPI(Date start, String access_token, int retryCount) throws Exception{
-		logger.info("callVerifyAPI");
+		log.info("===== callVerifyAPI =====");
+		log.info("start = {}", start);
+		log.info("access_token = {}", access_token);
 
 		int status = 0;
 		try{
@@ -45,39 +46,42 @@ public class LineTokenApiService {
 			list.add("access_token=" + URLEncoder.encode(access_token, "UTF-8"));
 			
 			String postMsg = StringUtils.join(list.toArray(), "&");
+			log.info("postMsg = {}", postMsg);
 			
 		    StringEntity entity = new StringEntity(postMsg, "UTF-8");
 		    entity.setContentType("application/x-www-form-urlencoded");
 		    
 			// init Request
 			HttpPost requestPost = new HttpPost(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_VERIFY));
-			logger.info("URI : " + requestPost.getURI());
+			log.info("URI = {}", requestPost.getURI());
+			
 			requestPost.setEntity(entity);
-	
-			// print requestPost
-			logger.info("postMsg : " + postMsg);
+			log.info("requestPost = {}", requestPost);
 	
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestPost);
+			log.info("clientResponse execute = {}", clientResponse);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
-			logger.info("clientResponse StatusCode : " + status);
+			log.info("clientResponse StatusCode = {}", status);
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
 				
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
-			logger.info("clientResponse result : " + result);
+			log.info("clientResponse result = {}", result);
 			
 			requestPost.releaseConnection();
+
+			log.info("=========================");
 
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_VerifyApi, start, status, postMsg, status + "");
 			return (ObjectNode)(new ObjectMapper()).readTree(result);
 		}
 		catch(Exception e){
 			String error = ErrorRecord.recordError(e, false);
-			logger.error(error);
+			log.error(error);
 			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_VerifyApi, error, e.getMessage());
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_VerifyApi_Error, start, status, error, status + "");
 			if(retryCount < 5){
@@ -95,7 +99,7 @@ public class LineTokenApiService {
 	}
 
 	public ObjectNode callRefreshingAPI(Date start, String client_id, String client_secret, int retryCount) throws Exception{
-		logger.info("callRefreshingAPI");
+		log.info("callRefreshingAPI");
 
 		int status = 0;
 		try{
@@ -113,24 +117,24 @@ public class LineTokenApiService {
 		    
 			// init Request
 			HttpPost requestPost = new HttpPost(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_ACCESSTOKEN));
-			logger.info("URI : " + requestPost.getURI());
+			log.info("URI : " + requestPost.getURI());
 			requestPost.setEntity(entity);
 	
 			// print requestPost
-			logger.info("postMsg : " + postMsg);
+			log.info("postMsg : " + postMsg);
 	
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestPost);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
-			logger.info("clientResponse StatusCode : " + status);
+			log.info("clientResponse StatusCode : " + status);
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
 				
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
-			logger.info("clientResponse result : " + result);
+			log.info("clientResponse result : " + result);
 			
 			requestPost.releaseConnection();
 
@@ -139,7 +143,7 @@ public class LineTokenApiService {
 		}
 		catch(Exception e){
 			String error = ErrorRecord.recordError(e, false);
-			logger.error(error);
+			log.error(error);
 			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_RefreshingApi, error, e.getMessage());
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_RefreshingApi_Error, start, status, error, status + "");
 			if(retryCount < 5){

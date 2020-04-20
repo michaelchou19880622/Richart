@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.SendGroup;
-import com.bcs.core.db.entity.WinningLetter;
 import com.bcs.core.db.repository.SendGroupRepository;
 import com.bcs.core.enums.DEFAULT_SEND_GROUP;
 import com.bcs.core.exception.BcsNoticeException;

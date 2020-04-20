@@ -49,10 +49,6 @@ public class LineLoginUtil {
     }
 
     public static void addLineoauthLinkInModelForMGMClickTracing(Model model, String RedirectUrl, String tracingIdStr) throws Exception {
-		log.info("model = {}", model);
-		log.info("RedirectUrl = {}", RedirectUrl);
-		log.info("tracingIdStr = {}", tracingIdStr);
-    	
     	addLineoauthLinkInModelForMGMClickTracing(CONFIG_STR.Default.toString(), model, RedirectUrl, tracingIdStr);
     }
     

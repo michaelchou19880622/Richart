@@ -35,10 +35,10 @@ public class AkkaPostApiMaster extends UntypedActor{
 		if (message instanceof LogApiModel) {
 			
 			String systemId = CoreConfigReader.getString(CONFIG_STR.SYSTEM_ID.toString());
-			log.info("systemId = {}", systemId);
+			log.debug("systemId = {}", systemId);
 			
 			if (systemId.equals("develop")) {
-				log.info("Current system.id is [{}], ignore checking ap logs.", systemId);
+				log.debug("Current system.id is [{}], ignore checking ap logs.", systemId);
 				return;
 			}
 			
@@ -69,7 +69,7 @@ public class AkkaPostApiMaster extends UntypedActor{
 				requestBody.put("FN_STTS", logApiModel.getFunctionStatus());
 				requestBody.put("FN_KEYVALUE", logApiModel.getSensitiveData());
 				requestBody.put("FN_PROC", functionProcess);
-				logger.info("requestBody:"+requestBody);
+				logger.debug("requestBody:"+requestBody);
 				HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody.toString(), headers);
 				RestTemplate restTemplate = new RestTemplate();
 

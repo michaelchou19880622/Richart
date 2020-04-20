@@ -37,12 +37,12 @@ public class ReceivingMsgHandlerMaster extends UntypedActor {
 	public void onReceive(Object message) throws Exception {
 
 		if (message instanceof ReceivedModelOriginal) {
-			logger.info("-------onReceive Step1-------");
+			logger.debug("-------onReceive Step1-------");
 			
 			routerEventTypeActor.tell(message, getSelf());
 		}
 		else if(message instanceof Map){
-			logger.info("-------onReceive Step2-------");
+			logger.debug("-------onReceive Step2-------");
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>) message;
 			String target = (String) map.get("Target");

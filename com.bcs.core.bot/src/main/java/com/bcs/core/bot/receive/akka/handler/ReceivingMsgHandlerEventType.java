@@ -28,7 +28,7 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object message) throws Exception {
-		logger.info("ReceivingMsgHandlerEventType onReceive");
+		logger.debug("ReceivingMsgHandlerEventType onReceive");
 
 		if (message instanceof ReceivedModelOriginal) {
 			ReceivedModelOriginal original = (ReceivedModelOriginal) message;
@@ -43,24 +43,24 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 					ReceivingMsgHandlerMaster.taskCount.addAndGet(1L);
 					
 					String eventType = msg.getEventType();
-					logger.info("eventType:" + eventType);
+					logger.debug("eventType:" + eventType);
 					
 					String channelId = original.getChannelId();
 					String channelName = original.getChannelName();
 					String apiType = original.getApiType().toString();
 					
-					logger.info("ReceivingMsgHandlerEventType channelId :"+channelId);
-					logger.info("ReceivingMsgHandlerEventType channelName :"+channelName);
-					logger.info("ReceivingMsgHandlerEventType apiType :"+apiType);
+					logger.debug("ReceivingMsgHandlerEventType channelId :"+channelId);
+					logger.debug("ReceivingMsgHandlerEventType channelName :"+channelName);
+					logger.debug("ReceivingMsgHandlerEventType apiType :"+apiType);
 					
 					String referenceId = "";
 					
 					
 					if (channelName.equals(CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true))) {
-						logger.info("ReceivingMsgHandlerEventType  CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true) :"
+						logger.debug("ReceivingMsgHandlerEventType  CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true) :"
 					                 +CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true));
 						if(MsgBotReceive.EVENT_TYPE_MESSAGE.equals(eventType)) {
-							logger.info("ReceivingMsgHandlerEventType  real man !!!!!!!!!!");
+							logger.debug("ReceivingMsgHandlerEventType  real man !!!!!!!!!!");
 							/* 將訊息傳送至真人客服 */
 							ReceivingMsgHandlerMsgReceive.trasmitToCustomerService(msg, channelId, channelName, apiType);
 							
@@ -72,11 +72,11 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 							// map.put("iMsgId", iMsgId);
 							getSender().tell(map, getSelf());*/
 						} else {
-							logger.info("ReceivingMsgHandlerEventType  Other message type!!!!!!!!!!");
+							logger.debug("ReceivingMsgHandlerEventType  Other message type!!!!!!!!!!");
 							/* Other message type */
 						}
 					} else if (MsgBotReceive.EVENT_TYPE_MESSAGE.equals(eventType) || MsgBotReceive.EVENT_TYPE_POSTBACK.equals(eventType)) {
-						logger.info("-------Get Message-------");
+						logger.debug("-------Get Message-------");
 						Long iMsgId = ReceivingMsgHandlerMsgReceive.handleMsgReceive(msg, channelId, channelName, apiType);
 						
 						referenceId = msg.getMsgId();
@@ -89,7 +89,7 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 						map.put("iMsgId", iMsgId);
 						getSender().tell(map, getSelf());
 					} else if (MsgBotReceive.EVENT_TYPE_FOLLOW.equals(eventType) || MsgBotReceive.EVENT_TYPE_UNFOLLOW.equals(eventType)){
-						logger.info("-------Get Operation-------");
+						logger.debug("-------Get Operation-------");
 						Long iMsgId = ReceivingMsgHandlerMsgReceiveOp.handleMsgReceiveOp(msg, channelId, apiType);
 						
 						referenceId = msg.getSourceId();
@@ -113,6 +113,6 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 				SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_ReceivingMsgHandler, LOG_TARGET_ACTION_TYPE.ACTION_HandleMsgReceiveAll, original.getStart(), 200, 15000, "count:" + count + "-" + original.getReceivingMsg(), "200-" + count);
 			}
 		}
-		logger.info("ReceivingMsgHandlerEventType End");
+		logger.debug("ReceivingMsgHandlerEventType End");
 	}
 }

@@ -64,7 +64,7 @@ public class FileParseTask implements Job {
 			}
 			
 			if(newTaskList.size() > 0) {
-				logger.info(">> New task file: " + newTaskList);
+				logger.debug(">> New task file: " + newTaskList);
 				
 				/* 將新的檔案下載至本機資料夾中，並將新檔案更名回寫至 FTP 上 */
 				for(String fileName : newTaskList) {
@@ -133,7 +133,7 @@ public class FileParseTask implements Job {
 	        	} else {
 		        	String[] partition = line.split("&");
 		        	
-		        	logger.info(">>> Line " + rowCount + ": " + line);
+		        	logger.debug(">>> Line " + rowCount + ": " + line);
 		        	rowCount++;
 		        	
 		        	if(partition.length == 2) {
@@ -160,9 +160,9 @@ public class FileParseTask implements Job {
 	        	rowNum++;
 	        }
 	        
-	        logger.info(">>> File name: " + fileName);
-	        logger.info(">>> File head: " + fileHeader);
-	        logger.info(">>> File body: " + requestObjects);
+	        logger.debug(">>> File name: " + fileName);
+	        logger.debug(">>> File head: " + fileHeader);
+	        logger.debug(">>> File body: " + requestObjects);
 	        
 	        FtpTaskModel ftpTaskModel = new FtpTaskModel();
 	        

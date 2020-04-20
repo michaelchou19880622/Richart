@@ -48,7 +48,7 @@ public class AkkaBotService {
 	}
 	
 	private ActorRef randomMaster(List<ActorRef> masters){
-		logger.info("randomMaster Size:" + masters.size());
+		logger.debug("randomMaster Size:" + masters.size());
 
         int index = new Random().nextInt(masters.size());
         return masters.get(index);
@@ -66,7 +66,7 @@ public class AkkaBotService {
 
 	@PreDestroy
 	public void shutdownNow(){
-		logger.info("[DESTROY] AkkaBotService shutdownNow cleaning up...");
+		logger.debug("[DESTROY] AkkaBotService shutdownNow cleaning up...");
 
 		try{
 			int count = 0;
@@ -93,6 +93,6 @@ public class AkkaBotService {
 		catch(Throwable e){}
 		
 		System.gc();
-		logger.info("[DESTROY] AkkaBotService shutdownNow destroyed");
+		logger.debug("[DESTROY] AkkaBotService shutdownNow destroyed");
 	}
 }

@@ -44,11 +44,11 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object message){
-		logger.info("-------Get Message Save-------");
+		logger.debug("-------Get Message Save-------");
 		InteractiveService interactiveService = ApplicationContextProvider.getApplicationContext().getBean(InteractiveService.class);
 		
 		boolean recordText = CoreConfigReader.getBoolean(CONFIG_STR.RECORD_RECEIVE_AUTORESPONSE_TEXT, true);
-		logger.info("recordText = " + recordText);
+		logger.debug("recordText = " + recordText);
 
 		if (message instanceof Map) {
 			@SuppressWarnings("unchecked")
@@ -61,7 +61,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 			LineUserService lineUserService = ApplicationContextProvider.getApplicationContext().getBean(LineUserService.class);
 			
 			String MID = receive.getSourceId();
-			logger.info("MID:" + MID);
+			logger.debug("MID:" + MID);
 			
 			LineUser lineUser = lineUserService.findByMidAndCreateUnbind(MID);
 			
@@ -90,7 +90,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 		
 		ReceivingMsgHandlerMaster.taskCount.addAndGet(-1L);
 		ReceivingMsgHandlerMaster.updateDate = Calendar.getInstance().getTime();
-		logger.info("-------Get Message Save End-------");
+		logger.debug("-------Get Message Save End-------");
 	}
 	
 	/**
@@ -102,38 +102,38 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 	 * @return iMsgId
 	 */
 	public static Long handleMsgReceive(MsgBotReceive content, String ChannelId, String ChannelName, String ApiType){
-		logger.info("handleMsgReceive");
+		logger.debug("handleMsgReceive");
 		
 		LineUserService lineUserService = ApplicationContextProvider.getApplicationContext().getBean(LineUserService.class);
 		InteractiveService interactiveService = ApplicationContextProvider.getApplicationContext().getBean(InteractiveService.class);
 		LiveChatProcessService liveChatService = ApplicationContextProvider.getApplicationContext().getBean(LiveChatProcessService.class);
 
 		boolean recordText = CoreConfigReader.getBoolean(CONFIG_STR.RECORD_RECEIVE_AUTORESPONSE_TEXT, true);
-		logger.info("recordText:" + recordText);
+		logger.debug("recordText:" + recordText);
 
-		logger.info("content.getChannel():" + content.getChannel());
-		logger.info("content.getEventType():" + content.getEventType());
-		logger.info("content.getMsgId():" + content.getMsgId());
-		logger.info("content.getReferenceId():" + content.getReferenceId());
-		logger.info("content.getUserStatus():" + content.getUserStatus());
-		logger.info("content.getPostbackData():" + content.getPostbackData());
+		logger.debug("content.getChannel():" + content.getChannel());
+		logger.debug("content.getEventType():" + content.getEventType());
+		logger.debug("content.getMsgId():" + content.getMsgId());
+		logger.debug("content.getReferenceId():" + content.getReferenceId());
+		logger.debug("content.getUserStatus():" + content.getUserStatus());
+		logger.debug("content.getPostbackData():" + content.getPostbackData());
 		
-		logger.info("ChannelId:" + ChannelId);
-		logger.info("ApiType:" + ApiType);
+		logger.debug("ChannelId:" + ChannelId);
+		logger.debug("ApiType:" + ApiType);
 		
 		String MID = content.getSourceId();
-		logger.info("MID:" + MID);
+		logger.debug("MID:" + MID);
 		
 		String text = content.getText();
-		logger.info("text:" + text);
+		logger.debug("text:" + text);
 		
 		String replyToken = content.getReplyToken();
-		logger.info("replyToken:" + replyToken);
+		logger.debug("replyToken:" + replyToken);
 		
 		try {
-			logger.info("=== Check is line user exist? ===");
+			logger.debug("=== Check is line user exist? ===");
 			LineUser lineUser = lineUserService.findByMidAndCreateUnbind(MID);
-			logger.info("lineUser = " + ((lineUser == null)? "null" : lineUser));
+			logger.debug("lineUser = " + ((lineUser == null)? "null" : lineUser));
 			
 			String userStatus = LineUser.STATUS_UNBIND;
 			
@@ -143,13 +143,13 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				LineProfileService lineProfileService = ApplicationContextProvider.getApplicationContext().getBean(LineProfileService.class);
 
 				String displayName = lineProfileService.getUserNickName(MID);
-				logger.info("displayName = " + displayName);
+				logger.debug("displayName = " + displayName);
 			}
 
-			logger.info("userStatus = {}", userStatus);
+			logger.debug("userStatus = {}", userStatus);
 			
-			logger.info("=== Check content's event type and postback data. ===");
-			logger.info("content.getEventType() = {}", content.getEventType());
+			logger.debug("=== Check content's event type and postback data. ===");
+			logger.debug("content.getEventType() = {}", content.getEventType());
 			
 			if (MsgBotReceive.EVENT_TYPE_POSTBACK.equals(content.getEventType())) {
 				text = content.getPostbackData();
@@ -168,32 +168,35 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 
 				if (text.contains("action=")) {
 					String switchAction = text.split("action=")[1];
+					logger.info(">>> switchAction 使用者選擇：{}", switchAction);
 
 					liveChatService.handleSwitchAction(switchAction, ChannelId, MID, replyToken);
 
 					return -3L;
 				} else if (text.contains("category=")) {
 					String category = text.split("category=")[1];
+					logger.info(">>> category 使用者選擇：{}", category);
 
 					liveChatService.startProcess(ChannelId, replyToken, MID, category);
 
 					return -3L;
 				} else if (text.contains("waitingAction=")) {
 					String waitingAction = text.split("waitingAction=")[1];
+					logger.info(">>> waitingAction 使用者選擇：{}", waitingAction);
 
 					liveChatService.handleWaitingAction(waitingAction, MID);
 
 					return -3L;
 				} else if (text.contains("leaveMessageAction=")) {
 					String leaveMessageAction = text.split("leaveMessageAction=")[1];
-
-					logger.info(">>> 使用者選擇：{}", leaveMessageAction);
+					logger.info(">>> leaveMessageAction 使用者選擇：{}", leaveMessageAction);
 
 					liveChatService.handleLeaveMessageAction(leaveMessageAction, ChannelId, MID, replyToken);
 
 					return -3L;
 				} else if (text.contains("leaveMsgCategory=")) {
 					String leaveMsgCategory = text.split("leaveMsgCategory=")[1];
+					logger.info(">>> leaveMsgCategory 使用者選擇：{}", leaveMsgCategory);
 
 					liveChatService.leaveMessage(ChannelId, replyToken, leaveMsgCategory, MID);
 
@@ -203,8 +206,8 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				}
 			}
 			
-			logger.info("=== Check content's msg type ===");
-			logger.info("content.getMsgType() = {}", content.getMsgType());
+			logger.debug("=== Check content's msg type ===");
+			logger.debug("content.getMsgType() = {}", content.getMsgType());
 			// 問泰咪段邏輯保留
 			if(MsgBotReceive.MESSAGE_TYPE_LOCATION.equals(content.getMsgType())) {
 				String address = content.getLocationAddress();		// 地址
@@ -216,8 +219,8 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				return -2L;
 			}
 
-			logger.info("=== Check is in the campaign flow? ===");
-			logger.info("1-2 text = {}", text);
+			logger.debug("=== Check is in the campaign flow? ===");
+			logger.debug("1-2 text = {}", text);
 			
             //處理活動流程(如果先前有觸發過，否則一律回傳空值)
 			Map<Long, List<MsgDetail>> result = new HashMap<>();
@@ -226,9 +229,9 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
             
 			if (StringUtils.isNotBlank(text) || (result != null && result.size() > 0)) {
 
-				logger.info("check 1-1 text = {}", text);
-				logger.info("check 1-1 result = {}", result);
-				logger.info("check 1-1 result.size() = {}", result.size());
+				logger.debug("check 1-1 text = {}", text);
+				logger.debug("check 1-1 result = {}", result);
+				logger.debug("check 1-1 result.size() = {}", result.size());
 				
 				if (recordText) {
 					logger.info("Get Keyword:{}", text);
@@ -297,13 +300,13 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				}
 			} else {
 				
-				logger.info("MID = {}", MID);
-				logger.info("userStatus = {}", userStatus);
+				logger.debug("MID = {}", MID);
+				logger.debug("userStatus = {}", userStatus);
 				
 				MsgInteractiveMain main = interactiveService.getAutoResponse(MID, userStatus);
 
 				if (main != null) {
-					logger.info("main = {}", main.toString());
+					logger.debug("main = {}", main.toString());
 					
 					Long iMsgId = main.getiMsgId();
 					List<MsgDetail> details = interactiveService.getMsgDetails(iMsgId);
@@ -315,12 +318,12 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					return iMsgId;
 				} else {
 
-					logger.info("ChannelId = {}", ChannelId);
-					logger.info("MID = {}", MID);
-					logger.info("replyToken = {}", replyToken);
-					logger.info("text = {}", text);
-					logger.info("content.getMsgId() = {}", content.getMsgId());
-					logger.info("content.getMsgType() = {}", content.getMsgType());
+					logger.debug("ChannelId = {}", ChannelId);
+					logger.debug("MID = {}", MID);
+					logger.debug("replyToken = {}", replyToken);
+					logger.debug("text = {}", text);
+					logger.debug("content.getMsgId() = {}", content.getMsgId());
+					logger.debug("content.getMsgType() = {}", content.getMsgType());
 					
 //					ChannelId, MID, replyToken, text, content.getMsgId(), content.getMsgType()
 					
@@ -339,14 +342,14 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 	}
 	
 	private static Map<Long, List<MsgDetail>> handleCampaignFlow(String MID, Object msg, String replyToken, String ChannelId, String ApiType, String msgId, String msgType) throws Exception {
-	    logger.info(("MID=" + MID + ", msg=" + msg + ", replyToken=" + replyToken + ", ChannelId=" + ChannelId + ", ApiType=" + ApiType + ", msgId=" + msgId + ", msgType=" + msgType));
+	    logger.debug(("MID=" + MID + ", msg=" + msg + ", replyToken=" + replyToken + ", ChannelId=" + ChannelId + ", ApiType=" + ApiType + ", msgId=" + msgId + ", msgType=" + msgType));
 	    Map<Long, List<MsgDetail>> iMsgIdAndMsgDetails = new HashMap<Long, List<MsgDetail>>();
 	    InteractiveService interactiveService = ApplicationContextProvider.getApplicationContext().getBean(InteractiveService.class);
 
 	    //是否為Image Message
 	    if (MsgBotReceive.MESSAGE_TYPE_IMAGE.equals(msgType)) {
             ContentResource resource = ApplicationContextProvider.getApplicationContext().getBean(GettingMsgContentService.class).getImageMessage(ChannelId, MID, ApiType, msgId);
-            logger.info("receiveImageId:" + resource.getResourceId());
+            logger.debug("receiveImageId:" + resource.getResourceId());
             msg = resource;
 	    }
 	    

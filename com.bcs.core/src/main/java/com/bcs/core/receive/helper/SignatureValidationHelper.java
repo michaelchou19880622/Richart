@@ -21,8 +21,8 @@ public class SignatureValidationHelper {
 		// Signature validation
 		try {
 			String signature = encode(receivingMsg, ChannelId);
-			logger.info("channelSignature:" + channelSignature);
-			logger.info("signature:" + signature);
+			logger.debug("channelSignature:" + channelSignature);
+			logger.debug("signature:" + signature);
 			
 			if(channelSignature.equals(signature)){
 				return true;
@@ -43,7 +43,7 @@ public class SignatureValidationHelper {
 		Mac mac = Mac.getInstance("HmacSHA256");
 		mac.init(key);
 		
-		logger.info("channelSecret: " + channelSecret);
+		logger.debug("channelSecret: " + channelSecret);
 		
 		return Base64.encodeBase64String(mac.doFinal(input.getBytes("UTF-8")));
 	}

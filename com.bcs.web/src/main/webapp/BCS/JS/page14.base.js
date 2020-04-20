@@ -33,7 +33,6 @@ $(function(){
 	// 刪除按鈕
 	var btn_deteleFunc = function(){
 		var iMsgId = $(this).attr('iMsgId');
-		console.info('btn_deteleFunc iMsgId:' + iMsgId);
 
 		var r = confirm("請確認是否刪除");
 		if (r) {
@@ -112,8 +111,6 @@ $(function(){
 			type : "GET",
 			url : bcs.bcsContextPath + '/market/getSendGroupList'
 		}).success(function(response){
-			console.info(response);
-	
 			$.each(response, function(i, o){
 				
 				groupSetting["GROUPID"+ o.groupId] = o.groupTitle;
@@ -137,22 +134,15 @@ $(function(){
             processData: false,
 			data : JSON.stringify(postData)
 		}).success(function(response){
-			console.info('response = ', response);
-			
 			$('.dataTemplate').remove();
 			$.BCS.ResourceMap = response.ResourceMap;
-			console.info('response.ResourceMap = ', response.ResourceMap);
 			
 			for(key in response.MsgMain){
-				console.info('key = ', key);
 				var msgData = templateBody.clone(true);
 				
 				var keyObj = JSON.parse(key);
-				console.info('keyObj = ' + keyObj);
 				
 				var valueObj = response.MsgMain[key];
-				console.info('keyObj', keyObj);
-				console.info('valueObj', valueObj);
 				
 				var iMsgId = keyObj.iMsgId;
 								

@@ -38,7 +38,7 @@ public class SystemLogUtil {
 	
 	public static void timeCheck(String target, String action, Date start, int status, int limitTime, String log, String referenceId){
 		Long diff = new Date().getTime() - start.getTime() ;
-		logger.info(target + "-" + action + " Response Status:" + status + "-t-" + diff + "--" + referenceId);
+		logger.debug(target + "-" + action + " Response Status:" + status + "-t-" + diff + "--" + referenceId);
 		if(diff > limitTime){
 			String str =target + "-" + action + "  Response Error Status:" + status + "-t-" + diff + "--" + log;
 			logger.error(str);

@@ -42,9 +42,9 @@ public class LineBotApiController {
 	@RequestMapping(method = RequestMethod.POST, value = "/bot/api/receiving/{ChannelId}/{ChannelName}", 
 			consumes = MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8")
 	public void lineBotApiReceiving(@RequestBody String receivingMsg, @PathVariable String ChannelId, @PathVariable String ChannelName,HttpServletRequest request, HttpServletResponse response) {
-		logger.info("-------lineBotApiReceiving-------");
+		logger.debug("-------lineBotApiReceiving-------");
 		Date start = new Date();
-		logger.info("receivingMsg:" + receivingMsg);
+		logger.debug("receivingMsg:" + receivingMsg);
 		
 		try{
 			// RichMenu
@@ -70,14 +70,14 @@ public class LineBotApiController {
 			ReceivedModelOriginal msgs = new ReceivedModelOriginal(receivingMsg, ChannelId, ChannelName, channelSignature, API_TYPE.BOT);
 
 			akkaBotService.receivingMsgs(msgs);
-			logger.info("-------lineBotApiReceiving Success-------");
+			logger.debug("-------lineBotApiReceiving Success-------");
 			response.setStatus(200);
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBotApi, LOG_TARGET_ACTION_TYPE.ACTION_Receive, start, 200, receivingMsg, "200");
 			return;
 		}catch(Throwable e){
 			logger.error(ErrorRecord.recordError(e));
 		}
-		logger.info("-------lineBotApiReceiving Fail-------");
+		logger.debug("-------lineBotApiReceiving Fail-------");
 		response.setStatus(470);
 		SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBotApi, LOG_TARGET_ACTION_TYPE.ACTION_Receive, start, 470, receivingMsg, "470");
 		return;

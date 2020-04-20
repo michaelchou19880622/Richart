@@ -60,9 +60,9 @@ public class InteractiveResponseService {
 			
 			String yesterdayStr =  iMsgId + "--" + sdf.format(yesterdayCalendar.getTime());
 			String nowDate = sdf.format(new Date());
-			logger.info("nowDate:" + nowDate);
+			logger.debug("nowDate:" + nowDate);
 			String nextDate = sdf.format(nextCalendar.getTime());
-			logger.info("nextDate:" + nextDate);
+			logger.debug("nextDate:" + nextDate);
 			
 			Long yesterdayCount = interactiveResponseDistinctCache.get(yesterdayStr);
 			if(yesterdayCount == null){

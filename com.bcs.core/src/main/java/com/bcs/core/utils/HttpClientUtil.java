@@ -68,7 +68,7 @@ public class HttpClientUtil {
 	}
 	
 	private static CloseableHttpClient randomClient(){
-		logger.info("randomClient Size:" + httpClientList.size());
+		logger.debug("randomClient Size:" + httpClientList.size());
 
         int index = new Random().nextInt(httpClientList.size());
         return httpClientList.get(index);
@@ -81,18 +81,18 @@ public class HttpClientUtil {
 		// set up a TrustManager that trusts everything
 		sslContext.init(null, new TrustManager[] { new X509TrustManager() {
 			public X509Certificate[] getAcceptedIssuers() {
-				logger.info("getAcceptedIssuers =============" + Calendar.getInstance().getTime().toString());
+				logger.debug("getAcceptedIssuers =============" + Calendar.getInstance().getTime().toString());
 				return null;
 			}
 			
 			public void checkClientTrusted(X509Certificate[] certs,
 			                String authType) {
-				logger.info("checkClientTrusted =============" + Calendar.getInstance().getTime().toString());
+				logger.debug("checkClientTrusted =============" + Calendar.getInstance().getTime().toString());
 			}
 			
 			public void checkServerTrusted(X509Certificate[] certs,
 			                String authType) {
-				logger.info("checkServerTrusted =============" + Calendar.getInstance().getTime().toString());
+				logger.debug("checkServerTrusted =============" + Calendar.getInstance().getTime().toString());
 			}
 		} }, new SecureRandom());
 		

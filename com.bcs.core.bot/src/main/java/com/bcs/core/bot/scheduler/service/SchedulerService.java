@@ -82,7 +82,7 @@ public class SchedulerService {
 	@PreDestroy
 	public void stopSchedule() {
 		synchronized (SCHEDULER_FLAG) {
-			logger.info("[DESTROY] SchedulerService cleaning up...");
+			logger.debug("[DESTROY] SchedulerService cleaning up...");
 			try {
 				scheduler.shutdown(true);
 				onSchedulerList.clear();
@@ -92,7 +92,7 @@ public class SchedulerService {
 			}
 
 			System.gc();
-			logger.info("[DESTROY] SchedulerService destroyed");
+			logger.debug("[DESTROY] SchedulerService destroyed");
 		}
 	}
 
@@ -113,7 +113,7 @@ public class SchedulerService {
 	}
 
 	private void restartSchedule() {
-		logger.info("[RESTART] SchedulerService restartSchedule");
+		logger.debug("[RESTART] SchedulerService restartSchedule");
 		try {
 			scheduler = sfb.getScheduler();
 			scheduler.start();
@@ -121,13 +121,13 @@ public class SchedulerService {
 		} catch (Throwable e) {
 		}
 
-		logger.info("[RESTART] SchedulerService restartSchedule success");
+		logger.debug("[RESTART] SchedulerService restartSchedule success");
 	}
 
 	public void loadScheduleFromDB() throws Exception {
 
 		boolean isMainSystem = CoreConfigReader.isMainSystem();
-		log.info("isMainSystem = {}", isMainSystem);
+		log.debug("isMainSystem = {}", isMainSystem);
 
 		if (!isMainSystem) {
 			return;
@@ -137,13 +137,13 @@ public class SchedulerService {
 		for (MsgMain msgMain : list) {
 			String statusNotice = "";
 			try {
-				logger.info("msgMain:" + msgMain);
+				logger.debug("msgMain:" + msgMain);
 
 				String sendType = msgMain.getSendType();
-				logger.info("sendType:" + sendType);
+				logger.debug("sendType:" + sendType);
 				if (MsgMain.SENDING_MSG_TYPE_DELAY.equals(sendType)) {
 					Date startTime = parseToDate(msgMain.getScheduleTime());
-					logger.info("startTime:" + startTime);
+					logger.debug("startTime:" + startTime);
 
 					// Overtime Skip
 					if ((new Date()).getTime() > startTime.getTime()) {
@@ -157,7 +157,7 @@ public class SchedulerService {
 					}
 				} else if (MsgMain.SENDING_MSG_TYPE_SCHEDULE.equals(sendType)) {
 					String cronExpression = parseToCronExpression(msgMain.getScheduleTime());
-					logger.info("cronExpression:" + cronExpression);
+					logger.debug("cronExpression:" + cronExpression);
 
 					addMsgSendSchedule(msgMain.getMsgId(), cronExpression);
 					continue;
@@ -320,7 +320,7 @@ public class SchedulerService {
 	 * @throws Exception
 	 */
 	public void addMsgSendSchedule(Long msgId, Date startTime) throws Exception {
-		logger.info("addMsgSendSchedule:" + msgId);
+		logger.debug("addMsgSendSchedule:" + msgId);
 
 		String detailName = createDetailName(msgId);
 
@@ -335,7 +335,7 @@ public class SchedulerService {
 		 * Create SimpleTrigger
 		 */
 		Trigger trigger = createSimpleTrigger(startTime, jobDetail);
-		logger.info(trigger);
+		logger.debug(trigger);
 
 		try {
 			synchronized (SCHEDULER_FLAG) {
@@ -344,8 +344,8 @@ public class SchedulerService {
 
 				Date result = scheduler.scheduleJob(jobDetail, trigger);
 
-				logger.info("addCommandSchedule result:" + result);
-				logger.info("addCommandSchedule detailName:" + detailName);
+				logger.debug("addCommandSchedule result:" + result);
+				logger.debug("addCommandSchedule detailName:" + detailName);
 				onSchedulerList.put(detailName, jobKey);
 			}
 		} catch (SchedulerException e) { // Handle
