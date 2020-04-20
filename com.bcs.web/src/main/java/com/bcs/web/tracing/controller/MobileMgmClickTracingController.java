@@ -128,10 +128,10 @@ public class MobileMgmClickTracingController extends BCSBaseController {
 			Date date_SharedTime = sdf_shareTime.parse(sharedTime);
 			log.info("validateMgmClickTracing date_SharedTime = {}", date_SharedTime);
 
-			ShareUserRecord ownerRecord = shareUserRecordService.findOne(shareUserRecordId);
-			log.info("ownerRecord = {}", ownerRecord);
+			ShareUserRecord shareUserRecord = shareUserRecordService.findOne(shareUserRecordId);
+			log.info("shareUserRecord = {}", shareUserRecord);
 			
-			if (ownerRecord == null) {
+			if (shareUserRecord == null) {
 				throw new Exception("TracingId Error:" + state);
 			}
 
@@ -141,7 +141,7 @@ public class MobileMgmClickTracingController extends BCSBaseController {
 //                return;
 //            } 
 
-			String campaignId = ownerRecord.getCampaignId();
+			String campaignId = shareUserRecord.getCampaignId();
 			log.info("campaignId = {}", campaignId);
 			
 			ShareCampaign shareCampaign = shareCampaignService.findOne(campaignId);
@@ -182,13 +182,13 @@ public class MobileMgmClickTracingController extends BCSBaseController {
 				log.info("findByMidAndCreateUnbind lineUser = {}", lineUser);
 			}
 
-			ShareCampaignClickTracing clickTracing = shareCampaignClickTracingService.findByUidAndShareUserRecordId(uid, ownerRecord.getShareUserRecordId());
+			ShareCampaignClickTracing clickTracing = shareCampaignClickTracingService.findByUidAndShareUserRecordId(uid, shareUserRecord.getShareUserRecordId());
 			log.info("clickTracing = {}", clickTracing);
 			
-			if (clickTracing == null && !ownerRecord.getUid().equals(uid)) { // 此連結未被點過、非本人
+			if (clickTracing == null && !shareUserRecord.getUid().equals(uid)) { // 此連結未被點過、非本人
 				clickTracing = new ShareCampaignClickTracing();
 				clickTracing.setUid(uid);
-				clickTracing.setShareUserRecordId(ownerRecord.getShareUserRecordId());
+				clickTracing.setShareUserRecordId(shareUserRecord.getShareUserRecordId());
 				clickTracing.setModifyTime(new Date());
 				clickTracing.setSharedTime(date_SharedTime);
 				
@@ -257,16 +257,12 @@ public class MobileMgmClickTracingController extends BCSBaseController {
 
 			Boolean friendFlag = Boolean.valueOf(resultMap.get("friendFlag"));
 			log.info("friendFlag = {}", friendFlag);
-
-			LineUser lineUser = null;
-
-			if (StringUtils.isNotBlank(uid)) {
-				lineUser = lineUserService.findByMidAndCreateUnbind(uid);
-			}
-			log.info("lineUser = {}", lineUser);
-
+			
 			if (friendFlag) { // 好友
 				log.info("好友");
+
+				LineUser lineUser = lineUserService.findByMidAndCreateUnbind(uid);
+				log.info("lineUser = {}", lineUser);
 
 				HttpSession session = request.getSession();
 				log.info("session : {}", session);

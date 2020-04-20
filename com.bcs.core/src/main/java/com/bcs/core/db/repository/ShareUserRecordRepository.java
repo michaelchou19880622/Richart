@@ -35,66 +35,128 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
             + "order by SUR.UID, SUR.MODIFY_TIME", nativeQuery = true)
     List<Object[]> findByModifyTimeAndCampaignId(Date start, Date end, String campaignId);
     
-//    row1.createCell(0).setCellValue(o[0] == null? "" : o[0].toString());
-//    row1.createCell(1).setCellValue(o[1] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[1], sdf2)));
-//    row1.createCell(2).setCellValue(o[2] == null? "" : o[2].toString());
-//    row1.createCell(3).setCellValue(o[2] == null? "" : (o[3].toString().equals("1")?"NEW":"OLD"));
-//    row1.createCell(4).setCellValue(o[2] == null? "" : (o[6].toString().equals("1")?"Y":"N"));
-//    row1.createCell(5).setCellValue(o[8] == null? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[8], sdf2)));
+    @Transactional(readOnly = true, timeout = 30)
+    @Query(value = "select "
+			    		+ "SUR.UID as SUR_UID, "
+			            + "SCCT.SHARED_TIME as SCCT_SHARED_TIME, "
+			            + "SCCT.UID as SCCT_UID, "
+						+ "IIF ( SLU.CREATE_TIME > SCCT.SHARED_TIME, 1, 0 ) as IS_NEWUSER, "
+						+ "IIF ( SLU.BIND_TIME > BSC.START_TIME, 1, 0 ) AS IS_BIND, "
+						+ "IIF ( SLU.BIND_TIME is null, 0, 1 ) as BINEISNULL, "
+			            + "IIF ( SDR.CAMPAIGN_ID = SUR.CAMPAIGN_ID, 1, IIF ( SLU.MID = SCCT.UID AND SLU.CREATE_TIME > SCCT.SHARED_TIME, 1, 0 ) ) as IS_DONATE, "
+			            + "SCCT.MODIFY_TIME as SCCT_MODIFY_TIME, "
+			            + "SLU.CREATE_TIME as CREATE_TIME, "
+			            + "SLU.BIND_TIME as BINE_TIME, "
+			            + "BSC.JUDGEMENT as JUDGEMENT, "
+			            + "SUR.SHARE_USER_RECORD_ID as SHARE_USER_RECORD_ID, "
+			            + "BSC.SHARE_TIMES as SHARE_TIMES "
+		            + "from BCS_SHARE_USER_RECORD SUR "
+		            + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "
+		            + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID and SCCT.SHARE_USER_RECORD_ID = SDR.SHARE_USER_RECORD_ID "
+					+ "left join BCS_LINE_USER SLU on SCCT.UID = SLU.MID "
+					+ "left join BCS_SHARE_CAMPAIGN BSC on BSC.CAMPAIGN_ID = SUR.CAMPAIGN_ID "
+		            + "where "
+		            	+ "SUR.MODIFY_TIME >= ?1 "
+		            	+ "and SUR.MODIFY_TIME < ?2 "
+		            	+ "and SUR.CAMPAIGN_ID = ?3 "
+		            + "order by "
+			            + "SUR.SHARE_USER_RECORD_ID, "
+			            + "SCCT.SHARED_TIME", nativeQuery = true)
+    List<Object[]> findByModifyTimeAndCampaignId_for_follow_binded(Date start, Date end, String campaignId);
     
     @Transactional(readOnly = true, timeout = 30)
-    @Query(value = "select SUR.UID as SUR_UID, "
-            + "SCCT.SHARED_TIME as SCCT_SHARED_TIME, "
-            + "SCCT.UID as SCCT_UID, "
-            //測試  SUN 新增是否為新的好友
-			+ "IIF ( SLU.CREATE_TIME > SCCT.SHARED_TIME, 1, 0)  as IS_NEWUSER, "
-			+ "IIF ( SLU.BIND_TIME > BSC.START_TIME, 1, 0) AS IS_BIND, "
-			+ "IIF ( SLU.BIND_TIME is null, 0, 1 ) as BINEISNULL, "
-			
-            + "IIF ( SDR.CAMPAIGN_ID = SUR.CAMPAIGN_ID, 1, 0)  as IS_DONATE, "
-            + "SCCT.MODIFY_TIME as SCCT_MODIFY_TIME, "
-            // sun 新增
-            + "SLU.CREATE_TIME as CREATE_TIME, "
-            + "SLU.BIND_TIME as BINE_TIME, "
-            + "BSC.JUDGEMENT as JUDGEMENT "
-            
-            + "from BCS_SHARE_USER_RECORD SUR "
-            + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "
-            + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID  and SCCT.SHARE_USER_RECORD_ID = SDR.SHARE_USER_RECORD_ID "
-            //測試	SUN 新增
-			+ "left join BCS_LINE_USER SLU on  SCCT.UID =  SLU.MID "
-			+ "left join BCS_SHARE_CAMPAIGN BSC on BSC.CAMPAIGN_ID = SUR.CAMPAIGN_ID "
-			
-            + "where SUR.MODIFY_TIME >= ?1 and SUR.MODIFY_TIME < ?2 and SUR.CAMPAIGN_ID = ?3 "
-            + "order by SUR.UID, SCCT.SHARED_TIME", nativeQuery = true)
-    List<Object[]> findByModifyTimeAndCampaignIdWithDonateStatus(Date start, Date end, String campaignId);
+    @Query(value = "select "
+			    		+ "SUR.UID as SUR_UID, "
+			            + "SCCT.SHARED_TIME as SCCT_SHARED_TIME, "
+			            + "SCCT.UID as SCCT_UID, "
+						+ "IIF ( SLU.CREATE_TIME > SCCT.SHARED_TIME, 1, 0) as IS_NEWUSER, "
+						+ "IIF ( SLU.BIND_TIME > BSC.START_TIME, 1, 0) AS IS_BIND, "
+						+ "IIF ( SLU.BIND_TIME is null, 0, 1 ) as BINEISNULL, "
+			            + "IIF ( SDR.CAMPAIGN_ID = SUR.CAMPAIGN_ID, 1, 0) as IS_DONATE, "
+			            + "SCCT.MODIFY_TIME as SCCT_MODIFY_TIME, "
+			            + "SLU.CREATE_TIME as CREATE_TIME, "
+			            + "SLU.BIND_TIME as BINE_TIME, "
+			            + "BSC.JUDGEMENT as JUDGEMENT, "
+			            + "SUR.SHARE_USER_RECORD_ID as SHARE_USER_RECORD_ID, "
+			            + "BSC.SHARE_TIMES as SHARE_TIMES "
+		            + "from BCS_SHARE_USER_RECORD SUR "
+		            + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "
+		            + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID and SCCT.SHARE_USER_RECORD_ID = SDR.SHARE_USER_RECORD_ID "
+					+ "left join BCS_LINE_USER SLU on SCCT.UID = SLU.MID "
+					+ "left join BCS_SHARE_CAMPAIGN BSC on BSC.CAMPAIGN_ID = SUR.CAMPAIGN_ID "
+		            + "where "
+	            		+ "SUR.MODIFY_TIME >= ?1 "
+	            		+ "and SUR.MODIFY_TIME < ?2 "
+	            		+ "and SUR.CAMPAIGN_ID = ?3 "
+		            + "order by "
+		            	+ "SUR.SHARE_USER_RECORD_ID, "
+		            	+ "SCCT.SHARED_TIME", nativeQuery = true)
+    List<Object[]> findByModifyTimeAndCampaignId_for_disable(Date start, Date end, String campaignId);
+    
+    @Transactional(readOnly = true, timeout = 60)
+    @Query(value = "select "
+    					+ "a.UID, "
+			            + "a.MODIFY_TIME, "
+			            + "c.ct, "
+			            + "( SELECT SUM(src.IS_NEWUSER) FROM " 
+			            + "		(" 
+			            + "			select " 
+			            + "				IIF ( SLU.CREATE_TIME > SCCT.SHARED_TIME, 1, 0 ) as IS_NEWUSER " 
+			            + "			from BCS_SHARE_USER_RECORD SUR " 
+			            + "			left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID " 
+			            + "			left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID and SCCT.SHARE_USER_RECORD_ID = SDR.SHARE_USER_RECORD_ID " 
+			            + "			left join BCS_LINE_USER SLU on SCCT.UID = SLU.MID " 
+			            + "			left join BCS_SHARE_CAMPAIGN BSC on BSC.CAMPAIGN_ID = SUR.CAMPAIGN_ID " 
+			            + "			where " 
+			            + "				SUR.MODIFY_TIME >= ?1 " 
+			            + "				and SUR.MODIFY_TIME < ?2 " 
+			            + "				and SUR.CAMPAIGN_ID = ?3 " 
+			            + "		) src " 
+			            + ") as sumNewer "
+			            + "from BCS_SHARE_USER_RECORD a "
+			            + "join BCS_SHARE_CAMPAIGN b on a.CAMPAIGN_ID = b.CAMPAIGN_ID "
+			            + "join (select SHARE_USER_RECORD_ID, count(*) as ct from BCS_SHARE_CAMPAIGN_CLICK_TRACING group by SHARE_USER_RECORD_ID) c on c.SHARE_USER_RECORD_ID = a.SHARE_USER_RECORD_ID "
+		            + "where "
+			            + "a.MODIFY_TIME >= ?1 "
+			            + "and a.MODIFY_TIME < ?2 "
+			            + "and a.CAMPAIGN_ID = ?3 "
+			            + "and a.CUMULATIVE_COUNT >= b.SHARE_TIMES "
+		            + "order by "
+		            	+ "a.MODIFY_TIME ", nativeQuery = true)
+    List<Object[]> findCompletedByModifyTimeAndCampaignId_for_follow_binded(Date start, Date end, String campaignId);
+
+    @Transactional(readOnly = true, timeout = 60)
+    @Query(value = "select a.UID, "
+			            + "a.DONE_TIME, "
+			            + "c.ct, "
+			            + "(select count(*) from BCS_SHARE_CAMPAIGN_CLICK_TRACING where SHARE_USER_RECORD_ID = c.SHARE_USER_RECORD_ID AND (UID IS NOT NULL AND SHARED_TIME IS NOT NULL )) as archivedCount "
+		            + "from BCS_SHARE_USER_RECORD a "
+		            + "join BCS_SHARE_CAMPAIGN b on a.CAMPAIGN_ID = b.CAMPAIGN_ID "
+		            + "join (select SHARE_USER_RECORD_ID, count(*) as ct from BCS_SHARE_CAMPAIGN_CLICK_TRACING group by SHARE_USER_RECORD_ID) c on c.SHARE_USER_RECORD_ID = a.SHARE_USER_RECORD_ID "
+		            + "where "
+			            + "a.MODIFY_TIME >= ?1 "
+			            + "and a.MODIFY_TIME < ?2 "
+			            + "and a.CAMPAIGN_ID = ?3 "
+			            + "and a.CUMULATIVE_COUNT >= b.SHARE_TIMES "
+		            + "order by "
+		            	+ "a.MODIFY_TIME", nativeQuery = true)
+    List<Object[]> findCompletedByModifyTimeAndCampaignId_for_disable(Date start, Date end, String campaignId);
     
     @Transactional(readOnly = true, timeout = 60)
     @Query(value = "select a.UID, "
-            + "a.MODIFY_TIME, "
-            + "c.ct, "
-            //  2019/11/6 sun 新增完成時間
-            + "a.DONE_TIME "
-            + "from BCS_SHARE_USER_RECORD a "
-            + "join BCS_SHARE_CAMPAIGN b on a.CAMPAIGN_ID = b.CAMPAIGN_ID "
-            + "join (select SHARE_USER_RECORD_ID, count(*) as ct  from BCS_SHARE_CAMPAIGN_CLICK_TRACING group by SHARE_USER_RECORD_ID) c on c.SHARE_USER_RECORD_ID = a.SHARE_USER_RECORD_ID "
-            + "where a.MODIFY_TIME >= ?1 and a.MODIFY_TIME < ?2 "
-            + "and a.CAMPAIGN_ID = ?3 "
-            + "and a.CUMULATIVE_COUNT >= b.SHARE_TIMES "
-            + "order by a.MODIFY_TIME", nativeQuery = true)
-    List<Object[]> findCompletedByModifyTimeAndCampaignId(Date start, Date end, String campaignId);
-    
-    @Transactional(readOnly = true, timeout = 60)
-    @Query(value = "select a.UID, "
-            + "a.MODIFY_TIME, "
-            + "case when c.ct is null then 0 else a.CUMULATIVE_COUNT end "
-            + "from BCS_SHARE_USER_RECORD a "
-            + "join BCS_SHARE_CAMPAIGN b on a.CAMPAIGN_ID = b.CAMPAIGN_ID "
-            + "left join (select SHARE_USER_RECORD_ID, count(*) as ct  from BCS_SHARE_CAMPAIGN_CLICK_TRACING group by SHARE_USER_RECORD_ID) c on c.SHARE_USER_RECORD_ID = a.SHARE_USER_RECORD_ID "
-            + "where a.MODIFY_TIME >= ?1 and a.MODIFY_TIME < ?2 "
-            + "and a.CAMPAIGN_ID = ?3 "
-            + "and (a.CUMULATIVE_COUNT < b.SHARE_TIMES or c.ct is null) "
-            + "order by a.MODIFY_TIME", nativeQuery = true)
+			            + "a.MODIFY_TIME, "
+			            + "case when c.ct is null then 0 else c.ct end as ShareTimes, "
+			            + "a.CUMULATIVE_COUNT "
+		            + "from BCS_SHARE_USER_RECORD a "
+		            + "join BCS_SHARE_CAMPAIGN b on a.CAMPAIGN_ID = b.CAMPAIGN_ID "
+		            + "left join (select SHARE_USER_RECORD_ID, count(*) as ct from BCS_SHARE_CAMPAIGN_CLICK_TRACING group by SHARE_USER_RECORD_ID) c on c.SHARE_USER_RECORD_ID = a.SHARE_USER_RECORD_ID "
+		            + "where "
+			            + "a.MODIFY_TIME >= ?1 "
+			            + "and a.MODIFY_TIME < ?2 "
+			            + "and a.CAMPAIGN_ID = ?3 "
+			            + "and (a.CUMULATIVE_COUNT < b.SHARE_TIMES or c.ct is null) "
+		            + "order by "
+		            	+ "a.MODIFY_TIME", nativeQuery = true)
     List<Object[]> findUncompletedByModifyTimeAndCampaignId(Date start, Date end, String campaignId);
     
     @Transactional(readOnly = true, timeout = 60)

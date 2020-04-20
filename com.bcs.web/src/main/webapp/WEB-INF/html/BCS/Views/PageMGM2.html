@@ -12,7 +12,7 @@
 		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageMGM2')"></div>
 
         <!-- Right Content -->
-        <div class="LyMain" role="main">
+        <div class="LyMainMGM" role="main">
             <form>
                 <section>
                     <header class="ContentHead">
@@ -31,33 +31,32 @@
                     <div class="mainFrame">
                         <table border="1" id="tableBody">
                             <colgroup>
-                            	<col width="150">
-                            	<col width="150">
-                            	<col width="100">
-                                <col width="50">
-                            	<col width="80">
-                            	<col width="100">
-                            	<col width="100">
-                            	<col width="100">
-                            	<col width="100">
-                            	<col width="100">
-                            	<col width="100">
-                            	<col width="100">
-                            	<col width="50">
+                            	<col width="150"> <!-- 標題 -->
+                            	<col width="150"> <!-- 活動期間 -->
+                            	<col width="150"> <!-- 建立時間/建立人員 -->
+                                <col width="50"> <!-- 狀態 -->
+                            	<col width="100"> <!-- 參加活動人數 -->
+                            	<col width="70"> <!-- 判別 -->
+                            	<col width="80"> <!-- 自動送點 -->
+                            	<col width="80"> <!-- 標題圖網址 -->
+                            	<col width="80"> <!-- 說明圖片網址 -->
+                            	<col width="80"> <!-- Lint Points活動代碼 -->
+                            	<col width="80"> <!-- 複製/刪除 -->
+                            	<col width="80"> <!-- MGM網址 -->
                             </colgroup>
                             <tr>
                                 <th>標題</th>
                                 <th>活動期間</th>
                                 <th>建立時間<br>建立人員</th>
 								<th>狀態</th>
-                                <th>分享次數</th>
+                                <th>參加活動人數</th>
                                 <th>判別</th>
                                 <th>自動送點</th>
-                                <th>活動標題圖片網址</th>
-                                <th>說明圖片網址</th>
-                                <th>Lint Points活動代碼</th>
+                                <th>標題圖片<br>網址</th>
+                                <th>說明圖片<br>網址</th>
+                                <th>Lint Points<br>活動代碼</th>
                                 <th>複製/刪除</th>
-                                <th>MGM網址</th>
+                                <th>MGM<br>網址</th>
                             </tr>
                             <tr class="dataTemplate">
                                 <td class="campaignTitle"><a href=""></a></td>

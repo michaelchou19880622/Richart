@@ -302,7 +302,7 @@ public class BCSShareCampaignController extends BCSBaseController {
     public ResponseEntity<?> countShareUserRecord(  
             HttpServletRequest request, 
             HttpServletResponse response) throws IOException {
-        log.info("countShareUserRecord");                
+        log.debug("countShareUserRecord");                
         String campaignId = request.getParameter("campaignId");
         
         try{ 

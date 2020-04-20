@@ -496,7 +496,7 @@ $(function() {
 			var fileName = input.files[0].name;
 			console.info('fileName = ', fileName);
 
-			if (uploadedUidFiles.includes(fileName)) {
+			if (uploadedUidFiles.indexOf(fileName) > -1) {
 				alert('您選擇的檔案已存在，請重新選擇。');
 				
 			    this.value = '';

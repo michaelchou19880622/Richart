@@ -30,4 +30,10 @@ public class ShareCampaignClickTracingService {
 	public List<ShareCampaignClickTracing> findByShareUserRecordId(String shareUserRecordId){
 	    return shareCampaignClickTracingRepository.findByShareUserRecordId(shareUserRecordId);
 	}
+	
+	public List<ShareCampaignClickTracing> findByShareUserRecordIdOrderByModifyTimeAsc(String shareUserRecordId){
+	    return shareCampaignClickTracingRepository.findByShareUserRecordIdOrderByModifyTimeAsc(shareUserRecordId);
+	}
+	
+	
 }

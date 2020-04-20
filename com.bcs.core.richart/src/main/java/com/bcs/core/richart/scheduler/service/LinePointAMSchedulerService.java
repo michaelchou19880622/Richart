@@ -31,13 +31,8 @@ import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
 import com.bcs.core.richart.db.service.LinePointMainService;
 import com.bcs.core.richart.db.service.LinePointScheduledDetailService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
 public class LinePointAMSchedulerService {
-
-//	/** Logger */
-//	private static Logger logger = Logger.getLogger(LinePointAMSchedulerService.class);
 
 	/** Logger **/
 	private static Logger logger = LoggerFactory.getLogger(LinePointAMSchedulerService.class);
@@ -127,21 +122,21 @@ public class LinePointAMSchedulerService {
 
 		scheduledFuture = scheduler.scheduleWithFixedDelay(new Runnable() {
 			public void run() {
-				logger.info("--------------------------------------------------------------------");
-				logger.info("Parameters [initialDelay] = {}", INITIAL_DELAY);
-				logger.info("Parameters [delay] = {}", DELAY);
-				logger.info("Time unit of the [initialDelay] and [delay] parameters is : {}", TIME_UNIT.toString());
+				logger.debug("--------------------------------------------------------------------");
+				logger.debug("Parameters [initialDelay] = {}", INITIAL_DELAY);
+				logger.debug("Parameters [delay] = {}", DELAY);
+				logger.debug("Time unit of the [initialDelay] and [delay] parameters is : {}", TIME_UNIT.toString());
 				
 				long startTime = System.nanoTime();
-				logger.info("[ LinePointAMSchedulerService ] Check and push line points - START");
+				logger.debug("[ LinePointAMSchedulerService ] Check and push line points - START");
 
 				pushScheduledLinePoint();
 
 				long endTime = System.nanoTime();
-				logger.info("[ LinePointAMSchedulerService ] Check and push line points - FINISH");
+				logger.debug("[ LinePointAMSchedulerService ] Check and push line points - FINISH");
 
-				logger.info("[ LinePointAMSchedulerService ] Elapsed Time : {} seconds", (endTime - startTime) / 1_000_000_000);
-				logger.info("--------------------------------------------------------------------");
+				logger.debug("[ LinePointAMSchedulerService ] Elapsed Time : {} seconds", (endTime - startTime) / 1_000_000_000);
+				logger.debug("--------------------------------------------------------------------");
 			}
 		}, INITIAL_DELAY, DELAY, TIME_UNIT);
 	}
@@ -155,175 +150,261 @@ public class LinePointAMSchedulerService {
 	public void destroy() {
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(true);
-			logger.info(" LinePointAMSchedulerService cancel....");
+			logger.debug(" LinePointAMSchedulerService cancel....");
 		}
 		if (scheduler != null && !scheduler.isShutdown()) {
-			logger.info(" LinePointAMSchedulerService shutdown....");
+			logger.debug(" LinePointAMSchedulerService shutdown....");
 			scheduler.shutdown();
 		}
 	}
 
 	public void pushScheduledLinePoint() {
+		logger.info("----------------------------------------");
 		
 		// get undoneUser
-		List<ShareUserRecord> list_ShareUserRecord = shareUserRecordService.findLatelyUndoneUsers();
-		logger.info("list_ShareUserRecord.size() = {}", list_ShareUserRecord.size());
-		logger.info("list_ShareUserRecord = {}", list_ShareUserRecord);
+		List<ShareUserRecord> list_ShareUserRecord_undone = shareUserRecordService.findLatelyUndoneUsers();
+		logger.info("list_ShareUserRecord_undone.size() = {}", list_ShareUserRecord_undone.size());
+		logger.info("list_ShareUserRecord_undone = {}", list_ShareUserRecord_undone);
 
-		for (int i = 0; i < list_ShareUserRecord.size(); i++) {
-			logger.info("----------------------------------------");
-			
-			ShareUserRecord undoneUser = list_ShareUserRecord.get(i);
-			logger.info("[ Check ShareUserRecord ] No.{} undoneUser = {}", i, undoneUser);
+		for (int i = 0; i < list_ShareUserRecord_undone.size(); i++) {
+			ShareUserRecord shareUserRecord = list_ShareUserRecord_undone.get(i);
+			logger.info("No.{} shareUserRecord = {}", (i + 1), shareUserRecord);
 
 			// get autoSendPoint & judgment
-			ShareCampaign shareCampaign = shareCampaignService.findOne(undoneUser.getCampaignId());
-			logger.info("[ Check ShareCampaign ] shareCampaign = {}", shareCampaign);
+			ShareCampaign shareCampaign = shareCampaignService.findOne(shareUserRecord.getCampaignId());
+			logger.info("shareCampaign = {}", shareCampaign);
 			
 			Boolean autoSendPoint = shareCampaign.getAutoSendPoint();
-			logger.info("[ Check ShareCampaign ] autoSendPoint = {}", autoSendPoint);
+			logger.info("autoSendPoint = {}", autoSendPoint);
 			
 			String judgment = shareCampaign.getJudgement();
-			logger.info("[ Check ShareCampaign ] judgment = {}", judgment);
+			logger.info("judgment = {}", judgment);
 
-			// add count
-			Long noJudgementCount = 0L;
+			// count
+			Long cumulativeCount = 0L;
 			
-			String shareUserRecordId = undoneUser.getShareUserRecordId();
+			String shareUserRecordId = shareUserRecord.getShareUserRecordId();
 			logger.info("shareUserRecordId = {}", shareUserRecordId);
 			
-			List<ShareCampaignClickTracing> list_shareCampaignClickTracing = shareCampaignClickTracingService.findByShareUserRecordId(shareUserRecordId);
+			List<ShareCampaignClickTracing> list_shareCampaignClickTracing = shareCampaignClickTracingService.findByShareUserRecordIdOrderByModifyTimeAsc(shareUserRecordId);
 			logger.info("list_shareCampaignClickTracing = {}", list_shareCampaignClickTracing);
 			
+			// Find all relatived shareUserRecord by shareUserRecordId
 			for (ShareCampaignClickTracing shareCampaignClickTracing : list_shareCampaignClickTracing) {
 				logger.info("shareCampaignClickTracing = {}", shareCampaignClickTracing);
 				
-				String friendUid = shareCampaignClickTracing.getUid();
-				logger.info("friendUid = {}", friendUid);
+				// Get be shared UID from share campaign click tracing record.
+				String beSharedUid = shareCampaignClickTracing.getUid();
+				logger.info("beSharedUid = {}", beSharedUid);
 				
-				// combine stateJudgment(MGM)
-				String stateJudgment = "";
-				
-				if (judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)) {
-					stateJudgment = " and status <> 'BLOCK' and create_Time >= '" + shareCampaignClickTracing.getSharedTime() + "' ";
-				} else if (judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
-					stateJudgment = " and isBinded = 'BINDED' and bind_Time >= '" + shareCampaignClickTracing.getSharedTime() + "' ";
-				}
+				if (judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)) {
 
-				// check Judgment(判斷此UID 在line_USER裡面狀態是否符合)
-				if (shareUserRecordService.checkJudgment(friendUid, stateJudgment)) {
+					cumulativeCount += 1L;
+					logger.info("cumulativeCount = {}", cumulativeCount);
 
-					// check Exclusive
-					if (judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)) {
-						noJudgementCount += 1L;
-					} else {
-						// find one row with same donatorUid(名人堂)
-						List<ShareDonatorRecord> pastDonators = shareDonatorRecordService.findByDonatorUidAndShareUserRecordId(friendUid, shareUserRecordId);
-						logger.info("pastDonators:" + pastDonators);
+					// 更新完成活動累積人數紀錄
+					shareUserRecord.setCumulativeCount(cumulativeCount);
+					shareUserRecordService.save(shareUserRecord);
+
+					long currentCumulativeCount = shareUserRecord.getCumulativeCount();
+					logger.info("完成任務累積人數: " + currentCumulativeCount);
+					logger.info("活動任務要求人數: " + shareCampaign.getShareTimes());
+					
+					if (currentCumulativeCount < shareCampaign.getShareTimes()) {
+						continue;
+					}
+					
+					if (currentCumulativeCount == shareCampaign.getShareTimes()) {
+						Date date = new Date();
 						
-						// if not duplicated
-						if (pastDonators.isEmpty()) {
-							logger.info("donator is unique:" + friendUid);
-							
+						logger.info("任務已完成!");
+						logger.info("完成時間 : {}", date);
+						logger.info("活動任務 : {}", shareCampaign.getCampaignId());
+						logger.info("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
+						
+						shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+						shareUserRecord.setDoneTime(date);
+						shareUserRecordService.save(shareUserRecord);
+					} 
+					
+					// autoSendPoint
+					logger.info("是否自動發點: {}", autoSendPoint);
+					if (autoSendPoint) {
+						// linePointMain.status = scheduled
+						String linePointSerialId = shareCampaign.getLinePointSerialId();
+						LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+						linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+						linePointMainService.save(linePointMain);
+
+						// linePointScheduledDetail.status = waiting
+						LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+						linePointScheduledDetail.setUid(shareUserRecord.getUid());
+						linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+						linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+						linePointScheduledDetail.setModifyTime(new Date());
+						linePointScheduledDetailService.save(linePointScheduledDetail);
+					}
+					
+				} else {
+					// Set stateJudgment depend on judgment type.
+					String stateJudgment = "";
+					
+					if (judgment.equals(ShareCampaign.JUDGEMENT_FOLLOW)) {
+						stateJudgment = " and status <> 'BLOCK' and create_Time >= '";
+					} else if (judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
+						stateJudgment = " and isBinded = 'BINDED' and bind_Time >= '";
+					} 
+					
+					stateJudgment = stateJudgment + shareCampaignClickTracing.getSharedTime() + "' ";
+					
+					// 判斷是否達成任務? (判斷此 UID 在 BCS_LINE_USER 裡面的狀態是否符合?)
+					boolean isAchieved = shareUserRecordService.checkJudgment(beSharedUid, stateJudgment);
+					logger.info("isAchieved = {}", isAchieved);
+					
+					if (isAchieved) {
+						cumulativeCount += 1L;
+						logger.info("cumulativeCount = {}", cumulativeCount);
+						
+						// 更新完成活動累積人數紀錄
+						shareUserRecord.setCumulativeCount(cumulativeCount);
+						shareUserRecordService.save(shareUserRecord);
+						logger.info("shareUserRecord : {}", shareUserRecord);
+
+						long currentCumulativeCount = shareUserRecord.getCumulativeCount();
+						logger.info("完成任務累積人數: " + currentCumulativeCount);
+						logger.info("活動任務要求人數: " + shareCampaign.getShareTimes());
+
+						// 查看對應用戶UID的貢獻紀錄
+						List<ShareDonatorRecord> currentDonators = shareDonatorRecordService.findByDonatorUidAndShareUserRecordId(beSharedUid, shareUserRecordId);
+						logger.info("currentDonators: " + currentDonators);
+						
+						if (currentDonators.isEmpty()) { // 被分享者UID貢獻紀錄不存在
 							// save ShareDonatorRecord
 							ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
-							shareDonatorRecord.setDonatorUid(friendUid);
-							shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
-							shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
+							shareDonatorRecord.setDonatorUid(beSharedUid);
+							shareDonatorRecord.setBenefitedUid(shareUserRecord.getUid());
+							shareDonatorRecord.setCampaignId(shareUserRecord.getCampaignId());
 							shareDonatorRecord.setModifyTime(new Date());
 							shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
-							shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
+							shareDonatorRecord.setShareUserRecordId(shareUserRecord.getShareUserRecordId());
 							shareDonatorRecord.setDonateLevel(judgment);
 							shareDonatorRecordService.save(shareDonatorRecord);
-							logger.info("shareDonatorRecord for saving:" + shareDonatorRecord);
+							logger.info("shareDonatorRecord = {}", shareDonatorRecord);
+							
+							if (currentCumulativeCount < shareCampaign.getShareTimes()) {
+								continue;
+							}
+							
+							if (currentCumulativeCount == shareCampaign.getShareTimes()) {
+								Date date = new Date();
+								
+								logger.info("任務已完成!");
+								logger.info("完成時間 : {}", date);
+								logger.info("活動任務 : {}", shareCampaign.getCampaignId());
+								logger.info("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
+								
+								shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+								shareUserRecord.setDoneTime(date);
+								shareUserRecordService.save(shareUserRecord);
+							}
 
-							// save cumulative count
-							undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
-//							undoneUser.setModifyTime(new Date());
-							shareUserRecordService.save(undoneUser);
-							logger.info("undoneUser for saving:" + undoneUser);
-						} else {
-							// sun 修改 MGM 名人堂 更新為兩筆資料狀態分別為綁定及加好友
-							if (pastDonators.size() < 2) {
-								// ShareDonatorRecord shareDonatorRecord1 = pastDonators.get(0);
-								// 如果兩筆以上代表有一筆是綁定所以不會進來 如果只有一筆就判斷他貢獻狀態是否是FOLLOW 是的話就在新增一筆
-								if (pastDonators.get(0).getDonateLevel().equals("FOLLOW") && judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
+							// autoSendPoint
+							logger.info("是否自動發點: {}", autoSendPoint);
+							if (autoSendPoint) {
+								// linePointMain.status = scheduled
+								String linePointSerialId = shareCampaign.getLinePointSerialId();
+								LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+								linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+								linePointMainService.save(linePointMain);
 
-									ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
-									shareDonatorRecord.setDonatorUid(friendUid);
-									shareDonatorRecord.setBenefitedUid(undoneUser.getUid());
-									shareDonatorRecord.setCampaignId(undoneUser.getCampaignId());
-									shareDonatorRecord.setModifyTime(new Date());
-									shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
-									shareDonatorRecord.setShareUserRecordId(undoneUser.getShareUserRecordId());
-									shareDonatorRecord.setDonateLevel(judgment);
-									shareDonatorRecordService.save(shareDonatorRecord);
-									logger.info("shareDonatorRecord for saving:" + shareDonatorRecord);
+								// linePointScheduledDetail.status = waiting
+								LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+								linePointScheduledDetail.setUid(shareUserRecord.getUid());
+								linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+								linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+								linePointScheduledDetail.setModifyTime(new Date());
+								linePointScheduledDetailService.save(linePointScheduledDetail);
+							}
+							
+						} else { // 被分享者UID貢獻紀錄已存在
+							
+							// 判斷被分享者UID的貢獻紀錄是否小於兩筆? ( 因為最多只能有兩筆 : 一筆的為綁定活動的貢獻、另一筆為加好友活動的貢獻 )
+							// 注意，因為綁定與加好友有層級關係，所以 :
+							// 1. 如果之前已經貢獻過加好友的活動，可以再貢獻其他人分享的綁定活動。
+							// 2. 如果之前已經貢獻過綁定的活動，則無法再貢獻其他人分享的加好友活動。
+							if (currentDonators.size() < 2) { 
+								
+								// 如果只有一筆，則判斷之前貢獻紀錄的狀態是否為"FOLLOW(加好友)" ?
+								if (currentDonators.get(0).getDonateLevel().equals("FOLLOW")) {
+									
+									// 判斷活動判定條件是否為"BINDED(綁定)"? 是的話就再新增一筆(BINDED 綁定的貢獻)
+									if (judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
+										ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
+										shareDonatorRecord.setDonatorUid(beSharedUid);
+										shareDonatorRecord.setBenefitedUid(shareUserRecord.getUid());
+										shareDonatorRecord.setCampaignId(shareUserRecord.getCampaignId());
+										shareDonatorRecord.setModifyTime(new Date());
+										shareDonatorRecord.setShareCampaignClickTracingId(shareCampaignClickTracing.getClickTracingId());
+										shareDonatorRecord.setShareUserRecordId(shareUserRecord.getShareUserRecordId());
+										shareDonatorRecord.setDonateLevel(judgment);
+										shareDonatorRecordService.save(shareDonatorRecord);
+										logger.info("shareDonatorRecord : {}", shareDonatorRecord);
 
-									// save cumulative count
-									undoneUser.setCumulativeCount(undoneUser.getCumulativeCount() + 1);
-//									undoneUser.setModifyTime(new Date());
-									shareUserRecordService.save(undoneUser);
-									logger.info("undoneUser for saving:" + undoneUser);
+										if (currentCumulativeCount < shareCampaign.getShareTimes()) {
+											continue;
+										}
+										
+										if (currentCumulativeCount == shareCampaign.getShareTimes()) {
+											Date date = new Date();
+											
+											logger.info("任務已完成!");
+											logger.info("完成時間 : {}", date);
+											logger.info("活動任務 : {}", shareCampaign.getCampaignId());
+											logger.info("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
+											
+											shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+											shareUserRecord.setDoneTime(date);
+											shareUserRecordService.save(shareUserRecord);
+										}
+
+										// autoSendPoint
+										logger.info("是否自動發點: {}", autoSendPoint);
+										if (autoSendPoint) {
+											// linePointMain.status = scheduled
+											String linePointSerialId = shareCampaign.getLinePointSerialId();
+											LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+											linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+											linePointMainService.save(linePointMain);
+
+											// linePointScheduledDetail.status = waiting
+											LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+											linePointScheduledDetail.setUid(shareUserRecord.getUid());
+											linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+											linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+											linePointScheduledDetail.setModifyTime(new Date());
+											linePointScheduledDetailService.save(linePointScheduledDetail);
+										}
+									}
 								}
 							}
 							
-							logger.info("donator is duplicated:" + friendUid);
+							logger.info("被分享者 {} 已無法再貢獻。", beSharedUid);
 						}
 					}
 				}
 			}
-			
-			if (judgment.equals(ShareCampaign.JUDGEMENT_DISABLE)) {
-				undoneUser.setCumulativeCount(noJudgementCount);
-				logger.info("noJudgementCount for saving:" + noJudgementCount);
-				shareUserRecordService.save(undoneUser);
-			}
-
-			// undone -> done
-			if (undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
-				logger.info("符合要求人數:" + undoneUser.getCumulativeCount() + "/" + shareCampaign.getShareTimes());
-			}
-			
-			if (undoneUser.getCumulativeCount() >= shareCampaign.getShareTimes()) {
-
-				// shareUserRecord.status = done
-				ShareUserRecord shareUserRecord = shareUserRecordService.findOne(undoneUser.getShareUserRecordId());
-				shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
-				shareUserRecord.setDoneTime(new Date());
-				shareUserRecordService.save(shareUserRecord);
-
-				// autoSendPoint
-				logger.info("autoSendPoint:" + autoSendPoint);
-				if (autoSendPoint) {
-					logger.info("LinePointMain.STATUS_SCHEDULED Saving");
-					// linePointMain.status = scheduled
-					String linePointSerialId = shareCampaign.getLinePointSerialId();
-					LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
-					linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
-					linePointMainService.save(linePointMain);
-
-					// linePointScheduledDetail.status = waiting
-					LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
-					linePointScheduledDetail.setUid(undoneUser.getUid());
-					linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
-					linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
-					linePointScheduledDetail.setModifyTime(new Date());
-					linePointScheduledDetailService.save(linePointScheduledDetail);
-				}
-			}
 		}
 
+		logger.info("----------------------------------------");
 		// find linePointMain.status = scheduled
 		List<LinePointMain> list_LinePointMain = linePointMainService.findByStatus(LinePointMain.STATUS_SCHEDULED);
 		logger.info("list_LinePointMain.size() = {}", list_LinePointMain.size());
 		logger.info("list_LinePointMain = {}", list_LinePointMain);
 
 		for (int i = 0; i < list_LinePointMain.size(); i++) {
-			logger.info("----------------------------------------");
 			
 			LinePointMain linePointMain = list_LinePointMain.get(i);
-			logger.info("[ Check LinePointMain ] No.{} linePointMain = {}", i, linePointMain);
+			logger.info("No.{} linePointMain = {}", i, linePointMain);
 
 			// linePointMain.status = idle
 			linePointMain.setStatus(LinePointMain.STATUS_IDLE);
@@ -331,19 +412,23 @@ public class LinePointAMSchedulerService {
 
 			// find linePointScheduledDetail.mainId = mainId
 			List<LinePointScheduledDetail> details = linePointScheduledDetailService.findByLinePointMainId(linePointMain.getId());
+			logger.info("details: {}", details);
 
 			JSONArray uid = new JSONArray();
+			logger.info("uid: {}", uid);
+			
 			for (LinePointScheduledDetail detail : details) {
 				// 這邊應該判定 發過點就不發了
 				if (LinePointScheduledDetail.STATUS_WAITING.equals(detail.getStatus())) {
 					uid.put(detail.getUid());
 				}
+				
 				detail.setStatus(LinePointScheduledDetail.STATUS_SENDED);
 				detail.setModifyTime(new Date());
 				linePointScheduledDetailService.save(detail);
 			}
-			logger.info("uid (begin to send):" + uid);
 
+			logger.info("Ready to tell akka to send LinePoint");
 			// push to AkkaService
 			LinePointPushModel linePointPushModel = new LinePointPushModel();
 			linePointPushModel.setAmount(linePointMain.getAmount());
@@ -352,6 +437,9 @@ public class LinePointAMSchedulerService {
 			linePointPushModel.setSource(LinePointPushModel.SOURCE_TYPE_MGM);
 			linePointPushModel.setSendTimeType(LinePointPushModel.SEND_TYPE_IMMEDIATE);
 			linePointPushModel.setTriggerTime(new Date());
+
+			logger.info("linePointPushModel = {}", linePointPushModel);
+			
 			linePointPushAkkaService.tell(linePointPushModel);
 		}
 	}

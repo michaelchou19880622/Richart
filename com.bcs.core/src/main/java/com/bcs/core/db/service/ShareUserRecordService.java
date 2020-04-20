@@ -46,8 +46,12 @@ public class ShareUserRecordService {
 	    return shareUserRecordRepository.findByModifyTimeAndCampaignId(start, end, campaignId);
 	}
 
-	public List<Object[]> findByModifyTimeAndCampaignIdWithDonateStatus(Date start, Date end, String campaignId){
-	    return shareUserRecordRepository.findByModifyTimeAndCampaignIdWithDonateStatus(start, end, campaignId);
+	public List<Object[]> findByModifyTimeAndCampaignId_for_disable(Date start, Date end, String campaignId){
+	    return shareUserRecordRepository.findByModifyTimeAndCampaignId_for_disable(start, end, campaignId);
+	}
+
+	public List<Object[]> findByModifyTimeAndCampaignId_for_follow_binded(Date start, Date end, String campaignId){
+	    return shareUserRecordRepository.findByModifyTimeAndCampaignId_for_follow_binded(start, end, campaignId);
 	}
 	
     public String generateShareUserRecordId() {
@@ -59,8 +63,12 @@ public class ShareUserRecordService {
         return shareUserRecordId;
     }
     
-    public List<Object[]> findCompletedByModifyTimeAndCampaignId(Date start, Date end, String campaignId){
-        return shareUserRecordRepository.findCompletedByModifyTimeAndCampaignId(start, end, campaignId);
+    public List<Object[]> findCompletedByModifyTimeAndCampaignId_for_follow_binded(Date start, Date end, String campaignId){
+        return shareUserRecordRepository.findCompletedByModifyTimeAndCampaignId_for_follow_binded(start, end, campaignId);
+    }
+    
+    public List<Object[]> findCompletedByModifyTimeAndCampaignId_for_disable(Date start, Date end, String campaignId){
+        return shareUserRecordRepository.findCompletedByModifyTimeAndCampaignId_for_disable(start, end, campaignId);
     }
     
     public List<Object[]> findUncompletedByModifyTimeAndCampaignId(Date start, Date end, String campaignId){
@@ -83,8 +91,6 @@ public class ShareUserRecordService {
 		
 		List<Object[]> list = query.getResultList();
 		log.info("[checkJudgement] check list = {}", list);
-		log.info("[checkJudgement] check list.toString() = {}", list.toString());
-		log.info("[checkJudgement] check list.toString().contentEquals(\"[1]\") = {}", list.toString().contentEquals("[1]"));
 		
 		return (list.toString().contentEquals("[1]")); // [1] or [0]
     }

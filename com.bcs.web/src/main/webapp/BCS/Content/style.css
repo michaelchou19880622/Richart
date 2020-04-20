@@ -193,6 +193,12 @@ input:focus, textarea:focus {
 	margin-left: 242px;
 }
 
+/* right content */
+.LyMainMGM {
+	padding: 63px 20px 50px;
+	margin-left: 242px;
+}
+
 .ContentHead {
 	position: relative;
 	margin: 0 0 11px;

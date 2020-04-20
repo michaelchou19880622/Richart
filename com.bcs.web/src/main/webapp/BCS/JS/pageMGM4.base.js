@@ -41,8 +41,6 @@ $(function(){
 	
 	$('.btn_save').click(function(){
 		
-		console.info("test")
-		
 		if(!validateTimeRange()){
 			return false;
 		}

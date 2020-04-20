@@ -145,8 +145,7 @@ $(function(){
 			type : "GET",
 			url : bcs.bcsContextPath + '/edit/countShareUserRecord?campaignId=' + campaignId
 		}).success(function(response){
-			
-			console.info(response);
+//			console.info(response);
 			queryBody.find('.campaignShareNumber a').html($.BCS.formatNumber(response,0));
 
 		}).fail(function(response){

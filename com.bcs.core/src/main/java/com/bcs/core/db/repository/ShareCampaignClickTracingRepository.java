@@ -19,6 +19,10 @@ public interface ShareCampaignClickTracingRepository extends EntityRepository<Sh
     List<ShareCampaignClickTracing> findByShareUserRecordId(String shareUserRecordId);
     
     @Transactional(readOnly = true, timeout = 30)
+    @Query(value = "SELECT * FROM BCS_SHARE_CAMPAIGN_CLICK_TRACING WHERE SHARE_USER_RECORD_ID = ?1 ORDER BY MODIFY_TIME ASC", nativeQuery = true)
+    List<ShareCampaignClickTracing> findByShareUserRecordIdOrderByModifyTimeAsc(String shareUserRecordId);
+    
+    @Transactional(readOnly = true, timeout = 30)
     @Query(value = "select b.uid as share_uid, "
             + "a.uid as click_uid, "
             + "a.modifyTime as click_time "
