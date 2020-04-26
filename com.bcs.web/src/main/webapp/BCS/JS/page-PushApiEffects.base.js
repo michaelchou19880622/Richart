@@ -1,7 +1,8 @@
 $(function(){
-	var clonedDOM = null;
+//	var clonedDOM = null;
 	var startDate = null, endDate = null;
 	var hasData = false;
+	var APIStart = null;
 	
 	$(".datepicker").datepicker({
 		maxDate : 0,
@@ -16,6 +17,7 @@ $(function(){
 			startDate = $('#startDate').val();
 			endDate = $('#endDate').val();
 
+			APIStart = Date.now();
 			getEffects(startDate, endDate);
 		}
 	});
@@ -25,7 +27,7 @@ $(function(){
 	function initial() {
 		console.log('Push API 成效列表');
 		
-		clonedDOM = $('.dataTemplate').clone(true);
+//		clonedDOM = $('.dataTemplate').clone(true);
 		$('.dataTemplate').remove();
 		
 		startDate = moment(new Date()).format('YYYY-MM-DD');
@@ -34,6 +36,7 @@ $(function(){
 		$('#startDate').val(startDate);
 		$('#endDate').val(endDate);
 		
+		APIStart = Date.now();
 		getEffects(startDate, endDate);
 	}
 	
@@ -47,12 +50,44 @@ $(function(){
 				
 				$('<tr class="dataTemplate"><td colspan="5">此日期區間無任何資料</td></tr>').appendTo($('#tableBody'));
 			} else {
+				console.log("GetEffects() API Duration : ", Date.now() - APIStart);
+				
 				hasData = true;
 				
+				const start = Date.now();
+				var tbl = document.getElementById("tableBody");
+				
+				var exportUrl = '../edit/exportToExcelForPushApiEffectDetail?createTime=';
+				
 				response.forEach(function(element){
-					var exportUrl = '../edit/exportToExcelForPushApiEffectDetail?createTime=';
-					var rowDOM = clonedDOM.clone(true);
+					var row = document.createElement("tr");					
+					row.classList.add("dataTemplate");
+				     // Create a <td> element and a text node, make the text
+				      // node the contents of the <td>, and put the <td> at
+				      // the end of the table row
+					/* 為了效能考量 , 放棄使用DOM進行迴圈的操作. */
+				    for (var column = 0; column < 5; column++) {
 					
+				      var cell = document.createElement("td");
+				      var cellText;
+				      if ( column == 0) {
+				    	    cellText = document.createElement("div");				    	    
+				    	    cellText.innerHTML = "<a href=" + exportUrl + encodeURI(moment(element.createTime).format('YYYY-MM-DD HH:mm:ss.SSS')) +">" + moment(element.createTime).format('YYYY-MM-DD HH:mm:ss') + "</a>"
+				      }
+				      else if ( column == 1) 
+				    	  cellText = document.createTextNode(element.sendType);
+				      else if ( column == 2) 
+				    	  cellText = document.createTextNode(element.department);
+				      else if ( column == 3) 
+				    	  cellText = document.createTextNode(element.successCount);
+				      else if ( column == 4) 
+				    	  cellText = document.createTextNode(element.failCount);
+				      cell.appendChild(cellText);				      
+					  row.appendChild(cell);
+				    }
+					tbl.appendChild(row);					
+/*					
+					var rowDOM = clonedDOM.clone(true);
 					rowDOM.find('.createDate').html('<a>' + moment(element.createTime).format('YYYY-MM-DD HH:mm:ss') + '</a>').end().find('a').attr('href', exportUrl + element.createTime);
 					rowDOM.find('.product').text(element.department);
 					rowDOM.find('.successCount').text(element.successCount);
@@ -60,7 +95,10 @@ $(function(){
 					rowDOM.find('.sendType').text(element.sendType);
 					
 					rowDOM.appendTo($('#tableBody'));
+*/					
 				});
+				console.log("Create HTML Duration : ", Date.now() - start);			
+				
 			}
 			
 			setExportButtonSource(startDate, endDate);
