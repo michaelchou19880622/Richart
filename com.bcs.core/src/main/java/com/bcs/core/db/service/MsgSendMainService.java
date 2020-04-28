@@ -32,8 +32,8 @@ import com.bcs.core.utils.ErrorRecord;
 
 @Service
 public class MsgSendMainService {
-	private static final String INIT_FLAG = "INIT_FLAG";
 	/** Logger */
+    private final Object lock = new Object();
 	private static Logger logger = Logger.getLogger(MsgSendMainService.class);
 	@Autowired
 	private MsgSendMainRepository msgSendMainRepository;
@@ -89,8 +89,8 @@ public class MsgSendMainService {
 	}
 
 	public void increaseSendCountByMsgSendId(Long msgSendId){
-		synchronized (INIT_FLAG) {
-			if(increaseMap.get(msgSendId) == null){
+        synchronized (lock) {
+        	if(increaseMap.get(msgSendId) == null){
 				increaseMap.put(msgSendId, new AtomicLong(1L));
 			}
 			else{
@@ -104,7 +104,7 @@ public class MsgSendMainService {
 	}
 
 	public void increaseSendCountByMsgSendId(Long msgSendId, Long increase){
-		synchronized (INIT_FLAG) {
+        synchronized (lock) {
 			if(increaseMap.get(msgSendId) == null){
 				increaseMap.put(msgSendId, new AtomicLong(increase));
 			}
@@ -115,7 +115,7 @@ public class MsgSendMainService {
 	}
 
 	public void increaseSendCountByMsgSendId(Long msgSendId, int increase){
-		synchronized (INIT_FLAG) {
+        synchronized (lock) {
 			if(increaseMap.get(msgSendId) == null){
 				increaseMap.put(msgSendId, new AtomicLong(increase));
 			}
@@ -126,7 +126,7 @@ public class MsgSendMainService {
 	}
 
 	public void flushIncrease(){
-		synchronized (INIT_FLAG) {
+        synchronized (lock) {
 			logger.debug("MsgSendMainService flushTimer execute");
 			for(Map.Entry<Long, AtomicLong> map : increaseMap.entrySet()){
 				if(map.getValue().longValue() != 0){

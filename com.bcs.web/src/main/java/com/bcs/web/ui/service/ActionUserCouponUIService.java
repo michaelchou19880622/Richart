@@ -27,9 +27,7 @@ import com.bcs.web.ui.model.UserInfoModel;
 
 @Service
 public class ActionUserCouponUIService {
-	
-	public static final String GET_COUPON_FLAG = "GET_COUPON_FLAG";
-	
+		
 	private static Logger logger = Logger.getLogger(ActionUserCouponUIService.class);
 
 	@Autowired

@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class SchedulerService {
 	private static final String MSG_SEND_GROUP = "MSG_SEND_GROUP";
-	private static final String SCHEDULER_FLAG = "SCHEDULER_FLAG";
+	private final Object lock = new Object();
 
 	@Autowired
 	private MsgMainService msgMainService;
@@ -65,7 +65,7 @@ public class SchedulerService {
 	 * @throws SchedulerException
 	 */
 	public void startSchedule() throws SchedulerException {
-		synchronized (SCHEDULER_FLAG) {
+		synchronized (lock) {			
 			logger.info("startSchedule");
 			scheduler.start();
 			if (onSchedulerList == null) {
@@ -81,7 +81,7 @@ public class SchedulerService {
 	 */
 	@PreDestroy
 	public void stopSchedule() {
-		synchronized (SCHEDULER_FLAG) {
+		synchronized (lock) {			
 			logger.debug("[DESTROY] SchedulerService cleaning up...");
 			try {
 				scheduler.shutdown(true);
@@ -338,7 +338,7 @@ public class SchedulerService {
 		logger.debug(trigger);
 
 		try {
-			synchronized (SCHEDULER_FLAG) {
+			synchronized (lock) {			
 
 				checkSchedule("AddMsgSendSchedule", msgId);
 
@@ -380,7 +380,7 @@ public class SchedulerService {
 		logger.info(trigger);
 
 		try {
-			synchronized (SCHEDULER_FLAG) {
+			synchronized (lock) {			
 
 				checkSchedule("AddMsgSendSchedule", msgId);
 
@@ -411,7 +411,7 @@ public class SchedulerService {
 		if (msgId != null) {
 			logger.info("msgId : " + msgId);
 
-			synchronized (SCHEDULER_FLAG) {
+			synchronized (lock) {			
 
 				checkSchedule("DeleteMsgSendSchedule", msgId);
 
@@ -446,7 +446,7 @@ public class SchedulerService {
 		logger.info(trigger);
 
 		try {
-			synchronized (SCHEDULER_FLAG) {
+			synchronized (lock) {			
 
 				checkSchedule("addScheduleEvent", detailName);
 

@@ -687,7 +687,7 @@ public class ContentReportService {
 		return resultList;
 	}
 
-	private static final String SYNC_FLAG = "SYNC_FLAG";
+	private final Object lock = new Object();
 	/**
 	 * 計算某連結被使用者點擊的次數
 	 * @param linkId
@@ -703,7 +703,7 @@ public class ContentReportService {
 				return;
 			}
 			
-			synchronized (SYNC_FLAG) {
+			synchronized (lock) {
 				List<String> richIds = contentRichMsgDetailRepository.getRichIdByLinkId(linkId);
 				logger.info("richId:" + richIds);
 				

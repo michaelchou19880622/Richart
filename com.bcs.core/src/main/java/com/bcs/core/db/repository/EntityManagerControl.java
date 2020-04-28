@@ -17,7 +17,7 @@ import com.bcs.core.utils.ErrorRecord;
 
 @Repository
 public class EntityManagerControl {
-	private static final String INIT_FLAG = "INIT_FLAG";
+	private final Object lock = new Object();
 	
 	/** Logger */
 	private static Logger logger = Logger.getLogger(EntityManagerControl.class);
@@ -69,8 +69,8 @@ public class EntityManagerControl {
 //		logger.debug("EntityManagerControl persistFlush execute");
 
 		try{
-			synchronized (INIT_FLAG) {
-				boolean isPersistAdd = false;
+            synchronized (lock) {
+            	boolean isPersistAdd = false;
 				logger.debug("EntityManagerControl persistFlush execute:" + queueAdd.size());
 
 				int i = 0;
