@@ -150,18 +150,27 @@ public class MobileMGMViewController extends BCSBaseController {
 //            String descriptionImgUrl = CoreConfigReader.getString(CONFIG_STR.MGM_DESCRIPTION_IMG_CDN_URL, true);
 //            
 //            if(StringUtils.isBlank(actionImgUrl) || StringUtils.isBlank(shareImgUrl) || StringUtils.isBlank(descriptionImgUrl)) {
-//          }           	
+//          }       
+			
+			String actionImgUrl;
+			String shareImgUrl;
+			String descriptionImgUrl;
+			
+			boolean isSystemIdEqulDevelop = CoreConfigReader.getString(CONFIG_STR.SYSTEM_ID).equals("develop");
+			log.info("isSystemIdEqulDevelop = {}", isSystemIdEqulDevelop);
 
-			// CDN
-			String actionImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
-			String shareImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
-			String descriptionImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
-
-			// Original
-//            String actionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
-//            String shareImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
-//            String descriptionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
-
+			if (isSystemIdEqulDevelop) {
+				// Original
+	            actionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
+	            shareImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
+	            descriptionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
+			} else {
+				// CDN
+				actionImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
+				shareImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
+				descriptionImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
+			}
+		
 			String actionImgUrlLink = shareCampaign.getActionImgUrl();
 			String descriptionImgUrlLink = shareCampaign.getDescriptionImgUrl();
 
