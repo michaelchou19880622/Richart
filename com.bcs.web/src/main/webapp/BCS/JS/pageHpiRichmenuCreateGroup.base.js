@@ -123,7 +123,7 @@ $(function() {
 		selectedGroupType = $('[name="groupType"]:checked').val();
 		console.info('selectedGroupType = ', selectedGroupType);
 
-		if (selectedGroupType == "UIDLIST") {
+		if (selectedGroupType == "UID_LIST") {
 			$('.upload_mid').show;
 			btnUploadMid.style.display = "block";
 			
