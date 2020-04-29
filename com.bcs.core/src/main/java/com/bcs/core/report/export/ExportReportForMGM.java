@@ -128,6 +128,8 @@ public class ExportReportForMGM {
 
 			String lastShareUserRecord = "";
 
+			int donatorCount = 0;
+
 			for (int i = 0; i < resultGet.size(); i++) {
 				Object[] o = resultGet.get(i);
 
@@ -144,8 +146,15 @@ public class ExportReportForMGM {
 				if (currentShareUserRecord.equals(lastShareUserRecord)) {
 					// 如果分享紀錄ID一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄? 有則寫N
 					// 若沒有貢獻過的紀錄，則再判斷是否已超過完成任務人數上限? 超過則寫"超過上限"，未超過則寫Y
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("0") ? ((i + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
+					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("0") ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
+
+					if (o[6].toString().equals("1")) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
+						donatorCount++;
+					}
+					
 				} else {
+					donatorCount = 0;
+					
 					// 如果分享紀錄ID不一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄，沒有則寫Y，有則寫N。
 					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("0") ? "Y" : "N"));
 				}
@@ -168,11 +177,14 @@ public class ExportReportForMGM {
 
 			String lastShareUserRecord = "";
 
+			int donatorCount = 0;
+
 			for (int i = 0; i < resultGet.size(); i++) {
 				Object[] o = resultGet.get(i);
 
 				String currentShareUserRecord = o[11].toString();
 
+				// 完成任務上限數/人
 				long shareTimes = Long.valueOf(o[12].toString());
 
 				Row row1 = sheet.createRow(seqNo);
@@ -184,8 +196,16 @@ public class ExportReportForMGM {
 				if (currentShareUserRecord.equals(lastShareUserRecord)) {
 					// 如果分享紀錄ID一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄? 沒有則寫N
 					// 若有貢獻過的紀錄，則再判斷是否已超過完成任務人數上限? 超過則寫"超過上限"，未超過則寫Y
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("1") ? ((i + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
+					
+					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("1") ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
+
+					if (o[6].toString().equals("1")) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
+						donatorCount++;
+					}
+					
 				} else {
+					donatorCount = 0;
+					
 					// 如果分享紀錄ID不一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄，有則寫Y，沒有則寫N。
 					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("1") ? "Y" : "N"));
 				}
@@ -206,6 +226,8 @@ public class ExportReportForMGM {
 			int seqNo = 1; // 序號
 
 			String lastShareUserRecord = "";
+
+			int donatorCount = 0;
 
 			for (int i = 0; i < resultGet.size(); i++) {
 				Object[] o = resultGet.get(i);
@@ -231,8 +253,15 @@ public class ExportReportForMGM {
 				if (currentShareUserRecord.equals(lastShareUserRecord)) {
 					// 如果分享紀錄ID一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄? 沒有則寫N
 					// 若有貢獻過的紀錄，則再判斷是否已超過完成任務人數上限? 超過則寫"超過上限"，未超過則寫Y
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("1") ? ((i + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
+					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("1") ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
+
+					if (o[6].toString().equals("1")) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
+						donatorCount++;
+					}
+					
 				} else {
+					donatorCount = 0;
+					
 					// 如果分享紀錄ID不一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄，有則寫Y，沒有則寫N。
 					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("1") ? "Y" : "N"));
 				}
@@ -278,7 +307,7 @@ public class ExportReportForMGM {
 		Row row = sheet.createRow(0); // declare a row object reference
 		row.createCell(0).setCellValue("分享者UID");
 		row.createCell(1).setCellValue("分享時間");
-		row.createCell(2).setCellValue("總分享人數");
+		row.createCell(2).setCellValue("被分享者點擊活動人數");
 		row.createCell(3).setCellValue("被分享者完成活動人數");
 
 		if (resultGet != null && resultGet.size() != 0) {
@@ -315,7 +344,7 @@ public class ExportReportForMGM {
 		Row row = sheet.createRow(0); // declare a row object reference
 		row.createCell(0).setCellValue("分享者UID");
 		row.createCell(1).setCellValue("分享時間");
-		row.createCell(2).setCellValue("總分享人數");
+		row.createCell(2).setCellValue("被分享者點擊活動人數");
 		row.createCell(3).setCellValue("被分享者完成活動人數");
 
 		if (resultGet != null && resultGet.size() != 0) {
