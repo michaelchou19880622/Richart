@@ -9,6 +9,6 @@ import com.bcs.core.db.persistence.EntityRepository;
 
 public interface MsgInteractiveDetailRepository extends EntityRepository<MsgInteractiveDetail, Long>{
 
-	@Transactional(readOnly = true, timeout = 30)
+	@Transactional(readOnly = true, timeout = 300)
 	List<MsgInteractiveDetail> findByiMsgId(Long iMsgId);
 }
