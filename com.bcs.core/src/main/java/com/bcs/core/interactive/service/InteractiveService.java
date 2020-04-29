@@ -35,7 +35,7 @@ import com.bcs.core.utils.TimeRangeUtil;
 @Service
 public class InteractiveService {
 	public static final String INTERACTIVE_SYNC = "INTERACTIVE_SYNC";
-	private static final String INIT_FLAG = "INIT_FLAG";
+	private final Object lock = new Object();
 
 	/** Logger */
 	private static Logger logger = Logger.getLogger(InteractiveService.class);
@@ -153,7 +153,7 @@ public class InteractiveService {
 	 * Load Keyword Map
 	 */
 	public void loadKeywordMap(){
-		synchronized (INIT_FLAG) {
+		synchronized (lock) {
 			autokeywordMap.clear();
 			welcomeMap.clear();
 			eventWelcomeMap.clear();
@@ -353,7 +353,7 @@ public class InteractiveService {
 	 */
 	public Long getMatchBlackKeywordMsgId(String userStatus, String keyword){
 
-		synchronized (INIT_FLAG) {
+		synchronized (lock) {
 			Map<String, List<Long>> map = blackKeywordMap.get(userStatus);
 			
 			if(StringUtils.isNotBlank(keyword)){
@@ -392,7 +392,7 @@ public class InteractiveService {
 	 */
 	private MsgInteractiveMain getMatchKeywordMain(String userStatus, String keyword, String MID){
 
-		synchronized (INIT_FLAG) {
+		synchronized (lock) {
 			
 			// Different Index
 			for(Long index : indexSetting){
@@ -508,7 +508,7 @@ public class InteractiveService {
 	 * @return
 	 */
 	public MsgInteractiveMain getAutoResponse(String MID, String userStatus){
-		synchronized (INIT_FLAG) {
+		synchronized (lock) {
 
 			if(autokeywordMap != null && autokeywordMap.size() > 0 && 
 				autokeywordMap.get(userStatus) != null && autokeywordMap.get(userStatus).size() > 0){
@@ -534,7 +534,7 @@ public class InteractiveService {
 	 * @return
 	 */
 	public Long getWelcomeResponse(){
-		synchronized (INIT_FLAG) {
+		synchronized (lock) {
 
 			if(welcomeMap != null && welcomeMap.size() > 0){
 				return randomOneMsg(welcomeMap);
@@ -549,7 +549,7 @@ public class InteractiveService {
 	 * @return
 	 */
 	public Long getEventWelcomeResponse(String userStatus){
-		synchronized (INIT_FLAG) {
+		synchronized (lock) {
 
 			if(eventWelcomeMap != null && eventWelcomeMap.size() > 0 && 
 					eventWelcomeMap.get(userStatus) != null && eventWelcomeMap.get(userStatus).size() > 0){
@@ -566,7 +566,7 @@ public class InteractiveService {
 	 * @return
 	 */
 	public List<MsgDetail> getMsgDetails(Long iMsgId){
-		synchronized (INIT_FLAG) {
+		synchronized (lock) {
 			List<MsgDetail> details = interactiveDetails.get(iMsgId);
 			if(details != null){
 			}

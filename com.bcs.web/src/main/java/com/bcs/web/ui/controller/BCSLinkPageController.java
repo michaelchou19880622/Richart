@@ -171,13 +171,15 @@ public class BCSLinkPageController extends BCSBaseController {
             int rowNum = 0, rowStart = page * 20, rowEnd = rowStart + 20;
             for (Object[] link : result) {
                 if (rowNum >= rowStart && rowNum < rowEnd) {
+                	/* ref : https://www.java67.com/2015/01/how-to-sort-hashmap-in-java-based-on.html */
+                	/* 排序後還是會依照key來排序, 先workaround將key 由tracingLinke改為linkTime(modifyTime) */                	
                     String linkUrl = castToString(link[0]);
                     String linkTitle = castToString(link[1]);
                     String linkId = castToString(link[2]);
                     String linkTime = castToString(link[3]);
                     String linkFlag = castToString(link[4]);
                     String tracingLink = castToString(link[5]);
-                    LinkClickReportModel model = linkResult.get(tracingLink);
+                    LinkClickReportModel model = linkResult.get(linkTime);
                     if (model == null) {
                         model = new LinkClickReportModel();
                         model.setLinkUrl(linkUrl);
@@ -186,7 +188,7 @@ public class BCSLinkPageController extends BCSBaseController {
                         model.setLinkTime(linkTime);
                         model.setLinkFlag(linkFlag);
                         model.setTracingLink(tracingLink);
-                        linkResult.put(tracingLink, model);
+                        linkResult.put(linkTime, model);
                     } else {
                         if (StringUtils.isBlank(model.getLinkTitle())) {
                             model.setLinkTitle(linkTitle);
@@ -263,13 +265,15 @@ public class BCSLinkPageController extends BCSBaseController {
             int rowNum = 0, rowStart = page * 20, rowEnd = rowStart + 20;
             for (Object[] link : result) {
                 if (rowNum >= rowStart && rowNum < rowEnd) {
+                	/* ref : https://www.java67.com/2015/01/how-to-sort-hashmap-in-java-based-on.html */
+                	/* 排序後還是會依照key來排序, 先workaround將key 由tracingLinke改為linkTime(modifyTime) */
                     String linkUrl = castToString(link[0]);
                     String linkTitle = castToString(link[1]);
                     String linkId = castToString(link[2]);
                     String linkTime = castToString(link[3]);
                     String linkFlag = castToString(link[4]);
                     String tracingLink = castToString(link[5]);
-                    LinkClickReportModel model = linkResult.get(tracingLink);
+                    LinkClickReportModel model = linkResult.get(linkTime);
                     if (model == null) {
                         model = new LinkClickReportModel();
                         model.setLinkUrl(linkUrl);
@@ -278,7 +282,7 @@ public class BCSLinkPageController extends BCSBaseController {
                         model.setLinkTime(linkTime);
                         model.setLinkFlag(linkFlag);
                         model.setTracingLink(tracingLink);
-                        linkResult.put(tracingLink, model);
+                        linkResult.put(linkTime, model);
                     } else {
                         if (StringUtils.isBlank(model.getLinkTitle())) {
                             model.setLinkTitle(linkTitle);

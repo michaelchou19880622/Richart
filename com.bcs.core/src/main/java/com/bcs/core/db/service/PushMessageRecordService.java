@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.bcs.core.db.entity.PushMessageRecord;
 import com.bcs.core.db.repository.PushMessageRecordRepository;
 
+@Slf4j
 @Service
 public class PushMessageRecordService {		
 	@PersistenceContext
@@ -39,7 +41,7 @@ public class PushMessageRecordService {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		Date startDate = null, endDate = null;
-		
+
 		try {
 			startDate = sdf.parse(startDateString);
 			endDate = sdf.parse(endDateString);
@@ -48,11 +50,16 @@ public class PushMessageRecordService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+
+        long start = System.currentTimeMillis();	        
+        long end;		
 		Query query = entityManager.createNamedQuery("getPushMessageEffects").setParameter(1, startDate).setParameter(2, endDate);
-		
+
 		@SuppressWarnings("unchecked")
 		List<Object[]> resultList = query.getResultList();
+        end = System.currentTimeMillis();	        
+        log.info("GetPushMessageEffects GetResultList() End  . Time duration : " + (end - start) + " milliseconds.");
+
 		
 		for (Object[] o : resultList) {
 			Map<String, String> map = new HashMap<String, String>();
@@ -65,7 +72,8 @@ public class PushMessageRecordService {
 			
 			result.add(map);
 		}
-		
+        end = System.currentTimeMillis();	        
+        log.info("GetPushMessageEffects() End . Time duration : " + (end - start) + " milliseconds.");		
 		return result;
 	}
 }

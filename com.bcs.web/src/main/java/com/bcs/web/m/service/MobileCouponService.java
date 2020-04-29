@@ -48,6 +48,8 @@ public class MobileCouponService {
 	@Autowired
 	private SendGroupService sendGroupService;
 	
+    private final Object lock = new Object();
+    
 	/** Logger */
 	private static Logger logger = Logger.getLogger(MobileCouponService.class);
 	
@@ -88,7 +90,7 @@ public class MobileCouponService {
 		}
 		
 		// 若尚未領用，則驗證領用期間、領用次數限制
-		synchronized (ActionUserCouponUIService.GET_COUPON_FLAG) {
+		synchronized (lock) {
 			//如果尚未領取
 			if (!actionUserCouponUIService.isGetCoupon(sessionMID, couponId)) {
 				// 驗證領用期間、領用次數限制
