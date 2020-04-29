@@ -223,6 +223,9 @@ public class MsgInteractiveMainService {
 		dataQuerySQL.append(" ORDER BY CASE WHEN INTERACTIVE_INDEX IS NULL THEN 1 ELSE 0 END, INTERACTIVE_INDEX, MAIN_KEYWORD, USER_STATUS, MODIFY_TIME, MSG_DETAIL_ID ");
 		logger.debug("dataQuery=" + dataQuerySQL.toString());
 		Query dataQuery = entityManager.createNativeQuery(dataQuerySQL.toString(), "MsgInteractiveMainDetails");
+//		dataQuery.setMaxResults(maxResult);
+//		dataQuery.setFirstResult(startPosition);
+		
 		if(StringUtils.isNotBlank(type)) {
 		    dataQuery.setParameter("interactiveType", type);
 		}
@@ -232,7 +235,7 @@ public class MsgInteractiveMainService {
 		if(StringUtils.isNotBlank(keyword)) {
 			dataQuery.setParameter("keyword", keyword);
 		}
-		dataQuery.setHint("javax.persistence.query.timeout", 30000);
+		dataQuery.setHint("javax.persistence.query.timeout", 600000);
 		List<Object[]> list = dataQuery.getResultList();
 		Map<MsgInteractiveMain, List<MsgDetail>> map = parseListToMap(list);
     	logger.debug(map);
