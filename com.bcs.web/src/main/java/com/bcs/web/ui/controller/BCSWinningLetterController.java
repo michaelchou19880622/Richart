@@ -144,7 +144,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("page = {}", page);
 		logger.info("size = {}", size);
 
-	    Sort sort = new Sort(Direction.ASC, "id");
+	    Sort sort = new Sort(Direction.DESC, "id");
 	    Pageable pageable = new PageRequest(page, size, sort);
 
 		String urlReferrer = request.getHeader("referer");
@@ -558,7 +558,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 		logger.info("page = {}", page);
 		logger.info("size = {}", size);
 
-	    Sort sort = new Sort(Direction.ASC, "id");
+	    Sort sort = new Sort(Direction.DESC, "id");
 	    Pageable pageable = new PageRequest(page, size, sort);
 		
 		String urlReferrer = request.getHeader("referer");
