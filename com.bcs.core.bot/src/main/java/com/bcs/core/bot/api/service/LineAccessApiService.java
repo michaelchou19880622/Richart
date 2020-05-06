@@ -357,7 +357,18 @@ public class LineAccessApiService {
 			log.info("postMsg : {}", postMsg);
 			
 			try {
-				Response<BotApiResponse> response = getServiceWithServiceCode(ChannelId, ChannelName).replyMessage(sendToBotModel.getReplyMessage()).execute();
+				Response<BotApiResponse> response;
+                
+                if (ChannelName.equals(CONFIG_STR.ManualReply.toString()) || ChannelName.equals(CONFIG_STR.AutoReply.toString())) {
+					response = getServiceWithServiceCode(ChannelId, ChannelName)
+							.replyMessage(sendToBotModel.getReplyMessage())
+							.execute();
+				} else {
+					response = getService(ChannelId, ChannelName)
+							.replyMessage(sendToBotModel.getReplyMessage())
+							.execute();
+				}
+				
 				log.info("response = {}", response.body());
 				log.info("response.code() = {}", response.code());
 
@@ -385,7 +396,23 @@ public class LineAccessApiService {
 			String postMsg = ObjectUtil.objectToJsonStr(sendToBotModel.getPushMessage());
 			try {
 
-				Response<BotApiResponse> response = getService(ChannelId, ChannelName).pushMessage(sendToBotModel.getPushMessage()).execute();
+                Response<BotApiResponse> response;
+                
+                if (ChannelName.equals(CONFIG_STR.ManualReply.toString()) || ChannelName.equals(CONFIG_STR.AutoReply.toString())) {
+                    response = getServiceWithServiceCode(ChannelId, ChannelName)
+    	                        .pushMessage(sendToBotModel.getPushMessage())
+    	                        .execute();
+                } else {
+                    response = getService(ChannelId, ChannelName)
+    	                        .pushMessage(sendToBotModel.getPushMessage())
+    	                        .execute();
+				}
+
+//				Response<BotApiResponse> response;
+//				
+//				response = getService(ChannelId, ChannelName)
+//						.pushMessage(sendToBotModel.getPushMessage())
+//						.execute();
 
 				log.info("response = {}", response.body());
 				log.info("response.code() = {}", response.code());
