@@ -133,28 +133,33 @@ public class ExportReportForMGM {
 
 				long shareTimes = Long.valueOf(o[12].toString());
 				
-				boolean isArchived = o[6].toString().equals("0");
-
 				Row row1 = sheet.createRow(seqNo);
 				row1.createCell(0).setCellValue(o[0] == null ? "" : o[0].toString());
 				row1.createCell(1).setCellValue(o[1] == null ? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[1], sdf2)));
 				row1.createCell(2).setCellValue(o[2] == null ? "" : o[2].toString());
 				row1.createCell(3).setCellValue(o[2] == null ? "" : (o[3].toString().equals("1") ? "NEW" : "OLD"));
 
-				if (currentShareUserRecord.equals(lastShareUserRecord)) {
-					// 如果分享紀錄ID一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄? 有則寫N
-					// 若沒有貢獻過的紀錄，則再判斷是否已超過完成任務人數上限? 超過則寫"超過上限"，未超過則寫Y
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (isArchived ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
+				boolean isArchived = (o[6].toString().equals("0"));
+				log.info("isArchived = {}", isArchived);
+				log.info("donatorCount = {}", donatorCount);
 
-					if (isArchived) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
-						donatorCount++;
-					}
+				log.info("lastShareUserRecord = {}", lastShareUserRecord);
+				log.info("currentShareUserRecord = {}", currentShareUserRecord);
+				
+				if (currentShareUserRecord.equals(lastShareUserRecord)) {
 					
+					// 如果分享紀錄ID一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄? 有則寫N、
+					// 若沒有貢獻過的紀錄，則再判斷是否已超過完成任務人數上限? 超過則寫"超過上限"，未超過則寫Y
+					row1.createCell(4).setCellValue(o[2] == null ? "" : ((isArchived) ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
 				} else {
 					donatorCount = 0;
 					
-					// 如果分享紀錄ID不一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄，沒有則寫Y，有則寫N。
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (isArchived ? "Y" : "N"));
+					// 如果分享紀錄ID不一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄，有則寫N、沒有則寫Y。
+					row1.createCell(4).setCellValue(o[2] == null ? "" : ((isArchived) ? "Y" : "N"));
+				}
+
+				if (isArchived) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
+					donatorCount++;
 				}
 
 				row1.createCell(5).setCellValue(o[7] == null ? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[7], sdf2)));
@@ -185,29 +190,33 @@ public class ExportReportForMGM {
 				// 完成任務上限數/人
 				long shareTimes = Long.valueOf(o[12].toString());
 				
-				boolean isArchived = o[6].toString().equals("1");
-
 				Row row1 = sheet.createRow(seqNo);
 				row1.createCell(0).setCellValue(o[0] == null ? "" : o[0].toString());
 				row1.createCell(1).setCellValue(o[1] == null ? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[1], sdf2)));
 				row1.createCell(2).setCellValue(o[2] == null ? "" : o[2].toString());
 				row1.createCell(3).setCellValue(o[2] == null ? "" : (o[3].toString().equals("1") ? "NEW" : "OLD"));
 
+				boolean isArchived = (o[6].toString().equals("1"));
+				log.info("isArchived = {}", isArchived);
+				log.info("donatorCount = {}", donatorCount);
+
+				log.info("lastShareUserRecord = {}", lastShareUserRecord);
+				log.info("currentShareUserRecord = {}", currentShareUserRecord);
+				
 				if (currentShareUserRecord.equals(lastShareUserRecord)) {
 					// 如果分享紀錄ID一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄? 沒有則寫N
 					// 若有貢獻過的紀錄，則再判斷是否已超過完成任務人數上限? 超過則寫"超過上限"，未超過則寫Y
 					
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (isArchived ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
-
-					if (isArchived) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
-						donatorCount++;
-					}
-					
+					row1.createCell(4).setCellValue(o[2] == null ? "" : ((isArchived) ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
 				} else {
 					donatorCount = 0;
 					
 					// 如果分享紀錄ID不一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄，有則寫Y，沒有則寫N。
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (isArchived ? "Y" : "N"));
+					row1.createCell(4).setCellValue(o[2] == null ? "" : ((isArchived) ? "Y" : "N"));
+				}
+				
+				if (isArchived) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
+					donatorCount++;
 				}
 
 				row1.createCell(5).setCellValue(o[8] == null ? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[8], sdf2)));
@@ -236,8 +245,6 @@ public class ExportReportForMGM {
 				
 				long shareTimes = Long.valueOf(o[12].toString());
 				
-				boolean isArchived = o[6].toString().equals("1");
-
 				Row row1 = sheet.createRow(seqNo);
 				row1.createCell(0).setCellValue(o[0] == null ? "" : o[0].toString());
 				row1.createCell(1).setCellValue(o[1] == null ? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[1], sdf2)));
@@ -252,20 +259,26 @@ public class ExportReportForMGM {
 					row1.createCell(3).setCellValue("old");
 				}
 				
+				boolean isArchived = (o[6].toString().equals("1"));
+				log.info("isArchived = {}", isArchived);
+				log.info("donatorCount = {}", donatorCount);
+
+				log.info("lastShareUserRecord = {}", lastShareUserRecord);
+				log.info("currentShareUserRecord = {}", currentShareUserRecord);
+				
 				if (currentShareUserRecord.equals(lastShareUserRecord)) {
 					// 如果分享紀錄ID一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄? 沒有則寫N
 					// 若有貢獻過的紀錄，則再判斷是否已超過完成任務人數上限? 超過則寫"超過上限"，未超過則寫Y
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (isArchived ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
-
-					if (isArchived) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
-						donatorCount++;
-					}
-					
+					row1.createCell(4).setCellValue(o[2] == null ? "" : ((isArchived) ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
 				} else {
 					donatorCount = 0;
 					
 					// 如果分享紀錄ID不一樣，且點擊紀錄時間不為空，則判斷是否有貢獻過的紀錄，有則寫Y，沒有則寫N。
-					row1.createCell(4).setCellValue(o[2] == null ? "" : (isArchived ? "Y" : "N"));
+					row1.createCell(4).setCellValue(o[2] == null ? "" : ((isArchived) ? "Y" : "N"));
+				}
+				
+				if (isArchived) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
+					donatorCount++;
 				}
 				
 				row1.createCell(5).setCellValue(o[9] == null ? "" : sdf2.format(SQLDateFormatUtil.formatSqlStringToDate(o[9], sdf2)));

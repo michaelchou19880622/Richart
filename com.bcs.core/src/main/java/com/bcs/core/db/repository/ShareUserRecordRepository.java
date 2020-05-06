@@ -79,18 +79,18 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
 			            + "BSC.JUDGEMENT as JUDGEMENT, "
 			            + "SUR.SHARE_USER_RECORD_ID as SHARE_USER_RECORD_ID, "
 			            + "BSC.SHARE_TIMES as SHARE_TIMES "
-		            + "from BCS_SHARE_USER_RECORD SUR "
-		            + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "
-		            + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID and SCCT.SHARE_USER_RECORD_ID = SDR.SHARE_USER_RECORD_ID "
+			        + "from BCS_SHARE_USER_RECORD SUR "
+			        + "left join BCS_SHARE_CAMPAIGN_CLICK_TRACING SCCT on SUR.SHARE_USER_RECORD_ID = SCCT.SHARE_USER_RECORD_ID "
+			        + "left join BCS_SHARE_DONATOR_RECORD SDR on SCCT.UID = SDR.DONATOR_UID and SCCT.SHARE_USER_RECORD_ID = SDR.SHARE_USER_RECORD_ID "
 					+ "left join BCS_LINE_USER SLU on SCCT.UID = SLU.MID "
 					+ "left join BCS_SHARE_CAMPAIGN BSC on BSC.CAMPAIGN_ID = SUR.CAMPAIGN_ID "
-		            + "where "
-	            		+ "SUR.MODIFY_TIME >= ?1 "
-	            		+ "and SUR.MODIFY_TIME < ?2 "
-	            		+ "and SUR.CAMPAIGN_ID = ?3 "
-		            + "order by "
-		            	+ "SUR.SHARE_USER_RECORD_ID, "
-		            	+ "SCCT.SHARED_TIME", nativeQuery = true)
+			        + "where "
+			    		+ "SUR.MODIFY_TIME >= ?1 "
+			    		+ "and SUR.MODIFY_TIME < ?2 "
+			    		+ "and SUR.CAMPAIGN_ID = ?3 "
+			        + "order by "
+			        	+ "SUR.SHARE_USER_RECORD_ID, "
+			        	+ "SCCT.SHARED_TIME", nativeQuery = true)
     List<Object[]> findByModifyTimeAndCampaignId_for_disable(Date start, Date end, String campaignId);
     
     @Transactional(readOnly = true, timeout = 60)
