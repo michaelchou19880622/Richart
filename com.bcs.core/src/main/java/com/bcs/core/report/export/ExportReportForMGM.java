@@ -148,7 +148,7 @@ public class ExportReportForMGM {
 					// 若沒有貢獻過的紀錄，則再判斷是否已超過完成任務人數上限? 超過則寫"超過上限"，未超過則寫Y
 					row1.createCell(4).setCellValue(o[2] == null ? "" : (o[6].toString().equals("0") ? ((donatorCount + 1 > shareTimes) ? "超過上限" : "Y") : "N"));
 
-					if (o[6].toString().equals("1")) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
+					if (o[6].toString().equals("0")) { //表示當前被分享者已經協助達成任務，貢獻者 += 1
 						donatorCount++;
 					}
 					
