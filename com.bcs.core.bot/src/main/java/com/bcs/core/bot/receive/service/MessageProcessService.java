@@ -213,77 +213,144 @@ public class MessageProcessService {
 		return confirmMessage;
 	}
 	
-	public void replyTextMessage(String channelId, String channelName, List<String> textList, String replyToken) throws Exception {
-		List<Message> sendMsgList = new ArrayList<Message>();
-		Message message = null;
-		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString()); 
+//	public void replyTextMessage(String channelId, String channelName, List<String> textList, String replyToken) throws Exception {
+//		List<Message> sendMsgList = new ArrayList<Message>();
+//		Message message = null;
+//		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString()); 
+//		
+//		for(String text : textList) {
+//			message = new TextMessage(text, sender);
+//			
+//			sendMsgList.add(message);
+//		}
+//		
+//		SendToBotModel sendToBotModel = new SendToBotModel();
+//		
+//		sendToBotModel.setChannelId(channelId);
+//		sendToBotModel.setSendType(SEND_TYPE.REPLY_MSG);
+//		sendToBotModel.setChannelName(channelName);
+//		
+//		ReplyMessage replyMessage = new ReplyMessage(replyToken, sendMsgList);
+//		sendToBotModel.setReplyMessage(replyMessage);
+//		
+//		LineAccessApiService.sendToLine(sendToBotModel);
+//	}
+//	
+//	public void pushTextMsgAsync(String UID, String text,String channelName) throws Exception {
+//		logger.info("pushTextMsgAsync");
+//				
+//		MsgDetail sendMsgDetail = new MsgDetail();
+//
+//		sendMsgDetail.setText(text);
+//		sendMsgDetail.setMsgType(MsgGenerator.MSG_TYPE_TEXT);
+//		
+//		Sender sender = switchIconService.generateSenderModel(channelName); 
+//		
+//		TextMessage textMesage = new TextMessage(text, sender);
+//		PushMessage pushMessage = new PushMessage(UID, textMesage);
+//
+//		SendToBotModel sendToBotModel = new SendToBotModel();
+//		sendToBotModel.setChannelId(CONFIG_STR.Default.toString());
+//		sendToBotModel.setChannelName(channelName);
+//		sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
+//		sendToBotModel.setPushMessage(pushMessage);
+//		LineAccessApiService.sendToLine(sendToBotModel);
+//	}
+//	
+//	public void pushMessage(String UID, List<Message> messageList, String channelName) throws Exception {
+//		SendToBotModel sendToBotModel = new SendToBotModel();
+//
+//		sendToBotModel.setChannelId(CONFIG_STR.Default.toString());
+//		sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
+//		sendToBotModel.setChannelName(channelName);
+//		
+//		PushMessage pushMessage = new PushMessage(UID, messageList);					
+//		sendToBotModel.setPushMessage(pushMessage);
+//		
+//		LineAccessApiService.sendToLine(sendToBotModel);
+//	}
+//	
+//	public void replyMessage(String channelId, String replyToken, List<Message> messageList, String channelName) throws Exception {
+//		SendToBotModel sendToBotModel = new SendToBotModel();
+//
+//		sendToBotModel.setChannelId(channelId);
+//		sendToBotModel.setSendType(SEND_TYPE.REPLY_MSG);
+//		sendToBotModel.setChannelName(channelName);
+//
+//		ReplyMessage replyMessage = new ReplyMessage(replyToken, messageList);
+//		sendToBotModel.setReplyMessage(replyMessage);
+//
+//		LineAccessApiService.sendToLine(sendToBotModel);
+//	}
+	
+	public JSONObject defaultReplyMessage() {
+		JSONObject defaultMessage = new JSONObject();
 		
-		for(String text : textList) {
-			message = new TextMessage(text, sender);
+		defaultMessage.put("type", "text");
+		defaultMessage.put("text", LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.DEFAULT_REPLY_MESSAGE.toString()));
+		
+		return defaultMessage;
+	}
+	
+	public void botReplyMessageRecorder(JSONObject replyMessageObject, String UID) throws Exception {
+		if(replyMessageObject.has("replyToken") && replyMessageObject.has("messages")) {
+			JSONArray messageList = replyMessageObject.getJSONArray("messages");
 			
-			sendMsgList.add(message);
-		}
-		
-		SendToBotModel sendToBotModel = new SendToBotModel();
-		
-		sendToBotModel.setChannelId(channelId);
-		sendToBotModel.setSendType(SEND_TYPE.REPLY_MSG);
-		sendToBotModel.setChannelName(channelName);
-		
-		ReplyMessage replyMessage = new ReplyMessage(replyToken, sendMsgList);
-		sendToBotModel.setReplyMessage(replyMessage);
-		
-		LineAccessApiService.sendToLine(sendToBotModel);
-	}
-	
-	public void pushTextMsgAsync(String UID, String text,String channelName) throws Exception {
-		logger.info("pushTextMsgAsync");
+			for(int index = 0; index < messageList.length(); index++) {
+				BotReplyRecord record = new BotReplyRecord();
+				JSONObject message = messageList.getJSONObject(index);
+				String messageType = message.getString("type");
 				
-		MsgDetail sendMsgDetail = new MsgDetail();
-
-		sendMsgDetail.setText(text);
-		sendMsgDetail.setMsgType(MsgGenerator.MSG_TYPE_TEXT);
-		
-		Sender sender = switchIconService.generateSenderModel(channelName); 
-		
-		TextMessage textMesage = new TextMessage(text, sender);
-		PushMessage pushMessage = new PushMessage(UID, textMesage);
-
-		SendToBotModel sendToBotModel = new SendToBotModel();
-		sendToBotModel.setChannelId(CONFIG_STR.Default.toString());
-		sendToBotModel.setChannelName(channelName);
-		sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
-		sendToBotModel.setPushMessage(pushMessage);
-		LineAccessApiService.sendToLine(sendToBotModel);
-	}
-	
-	public void pushMessage(String UID, List<Message> messageList, String channelName) throws Exception {
-		SendToBotModel sendToBotModel = new SendToBotModel();
-
-		sendToBotModel.setChannelId(CONFIG_STR.Default.toString());
-		sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
-		sendToBotModel.setChannelName(channelName);
-		
-		PushMessage pushMessage = new PushMessage(UID, messageList);					
-		sendToBotModel.setPushMessage(pushMessage);
-		
-		LineAccessApiService.sendToLine(sendToBotModel);
-	}
-	
-	public void replyMessage(String channelId, String replyToken, List<Message> messageList, String channelName) throws Exception {
-		SendToBotModel sendToBotModel = new SendToBotModel();
-
-		sendToBotModel.setChannelId(channelId);
-		sendToBotModel.setSendType(SEND_TYPE.REPLY_MSG);
-		sendToBotModel.setChannelName(channelName);
-
-		ReplyMessage replyMessage = new ReplyMessage(replyToken, messageList);
-		sendToBotModel.setReplyMessage(replyMessage);
-
-		LineAccessApiService.sendToLine(sendToBotModel);
+				record.setMsgType(messageType);
+				record.setUID(UID);
+				record.setReplyToken(replyMessageObject.getString("replyToken"));
+				record.setCreateTime(new Date());
+				record.setModifyTime(new Date());
+				
+				switch(messageType) {
+					case BotReplyRecord.MESSAGE_TYPE_TEXT:
+						record.setMsgText(message.getString("text"));
+						break;
+					case BotReplyRecord.MESSAGE_TYPE_STICKER:
+						record.setMsgText("[貼圖]");
+						break;
+					case BotReplyRecord.MESSAGE_TYPE_IMAGE:
+						record.setMsgText("[圖片]");
+						record.setReferenceLinkUrl(message.getString("originalContentUrl"));
+						break;
+					case BotReplyRecord.MESSAGE_TYPE_VIDEO:
+						record.setMsgText("[影片]");
+						record.setReferenceLinkUrl(message.getString("originalContentUrl"));
+						break;
+					case BotReplyRecord.MESSAGE_TYPE_AUDIO:
+						record.setMsgText("[音訊]");
+						record.setReferenceLinkUrl(message.getString("originalContentUrl"));
+						break;
+					case BotReplyRecord.MESSAGE_TYPE_LOCATION:
+						record.setMsgText("[位置]");
+						record.setLocation(message.getString("latitude") + ", " + message.getString("longitude"));
+						break;
+					case BotReplyRecord.MESSAGE_TYPE_TEMPLATE:
+						if(!message.getJSONObject("template").isNull("title"))
+							record.setMsgText(message.getJSONObject("template").getString("title") + " " + message.getJSONObject("template").getString("text"));
+						else
+							record.setMsgText(message.getJSONObject("template").getString("text"));
+						break;
+					case BotReplyRecord.MESSAGE_TYPE_IMAGEMAP:
+						record.setMsgText("[圖文訊息]");
+						record.setReferenceLinkUrl(message.getString("baseUrl"));
+						break;
+				}
+				
+				botReplyRecordService.save(record);
+			}
+		} else {
+			throw new IllegalArgumentException("[BOT Reply Message Recorder]: Invalid format!");
+		}
 	}
 	
 	public void replyTextMessageWithServiceCode(String channelId, String channelName, List<String> textList, String replyToken) throws Exception {
+		logger.info("replyTextMessageWithServiceCode");
 		List<Message> sendMsgList = new ArrayList<Message>();
 		Message message = null;
 		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.AutoReply.toString()); 
@@ -353,71 +420,5 @@ public class MessageProcessService {
 		sendToBotModel.setReplyMessage(replyMessage);
 
 		LineAccessApiService.sendToLineWithServiceCode(sendToBotModel);
-	}
-	
-	public JSONObject defaultReplyMessage() {
-		JSONObject defaultMessage = new JSONObject();
-		
-		defaultMessage.put("type", "text");
-		defaultMessage.put("text", LiveChatWordingUtil.getString(LIVE_CHAT_WORDING.DEFAULT_REPLY_MESSAGE.toString()));
-		
-		return defaultMessage;
-	}
-	
-	public void botReplyMessageRecorder(JSONObject replyMessageObject, String UID) throws Exception {
-		if(replyMessageObject.has("replyToken") && replyMessageObject.has("messages")) {
-			JSONArray messageList = replyMessageObject.getJSONArray("messages");
-			
-			for(int index = 0; index < messageList.length(); index++) {
-				BotReplyRecord record = new BotReplyRecord();
-				JSONObject message = messageList.getJSONObject(index);
-				String messageType = message.getString("type");
-				
-				record.setMsgType(messageType);
-				record.setUID(UID);
-				record.setReplyToken(replyMessageObject.getString("replyToken"));
-				record.setCreateTime(new Date());
-				record.setModifyTime(new Date());
-				
-				switch(messageType) {
-					case BotReplyRecord.MESSAGE_TYPE_TEXT:
-						record.setMsgText(message.getString("text"));
-						break;
-					case BotReplyRecord.MESSAGE_TYPE_STICKER:
-						record.setMsgText("[貼圖]");
-						break;
-					case BotReplyRecord.MESSAGE_TYPE_IMAGE:
-						record.setMsgText("[圖片]");
-						record.setReferenceLinkUrl(message.getString("originalContentUrl"));
-						break;
-					case BotReplyRecord.MESSAGE_TYPE_VIDEO:
-						record.setMsgText("[影片]");
-						record.setReferenceLinkUrl(message.getString("originalContentUrl"));
-						break;
-					case BotReplyRecord.MESSAGE_TYPE_AUDIO:
-						record.setMsgText("[音訊]");
-						record.setReferenceLinkUrl(message.getString("originalContentUrl"));
-						break;
-					case BotReplyRecord.MESSAGE_TYPE_LOCATION:
-						record.setMsgText("[位置]");
-						record.setLocation(message.getString("latitude") + ", " + message.getString("longitude"));
-						break;
-					case BotReplyRecord.MESSAGE_TYPE_TEMPLATE:
-						if(!message.getJSONObject("template").isNull("title"))
-							record.setMsgText(message.getJSONObject("template").getString("title") + " " + message.getJSONObject("template").getString("text"));
-						else
-							record.setMsgText(message.getJSONObject("template").getString("text"));
-						break;
-					case BotReplyRecord.MESSAGE_TYPE_IMAGEMAP:
-						record.setMsgText("[圖文訊息]");
-						record.setReferenceLinkUrl(message.getString("baseUrl"));
-						break;
-				}
-				
-				botReplyRecordService.save(record);
-			}
-		} else {
-			throw new IllegalArgumentException("[BOT Reply Message Recorder]: Invalid format!");
-		}
 	}
 }

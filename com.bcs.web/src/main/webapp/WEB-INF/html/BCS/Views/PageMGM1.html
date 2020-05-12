@@ -96,7 +96,8 @@
 												    	th:text="${minute}" >
 												    </option>
                                                 </select>
-                                            </div>
+                                            </div>&nbsp; 
+                                        <span id="campaignTimeNotification" style="color: red">( 已有參與活動用戶，無法變更此項資料 )</span>
                                         </span>
                                     </td>
                                 </tr>
@@ -105,7 +106,8 @@
                                     <td>
                                         <div class="MdFRM01Input">
                                             <input type="text" id="shareTimes" name="shareTimes" placeholder="請輸入" maxlength="5">
-                                        </div>
+                                        </div>&nbsp; 
+                                        <span id="shareTimesNotification" style="color: red">( 已有參與活動用戶，無法變更此項資料 )</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -119,7 +121,8 @@
 	            						</label>
 	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
 	                						<input type="radio" name="judgement" class="judgement" value="BINDED" style="cursor: pointer;">綁定
-	            						</label>
+	            						</label>&nbsp; 
+                                        <span id="judgementNotification" style="color: red">( 已有參與活動用戶，無法變更此項資料 )</span>
 									</td>	
                                 </tr>   
                                 <tr>
@@ -136,8 +139,9 @@
 	            							<span>&nbsp;</span>
 	                                        <select name="mainList" id="mainList" style="width: 300px;">
 	                                            <option value="">請選擇</option>
-	                                        </select>  
-                                        </div>  
+	                                        </select>&nbsp;
+                                        	<span id="autoSendPointNotification" style="color: red">( 已有參與活動用戶，無法變更此項資料 )</span>  
+                                        </div>
 									</td>
 									
                                 </tr>                            
@@ -228,6 +232,8 @@
             </form>
         </div>
     </div>
+	<input id="urlReferrer" type="hidden" th:value="${urlReferrer}" />
+	<input id="isEditable" type="hidden" th:value="${isEditable}" />
 </body>
 
 </html>
