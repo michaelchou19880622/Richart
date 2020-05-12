@@ -2,11 +2,64 @@
  * 
  */
 $(function(){
+    /* Get URL Referrer */
+    var urlRef = $('#urlReferrer').val();
+
+    if (urlRef == null || urlRef.length == 0) {
+        alert("對不起，您不能直接更改URL來訪問網頁，你的操作非法。");
+        window.location.replace(bcs.bcsContextPath + '/edit/shareCampaignCreatePage');
+        return
+    }
+	
 	var campaignId = $.urlParam("campaignId");
 	var actionType = $.urlParam("actionType") || 'Create';
 	console.info('actionType', actionType);
+	
 	var from = $.urlParam("from") || 'disable';
 	console.info('from', from);
+	
+	var isEditable = $('#isEditable').val();
+	console.info('isEditable', isEditable);
+	
+    if (isEditable == 'false') {
+        $('#campaignTimeNotification').show();
+        $('#shareTimesNotification').show();
+        $('#judgementNotification').show();
+        $('#autoSendPointNotification').show();
+    	
+        $('input[name=campaignStartTime]').attr("disabled",true);
+        $('select[name=campaignStartTimeHour]').attr("disabled",true);
+        $('select[name=campaignStartTimeMinute]').attr("disabled",true);
+        
+        $('input[name=campaignEndTime]').attr("disabled",true);
+        $('select[name=campaignEndTimeHour]').attr("disabled",true);
+        $('select[name=campaignEndTimeMinute]').attr("disabled",true);
+        
+        $('input[name=judgement]').attr("disabled",true);
+        $('input[name=shareTimes]').attr("disabled",true);
+        $('input[name=autoSendPoint]').attr("disabled",true);
+        
+        $('select[name=mainList]').attr("disabled",true);
+    } else {
+        $('#campaignTimeNotification').hide();
+        $('#shareTimesNotification').hide();
+        $('#judgementNotification').hide();
+        $('#autoSendPointNotification').hide();
+        
+        $('input[name=campaignStartTime]').attr("disabled",false);
+        $('select[name=campaignStartTimeHour]').attr("disabled",false);
+        $('select[name=campaignStartTimeMinute]').attr("disabled",false);
+        
+        $('input[name=campaignEndTime]').attr("disabled",false);
+        $('select[name=campaignEndTimeHour]').attr("disabled",false);
+        $('select[name=campaignEndTimeMinute]').attr("disabled",false);
+        
+        $('input[name=judgement]').attr('disabled', false);
+        $('input[name=shareTimes]').attr("disabled",false);
+        $('input[name=autoSendPoint]').attr("disabled",false);
+        
+        $('select[name=mainList]').attr("disabled",false);
+    }
 	
 	var dateFormat = "YYYY-MM-DD HH:mm:ss";
 	
@@ -340,7 +393,7 @@ $(function(){
 				type : "GET",
 				url : bcs.bcsContextPath + '/edit/getShareCampaign?campaignId=' + campaignId
 			}).success(function(response){
-				console.info("getShareCampaign's response:", response);
+//				console.info("getShareCampaign's response:", response);
 				
 				// 活動標題
 				$('#campaignTitle').val(response.campaignName);
@@ -444,20 +497,20 @@ $(function(){
 		
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/market/getUndoneAutoLinePointMainList'
+			url : bcs.bcsContextPath + '/market/getAutoLinePointMainList'
 		}).success(function(response){
-			console.info('getLinePointList response:' + JSON.stringify(response));
+//			console.info('getLinePointList response:' + JSON.stringify(response));
 
 			var mainList = document.getElementById("mainList");
 			$.each(response, function(i, o){		
-				console.info('getLinePointList o:' + JSON.stringify(o));
+//				console.info('getLinePointList o:' + JSON.stringify(o));
 				 var opt = document.createElement('option');
 				 opt.value = o.id;
 				 opt.innerHTML = o.serialId; // + ' (' + o.title + ')';	
-				 console.info("o.serialId", o.serialId);
+//				 console.info("o.serialId", o.serialId);
 				 if(linePointSerialId != null && o.serialId == linePointSerialId){
 					 selectedValue = opt.value;
-					 console.info("selectedValue", selectedValue);
+//					 console.info("selectedValue", selectedValue);
 				 }
 				mainList.appendChild(opt);
 			});

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bcs.core.db.entity.ShareCampaign;
+import com.bcs.core.db.entity.ShareUserRecord;
 import com.bcs.core.db.service.ShareCampaignService;
 import com.bcs.core.db.service.ShareUserRecordService;
 import com.bcs.core.exception.BcsNoticeException;
@@ -55,8 +56,23 @@ public class BCSShareCampaignController extends BCSBaseController {
 	private ShareUserRecordService shareUserRecordService;
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/shareCampaignCreatePage")
-	public String shareCampaignCreatePage(HttpServletRequest request, HttpServletResponse response) {
+	public String shareCampaignCreatePage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@RequestParam(value="campaignId", required=false) String campaignId) {
 		log.info("shareCampaignCreatePage");
+		log.info("campaignId = {}", campaignId);
+		
+		String urlReferrer = request.getHeader("referer");
+		log.info("urlReferrer = {}", urlReferrer);
+		
+		Integer countOfShareUserRecord = shareUserRecordService.countByCampaignId(campaignId);
+		log.info("countOfShareUserRecord = {}", countOfShareUserRecord);
+		
+		boolean isEditable = (countOfShareUserRecord >= 1) ? false : true;
+		log.info("isEditable = {}", isEditable);
+
+		model.addAttribute("urlReferrer", urlReferrer);
+		model.addAttribute("isEditable", isEditable);
+		
 		return BcsPageEnum.ShareCampaignCreatePage.toString();
 	}
 
@@ -153,15 +169,14 @@ public class BCSShareCampaignController extends BCSBaseController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/getShareCampaign")
 	@ResponseBody
-	public ResponseEntity<?> getShareCampaign(
-			@RequestParam String campaignId,  
-			HttpServletRequest request, 
-			HttpServletResponse response) throws IOException {
+	public ResponseEntity<?> getShareCampaign(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@RequestParam String campaignId) throws IOException {
 		log.info("getShareCampaign");				
 		
 		try{
 			if(campaignId != null){
 				log.info("campaignId:" + campaignId);
+				
 				ShareCampaign shareCampaign = shareCampaignService.findOne(campaignId);
 				
 				if(shareCampaign != null){
