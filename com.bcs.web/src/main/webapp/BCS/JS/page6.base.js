@@ -124,8 +124,8 @@ $(function(){
 	var richType = "";
 	var actionType = "";
 	var getDataByRichId = function() {
-		richId = $.urlParam("richId"); //從列表頁導過來的參數
-		actionType = $.urlParam("actionType"); //從列表頁導過來的參數
+		richId = $.urlParam("richId"); // 從列表頁導過來的參數
+		actionType = $.urlParam("actionType"); // 從列表頁導過來的參數
 		
 		if (richId != null && richId != "") {
 			$.ajax({
@@ -161,7 +161,7 @@ $(function(){
 				
 				linkNumbers = urls.length;
 				
-				changeRichTypeImg(richType); //變更type圖示
+				changeRichTypeImg(richType); // 變更type圖示
 				if (richType == "09") {
 					$('#customizeTypeBtn').show();
 				} else {
@@ -204,24 +204,24 @@ $(function(){
 					linkTagContentFlag.findContentFlagList(linkIdList[i]);
 					
 					if (richType == "09") {
-						//設定draggable
+						// 設定draggable
 						var letter = String.fromCharCode(65 + i);
 						setDraggable(letter);
 					}
 				}
 				
-				//觸發輸入文字計數
+				// 觸發輸入文字計數
 				$('#richMsgTitle').trigger("keyup");
 				$('.richMsgLinkTxt').trigger("keyup");
 				
-				//設定每個draggable的座標與大小
+				// 設定每個draggable的座標與大小
 				$.each($('.urlDraggable'), function(i, v) {
 					var width = (multiEndX[i] - multiStartX[i]) / 2;
 					var heigth = (multiEndY[i] - multiStartY[i]) / 2;
 					$(this).css({"width": width, "height": heigth, "top": (multiStartY[i] / 2)+"px", "left": (multiStartX[i] / 2)+"px"})
 				});
 				
-				//設定dialog的圖片大小
+				// 設定dialog的圖片大小
 				var width = Number(valueObj[11]);
 				var height = Number(valueObj[10]);
     			setImgHeightAndWidth(valueObj[2], width, height);
@@ -235,17 +235,17 @@ $(function(){
 		}
 	}
 	
-	//點擊圖文訊息類別後變更設定連結的圖示
-	var linkNumbers = 0; //連結數
+	// 點擊圖文訊息類別後變更設定連結的圖示
+	var linkNumbers = 0; // 連結數
 	var frameTypePointXY;
 	$("input[name='templateFrameType']").click(function(e) {
-		var selectedRichType = e.currentTarget.value; //選擇的連結類型
+		var selectedRichType = e.currentTarget.value; // 選擇的連結類型
 		
 		$('#customizeTypeBtn').hide();
 		$('.urlDraggable').remove();
 		
 		if (richType == selectedRichType) {
-			getDataByRichId(); //點擊的type與導頁過來的一樣，則取回原先資料
+			getDataByRichId(); // 點擊的type與導頁過來的一樣，則取回原先資料
 			return;
 		}
 		
@@ -301,20 +301,20 @@ $(function(){
 		});
 	})
 	
-	//變更點擊的type圖示
+	// 變更點擊的type圖示
 	var changeRichTypeImg = function(richType) {
 		var imgHtml = "連結<img src='" +  bcs.bcsResourcePath + "/images/type_richmenu_" + richType + ".png' alt='Type" + Number(richType) + "'>";
 		$("#richMsgUrlTh").html(imgHtml);
 	}
 	
 	var totalUrlCount = 0;
-	//動態產生輸入url的tr
+	// 動態產生輸入url的tr
 	var generateRichMsgUrl = function() {
 		$("#richMsgUrlTh").prop("rowspan", linkNumbers * 2 + 1);
 		
 		var validateNameSet = [];
 		var appendHtml = "";
-		var existUrlNumbers = $('.richMsgUrlPageTr').length; //畫面已存在的連結數
+		var existUrlNumbers = $('.richMsgUrlPageTr').length; // 畫面已存在的連結數
 		for (var i=existUrlNumbers; i<linkNumbers; i++) {
 			totalUrlCount ++;
 			
@@ -364,7 +364,7 @@ $(function(){
 		})
 	};
 	
-	//設定連結文字的input事件
+	// 設定連結文字的input事件
 	var richMsgUrlTxtKeyupEvent = function() {
 		$('#richMsgTitle').keyup(function() {
 			var txtLength = $(this).val().length;
@@ -381,17 +381,17 @@ $(function(){
 	
 	var clickedUrlInput;
 	var clickedUrlTitle;
-	//設定showDialog的按鈕
+	// 設定showDialog的按鈕
 	var setUrlBtnEvent = function() {
 		$(".showDialogBtn").click(function() {
 			$('#urlDialog').dialog('open');
 			$('#urlSelection').css('display','');
-			clickedUrlInput = $(this).closest('tr').find('.richMsgUrl'); //點擊showDialogBtn的input
-			clickedUrlTitle = $(this).closest('tr').next().find('.richMsgLinkTxt'); //點擊showDialogBtn的input
+			clickedUrlInput = $(this).closest('tr').find('.richMsgUrl'); // 點擊showDialogBtn的input
+			clickedUrlTitle = $(this).closest('tr').next().find('.richMsgLinkTxt'); // 點擊showDialogBtn的input
 		});
 	}
 	
-	//取得所有連結
+	// 取得所有連結
 	var getUrlList = function() {
 		$.ajax({
             type: 'GET',
@@ -416,7 +416,7 @@ $(function(){
 		});
 	}
 	
-	//設定Dialog顯示列的點擊事件
+	// 設定Dialog顯示列的點擊事件
 	var setUrlDialogTrClickEvent = function() {
 		$('.urlDialogTr').click(function(e) {
 			$('#urlDialog').dialog('close');
@@ -426,7 +426,7 @@ $(function(){
 		});
 	};
 	
-	//設定table的css
+	// 設定table的css
 	var setDialogTableStyle = function() {
 		var tableStyle = {
 			"margin": "0 auto",
@@ -461,49 +461,62 @@ $(function(){
 	
 	var originalImgHeight = 0;
 	var originalImgWidth = 0;
-	//上傳圖片
+	var reader = new FileReader();
+	// 上傳圖片
 	$("#titleImage").on("change", function(e) {
 		var input = e.currentTarget;
     	if (input.files && input.files[0]) {
-    		if(input.files[0].size < 1048576) {
-	    		var fileName = input.files[0].name;
-	    		console.info("fileName : " + fileName);
-	    		var form_data = new FormData();
-	    		
-	    		form_data.append("filePart",input.files[0]);
-	
-	    		$('.LyMain').block($.BCS.blockMsgUpload);
-	    		$.ajax({
-	                type: 'POST',
-	                url: bcs.bcsContextPath + "/edit/createResource?resourceType=IMAGE",
-	                cache: false,
-	                contentType: false,
-	                processData: false,
-	                data: form_data
-	    		}).success(function(response){
-	            	console.info(response);
-	            	alert("上傳成功!");
-	            	$('.imgId').val(response.resourceId);
-	            	$('.mdFRM03Img').find('img').attr('src', bcs.bcsContextPath + '/getResource/IMAGE/' + response.resourceId);
-	            	originalImgWidth = response.resourceWidth;
-	            	originalImgHeight = response.resourceHeight;
-	            	setImgHeightAndWidth(response.resourceId, originalImgWidth, originalImgHeight)
-	    		}).fail(function(response){
-	    			console.info(response);
-	    			$.FailResponse(response);
-	    			$('.LyMain').unblock();
-	    		}).done(function(){
-	    			$('.LyMain').unblock();
-	    		});
-    		} else {
-    			alert("圖片大小不可大於 1MB！");
-    		}
-        } 
+    		reader.readAsDataURL(input.files[0]);
+	    		reader.onload = function(ev){
+	            	var txt = ev.target.result;
+	                var img = new Image();
+	                img.src = txt;
+	                img.onload = function() {
+		                if (img.width >= 1041 || img.height >= 2081) {
+	                		alert("尺寸不正確 " + img.width + "*" + img.height);
+	                        return false;
+		                }
+	                }
+	    		if(input.files[0].size < 1048576) {
+		    		var fileName = input.files[0].name;
+		    		console.info("fileName : " + fileName);
+		    		var form_data = new FormData();
+		    		
+		    		form_data.append("filePart",input.files[0]);
+		
+		    		$('.LyMain').block($.BCS.blockMsgUpload);
+		    		$.ajax({
+		                type: 'POST',
+		                url: bcs.bcsContextPath + "/edit/createResource?resourceType=IMAGE",
+		                cache: false,
+		                contentType: false,
+		                processData: false,
+		                data: form_data
+		    		}).success(function(response){
+		            	console.info(response);
+		            	alert("上傳成功!");
+		            	$('.imgId').val(response.resourceId);
+		            	$('.mdFRM03Img').find('img').attr('src', bcs.bcsContextPath + '/getResource/IMAGE/' + response.resourceId);
+		            	originalImgWidth = response.resourceWidth;
+		            	originalImgHeight = response.resourceHeight;
+		            	setImgHeightAndWidth(response.resourceId, originalImgWidth, originalImgHeight)
+		    		}).fail(function(response){
+		    			console.info(response);
+		    			$.FailResponse(response);
+		    			$('.LyMain').unblock();
+		    		}).done(function(){
+		    			$('.LyMain').unblock();
+		    		});
+	    		} else {
+	    			alert("圖片大小不可大於 1MB！");
+	    		}
+	        } 
+    	} 
 	});
 	
-	//設定dialog的圖片長與寬
+	// 設定dialog的圖片長與寬
 	var setImgHeightAndWidth = function(imgId, width, height) {
-		//圖片大小除以2方便在畫面上的顯示
+		// 圖片大小除以2方便在畫面上的顯示
 		width = width / 2;
 		height = height / 2;
 		$('#customizeFrameTypeLimit').css({
@@ -513,17 +526,17 @@ $(function(){
 		
 		$('#customizeImg').css({
 			"background-image": "url(" + bcs.bcsContextPath + '/getResource/IMAGE/' + imgId + ")", 
-			"background-size": "contain", //圖大於div，fit大小
-//			"background-size": "cover", //圖小於div，fit大小
+			"background-size": "contain", // 圖大於div，fit大小
+// "background-size": "cover", //圖小於div，fit大小
 			"background-repeat": "no-repeat",
-			"opacity": "0.4", //透明度
+			"opacity": "0.4", // 透明度
 			"width": width, 
 			"height": height
 		});
 		
 		$('.urlDraggable').resizable({
-			handles: "all", //所有邊都可以縮放
-			maxHeight: height - 2, //有邊框的關係，所以再減2
+			handles: "all", // 所有邊都可以縮放
+			maxHeight: height - 2, // 有邊框的關係，所以再減2
 			maxWidth: 518,
 			minHeight: 30,
 			minWidth: 30
@@ -538,7 +551,7 @@ $(function(){
 		$('#customizeFrameTypeLimit').append(appendHtml);
 	}
 	
-	//將座標資訊轉為逗點分隔
+	// 將座標資訊轉為逗點分隔
 	var getMutliPoint = function(pointsArray) {
 		var mulitStartX = pointsArray[0].startX;
 		var mulitStartY = pointsArray[0].startY;
@@ -554,7 +567,7 @@ $(function(){
 		return multiPoint;
 	}
 	
-	//將產生圖片預覽的資料轉換成陣列
+	// 將產生圖片預覽的資料轉換成陣列
 	var parseDataToArray = function() {
 		var previewRichMsgImageData = [];
 		
@@ -589,7 +602,7 @@ $(function(){
 		previewRichMsgImageData.push("");
 		
 		var multiPoint = [];
-		//選擇自訂框架
+		// 選擇自訂框架
 		if ($("input[name='templateFrameType']:checked").val() == "09") {
 			var draggablePositions = getUrlDraggablePosition();
 			multiPoint = getMutliPoint(draggablePositions)
@@ -601,9 +614,9 @@ $(function(){
 		previewRichMsgImageData.push(multiPoint[2]);
 		previewRichMsgImageData.push(multiPoint[3]);
 		
-		//圖片高
+		// 圖片高
 		previewRichMsgImageData.push(originalImgHeight);
-		//圖片寬
+		// 圖片寬
 		previewRichMsgImageData.push(originalImgWidth);
 		
 		return previewRichMsgImageData;
@@ -634,7 +647,7 @@ $(function(){
 		return true;
 	}
 	
-	//圖片預覽
+	// 圖片預覽
 	$('.previewImg').click(function() {
 		btnTarget = "btn_query";
 		if (!validator.form()) {
@@ -661,7 +674,7 @@ $(function(){
 		previewDialog.dialog('open');
 	});
 	
-	//文字預覽
+	// 文字預覽
 	$('.previewTxt').click(function() {
 		if(!validateInput()){
 			return;
@@ -731,7 +744,7 @@ $(function(){
 		}
 		
 		var saveConfirm = confirm("請確認是否儲存");
-		if (!saveConfirm) return; //點擊取消
+		if (!saveConfirm) return; // 點擊取消
 		
 		var richMsgImgUrls = [];
 		
@@ -740,7 +753,7 @@ $(function(){
 		var richMsgLinkTitles = richMsgUrlTxtTr.find('.richMsgLinkTxt');
 		var richMsgLetters = $('.typeSideTxt');
 		
-		//選擇自訂框架
+		// 選擇自訂框架
 		if ($("input[name='templateFrameType']:checked").val() == "09") {
 			var draggablePositions = getUrlDraggablePosition();
 			for (var i in draggablePositions) {
@@ -810,11 +823,11 @@ $(function(){
 		});
 	});
 	
-	//取得各個連結區塊的座標
+	// 取得各個連結區塊的座標
 	var getUrlDraggablePosition = function() {
 		var draggablePositions = [];
 		$.each($(".urlDraggable"), function() {
-			//div長寬為原圖的一半520x520，因此儲存座標值是須x2
+			// div長寬為原圖的一半520x520，因此儲存座標值是須x2
 			var startX = Number($(this).css("left").replace("px", "").replace("auto", "0")) * 2;
 			var startY = Number($(this).css("top").replace("px", "").replace("auto", "0")) * 2;
 			var height = Number($(this).height()) * 2;
@@ -832,23 +845,23 @@ $(function(){
 	}
 	
 	$('#urlDialog').dialog({
-    	autoOpen: false, //初始化不會是open
-    	resizable: false, //不可縮放
-    	modal: true, //畫面遮罩
-    	draggable: false, //不可拖曳
+    	autoOpen: false, // 初始化不會是open
+    	resizable: false, // 不可縮放
+    	modal: true, // 畫面遮罩
+    	draggable: false, // 不可拖曳
     	minWidth : 500,
     	position: { my: "top", at: "top", of: window  }
     });
 	$('#customizeDialog').dialog({
-		autoOpen: false, //初始化不會是open
-		resizable: false, //不可縮放
-		modal: true, //畫面遮罩
-		draggable: false, //不可拖曳
+		autoOpen: false, // 初始化不會是open
+		resizable: false, // 不可縮放
+		modal: true, // 畫面遮罩
+		draggable: false, // 不可拖曳
 		minWidth : 590,
     	position: { my: "top", at: "top", of: window  }
 	});
 
-	//增加自訂連結
+	// 增加自訂連結
 	$('#addUrl').click(function() {
 		linkNumbers++;
 		generateRichMsgUrl();
@@ -856,19 +869,19 @@ $(function(){
 		setDraggable(letter);
 	});
 	
-	//設定連結區塊
+	// 設定連結區塊
 	var setDraggable = function(letter) {
 		var urlDraggable = "<div class='urlDraggable' style='position: absolute; left: 0px; top: 0px; width: 50px; height: 50px; border: 1px solid'><p style='position: absolute; top: 50%; left: 50%; margin-top: -16px; margin-left: -7px; font-size:24px'>" + letter + "</p></div>"
 		$('#customizeFrameTypeLimit').append(urlDraggable);
 		
 		$('.urlDraggable').last().draggable({
 			containment: "#customizeFrameTypeLimit", 
-			scroll: false //不會出現卷軸
+			scroll: false // 不會出現卷軸
 		});
 		
-		var maxHeight = $('#customizeFrameTypeLimit').height() - 2; //有邊框的關係，所以再減2
+		var maxHeight = $('#customizeFrameTypeLimit').height() - 2; // 有邊框的關係，所以再減2
 		$('.urlDraggable').last().resizable({
-			handles: "all", //所有邊都可以縮放
+			handles: "all", // 所有邊都可以縮放
 			maxHeight: maxHeight,
 			maxWidth: 518,
 			minHeight: 30,
@@ -876,7 +889,7 @@ $(function(){
 	    });
 	}
 	
-	//刪除一個自訂連結
+	// 刪除一個自訂連結
 	$('#removeUrl').click(function() {
 		if (linkNumbers == 1) {
 			alert("至少要有一個連結！");
@@ -888,7 +901,7 @@ $(function(){
 		$('.urlDraggable').last().remove();
 	});
 	
-	//顯示連結拖曳的Dialog
+	// 顯示連結拖曳的Dialog
 	$('#showCustomizeDialog').click(function() {
 		
 		btnTarget = "showCustomizeDialog";
@@ -903,7 +916,7 @@ $(function(){
 		$('#customizeDialog').dialog('open');
 	});
 	
-	//customizeDialog的確認鈕
+	// customizeDialog的確認鈕
 	$('#savePosition').click(function() {
 		var draggablePositions = getUrlDraggablePosition();
 		for (var i in draggablePositions) {
@@ -917,7 +930,7 @@ $(function(){
 		$('#customizeDialog').dialog('close');
 	});
 	
-	//取消鈕
+	// 取消鈕
 	$('input[name="cancel"]').click(function() {
 
 		var r = confirm("請確認是否取消");
