@@ -29,7 +29,7 @@ public interface SendGroupRepository extends EntityRepository<SendGroup, Long>{
 	public String findGroupTitleByGroupId(Long groupId);
 	
 	@Transactional(readOnly = true, timeout = 300)
-	@Query(value = "SELECT * FROM BCS_SEND_GROUP WHERE (GROUP_TYPE IS NULL OR GROUP_TYPE = '') ORDER BY GROUP_ID ASC;", nativeQuery = true)
+	@Query(value = "SELECT * FROM BCS_SEND_GROUP WHERE (GROUP_TYPE IS NULL OR GROUP_TYPE = '') ORDER BY MODIFY_TIME DESC;", nativeQuery = true)
 	public List<SendGroup> findAllByGroupTypeNull();
 	
 	@Transactional(readOnly = true, timeout = 300)
