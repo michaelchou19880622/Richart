@@ -12,7 +12,7 @@
 		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageMGM1')"></div>
 
         <!-- Right Content -->
-        <div class="LyMain" role="main">
+        <div class="LyMainMGM" role="main">
             <form id="formContentCampaign">
                 <section>
                     <header class="ContentHead">
@@ -24,7 +24,7 @@
                     </div>
                     <div class="mainFrame CMsg Pre">
                         <table border="1">
-                            <colgroup><col width="190"><col></colgroup>
+                            <colgroup><col width="180"><col></colgroup>
                             <tbody >
                                 <tr>
                                     <th>MGM活動標題 <span style="color: red">*</span></th>
@@ -97,7 +97,7 @@
 												    </option>
                                                 </select>
                                             </div>&nbsp; 
-                                        <span id="campaignTimeNotification" style="color: red">( 已有參與活動用戶，無法變更此項資料 )</span>
+                                        <span id="campaignTimeNotification" style="color: red">(已有參與活動用戶，結束時間不能設定小於當前時間)</span>
                                         </span>
                                     </td>
                                 </tr>
@@ -107,7 +107,7 @@
                                         <div class="MdFRM01Input">
                                             <input type="text" id="shareTimes" name="shareTimes" placeholder="請輸入" maxlength="5">
                                         </div>&nbsp; 
-                                        <span id="shareTimesNotification" style="color: red">( 已有參與活動用戶，無法變更此項資料 )</span>
+                                        <span id="shareTimesNotification" style="color: red">(已有參與活動用戶，無法變更此項資料)</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -122,7 +122,7 @@
 	                                    <label class="mdFRM05Input" style="text-align:left;float:left;">
 	                						<input type="radio" name="judgement" class="judgement" value="BINDED" style="cursor: pointer;">綁定
 	            						</label>&nbsp; 
-                                        <span id="judgementNotification" style="color: red">( 已有參與活動用戶，無法變更此項資料 )</span>
+                                        <span id="judgementNotification" style="color: red">(已有參與活動用戶，無法變更此項資料)</span>
 									</td>	
                                 </tr>   
                                 <tr>
@@ -140,7 +140,7 @@
 	                                        <select name="mainList" id="mainList" style="width: 300px;">
 	                                            <option value="">請選擇</option>
 	                                        </select>&nbsp;
-                                        	<span id="autoSendPointNotification" style="color: red">( 已有參與活動用戶，無法變更此項資料 )</span>  
+                                        	<span id="autoSendPointNotification" style="color: red">(已有參與活動用戶，無法變更此項資料)</span>  
                                         </div>
 									</td>
 									

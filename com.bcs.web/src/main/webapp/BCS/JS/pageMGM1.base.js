@@ -31,9 +31,9 @@ $(function(){
         $('select[name=campaignStartTimeHour]').attr("disabled",true);
         $('select[name=campaignStartTimeMinute]').attr("disabled",true);
         
-        $('input[name=campaignEndTime]').attr("disabled",true);
-        $('select[name=campaignEndTimeHour]').attr("disabled",true);
-        $('select[name=campaignEndTimeMinute]').attr("disabled",true);
+//        $('input[name=campaignEndTime]').attr("disabled",true);
+//        $('select[name=campaignEndTimeHour]').attr("disabled",true);
+//        $('select[name=campaignEndTimeMinute]').attr("disabled",true);
         
         $('input[name=judgement]').attr("disabled",true);
         $('input[name=shareTimes]').attr("disabled",true);
@@ -60,6 +60,31 @@ $(function(){
         
         $('select[name=mainList]').attr("disabled",false);
     }
+    
+    var campaignTimeValidate = function() {
+		
+		var checkMomentCampaignStartTime = getMomentByElement('campaignStartTime');
+		console.info('checkMomentCampaignStartTime = ', checkMomentCampaignStartTime);
+		
+		var checkMomentCampaignEndTime = getMomentByElement('campaignEndTime');
+		console.info('checkMomentCampaignEndTime = ', checkMomentCampaignEndTime);
+		
+		var checkMomentCurrentTime = moment(new Date()).format('YYYY-MM-DD HH:mm');
+		console.info('checkMomentCurrentTime = ', checkMomentCurrentTime);
+		
+		if (checkMomentCampaignEndTime.isBefore(checkMomentCurrentTime)) {
+			alert('活動結束時間不可設定小於當前時間！');
+			return false;
+		}
+		
+		if (checkMomentCampaignStartTime.isAfter(checkMomentCampaignEndTime)) {
+			alert('活動結束時間不可設定小於開始時間！');
+			return false;
+		}
+		
+		return true;
+	};
+    
 	
 	var dateFormat = "YYYY-MM-DD HH:mm:ss";
 	
@@ -349,7 +374,11 @@ $(function(){
 		if (!confirm(actionType == 'Create' ? '請確認是否建立' : '請確認是否儲存')) {
 			return false;
 		}
-
+		
+		if (!campaignTimeValidate()) {
+			return false;
+		}
+		
 		$('.LyMain').block($.BCS.blockMsgSave);
 		$.ajax({
 			type : "POST",
