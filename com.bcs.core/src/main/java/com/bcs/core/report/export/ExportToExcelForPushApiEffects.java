@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.persistence.Query;
 import java.lang.System;
+import java.text.SimpleDateFormat;
+
 import org.apache.log4j.Logger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
@@ -152,6 +154,8 @@ public class ExportToExcelForPushApiEffects {
 		CreationHelper createHelper = workbook.getCreationHelper();		
 		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy/mm/dd hh:mm:ss"));
 
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		
 		for(PushMessageRecord record : records) {
 			row = sheet.createRow(rowNumber);
 			
@@ -161,7 +165,8 @@ public class ExportToExcelForPushApiEffects {
 			Cell sendTimeCell = row.createCell(2);
 			// TODO : Need to confirm with PM : createTime() or SendTime()
 //			sendTimeCell.setCellValue(record.getSendTime());
-			sendTimeCell.setCellValue(record.getCreateTime());
+//			sendTimeCell.setCellValue(record.getCreateTime());
+			sendTimeCell.setCellValue(simpleDateFormat.format(record.getCreateTime()));
 			sendTimeCell.setCellStyle(cellStyle);
 			
 			row.createCell(3).setCellValue(record.getUID());
