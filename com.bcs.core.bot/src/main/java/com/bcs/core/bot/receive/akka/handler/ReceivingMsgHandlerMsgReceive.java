@@ -133,11 +133,24 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 		try {
 			logger.debug("=== Check is line user exist? ===");
 			LineUser lineUser = lineUserService.findByMidAndCreateUnbind(MID);
-			logger.debug("lineUser = " + ((lineUser == null)? "null" : lineUser));
+			logger.info("BEFORE CHECK STATUS : lineUser = " + ((lineUser == null)? "null" : lineUser));
 			
 			String userStatus = LineUser.STATUS_UNBIND;
 			
 			if (lineUser != null) {
+				/* Check is lineUser's status equal to BLOCK?  */
+				if (lineUser.getStatus().equals(LineUser.STATUS_BLOCK)) {
+					String isBindedStatus = lineUser.getIsBinded();
+					logger.info("isBindedStatus = {}", isBindedStatus);
+					
+					lineUser.setStatus(isBindedStatus);
+					lineUserService.save(lineUser);
+					
+					lineUser = lineUserService.findByMidAndCreateUnbind(MID);
+				}
+				
+				logger.info("AFTER CHECK STATUS : lineUser = {}", lineUser);
+				
 				userStatus = lineUser.getStatus();
 				
 				LineProfileService lineProfileService = ApplicationContextProvider.getApplicationContext().getBean(LineProfileService.class);
@@ -146,7 +159,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				logger.debug("displayName = " + displayName);
 			}
 
-			logger.debug("userStatus = {}", userStatus);
+			logger.info("userStatus = {}", userStatus);
 			
 			logger.debug("=== Check content's event type and postback data. ===");
 			logger.debug("content.getEventType() = {}", content.getEventType());
