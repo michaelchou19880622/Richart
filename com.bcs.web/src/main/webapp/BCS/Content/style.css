@@ -316,7 +316,7 @@ input:focus, textarea:focus {
 
 .mainFrame table td>input[type='text'] {
 	display: block;
-	width: 100%;
+	width: 99%;
 	height: 34px;
 	font-size: 14px;
 	line-height: 1.42857143;
@@ -533,6 +533,25 @@ input[id="winningLetterEndTime"]:disabled {
 	padding: 0 12px;
 	margin-bottom: 5px;
 	min-width: 70px;
+	cursor: pointer;
+}
+
+.btn_add[disabled=disabled], btn_add:disabled, .btn_add.disabled:hover {
+	float: right;
+	color: #666666;
+	background: #cccccc;
+	border: 1px solid #999999;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	font-size: 14px;
+	font-weight: normal;
+	text-shadow: none !important;
+	line-height: 33px;
+	padding: 0 12px;
+	margin-bottom: 5px;
+	min-width: 70px;
+	cursor: not-allowed;
+	opacity: 0.65; 
 }
 
 .btn_upload_keywords {
@@ -1546,4 +1565,31 @@ pictureDUF {
 	font-size: 14px;
 	line-height: 1.42857143;
 	color: #555;
+}
+
+/* 圖文選單狀態下拉式選單 */
+.richmenuOption {
+	position: relative;
+	display: inline-block;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	min-width: 100px;
+	background: white url(../images/ico_mdFRM03Select.png) no-repeat right center;
+	border: 1px solid #ced2dc;
+	border-radius: 0;
+	padding: 3px 24px 3px 8px;
+}
+
+.richmenuOption .richmenuOptionLabel {
+	font-size: 13px;
+	color: #a1a7b5;
+}
+
+.richmenuOption .richmenuOptionSelect {
+	display: block;
+	position: absolute;
+	top: 7px;
+	left: 10px;
+	width: 100%;
+	opacity: 0;
 }
