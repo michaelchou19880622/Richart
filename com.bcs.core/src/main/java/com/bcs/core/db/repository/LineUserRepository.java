@@ -57,4 +57,13 @@ public interface LineUserRepository extends EntityRepository<LineUser, String>, 
 	@Transactional(readOnly = true, timeout = 30)
     @Query(value = "select * from BCS_LINE_USER where CREATE_TIME >= ?1 and CREATE_TIME < ?2 order by CREATE_TIME", nativeQuery = true)
 	public List<LineUser> findByCreateTime(String start, String end);
+	
+	@Transactional(readOnly = true, timeout = 300)
+	@Query("select count(lu.mid) from LineUser lu where lu.status in ( ?1 )")
+	Long getCountByStatus(List<String> status);
+	
+	@Transactional(readOnly = true, timeout = 300)
+	@Query("select lu.mid from LineUser lu where lu.status in ( ?1 )")
+	List<String> findMidsByStatus(List<String> status);
+	
 }

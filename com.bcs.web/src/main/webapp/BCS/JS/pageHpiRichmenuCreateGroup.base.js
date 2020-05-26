@@ -9,6 +9,14 @@ $(function() {
 	
 	var uploadedUidFiles = [];
 	
+	var elementStatus = document.getElementById("status");
+	
+	var selectStatusText;
+	var selectStatusValue;
+	
+	var selectStatusValueIndex = elementStatus.selectedIndex;
+	console.info('default selectStatusValueIndex = ', selectStatusValueIndex);
+	
 	/**
 	 * 紀錄 最後按鈕
 	 */
@@ -111,7 +119,7 @@ $(function() {
 	// 發送類型
 	$('[name="groupType"]').click(function() {
 
-		var confirmStr = "是否確定更改群組類型?\n確認更改後，將會清除群組條件。\n如需依照條件篩選，需要重新添加並設定。";
+		var confirmStr = "是否確定更改群組類型?\n確認更改後，將會清除群組條件。\n如需依照匯入名單或條件篩選，需要重新添加並設定。";
 		
 		var r = confirm(confirmStr);
 		if (!r) {
@@ -125,11 +133,43 @@ $(function() {
 
 		if (selectedGroupType == "UID_LIST") {
 			$('.upload_mid').show;
-			btnUploadMid.style.display = "block";
+
+			$('#btnAddRule').attr('disabled', false);
+			$('#btnUploadMid').attr('disabled', false);
 			
+			$('#btnAddRule').prop('title', '設定之條件將會關聯FIELD_SET資料表');
+			$('#btnUploadMid').prop('title', '目前僅支持檔案類型(xls, xlsx, txt)');
+			
+			$('#richmenuOption').css('visibility', 'hidden');
 		} else if (selectedGroupType == "CONDITIONS") {
 			$('.upload_mid').remove;
-			btnUploadMid.style.display = "none";
+
+			$('#btnAddRule').attr('disabled', false);
+			$('#btnUploadMid').attr('disabled', true);
+			
+			$('#btnAddRule').prop('title', '設定之條件將會關聯FIELD_SET資料表');
+			$('#btnUploadMid').prop('title', '選擇此群組類型，無法匯入UID');
+			
+			$('#richmenuOption').css('visibility', 'hidden');
+		} else if (selectedGroupType == "BINDSTATUS") {
+			$('.upload_mid').remove;
+			
+			$('#btnAddRule').attr('disabled', true);
+			$('#btnUploadMid').attr('disabled', true);
+			
+			$('#btnAddRule').prop('title', '選擇此群組類型，無法加入條件');
+			$('#btnUploadMid').prop('title', '選擇此群組類型，無法匯入UID');
+			
+			$('#richmenuOption').css('visibility', 'visible');
+			
+			selectStatusText = elementStatus.options[elementStatus.selectedIndex].text;
+			console.info('selectStatusText = ', selectStatusText);
+			
+			selectStatusValue = elementStatus.options[elementStatus.selectedIndex].value;
+			console.info('selectStatusValue = ', selectStatusValue);
+
+			selectStatusValueIndex = elementStatus.selectedIndex;
+			console.info('selectStatusValueIndex = ', selectStatusValueIndex);
 		}
 
 		$('.dataTemplate').remove();
@@ -139,11 +179,15 @@ $(function() {
 	});
 
 	$('.btn_richmenu_save').click(function() {
-		var queryDataDoms = $('.dataTemplate');
-
-		if (queryDataDoms.length == 0) {
-			alert('請設定群組條件');
-			return;
+		
+		if (selectedGroupType != "BINDSTATUS") {
+		
+			var queryDataDoms = $('.dataTemplate');
+	
+			if (queryDataDoms.length == 0) {
+				alert('請設定群組條件');
+				return;
+			}
 		}
 
 		btnTarget = "btn_richmenu_save";
@@ -171,28 +215,38 @@ $(function() {
 			groupId = null;
 		}
 
-		// Get Query Data
 		var sendGroupDetail = [];
-		$.each(queryDataDoms, function(i, o) {
-			var dom = $(o);
+		
+		if (selectedGroupType != "BINDSTATUS") {
+			// Get Query Data
+			$.each(queryDataDoms, function(i, o) {
+				var dom = $(o);
+				var queryData = {};
+
+				if (dom.find('.labelField').is(':visible')) {
+					queryData.queryField = 'UploadMid';
+					queryData.queryOp = dom.find('.labelValue').attr('fileName');
+					queryData.queryValue = dom.find('.labelValue').attr('referenceId') + ":" + dom.find('.labelValue').attr('count');
+				} else {
+					queryData.queryField = dom.find('.queryField').val();
+					queryData.queryOp = dom.find('.queryOp').val();
+					queryData.queryValue = dom.find('.queryValue:visible').val();
+				}
+				
+				queryData.groupType = selectedGroupType;
+
+				sendGroupDetail.push(queryData);
+			});
+		} else {
 			var queryData = {};
-
-			if (dom.find('.labelField').is(':visible')) {
-				queryData.queryField = 'UploadMid';
-				queryData.queryOp = dom.find('.labelValue').attr('fileName');
-				queryData.queryValue = dom.find('.labelValue').attr('referenceId') + ":" + dom.find('.labelValue').attr('count');
-			} else {
-				queryData.queryField = dom.find('.queryField').val();
-				queryData.queryOp = dom.find('.queryOp').val();
-				queryData.queryValue = dom.find('.queryValue:visible').val();
-			}
-			
+			queryData.queryField = 'Status';
+			queryData.queryOp = '=';
+			queryData.queryValue = selectStatusValue;
 			queryData.groupType = selectedGroupType;
-
 			sendGroupDetail.push(queryData);
-		});
+		}
 
-		console.info('sendGroupDetail', sendGroupDetail);
+		console.info('sendGroupDetail = ', sendGroupDetail);
 
 		var postData = {};
 		postData.groupId = groupId;
@@ -245,6 +299,7 @@ $(function() {
 		var queryDataDoms = $('.dataTemplate');
 
 		var groupId = $.urlParam("groupId");
+		console.info('groupId', groupId);
 
 		var groupTitle = $('#groupTitle').val();
 		console.info('groupTitle', groupTitle);
@@ -255,14 +310,17 @@ $(function() {
 		if (groupId < 0) { // 預設群組不需要設定
 			postData.groupId = groupId;
 		} else {
-			if (queryDataDoms.length == 0) {
-				alert('請設定群組條件');
-				return;
-			}
+			
+			if (selectedGroupType != 'BINDSTATUS') {
+				if (queryDataDoms.length == 0) {
+					alert('請設定群組條件');
+					return;
+				}
 
-			btnTarget = "btn_richmenu_query";
-			if (!validator.form()) {
-				return;
+				btnTarget = "btn_richmenu_query";
+				if (!validator.form()) {
+					return;
+				}
 			}
 		}
 
@@ -298,24 +356,42 @@ $(function() {
 		if (!postData) {
 			return;
 		}
+		
+		var GetQueryResultUrl = bcs.bcsContextPath;
+		var postData;
+		
+		if (selectedGroupType == 'BINDSTATUS') {
+			GetQueryResultUrl += '/market/getSendGroupQueryResultWithBindingStatus?statusIndex=' + selectStatusValueIndex;
+			
+			postData = false;
+			
+		} else {
+			if (!postData.sendGroupDetail) {
+				console.info('postData.sendGroupDetail = null');
+				return;
+			}
+			
+			GetQueryResultUrl += '/market/createSendGroupMidExcelTemp';
+			
+			postData = JSON.stringify(postData);
+		}
 
 		$.ajax({
 			type : "POST",
-			url : bcs.bcsContextPath + '/market/createSendGroupMidExcelTemp',
+			url : encodeURI(GetQueryResultUrl),
 			cache : false,
 			contentType : 'application/json',
 			processData : false,
-			data : JSON.stringify(postData)
+			data : postData
 		}).success(function(response) {
-			console.info(response);
-
-			if (response.count > 0) {
-				var url = bcs.bcsContextPath + '/market/exportToExcelForSendGroup?tempId=' + response.tempId;
+			console.info('response = ', response);
+			responseCount = (selectedGroupType == 'BINDSTATUS')? response : response.count;
+			
+			if (responseCount > 0) {
+				var url = encodeURI(bcs.bcsContextPath + '/market/exportToExcelForSendGroupWithBindingStatus?statusIndex=' + selectStatusValueIndex);
 
 				var downloadReport = $('#downloadReport');
 				downloadReport.attr("src", url);
-			} else {
-				alert('查詢結果共 ' + response.count + ' 筆');
 			}
 		}).fail(function(response) {
 			console.info(response);
@@ -334,19 +410,41 @@ $(function() {
 	$('.btn_richmenu_query').click(function() {
 		var postData = getDetailFunc();
 		console.info('postData', postData);
+		
 		if (!postData) {
 			return;
+		};
+		
+		var GetQueryResultUrl = bcs.bcsContextPath;
+		var postData;
+		
+		if (selectedGroupType == 'BINDSTATUS') {
+			GetQueryResultUrl += '/market/getSendGroupQueryResultWithBindingStatus?statusIndex=' + selectStatusValueIndex;
+			
+			postData = false;
+			
+		} else {
+			if (!postData.sendGroupDetail) {
+				console.info('postData.sendGroupDetail = null');
+				return;
+			}
+			
+			GetQueryResultUrl += '/market/getSendGroupConditionResult';
+			
+			postData = JSON.stringify(postData);
 		}
+		
+		console.info('GetQueryResultUrl = ', GetQueryResultUrl);
 
 		// 遮蓋效果UI
 		$('.LyMain').block($.BCS.blockMsgResultQuerying);
 		$.ajax({
 			type : "POST",
-			url : bcs.bcsContextPath + '/market/getSendGroupConditionResult',
+			url : encodeURI(GetQueryResultUrl),
 			cache : false,
 			contentType : 'application/json',
 			processData : false,
-			data : JSON.stringify(postData)
+			data : postData
 		}).success(function(response) {
 			$('.LyMain').unblock();
 			console.info('response = ', response);
@@ -472,6 +570,22 @@ $(function() {
 			setGroupQueryComponent(select);
 		}
 	};
+	
+	var optionStatusSelectChange_func = function(){
+		selectStatusText = $(this).find('option:selected').text();
+		console.info('selectStatusText = ', selectStatusText);
+		
+		$(this).closest('.richmenuOption').find('.richmenuOptionLabel').html(selectStatusText);
+		
+		selectStatusValueIndex = elementStatus.selectedIndex;
+		console.info('selectStatusValueIndex = ', selectStatusValueIndex);
+		
+		selectStatusValue = elementStatus.options[elementStatus.selectedIndex].value;
+		console.info('default selectStatusValue = ', selectStatusValue);
+	};
+
+	$('.status').change(optionStatusSelectChange_func);
+	
 
 	$('.add_rule').click(function() {
 		var queryBody = templateBody.clone(true);
@@ -589,53 +703,124 @@ $(function() {
 					$('#groupTitle').val(response.groupTitle);
 					$('#groupDescription').val(response.groupDescription);
 					
-					if (response.groupType == 'CONDITIONS') {
-						$('#groupType_UIDLIST').prop('checked', false);
-						$('#groupType_CONDITIONS').prop('checked', true);
-						
-						btnUploadMid.style.display = "none";
-					}
-					else {
+					selectedGroupType = response.groupType;
+					console.info('selectedGroupType = ', selectedGroupType);
+					
+					if (selectedGroupType == 'UID_LIST') {
 						$('#groupType_UIDLIST').prop('checked', true);
 						$('#groupType_CONDITIONS').prop('checked', false);
-						
-						btnUploadMid.style.display = "block";
-					}
+						$('#groupType_BINDSTATUS').prop('checked', false);
 
+						$('.upload_mid').show;
+
+						$('#btnAddRule').attr('disabled', false);
+						$('#btnUploadMid').attr('disabled', false);
+						
+						$('#btnAddRule').prop('title', '設定之條件將會關聯FIELD_SET資料表');
+						$('#btnUploadMid').prop('title', '目前僅支持檔案類型(xls, xlsx, txt)');
+						
+						$('#richmenuOption').css('visibility', 'hidden');
+					} else if (selectedGroupType == "CONDITIONS") {
+						$('#groupType_UIDLIST').prop('checked', false);
+						$('#groupType_CONDITIONS').prop('checked', true);
+						$('#groupType_BINDSTATUS').prop('checked', false);
+
+						$('.upload_mid').remove;
+
+						$('#btnAddRule').attr('disabled', false);
+						$('#btnUploadMid').attr('disabled', true);
+						
+						$('#btnAddRule').prop('title', '設定之條件將會關聯FIELD_SET資料表');
+						$('#btnUploadMid').prop('title', '選擇此群組類型，無法匯入UID');
+						
+						$('#richmenuOption').css('visibility', 'hidden');
+					} else if (selectedGroupType == "BINDSTATUS") {
+						$('#groupType_UIDLIST').prop('checked', false);
+						$('#groupType_CONDITIONS').prop('checked', false);
+						$('#groupType_BINDSTATUS').prop('checked', true);
+
+						$('.upload_mid').remove;
+
+						$('#btnAddRule').attr('disabled', true);
+						$('#btnUploadMid').attr('disabled', true);
+						
+						$('#btnAddRule').prop('title', '選擇此群組類型，無法加入條件');
+						$('#btnUploadMid').prop('title', '選擇此群組類型，無法匯入UID');
+						
+						$('#richmenuOption').css('visibility', 'visible');
+						
+//						selectStatusValueIndex = elementStatus.selectedIndex;
+//						console.info('default selectStatusValueIndex = ', selectStatusValueIndex);
+//						
+//						selectStatusValue = elementStatus.options[elementStatus.selectedIndex].value;
+//						console.info('default selectStatusValue = ', selectStatusValue);
+					}
+					
 					if (groupId > 0) {
 						$.each(response.sendGroupDetail, function(i, o) {
 
-							var queryBody = templateBody.clone(true);
-							queryBody.find(".datepicker").datepicker({
-								'dateFormat' : 'yy-mm-dd'
-							});
-							queryBody.find('.optionSelect').change(optionSelectChange_func);
+							if (selectedGroupType == 'BINDSTATUS') {
+								if ('Status' == o.queryField) {
+									switch (o.queryValue) {
+										case 'ALL':
+											selectStatusValueIndex = 0;
+											break;
+										case 'BINDED':
+											selectStatusValueIndex = 1;
+											break;
+										case 'UNBIND':
+											selectStatusValueIndex = 2;
+											break;
+									}
 
-							if ('UploadMid' == o.queryField) {
+									console.info('default selectStatusValueIndex = ', selectStatusValueIndex);
+									
+									elementStatus.selectedIndex = selectStatusValueIndex;
+									
+									elementStatus.options[selectStatusValueIndex].selected = 'selected';
+								}
+								
+								selectStatusText = elementStatus.options[elementStatus.selectedIndex].text;
+								console.info('default selectStatusText = ', selectStatusText);
 
-								var split = o.queryValue.split(':');
-
-								queryBody.find('.labelField').html("UID匯入");
-								queryBody.find('.labelField').show();
-								queryBody.find('.labelOp').html(o.queryOp);
-								queryBody.find('.labelOp').show();
-								queryBody.find('.labelValue').html(split[1] + " 筆 UID");
-								queryBody.find('.labelValue').show();
-								queryBody.find('.optionForRichmenuCreateGroup').remove();
-
-								queryBody.find('.labelValue').attr('fileName', o.queryOp);
-								queryBody.find('.labelValue').attr('referenceId', split[0]);
-								queryBody.find('.labelValue').attr('count', split[1]);
+								selectStatusValue = elementStatus.options[elementStatus.selectedIndex].value;
+								console.info('default selectStatusValue = ', selectStatusValue);
+								
+								$('#richmenuOption').find('.richmenuOptionLabel').html(selectStatusText);
+								
 							} else {
-								queryBody.find('.queryField').val(o.queryField).change();
-								queryBody.find('.queryOp').val(o.queryOp).change();
-								queryBody.find('.queryValue').val(o.queryValue).change();
+								var queryBody = templateBody.clone(true);
+								queryBody.find(".datepicker").datepicker({
+									'dateFormat' : 'yy-mm-dd'
+								});
+								queryBody.find('.optionSelect').change(optionSelectChange_func);
+	
+								if ('UploadMid' == o.queryField) {
+	
+									var split = o.queryValue.split(':');
+	
+									queryBody.find('.labelField').html("UID匯入");
+									queryBody.find('.labelField').show();
+									queryBody.find('.labelOp').html(o.queryOp);
+									queryBody.find('.labelOp').show();
+									queryBody.find('.labelValue').html(split[1] + " 筆 UID");
+									queryBody.find('.labelValue').show();
+									queryBody.find('.optionForRichmenuCreateGroup').remove();
+	
+									queryBody.find('.labelValue').attr('fileName', o.queryOp);
+									queryBody.find('.labelValue').attr('referenceId', split[0]);
+									queryBody.find('.labelValue').attr('count', split[1]);
+								} else {
+									queryBody.find('.queryField').val(o.queryField).change();
+									queryBody.find('.queryOp').val(o.queryOp).change();
+									queryBody.find('.queryValue').val(o.queryValue).change();
+								}
+	
+								queryBody.find('.btn_delete').click(btn_deteleFunc);
+	
+								$('#tableBody').append(queryBody);
+								setValidationOnNewRow();
 							}
-
-							queryBody.find('.btn_delete').click(btn_deteleFunc);
-
-							$('#tableBody').append(queryBody);
-							setValidationOnNewRow();
 						});
 					} else {
 						$('#groupTitle').attr('disabled', true);

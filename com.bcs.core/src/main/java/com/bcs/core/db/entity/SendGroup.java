@@ -22,6 +22,7 @@ public class SendGroup extends AbstractBcsEntity{
 
 	public static final String GROUP_TYPE_UID_LIST = "UID_LIST";
 	public static final String GROUP_TYPE_CONDITIONS = "CONDITIONS";
+	public static final String GROUP_TYPE_BINDSTATUS = "BINDSTATUS";
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

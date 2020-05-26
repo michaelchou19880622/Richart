@@ -115,7 +115,19 @@ $(function(){
 				groupData.find('.groupName a').attr('href', encodeURI(bcs.bcsContextPath + '/edit/hpiRichMenuCreateGroupPage?groupId=' + o.groupId + '&actionType=Edit'));
 				groupData.find('.groupName a').html(o.groupTitle);
 				
-				var groupTypeDisplay = (o.groupType == 'CONDITIONS')? "依照設定條件" : "依照匯入名單";
+				var groupTypeDisplay;// = (o.groupType == 'CONDITIONS')? "依照設定條件" : "依照匯入名單";
+				
+				switch (o.groupType){
+					case 'UID_LIST':
+						groupTypeDisplay = '依照匯入名單';
+						break;
+					case 'CONDITIONS':
+						groupTypeDisplay = '依照設定條件';
+						break;
+					case 'BINDSTATUS':
+						groupTypeDisplay = '依照綁定狀態';
+						break;
+				}
 				
 				groupData.find('.groupType').html(groupTypeDisplay);
 				

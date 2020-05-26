@@ -25,14 +25,14 @@
                                 <tr>
                                     <th>群組名稱</th>
                                     <td>
-                                        <input type="text" id="groupTitle" name="groupTitle" value="" maxlength="50" >
+                                        <input type="text" id="groupTitle" name="groupTitle" value="" maxlength="50" style="padding-left: 4px; padding-right: 4px;">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>群組說明</th>
                                     <td>
                                         <div class="TInput">
-                                            <textarea id="groupDescription" name="groupDescription" cols="" rows="4" placeholder="請輸入群組說明" maxlength="700"></textarea>
+                                            <textarea id="groupDescription" name="groupDescription" cols="" rows="4" placeholder="請輸入群組說明" maxlength="700" style="padding-left: 4px; padding-right: 4px;"></textarea>
                                         </div>
                                     </td>
                                 </tr>
@@ -42,14 +42,27 @@
                                         <div>
 											<ul>
 												<li>
-													<label class="MdFRM02Check"> 
+													<label class="MdFRM02Check" style="padding: 4px 0px 4px 0px;"> 
 														<input id="groupType_UIDLIST" type="radio" name="groupType" value="UID_LIST">依照匯入名單
 													</label>
 												</li>
-												<li>
-													<label class="MdFRM02Check"> 
+												<li style="margin-top: 10px;">
+													<label class="MdFRM02Check" style="padding: 4px 0px 4px 0px;"> 
 														<input id="groupType_CONDITIONS" type="radio" name="groupType" value="CONDITIONS">依照設定條件
 													</label>
+												</li>
+												<li style="margin-top: 8px;">
+													<label class="MdFRM02Check" style="padding: 4px 0px 4px 0px;"> 
+														<input id="groupType_BINDSTATUS" type="radio" name="groupType" value="BINDSTATUS">依照綁定狀態
+													</label>&nbsp;&nbsp;
+				                                    <div id="richmenuOption" class="richmenuOption" style="visibility:hidden">
+														<div id="optionLabelBlack1" class="richmenuOptionLabel">全部</div>
+														<select class="richmenuOptionSelect status" id="status">
+															<option selected="selected" value="ALL" title="狀態為綁定(BINDED) + 未綁定(UNBIND)之用戶">全部</option>
+															<option value="BINDED" title="狀態為綁定(BINDED)之用戶">綁定</option>
+															<option value="UNBIND" title="狀態為未綁定(UNBIND)之用戶">未綁定</option>
+														</select>
+                                                    </div>
 												</li>
 											</ul>
 										</div>
@@ -59,8 +72,8 @@
                                     <th>群組條件</th>
                                     <td>
 										<input id="upload_mid_btn" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/plain" name="file" type="file" style="display:none">
-                        				<input class="btn_add add_rule" style="cursor: pointer;" type="button" value="加入條件">
-                        				<input class="btn_add upload_mid" id="btnUploadMid" style="cursor: pointer; margin-right: 3px;" type="button" value="匯入UID" title="目前僅支持檔案類型(xls, xlsx, txt)">
+                        				<input class="btn_add add_rule" id="btnAddRule" type="button" value="加入條件" title="設定之條件將會關聯FIELD_SET資料表">
+                        				<input class="btn_add upload_mid" id="btnUploadMid" style="margin-right: 3px;" type="button" value="匯入UID" title="目前僅支持檔案類型(xls, xlsx, txt)">
                                         <table class="subTable" id="tableBody" >
 				                            <colgroup>
 					                            <col width="100">
@@ -133,10 +146,10 @@
                 </section>
                 <div class="BtnSet">
                     <div>
-                        <input class="btn_richmenu_query" style="cursor: pointer;" type="button" value="條件結果">
-                        <input class="btn_richmenu_exportMid" style="cursor: pointer;" type="button" value="匯出UID" >
-                        <input class="btn_richmenu_save" style="cursor: pointer;" type="button" value="儲存">
-                        <input class="btn_richmenu_cancel" style="cursor: pointer;" type="button" value="取消">
+                        <input id="btn_richmenu_query" class="btn_richmenu_query" style="cursor: pointer;" type="button" value="條件結果">
+                        <input id="btn_richmenu_exportMid" class="btn_richmenu_exportMid" style="cursor: pointer;" type="button" value="匯出UID" >
+                        <input id="btn_richmenu_save" class="btn_richmenu_save" style="cursor: pointer;" type="button" value="儲存">
+                        <input id="btn_richmenu_cancel" class="btn_richmenu_cancel" style="cursor: pointer;" type="button" value="取消">
                     </div>
                     <iframe id="downloadReport" style='display:none' ></iframe>
                 </div>

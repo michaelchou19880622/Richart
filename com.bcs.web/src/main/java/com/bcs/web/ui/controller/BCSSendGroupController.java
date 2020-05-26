@@ -34,13 +34,17 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bcs.core.api.service.LineTokenApiService;
+import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.SendGroup;
 import com.bcs.core.db.repository.GroupGenerateRepository;
 import com.bcs.core.db.service.GroupGenerateService;
+import com.bcs.core.db.service.LineUserService;
 import com.bcs.core.db.service.SendGroupService;
 import com.bcs.core.db.service.UserFieldSetService;
 import com.bcs.core.enums.DEFAULT_SEND_GROUP;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.DataUtils;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.ObjectUtil;
@@ -49,6 +53,7 @@ import com.bcs.core.web.security.CustomUser;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 import com.bcs.web.aop.ControllerLog;
+import com.bcs.web.enums.BINDING_STATUS;
 import com.bcs.web.ui.service.ExportExcelUIService;
 import com.bcs.web.ui.service.SendGroupUIService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -156,7 +161,7 @@ public class BCSSendGroupController extends BCSBaseController {
 		log.info("page = {}", page);
 		log.info("size = {}", size);
 
-	    Sort sort = new Sort(Direction.ASC, "GROUP_ID");
+	    Sort sort = new Sort(Direction.DESC, "MODIFY_TIME");
 		log.info("sort = {}", sort);
 		
 	    Pageable pageable = new PageRequest(page, size, sort);
@@ -490,7 +495,7 @@ public class BCSSendGroupController extends BCSBaseController {
 			}
 		}
 	}
-
+	
 	@ControllerLog(description = "uploadMidSendGroup")
 	@RequestMapping(method = RequestMethod.POST, value = "/market/uploadMidSendGroup")
 	@ResponseBody
@@ -690,5 +695,108 @@ public class BCSSendGroupController extends BCSBaseController {
 				exportExcelUIService.exportMidResultToExcel(request, response, "SendGroup", DEFAULT_SEND_GROUP.getGroupByGroupId(groupId).getTitle(), null, titles, data);
 			}
 		}
+	}
+	
+	/**
+	 * 取得條件結果
+	 * 
+	 * @param bindStatus
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	@ControllerLog(description = "getSendGroupQueryResultWithBindingStatus")
+	@RequestMapping(method = RequestMethod.POST, value = "/market/getSendGroupQueryResultWithBindingStatus", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<?> getSendGroupQueryResultWithBindingStatus(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam int statusIndex) throws IOException {
+		logger.info("getSendGroupQueryResultWithBindingStatus");
+		
+		log.info("statusIndex = {}", statusIndex);
+
+		try {
+			LineUserService lineUserService = ApplicationContextProvider.getApplicationContext().getBean(LineUserService.class);
+			
+			List<String> listStatus = BINDING_STATUS.getListValueByIndex(statusIndex);
+			log.info("listStatus = {}", listStatus);
+			
+			Long result = lineUserService.getCountByStatus(listStatus);
+			log.info("result = {}", result);
+
+			return new ResponseEntity<>(result, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+	
+	@ControllerLog(description = "exportToExcelForSendGroupWithBindingStatus")
+	@RequestMapping(method = RequestMethod.GET, value = "/market/exportToExcelForSendGroupWithBindingStatus")
+	@ResponseBody
+	public void exportToExcelForSendGroupWithBindingStatus(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam int statusIndex) throws Exception {
+		logger.info("exportToExcelForSendGroupWithBindingStatus");
+
+		log.info("statusIndex = {}", statusIndex);
+
+		try {
+			LineUserService lineUserService = ApplicationContextProvider.getApplicationContext().getBean(LineUserService.class);
+			
+			List<String> listStatus = BINDING_STATUS.getListValueByIndex(statusIndex);
+			log.info("listStatus = {}", listStatus);
+			
+			List<String> listMids = lineUserService.findMidsByStatus(listStatus);
+			log.info("listMids = {}", listMids);
+			
+//			if (listMids != null && listMids.size() > 0) {
+
+				List<String> titles = new ArrayList<String>();
+				titles.add("MID");
+				
+				List<List<String>> data = new ArrayList<List<String>>();
+				data.add(listMids);
+
+				String title = "用戶狀態 : " + BINDING_STATUS.getValueChByIndex(statusIndex);
+
+				exportExcelUIService.exportMidResultToExcel(request, response, "RichmenuSendGroup", title, null, titles, data);
+//			}
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+			throw new Exception("SendGroup Send Error");
+		}
+		
+		
+			
+//		}
+//		// 預設群祖
+//		else if (groupId < 0) {
+//			List<String> mids = new ArrayList<String>();
+//
+//			int page = 0;
+//			while (true) {
+//				List<String> list = sendGroupService.queryDefaultGroup(groupId, page);
+//				if (list != null && list.size() > 0) {
+//					mids.addAll(list);
+//					logger.info("queryDefaultGroup:" + list.size());
+//				} else {
+//					break;
+//				}
+//				page++;
+//			}
+//
+//			if (mids != null && mids.size() > 0) {
+//
+//				List<String> titles = new ArrayList<String>();
+//				titles.add("MID");
+//				List<List<String>> data = new ArrayList<List<String>>();
+//				data.add(mids);
+//				exportExcelUIService.exportMidResultToExcel(request, response, "SendGroup", DEFAULT_SEND_GROUP.getGroupByGroupId(groupId).getTitle(), null, titles, data);
+//			}
+//		}
 	}
 }

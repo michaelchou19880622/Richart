@@ -211,4 +211,14 @@ public class LineUserService {
 	public List<LineUser> findByCreateTime(String start, String end){
 	    return lineUserRepository.findByCreateTime(start, end);
 	}
+	
+	public Long getCountByStatus(List<String> status) {
+		return lineUserRepository.getCountByStatus(status);
+	}
+	
+	public List<String> findMidsByStatus(List<String> status) {
+		return lineUserRepository.findMidsByStatus(status);
+	}
+	
+	
 }
