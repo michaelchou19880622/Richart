@@ -1,30 +1,27 @@
 package com.bcs.core.report.export;
 
 import java.io.FileOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Query;
-import java.lang.System;
-import java.text.SimpleDateFormat;
-
 import org.apache.log4j.Logger;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.db.entity.PushMessageRecord;
 import com.bcs.core.db.service.PushMessageRecordService;
 import com.bcs.core.utils.ErrorRecord;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -34,6 +31,8 @@ public class ExportToExcelForPushApiEffects {
 	
 	@Autowired
 	private PushMessageRecordService pushMessageRecordService;
+	
+	final private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
 	public void exportExcel(String exportPath, String fileName, String createTime) {
 		try {
@@ -95,9 +94,21 @@ public class ExportToExcelForPushApiEffects {
 		for(Map<String, String> pushEffect : pushEffects) {
 			row = sheet.createRow(rowNumber);
 						
-			Cell createTimeCell = row.createCell(0);		
-			createTimeCell.setCellValue(pushEffect.get("createTime"));
+			Cell createTimeCell = row.createCell(0);	
+			
+			String createTimeStr = pushEffect.get("createTime");
+			
+			try {
+				Date parseDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss").parse(createTimeStr);
+				
+				createTimeStr = simpleDateFormat.format(parseDate);
+				
+			} catch (ParseException e) {
+				log.info("ParseException = {}", e);
+			}
+			
 			createTimeCell.setCellStyle(cellStyle);
+			createTimeCell.setCellValue(createTimeStr);
 			row.createCell(1).setCellValue(pushEffect.get("sendType"));
 			row.createCell(2).setCellValue(pushEffect.get("department"));
 			row.createCell(3).setCellValue(pushEffect.get("successCount"));
@@ -153,8 +164,6 @@ public class ExportToExcelForPushApiEffects {
 		CellStyle cellStyle = workbook.createCellStyle();
 		CreationHelper createHelper = workbook.getCreationHelper();		
 		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy/mm/dd hh:mm:ss"));
-
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		
 		for(PushMessageRecord record : records) {
 			row = sheet.createRow(rowNumber);
