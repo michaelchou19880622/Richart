@@ -133,11 +133,14 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 		try {
 			logger.debug("=== Check is line user exist? ===");
 			LineUser lineUser = lineUserService.findByMidAndCreateUnbind(MID);
-			logger.info("BEFORE CHECK STATUS : lineUser = " + ((lineUser == null)? "null" : lineUser));
+			logger.info("lineUser = " + ((lineUser == null)? "null" : lineUser));
 			
 			String userStatus = LineUser.STATUS_UNBIND;
 			
 			if (lineUser != null) {
+
+				logger.info("BEFORE CHECK STATUS : lineUser = {}", lineUser);
+				
 				/* Check is lineUser's status equal to BLOCK?  */
 				if (lineUser.getStatus().equals(LineUser.STATUS_BLOCK)) {
 					String isBindedStatus = lineUser.getIsBinded();
@@ -146,7 +149,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					lineUser.setStatus(isBindedStatus);
 					lineUserService.save(lineUser);
 					
-					lineUser = lineUserService.findByMidAndCreateUnbind(MID);
+					lineUser = lineUserService.findByMid(MID);
 				}
 				
 				logger.info("AFTER CHECK STATUS : lineUser = {}", lineUser);
