@@ -72,7 +72,6 @@ public class SendGroupUIService {
 		log.info("saveFromUI : {}", sendGroup);
 
 		Long groupId = sendGroup.getGroupId();
-		log.info("1-1 groupId = {}", groupId);
 		
 		if (groupId != null && groupId < 0) {
 			throw new BcsNoticeException("預設群組無法修改");
@@ -85,7 +84,7 @@ public class SendGroupUIService {
 		sendGroup.setModifyTime(new Date());
 
 		List<SendGroupDetail> list = sendGroup.getSendGroupDetail();
-		log.info("list = {}", list);
+		log.debug("list = {}", list);
 		
 		sendGroup.setSendGroupDetail(new ArrayList<SendGroupDetail>());
 
@@ -102,11 +101,9 @@ public class SendGroupUIService {
 
 		// Save SendGroup Again With SendGroupDetail
 		sendGroupService.save(sendGroup);
-
-		log.info("1-2 groupId = {}", groupId);
 		
 		sendGroup = sendGroupService.findOne(sendGroup.getGroupId());
-		log.info("sendGroup = {}", sendGroup);
+		log.debug("sendGroup = {}", sendGroup);
 		
 		createSystemLog(action, sendGroup, sendGroup.getModifyUser(), sendGroup.getModifyTime(), sendGroup.getGroupId().toString());
 		
@@ -122,7 +119,7 @@ public class SendGroupUIService {
 	 */
 	@Transactional(rollbackFor = Exception.class, timeout = 30)
 	public void deleteFromUI(Long groupId, String adminUserAccount) throws BcsNoticeException {
-		log.info("deleteFromUI:" + groupId);
+		log.debug("deleteFromUI:" + groupId);
 		if (groupId < 0) {
 			throw new BcsNoticeException("預設群組無法刪除");
 		}

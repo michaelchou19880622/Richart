@@ -35,8 +35,8 @@ public class LineTokenApiService {
 
 	public ObjectNode callVerifyAPI(Date start, String access_token, int retryCount) throws Exception{
 		log.info("===== callVerifyAPI =====");
-		log.info("start = {}", start);
-		log.info("access_token = {}", access_token);
+		log.debug("start = {}", start);
+		log.debug("access_token = {}", access_token);
 
 		int status = 0;
 		try{
@@ -46,35 +46,35 @@ public class LineTokenApiService {
 			list.add("access_token=" + URLEncoder.encode(access_token, "UTF-8"));
 			
 			String postMsg = StringUtils.join(list.toArray(), "&");
-			log.info("postMsg = {}", postMsg);
+			log.debug("postMsg = {}", postMsg);
 			
 		    StringEntity entity = new StringEntity(postMsg, "UTF-8");
 		    entity.setContentType("application/x-www-form-urlencoded");
 		    
 			// init Request
 			HttpPost requestPost = new HttpPost(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_VERIFY));
-			log.info("URI = {}", requestPost.getURI());
+			log.debug("URI = {}", requestPost.getURI());
 			
 			requestPost.setEntity(entity);
-			log.info("requestPost = {}", requestPost);
+			log.debug("requestPost = {}", requestPost);
 	
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestPost);
-			log.info("clientResponse execute = {}", clientResponse);
+			log.debug("clientResponse execute = {}", clientResponse);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
-			log.info("clientResponse StatusCode = {}", status);
+			log.debug("clientResponse StatusCode = {}", status);
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
 				
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
-			log.info("clientResponse result = {}", result);
+			log.debug("clientResponse result = {}", result);
 			
 			requestPost.releaseConnection();
 
-			log.info("=========================");
+			log.debug("=========================");
 
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_VerifyApi, start, status, postMsg, status + "");
 			return (ObjectNode)(new ObjectMapper()).readTree(result);
@@ -117,24 +117,24 @@ public class LineTokenApiService {
 		    
 			// init Request
 			HttpPost requestPost = new HttpPost(CoreConfigReader.getString(CONFIG_STR.LINE_OAUTH_URL_ACCESSTOKEN));
-			log.info("URI : " + requestPost.getURI());
+			log.debug("URI : " + requestPost.getURI());
 			requestPost.setEntity(entity);
 	
 			// print requestPost
-			log.info("postMsg : " + postMsg);
+			log.debug("postMsg : " + postMsg);
 	
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestPost);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
-			log.info("clientResponse StatusCode : " + status);
+			log.debug("clientResponse StatusCode : " + status);
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
 				
 				result += InputStreamUtil.getInputStr(clientResponse.getEntity().getContent());
 			}
-			log.info("clientResponse result : " + result);
+			log.debug("clientResponse result : " + result);
 			
 			requestPost.releaseConnection();
 
