@@ -149,6 +149,7 @@ public class LineAccessApiService {
 						@Override
 						public okhttp3.Response intercept(Chain chain) throws IOException {
 							Request request = chain.request().newBuilder().build();
+							log.info("request.headers = {}", request.headers()); 
 							return chain.proceed(request);
 						}
 					};
@@ -211,6 +212,7 @@ public class LineAccessApiService {
 							Request request = chain.request().newBuilder()
 									.addHeader(LINE_HEADER.HEADER_BOT_ServiceCode.toString(), serviceCode)
 									.build();
+							log.info("request.headers = {}", request.headers()); 
 							return chain.proceed(request);
 						}
 					};
