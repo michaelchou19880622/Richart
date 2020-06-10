@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -35,7 +36,7 @@ import com.bcs.core.richmenu.web.ui.service.RichMenuContentUIService;
 public class ExecuteSendAllRichMenuTask {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExecuteSendAllRichMenuTask.class);
+	private static Logger logger = LogManager.getLogger(ExecuteSendAllRichMenuTask.class);
 
 	public void executeSendMsg(String richMenuId) throws Exception{
 		logger.info("richMenuGroupId" + richMenuId);

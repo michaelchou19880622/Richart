@@ -8,7 +8,8 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.utils.ErrorRecord;
@@ -17,7 +18,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class RichMenuLoadFileUIService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuLoadFileUIService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuLoadFileUIService.class);
 	
 	public static void loadFileToResponse(String filePath, String fileName, HttpServletResponse response) throws IOException{
 

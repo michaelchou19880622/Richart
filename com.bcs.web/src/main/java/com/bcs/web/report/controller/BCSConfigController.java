@@ -7,7 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 @RequestMapping("/bcs")
 public class BCSConfigController extends BCSBaseController {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSConfigController.class);
+	private static Logger logger = LogManager.getLogger(BCSConfigController.class);
 	@Autowired
 	private SystemConfigService systemConfigService;
 	

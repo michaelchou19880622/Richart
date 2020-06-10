@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,8 +35,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.bcs.core.api.service.LineTokenApiService;
-import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.SendGroup;
 import com.bcs.core.db.repository.GroupGenerateRepository;
 import com.bcs.core.db.service.GroupGenerateService;
@@ -79,7 +78,9 @@ public class BCSSendGroupController extends BCSBaseController {
 	private ExportExcelUIService exportExcelUIService;
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSSendGroupController.class);
+	private static Logger logger = LogManager.getLogger(BCSSendGroupController.class);
+			
+//			LogManager.getLogger(BCSSendGroupController.class);
 	
 	private static final String DEFAULT_PAGE_SIZE = "15";
 

@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,7 +109,7 @@ public class SendMsgUIService {
 	private UserLiveChatService userLiveChatService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SendMsgUIService.class);
+	private static Logger logger = LogManager.getLogger(SendMsgUIService.class);
 	
 	public void sendMsgToMid(String mid, List<SendMsgDetailModel> sendMsgDetails, String account) throws Exception{
 		logger.info("sendMsgToMid:" + mid);

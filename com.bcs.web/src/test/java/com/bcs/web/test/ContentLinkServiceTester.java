@@ -3,7 +3,8 @@ package com.bcs.web.test;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +21,7 @@ public class ContentLinkServiceTester extends SpringJUnit4BaseTester {
 	ContentLinkReportService contentLinkReportService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentLinkServiceTester.class);
+	private static Logger logger = LogManager.getLogger(ContentLinkServiceTester.class);
 
 	@Test
 	public void countClickCountByLinkUrlAndTime() throws Exception {

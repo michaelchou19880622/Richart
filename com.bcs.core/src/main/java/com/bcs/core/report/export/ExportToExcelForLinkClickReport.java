@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -23,7 +24,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class ExportToExcelForLinkClickReport {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToExcelForLinkClickReport.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForLinkClickReport.class);
 
 	@Autowired
 	private ContentLinkService contentLinkService;

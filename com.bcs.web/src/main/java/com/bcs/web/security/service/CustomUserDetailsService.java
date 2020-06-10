@@ -1,6 +1,7 @@
 package com.bcs.web.security.service;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,8 +19,7 @@ import com.bcs.core.web.security.CustomUser;
  */
 public class CustomUserDetailsService implements UserDetailsService {
 
-	private static Logger logger = Logger
-			.getLogger(CustomUserDetailsService.class);
+	private static Logger logger = LogManager.getLogger(CustomUserDetailsService.class);
 
 	@Autowired
 	private AdminUserService adminUserService;

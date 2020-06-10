@@ -2,7 +2,8 @@ package com.bcs.web.test;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class MessageTransmitServiceTester //extends SpringJUnit4BaseTester
 	
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MessageTransmitServiceTester.class);
+	private static Logger logger = LogManager.getLogger(MessageTransmitServiceTester.class);
 
 	@Test
 	public void testTransmitToBOT() throws Exception {

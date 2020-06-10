@@ -4,7 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CheckUserLiveChatStatus implements Job {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(CheckUserLiveChatStatus.class);
+	private static Logger logger = LogManager.getLogger(CheckUserLiveChatStatus.class);
 
 	UserLiveChatService userLiveChatService = ApplicationContextProvider.getApplicationContext().getBean(UserLiveChatService.class);
 	LineSwitchApiService lineSwitchApiService = ApplicationContextProvider.getApplicationContext().getBean(LineSwitchApiService.class);

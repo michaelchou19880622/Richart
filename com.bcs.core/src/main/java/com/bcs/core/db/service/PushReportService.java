@@ -1,6 +1,7 @@
 package com.bcs.core.db.service;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import com.bcs.core.db.repository.PushReportRepository;
 public class PushReportService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(PushReportService.class);
+	private static Logger logger = LogManager.getLogger(PushReportService.class);
 	
 	@Autowired
 	private PushReportRepository pushReportRepository;

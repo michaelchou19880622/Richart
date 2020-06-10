@@ -14,7 +14,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +39,7 @@ public class ContentResourceService {
 	public static final String RESOURCE_SYNC = "RESOURCE_SYNC";
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentResourceService.class);
+	private static Logger logger = LogManager.getLogger(ContentResourceService.class);
 	
 	@Autowired
 	private ContentResourceRepository contentResourceRepository;

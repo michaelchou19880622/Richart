@@ -10,12 +10,13 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class InputStreamUtil {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(InputStreamUtil.class);
+	private static Logger logger = LogManager.getLogger(InputStreamUtil.class);
 
 	public static String getInputStr(InputStream inputStr) throws Exception{
 		return getInputStr(inputStr, false);

@@ -8,7 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class ContentRewardCardService {
 	public static final String REWARDCARD_SYNC = "REWARDCARD_SYNC";
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentRewardCardService.class);
+	private static Logger logger = LogManager.getLogger(ContentRewardCardService.class);
 
 	@Autowired
 	private ContentCouponRepository contentCouponRepository;

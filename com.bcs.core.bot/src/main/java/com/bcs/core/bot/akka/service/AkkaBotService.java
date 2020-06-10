@@ -7,11 +7,9 @@ import java.util.Random;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
 
 import com.bcs.core.bot.receive.akka.handler.ReceivingMsgHandlerMaster;
 import com.bcs.core.bot.send.akka.handler.SendingMsgHandlerMaster;
@@ -20,11 +18,14 @@ import com.bcs.core.send.akka.model.AsyncSendingModel;
 import com.bcs.core.utils.AkkaSystemFactory;
 import com.bcs.core.utils.ErrorRecord;
 
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+
 @Service
 public class AkkaBotService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(AkkaBotService.class);
+	private static Logger logger = LogManager.getLogger(AkkaBotService.class);
 
 	private List<ActorSystem> systemSending = new ArrayList<ActorSystem>();
 	private List<ActorSystem> systemReceiving = new ArrayList<ActorSystem>();

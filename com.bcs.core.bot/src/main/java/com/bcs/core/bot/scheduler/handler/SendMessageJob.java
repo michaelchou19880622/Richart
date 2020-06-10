@@ -1,6 +1,7 @@
 package com.bcs.core.bot.scheduler.handler;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -9,7 +10,7 @@ import com.bcs.core.utils.ErrorRecord;
 
 public class SendMessageJob extends QuartzJobBean {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SendMessageJob.class);
+	private static Logger logger = LogManager.getLogger(SendMessageJob.class);
 	
 	private Long msgId;
 	private ExecuteSendMsgTask sendMsgTask;

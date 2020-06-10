@@ -3,8 +3,9 @@ package com.bcs.core.api.msg;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
 //import org.jcodec.common.logging.Logger;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.db.entity.MsgDetail;
 import com.bcs.core.invoice.service.InvoiceEventService;
@@ -17,7 +18,7 @@ public class MsgGeneratorImage extends MsgGeneratorAbstract {
 	private static final long serialVersionUID = 1L;
 
     /** Logger */
-    private static Logger logger = Logger.getLogger(MsgGeneratorImage.class);
+    private static Logger logger = LogManager.getLogger(MsgGeneratorImage.class);
     
 	public static boolean canSetMulti() throws Exception {
 		return true;

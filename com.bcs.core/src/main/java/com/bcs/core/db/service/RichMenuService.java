@@ -6,7 +6,8 @@ import java.net.Proxy.Type;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +25,7 @@ import com.bcs.core.resource.CoreConfigReader;
 public class RichMenuService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuService.class);
 
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BEARER = "Bearer ";

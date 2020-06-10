@@ -1,40 +1,21 @@
 package com.bcs.core.richmenu.core.api.scheduler.service;
 
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.PreDestroy;
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.quartz.SchedulerException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bcs.core.db.entity.ShareCampaign;
-import com.bcs.core.db.entity.ShareCampaignClickTracing;
-import com.bcs.core.db.entity.ShareUserRecord;
-import com.bcs.core.db.service.ShareCampaignClickTracingService;
-import com.bcs.core.db.service.ShareCampaignService;
-import com.bcs.core.db.service.ShareUserRecordService;
-import com.bcs.core.enums.CONFIG_STR;
-import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richmenu.core.db.service.RichMenuSendGroupService;
 
 @Service
 public class RichMenuSendSchedulerService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuSendSchedulerService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuSendSchedulerService.class);
 	@Autowired
 	RichMenuSendGroupService richMenuSendGroupService;
 	

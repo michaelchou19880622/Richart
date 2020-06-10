@@ -9,7 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.ui.Model;
 
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LineLoginUtil {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LineLoginUtil.class);
+	private static Logger logger = LogManager.getLogger(LineLoginUtil.class);
 
     public static void addLineoauthLinkInModel(Model model, String RedirectUrl, String tracingIdStr) throws Exception {
     	addLineoauthLinkInModel(CONFIG_STR.Default.toString(), model, RedirectUrl, tracingIdStr);

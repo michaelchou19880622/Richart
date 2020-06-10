@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ import com.bcs.core.resource.CoreConfigReader;
 @Controller
 @RequestMapping("/api")
 public class LinePointPushApiController {
-	private static Logger logger = Logger.getLogger(LinePointPushApiController.class);
+	private static Logger logger = LogManager.getLogger(LinePointPushApiController.class);
 	
 	@Autowired
 	private LinePointPushMessageRecordRepository pushLinePointMessageRecordRepository;
@@ -117,7 +118,7 @@ public class LinePointPushApiController {
 
 	}
 
-//	  private static Logger logger = Logger.getLogger(LinePointApiController.class);
+//	  private static Logger logger = LogManager.getLogger(LinePointApiController.class);
 //	  @Autowired
 //	  LinePointMainService linePointMainService;
 //	  @Autowired

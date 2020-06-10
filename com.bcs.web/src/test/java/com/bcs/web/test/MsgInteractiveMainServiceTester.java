@@ -1,6 +1,7 @@
 package com.bcs.web.test;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +14,7 @@ public class MsgInteractiveMainServiceTester extends SpringJUnit4BaseTester {
 	InteractiveResponseService interactiveResponseService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MsgInteractiveMainServiceTester.class);
+	private static Logger logger = LogManager.getLogger(MsgInteractiveMainServiceTester.class);
 
 	@Test
 	public void countInteractiveResponseDistinct() throws Exception {

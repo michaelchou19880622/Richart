@@ -5,7 +5,9 @@ import com.bcs.core.resource.CoreConfigReader;
 import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 public class ChtCDNUtil{
-	private static Logger logger = Logger.getLogger(ChtCDNUtil.class);
+	private static Logger logger = LogManager.getLogger(ChtCDNUtil.class);
 	
 	public static void clearCacheData(String path){
 		logger.info("Clear CDN cache");

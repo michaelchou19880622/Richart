@@ -9,7 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.FlashMap;
@@ -23,7 +24,7 @@ import com.bcs.core.web.security.CustomUser;
 
 public class CustomHandlerExceptionResolver implements HandlerExceptionResolver {
 
-	private static Logger logger = Logger.getLogger(CustomHandlerExceptionResolver.class);
+	private static Logger logger = LogManager.getLogger(CustomHandlerExceptionResolver.class);
 	
 	private static final String AJAX_HEADER = "XMLHttpRequest";
 	

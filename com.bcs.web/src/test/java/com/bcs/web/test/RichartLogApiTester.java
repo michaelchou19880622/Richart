@@ -7,7 +7,8 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import junit.framework.TestCase;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:spring/spring-base.xml", "classpath*:spring/spring-security.xml"})
 public class RichartLogApiTester extends TestCase {
-	private static Logger logger = Logger.getLogger(RichartLogApiTester.class);
+	private static Logger logger = LogManager.getLogger(RichartLogApiTester.class);
 	
 	@Autowired
 	private RichartAkkaService richartAkkaSerive;

@@ -5,7 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import com.bcs.core.db.repository.ShareDonatorRecordRepository;
 @Service
 public class ShareDonatorRecordService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ShareDonatorRecordService.class);
+	private static Logger logger = LogManager.getLogger(ShareDonatorRecordService.class);
 	@Autowired
 	private ShareDonatorRecordRepository shareDonatorRecordRepository;
 	@PersistenceContext

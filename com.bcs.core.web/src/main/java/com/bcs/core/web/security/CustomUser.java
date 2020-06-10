@@ -6,7 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,8 +27,7 @@ public class CustomUser implements UserDetails {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static Logger logger = Logger
-			.getLogger(CustomUser.class);
+	private static Logger logger = LogManager.getLogger(CustomUser.class);
 	
 	private AdminUser adminUser;
 	private List<GrantedAuthority> authorities = new ArrayList<>();

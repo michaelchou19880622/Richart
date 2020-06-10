@@ -19,7 +19,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ import com.bcs.core.utils.ErrorRecord;
 @Service
 public class ImportDataService {
 
-	private static Logger logger = Logger.getLogger(ImportDataService.class);
+	private static Logger logger = LogManager.getLogger(ImportDataService.class);
 	
 	@Autowired
 	private LineUserService lineUserService;

@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -87,7 +88,7 @@ public class BCSCheckReportController extends BCSBaseController {
 	private LineTokenApiService lineTokenApiService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSMsgSendController.class);
+	private static Logger logger = LogManager.getLogger(BCSMsgSendController.class);
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/catchRecordReceiveList")
 	@ResponseBody

@@ -10,7 +10,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.db.entity.SystemConfig;
@@ -25,7 +26,7 @@ public class DataSyncUtil {
 	public static final String REGISTER_MAIN = "REGISTER_MAIN";
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(DataSyncUtil.class);
+	private static Logger logger = LogManager.getLogger(DataSyncUtil.class);
 	
 	private Timer flushTimer = new Timer();
 	

@@ -9,7 +9,8 @@ import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class LineUserUIService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LineUserUIService.class);
+	private static Logger logger = LogManager.getLogger(LineUserUIService.class);
 
     @Autowired
     private LineUserService lineUserService;

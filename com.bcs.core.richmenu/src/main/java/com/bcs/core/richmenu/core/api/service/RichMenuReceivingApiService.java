@@ -1,6 +1,7 @@
 package com.bcs.core.richmenu.core.api.service;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jcodec.containers.mxf.MXFDemuxer.Fast;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,7 +18,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class RichMenuReceivingApiService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuReceivingApiService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuReceivingApiService.class);
 	
 	@Autowired
 	private RichMenuLineApiService lineRichMenuApiService;

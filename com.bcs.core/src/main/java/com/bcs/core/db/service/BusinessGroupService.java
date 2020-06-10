@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public static final String BUSINESS_GROUP_SYNC = "BUSINESS_GROUP_SYNC";
     protected LoadingCache<String, BusinessGroup> dataCache;
     
     /** Logger */
-    private static Logger logger = Logger.getLogger(BusinessGroupRepository.class);
+    private static Logger logger = LogManager.getLogger(BusinessGroupRepository.class);
 
     private Timer flushTimer = new Timer();
     

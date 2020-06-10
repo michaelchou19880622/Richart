@@ -2,7 +2,8 @@ package com.bcs.web.ui.service;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import com.bcs.core.log.util.SystemLogUtil;
 public class CampaignUIService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(CampaignUIService.class);
+	private static Logger logger = LogManager.getLogger(CampaignUIService.class);
 	
 	@Autowired
 	private CampaignService campaignService;

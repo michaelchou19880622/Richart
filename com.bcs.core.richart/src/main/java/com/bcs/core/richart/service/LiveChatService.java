@@ -2,7 +2,8 @@ package com.bcs.core.richart.service;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,7 @@ import com.bcs.core.richart.api.model.LiveChatReplyModel;
 
 @Service
 public class LiveChatService {
-	private static Logger logger = Logger.getLogger(LiveChatService.class);
+	private static Logger logger = LogManager.getLogger(LiveChatService.class);
 	
 	@Autowired
 	private UserLiveChatService userLiveChatService;

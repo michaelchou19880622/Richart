@@ -7,7 +7,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.log.util.SystemLogUtil;
 import com.bcs.core.resource.CoreConfigReader;
@@ -15,7 +16,7 @@ import com.bcs.core.utils.ErrorRecord;
 
 public class SignatureValidationHelper {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SignatureValidationHelper.class);
+	private static Logger logger = LogManager.getLogger(SignatureValidationHelper.class);
 	
 	public static boolean signatureValidation(String receivingMsg, String ChannelId, String channelSignature){
 		// Signature validation

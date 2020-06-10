@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ import com.linecorp.bot.model.message.template.ConfirmTemplate;
 
 @Service
 public class MessageProcessService {
-	private static Logger logger = Logger.getLogger(MessageProcessService.class);
+	private static Logger logger = LogManager.getLogger(MessageProcessService.class);
 	
 	public static final Integer SWITCH_MESSAGE_NORMAL = 0;
 	public static final Integer SWITCH_MESSAGE_KEYWORD = 1;

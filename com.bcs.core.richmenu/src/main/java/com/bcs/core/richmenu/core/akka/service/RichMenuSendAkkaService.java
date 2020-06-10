@@ -6,7 +6,8 @@ import java.util.Random;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import com.bcs.core.richmenu.core.akka.handler.RichMenuSendMasterActor;
 import com.bcs.core.utils.AkkaSystemFactory;
@@ -17,7 +18,7 @@ import akka.actor.ActorSystem;
 @Service
 public class RichMenuSendAkkaService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuSendAkkaService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuSendAkkaService.class);
 	private List<ActorSystem> actorSystemList = new ArrayList<ActorSystem>();
 	private List<ActorRef> RichMenuMasterActorList = new ArrayList<ActorRef>();
 	

@@ -8,7 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ public class EntityManagerControl {
 	private final Object lock = new Object();
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(EntityManagerControl.class);
+	private static Logger logger = LogManager.getLogger(EntityManagerControl.class);
 	
 	@PersistenceContext
 	private EntityManager entityManager;

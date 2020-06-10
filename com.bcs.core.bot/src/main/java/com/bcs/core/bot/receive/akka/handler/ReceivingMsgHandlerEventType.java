@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.bot.receive.utils.MsgBotReceiveParser;
@@ -20,7 +21,7 @@ import akka.actor.UntypedActor;
 public class ReceivingMsgHandlerEventType extends UntypedActor {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ReceivingMsgHandlerEventType.class);
+	private static Logger logger = LogManager.getLogger(ReceivingMsgHandlerEventType.class);
     
 	public ReceivingMsgHandlerEventType(){
 		

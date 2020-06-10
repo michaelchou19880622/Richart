@@ -6,7 +6,8 @@ import java.util.Random;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ import akka.actor.ActorSystem;
 @Service
 public class AkkaGatewayService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(AkkaGatewayService.class);
+	private static Logger logger = LogManager.getLogger(AkkaGatewayService.class);
 			
 	private List<ActorSystem> actorSystemList = new ArrayList<ActorSystem>();
 	private List<ActorRef> replyMessageActorList = new ArrayList<ActorRef>();

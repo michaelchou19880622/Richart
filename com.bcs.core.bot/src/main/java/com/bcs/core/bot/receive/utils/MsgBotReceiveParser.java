@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.utils.ErrorRecord;
@@ -18,7 +19,7 @@ import com.linecorp.bot.model.event.CallbackRequest;
 
 public class MsgBotReceiveParser {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MsgBotReceiveParser.class);
+	private static Logger logger = LogManager.getLogger(MsgBotReceiveParser.class);
 
     private static ObjectMapper objectMapper;
 

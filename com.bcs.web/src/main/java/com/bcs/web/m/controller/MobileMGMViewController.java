@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,7 +52,7 @@ public class MobileMGMViewController extends BCSBaseController {
 	private LineUserService lineUserService;
 
 //    /** Logger */
-//    private static Logger logger = Logger.getLogger(MobileMGMViewController.class);
+//    private static Logger logger = LogManager.getLogger(MobileMGMViewController.class);
 
 	@RequestMapping(method = RequestMethod.GET, value = "/goMgmPage")
 	public void goMgmPage(HttpServletRequest request, HttpServletResponse response) throws IOException {

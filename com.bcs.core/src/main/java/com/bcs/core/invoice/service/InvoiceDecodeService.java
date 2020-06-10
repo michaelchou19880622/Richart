@@ -20,7 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class InvoiceDecodeService {
     public static final int MSG_INVOICE_INTERNAL_ERROR = 3;
     
 	/** Logger */
-	private static Logger logger = Logger.getLogger(InvoiceDecodeService.class);
+	private static Logger logger = LogManager.getLogger(InvoiceDecodeService.class);
 	
 	public Invoice decode(BufferedImage image) {
 		try {

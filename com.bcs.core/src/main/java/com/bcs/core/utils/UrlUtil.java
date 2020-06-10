@@ -6,7 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.db.service.SerialSettingService;
 import com.bcs.core.enums.CONFIG_STR;
@@ -15,7 +16,7 @@ import com.bcs.core.spring.ApplicationContextProvider;
 
 public class UrlUtil {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(UrlUtil.class);
+	private static Logger logger = LogManager.getLogger(UrlUtil.class);
 
 	public static String encodeAndReplace(String linkUrl){
 		return encodeAndReplace(linkUrl, null);

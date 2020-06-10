@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +82,7 @@ public class SendingMsgService {
 	@Autowired
 	private UserLiveChatService userLiveChatService;
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SendingMsgService.class);
+	private static Logger logger = LogManager.getLogger(SendingMsgService.class);
 
 	public void sendToLineAsync(MsgGenerator msgGenerator, List<String> mids, API_TYPE apiType) throws Exception {
 		List<MsgGenerator> msgGenerators = new ArrayList<MsgGenerator>();

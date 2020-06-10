@@ -4,7 +4,8 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,7 +29,7 @@ public class ExportReportToExcelTester extends SpringJUnit4BaseTester {
 	private ExportToExcelUserGroup exportToExcelUserGroup;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportReportToExcelTester.class);
+	private static Logger logger = LogManager.getLogger(ExportReportToExcelTester.class);
 
 //	@Test
 	public void exportReportToExcelUserGroup() throws Exception {

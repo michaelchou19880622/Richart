@@ -6,7 +6,8 @@ import java.util.Random;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.richart.post.akka.handler.LinePointPushMasterActor;
@@ -18,7 +19,7 @@ import akka.actor.ActorSystem;
 @Service
 public class LinePointPushAkkaService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LinePointPushAkkaService.class);
+	private static Logger logger = LogManager.getLogger(LinePointPushAkkaService.class);
 	private List<ActorSystem> actorSystemList = new ArrayList<ActorSystem>();
 	private List<ActorRef> LinePointMasterActorList = new ArrayList<ActorRef>();
 	

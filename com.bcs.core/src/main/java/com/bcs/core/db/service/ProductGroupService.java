@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +40,7 @@ public class ProductGroupService {
     protected LoadingCache<String, ProductGroup> dataCache;
     
     /** Logger */
-    private static Logger logger = Logger.getLogger(ProductGroupService.class);
+    private static Logger logger = LogManager.getLogger(ProductGroupService.class);
 
 	private Timer flushTimer = new Timer();
 	

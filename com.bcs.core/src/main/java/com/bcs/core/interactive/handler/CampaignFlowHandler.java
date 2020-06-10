@@ -11,7 +11,8 @@ import java.util.regex.Pattern;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ import com.google.common.cache.LoadingCache;
 public class CampaignFlowHandler {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(CampaignFlowHandler.class);
+	private static Logger logger = LogManager.getLogger(CampaignFlowHandler.class);
 
     @Autowired
     private InvoiceEventService invoiceEventService;

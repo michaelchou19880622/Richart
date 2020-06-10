@@ -3,7 +3,8 @@ package com.bcs.web.test;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +17,7 @@ public class ContentReportServiceTester extends SpringJUnit4BaseTester {
 	ContentReportService contentReportService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentReportServiceTester.class);
+	private static Logger logger = LogManager.getLogger(ContentReportServiceTester.class);
 
 	@Test
 	public void countClickNumber() throws Exception {

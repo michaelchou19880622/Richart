@@ -4,7 +4,8 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -22,7 +23,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class ExportToExcelForKeywordReport {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToExcelForKeywordReport.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForKeywordReport.class);
 
 	@Autowired
 	private InteractiveReportService interactiveReportService;

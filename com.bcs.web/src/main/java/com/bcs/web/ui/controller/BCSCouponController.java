@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +62,7 @@ import com.bcs.web.ui.service.ExportExcelUIService;
 public class BCSCouponController extends BCSBaseController {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSCouponController.class);
+	private static Logger logger = LogManager.getLogger(BCSCouponController.class);
 
 	@Autowired
 	private ContentCouponService contentCouponService;

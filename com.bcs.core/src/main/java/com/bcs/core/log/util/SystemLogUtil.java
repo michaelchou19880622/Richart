@@ -3,7 +3,8 @@ package com.bcs.core.log.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.db.entity.SystemLog;
 import com.bcs.core.db.service.SystemLogService;
@@ -14,7 +15,7 @@ import com.bcs.core.utils.DataSyncUtil;
 
 public class SystemLogUtil {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SystemLogUtil.class);
+	private static Logger logger = LogManager.getLogger(SystemLogUtil.class);
 
 	public static void timeCheck(String target, String action, Date start, int status, String log, String referenceId){
 		timeCheck(target, action, start, status, 15000, log, referenceId);

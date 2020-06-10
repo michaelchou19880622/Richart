@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ import com.bcs.core.utils.FtpUtil;
 @Controller
 @RequestMapping("/api")
 public class TestApiController {
-	private static Logger logger = Logger.getLogger(TestApiController.class);
+	private static Logger logger = LogManager.getLogger(TestApiController.class);
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/ftp/list", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> getFileList(@RequestBody String requestBodyString){

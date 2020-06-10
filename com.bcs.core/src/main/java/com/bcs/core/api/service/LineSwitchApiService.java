@@ -2,7 +2,8 @@ package com.bcs.core.api.service;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +21,7 @@ import com.bcs.core.utils.RestfulUtil;
 
 @Service
 public class LineSwitchApiService {
-	private static Logger logger = Logger.getLogger(LineSwitchApiService.class);
+	private static Logger logger = LogManager.getLogger(LineSwitchApiService.class);
 
 	public String executeSwitch(String destinationId, String UID, String note) throws Exception {
 		Date start = new Date();

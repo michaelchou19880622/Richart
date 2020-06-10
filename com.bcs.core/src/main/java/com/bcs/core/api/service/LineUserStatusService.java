@@ -4,7 +4,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.enums.CONFIG_STR;
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class LineUserStatusService {
 
     /** Logger */
-    private static Logger logger = Logger.getLogger(LineUserStatusService.class);
+    private static Logger logger = LogManager.getLogger(LineUserStatusService.class);
 
     public void callLineUserStatusAPI(String uid, String status, long time) {
         logger.info("callLineUserStatusAPI");

@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,7 +54,7 @@ public class BCSRichMsgController extends BCSBaseController {
 	private ContentFlagService contentFlagService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSRichMsgController.class);
+	private static Logger logger = LogManager.getLogger(BCSRichMsgController.class);
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/richMsgListPage")
 	public String richMsgListPage(HttpServletRequest request, HttpServletResponse response) {

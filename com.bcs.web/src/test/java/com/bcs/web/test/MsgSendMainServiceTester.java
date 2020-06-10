@@ -2,7 +2,8 @@ package com.bcs.web.test;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +17,7 @@ public class MsgSendMainServiceTester extends SpringJUnit4BaseTester {
 	MsgSendMainService msgSendMainService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MsgSendMainServiceTester.class);
+	private static Logger logger = LogManager.getLogger(MsgSendMainServiceTester.class);
 
 	@Test
 	public void increaseSendCountByMsgSendId() throws InterruptedException {

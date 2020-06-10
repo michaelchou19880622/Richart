@@ -12,15 +12,8 @@ import java.util.TimerTask;
 
 import javax.annotation.PreDestroy;
 
-import okhttp3.Interceptor;
-import okhttp3.ResponseBody;
-import okhttp3.Request;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
-
-import retrofit2.Response;
 
 import com.bcs.core.api.service.LineTokenApiService;
 import com.bcs.core.bot.api.model.SendToBotModel;
@@ -46,6 +39,10 @@ import com.linecorp.bot.client.LineMessagingServiceBuilder;
 import com.linecorp.bot.model.response.BotApiResponse;
 
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 @Slf4j
 @Service

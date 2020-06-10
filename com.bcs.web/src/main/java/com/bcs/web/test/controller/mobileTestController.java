@@ -9,7 +9,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ import com.bcs.core.utils.ErrorRecord;
 @Controller
 @RequestMapping("/m")
 public class mobileTestController {
-	private static Logger logger = Logger.getLogger(mobileTestController.class);
+	private static Logger logger = LogManager.getLogger(mobileTestController.class);
 
 	@Autowired
 	private ContentCouponService contentCouponService;

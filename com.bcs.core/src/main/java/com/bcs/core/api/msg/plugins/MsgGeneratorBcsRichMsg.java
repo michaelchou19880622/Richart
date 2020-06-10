@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.api.msg.MsgGeneratorAbstract;
 import com.bcs.core.api.msg.MsgGeneratorRichMsg;
@@ -24,7 +25,7 @@ public class MsgGeneratorBcsRichMsg extends MsgGeneratorAbstract {
 	private static final long serialVersionUID = 1L;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MsgGeneratorBcsRichMsg.class);
+	private static Logger logger = LogManager.getLogger(MsgGeneratorBcsRichMsg.class);
 	
 	private MsgGeneratorRichMsg richMsg;
 	

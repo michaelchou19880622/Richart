@@ -13,7 +13,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jcodec.common.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class LineWebLoginApiService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LineWebLoginApiService.class);
+	private static Logger logger = LogManager.getLogger(LineWebLoginApiService.class);
 
 	public ObjectNode callRetrievingAPI(String client_id, String client_secret, String code, String redirect_uri) throws Exception{
 		Date start = new Date();

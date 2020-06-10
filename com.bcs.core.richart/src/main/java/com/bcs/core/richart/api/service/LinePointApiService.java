@@ -9,7 +9,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class LinePointApiService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LinePointApiService.class);
+	private static Logger logger = LogManager.getLogger(LinePointApiService.class);
 	
 	public ObjectNode callLinePointAPI(String clientId, String memberId, String orderKey, Long amount, String channelToken) throws Exception{
 		Date start = new Date();

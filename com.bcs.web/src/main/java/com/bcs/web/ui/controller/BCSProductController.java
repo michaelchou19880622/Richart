@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,7 +53,7 @@ public class BCSProductController extends BCSBaseController {
     private ProductGroupUIService productGroupUIService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSProductController.class);
+	private static Logger logger = LogManager.getLogger(BCSProductController.class);
 
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/productCreatePage")
 	public String productCreatePage(

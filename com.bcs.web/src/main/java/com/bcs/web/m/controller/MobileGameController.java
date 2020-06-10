@@ -16,7 +16,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -82,7 +83,7 @@ public class MobileGameController {
 	protected LoadingCache<String, ContentCoupon> dataCache;
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MobileGameController.class);
+	private static Logger logger = LogManager.getLogger(MobileGameController.class);
 
 	public MobileGameController() {
 

@@ -7,7 +7,8 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class SystemConfigService {
 	public static final String CONFIG_SYNC = "CONFIG_SYNC";
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentCouponService.class);
+	private static Logger logger = LogManager.getLogger(ContentCouponService.class);
 	
 	@Autowired
 	private SystemConfigRepository systemConfigRepository;

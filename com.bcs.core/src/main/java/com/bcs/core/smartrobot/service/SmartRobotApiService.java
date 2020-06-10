@@ -7,7 +7,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class SmartRobotApiService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SmartRobotApiService.class);
+	private static Logger logger = LogManager.getLogger(SmartRobotApiService.class);
 
 	public ArrayNode callSmartRobotApi(String sessionId, String question) throws Exception{
 		Date start = new Date();

@@ -6,7 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.api.msg.MsgGenerator;
 import com.bcs.core.api.msg.MsgGeneratorFactory;
@@ -34,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ExecuteSendMsgTask {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExecuteSendMsgTask.class);
+	private static Logger logger = LogManager.getLogger(ExecuteSendMsgTask.class);
 
 	public void executeSendMsg(Long msgId) throws Exception{
 		logger.info("executeSendMsg msgId ============ :" + msgId);

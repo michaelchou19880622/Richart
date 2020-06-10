@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +38,7 @@ import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 @RequestMapping("/bcs")
 public class BCSConnectionController extends BCSBaseController {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSConnectionController.class);
+	private static Logger logger = LogManager.getLogger(BCSConnectionController.class);
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/connectionTestPage")
 	public String connectionTestPage(@CurrentUser CustomUser customUser, HttpServletRequest request, HttpServletResponse response) {

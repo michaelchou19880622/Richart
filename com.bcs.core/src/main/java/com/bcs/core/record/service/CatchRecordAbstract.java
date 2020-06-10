@@ -12,7 +12,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.collections4.map.LinkedMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.utils.ErrorRecord;
 import com.google.common.cache.CacheBuilder;
@@ -23,7 +24,7 @@ import com.google.common.cache.LoadingCache;
 public abstract class CatchRecordAbstract implements CatchRecordInterface {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(CatchRecordAbstract.class);
+	private static Logger logger = LogManager.getLogger(CatchRecordAbstract.class);
 
 	protected LoadingCache<String, AtomicLong> record;
 	

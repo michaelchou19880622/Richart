@@ -2,7 +2,8 @@ package com.bcs.core.richmenu.core.db.service;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,7 @@ import com.bcs.core.richmenu.core.db.repository.RichMenuSendGroupQueryRepository
 @Service
 public class RichMenuSendGroupQueryService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuSendGroupQueryService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuSendGroupQueryService.class);
 	
 	@Autowired
 	private RichMenuSendGroupQueryRepository sendGroupQueryRepository;

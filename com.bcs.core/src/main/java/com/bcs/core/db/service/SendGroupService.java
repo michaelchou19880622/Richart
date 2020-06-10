@@ -7,7 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,7 @@ import com.bcs.core.utils.ObjectUtil;
 @Service
 public class SendGroupService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SendGroupService.class);
+	private static Logger logger = LogManager.getLogger(SendGroupService.class);
 	
 	public static final int pageSize = 1000; //PageSize Limit
 	

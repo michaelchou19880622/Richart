@@ -6,7 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
@@ -16,7 +17,7 @@ public class BarcodeGenerator {
 	private static int DEFAULT_DPI = 100;
 	private static int DEFAULT_HEIGHT = 30;
 	/** Logger */
-	private static Logger logger = Logger.getLogger(FileUtil.class);
+	private static Logger logger = LogManager.getLogger(FileUtil.class);
 
 	public static void generateBarcode128(String inputStr, OutputStream stream)
 			throws Exception {

@@ -8,7 +8,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class BCSLineUserController extends BCSBaseController {
 	private LineUserUIService lineUserUIService;
     
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSLineUserController.class);
+	private static Logger logger = LogManager.getLogger(BCSLineUserController.class);
 
 	@RequestMapping(method = RequestMethod.GET, value = "/admin/lineUserUploadPage")
 	public String lineUserUploadPage(

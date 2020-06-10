@@ -6,13 +6,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class InputStreamZipUtil {
 
 	private static final int BUFFER_SIZE = 4096;
 	/** Logger */
-	private static Logger logger = Logger.getLogger(InputStreamZipUtil.class);
+	private static Logger logger = LogManager.getLogger(InputStreamZipUtil.class);
 
 	public static String getInputStr(InputStream  inputStr) throws Exception{
 		return getInputStr(inputStr, false);

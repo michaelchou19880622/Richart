@@ -1,16 +1,10 @@
 package com.bcs.core.bot.api.service;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +12,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
 import com.bcs.core.api.service.model.PostLineResponse;
-import com.bcs.core.bot.pnp.model.FileHeaderModel;
 import com.bcs.core.bot.send.akka.model.AsyncSendingClusterModel;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.enums.LINE_HEADER;
@@ -27,15 +20,13 @@ import com.bcs.core.log.util.SystemLogUtil;
 import com.bcs.core.receive.helper.SignatureValidationHelper;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.utils.ErrorRecord;
-import com.bcs.core.utils.HttpClientUtil;
-import com.bcs.core.utils.InputStreamUtil;
 import com.bcs.core.utils.ObjectUtil;
 import com.bcs.core.utils.RestfulUtil;
 
 public class BcsApiClusterService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BcsApiClusterService.class);
+	private static Logger logger = LogManager.getLogger(BcsApiClusterService.class);
 	
 	public static PostLineResponse clusterApiSend(AsyncSendingClusterModel model) throws Exception{
 

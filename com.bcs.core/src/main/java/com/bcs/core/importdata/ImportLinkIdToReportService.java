@@ -2,7 +2,8 @@ package com.bcs.core.importdata;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +22,7 @@ public class ImportLinkIdToReportService {
 	@Autowired
 	private UserTraceLogRepository userTraceLogRepository;
 	
-	private static Logger logger = Logger.getLogger(ImportLinkIdToReportService.class);
+	private static Logger logger = LogManager.getLogger(ImportLinkIdToReportService.class);
 	
 	public void createPushReportByLinkId() {
 		try {

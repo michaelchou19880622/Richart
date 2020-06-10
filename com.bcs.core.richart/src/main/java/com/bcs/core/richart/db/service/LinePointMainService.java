@@ -10,7 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ import com.bcs.core.richart.db.repository.LinePointMainRepository;
 @Service
 public class LinePointMainService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LinePointMainService.class);
+	private static Logger logger = LogManager.getLogger(LinePointMainService.class);
 	@Autowired
 	private LinePointMainRepository linePointMainRepository;
 

@@ -4,7 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class MobilePageService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MobilePageService.class);
+	private static Logger logger = LogManager.getLogger(MobilePageService.class);
 
 	@Autowired
 	private AkkaCoreService akkaCoreService;

@@ -6,7 +6,8 @@ import java.util.Random;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import akka.actor.ActorRef;
@@ -20,7 +21,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class AkkaCoreService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(AkkaCoreService.class);
+	private static Logger logger = LogManager.getLogger(AkkaCoreService.class);
 
 	private List<ActorSystem> systemRecordHandler = new ArrayList<ActorSystem>();
 	private List<ActorRef> recordHandlerWork = new ArrayList<ActorRef>();

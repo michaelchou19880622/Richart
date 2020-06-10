@@ -11,7 +11,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,7 @@ import com.google.common.cache.LoadingCache;
 @Service
 public class MidToUidUIService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MidToUidUIService.class);
+	private static Logger logger = LogManager.getLogger(MidToUidUIService.class);
 	
 	@Autowired
 	private ImportDataFromExcel importMidFromExcel;

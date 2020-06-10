@@ -4,12 +4,12 @@ import java.util.Date;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jcodec.common.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,6 @@ import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
 import com.bcs.core.log.util.SystemLogUtil;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.utils.ErrorRecord;
-import com.bcs.core.utils.HttpClientUtil;
 import com.bcs.core.utils.InputStreamUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -27,7 +26,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class LineFriendShipStatusService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LineFriendShipStatusService.class);
+	private static Logger logger = LogManager.getLogger(LineFriendShipStatusService.class);
 
 	public ObjectNode getFriendShipStatusService(String access_token) throws Exception{
 		return this.getFriendShipStatusService(new Date(), access_token, 0);

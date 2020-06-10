@@ -6,7 +6,8 @@ import java.util.Properties;
 import net.sourceforge.jtds.jdbc.Driver;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.utils.ErrorRecord;
@@ -16,7 +17,7 @@ import com.zaxxer.hikari.HikariConfig;
 public class BcsHikariConfig extends HikariConfig {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BcsHikariConfig.class);
+	private static Logger logger = LogManager.getLogger(BcsHikariConfig.class);
 
 	HashMap<String, String> config = new HashMap<String, String>();
 	

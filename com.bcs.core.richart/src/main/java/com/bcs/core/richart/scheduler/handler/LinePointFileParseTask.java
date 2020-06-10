@@ -14,30 +14,30 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
-import com.bcs.core.richart.akka.service.LinePointPushAkkaService;
 import com.bcs.core.bot.pnp.model.FileHeaderModel;
 import com.bcs.core.bot.pnp.model.FtpTaskModel;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.resource.CoreConfigReader;
+import com.bcs.core.richart.akka.service.LinePointPushAkkaService;
 import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.FtpUtil;
 import com.bcs.core.utils.RestfulUtil;
 
 public class LinePointFileParseTask implements Job {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LinePointFileParseTask.class);
+	private static Logger logger = LogManager.getLogger(LinePointFileParseTask.class);
 	
 	LinePointPushAkkaService AkkaLinePointPushService = ApplicationContextProvider.getApplicationContext().getBean(LinePointPushAkkaService.class);
 	

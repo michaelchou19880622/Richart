@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ import com.bcs.core.utils.LiveChatWordingUtil;
 
 @Service
 public class MessageTransmitService {
-	private static Logger logger = Logger.getLogger(MessageTransmitService.class);
+	private static Logger logger = LogManager.getLogger(MessageTransmitService.class);
 
 	@Autowired
 	private MessageProcessService messageProcessService;

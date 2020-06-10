@@ -12,7 +12,8 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +23,7 @@ import com.bcs.core.db.entity.SendGroupDetail;
 public class GroupGenerateRepository{
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(GroupGenerateRepository.class);
+	private static Logger logger = LogManager.getLogger(GroupGenerateRepository.class);
 	
     @PersistenceContext
     private EntityManager entityManager;

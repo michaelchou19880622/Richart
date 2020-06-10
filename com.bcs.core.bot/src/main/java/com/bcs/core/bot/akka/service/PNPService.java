@@ -6,7 +6,8 @@ import java.util.Random;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.bot.send.akka.handler.PNPMasterActor;
@@ -18,7 +19,7 @@ import akka.actor.ActorSystem;
 @Service
 public class PNPService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(PNPService.class);
+	private static Logger logger = LogManager.getLogger(PNPService.class);
 	
 	private List<ActorSystem> actorSystemList = new ArrayList<ActorSystem>();
 	private List<ActorRef> PNPMasterActorList = new ArrayList<ActorRef>();

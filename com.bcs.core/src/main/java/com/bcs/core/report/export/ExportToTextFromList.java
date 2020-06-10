@@ -7,7 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.resource.CoreConfigReader;
@@ -17,7 +18,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class ExportToTextFromList {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToTextFromList.class);
+	private static Logger logger = LogManager.getLogger(ExportToTextFromList.class);
 	
 	public static String exportToTextPath(String name){
 

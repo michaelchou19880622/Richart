@@ -10,7 +10,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ import com.bcs.core.upload.ImportDataFromText;
 @Service
 public class RichMenuSendGroupUIService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuSendGroupUIService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuSendGroupUIService.class);
 	
 	@Autowired
 	private RichMenuSendGroupService sendGroupService;

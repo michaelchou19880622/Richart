@@ -22,7 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 
 //import lan.dk.podcastserver.utils.MimeTypeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.db.entity.ContentResource;
 import com.bcs.core.enums.CONFIG_STR;
@@ -34,7 +35,7 @@ import com.bcs.core.resource.CoreConfigReader;
  */
 public class MultipartFileSender {
 
-    private static Logger logger = Logger.getLogger(MultipartFileSender.class);
+    private static Logger logger = LogManager.getLogger(MultipartFileSender.class);
     
     private static final int DEFAULT_BUFFER_SIZE = 20480; // ..bytes = 20KB.
     private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.

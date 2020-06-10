@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import com.bcs.core.db.repository.AdminUserRepository;
 public class AdminUserService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(AdminUserService.class);
+	private static Logger logger = LogManager.getLogger(AdminUserService.class);
 	
 	@Autowired
 	private AdminUserRepository adminUserRepository;

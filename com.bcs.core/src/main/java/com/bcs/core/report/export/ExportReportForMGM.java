@@ -6,7 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,7 +35,7 @@ public class ExportReportForMGM {
 	public static final String REPORT_TYPE_BINDED = "BINDED";
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportReportForMGM.class);
+	private static Logger logger = LogManager.getLogger(ExportReportForMGM.class);
 
 	@Autowired
 	private ShareUserRecordService shareUserRecordService;

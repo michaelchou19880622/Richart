@@ -10,7 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -31,7 +32,7 @@ public class ContentCouponService {
 	public static final String COUPON_SYNC = "COUPON_SYNC";
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentCouponService.class);
+	private static Logger logger = LogManager.getLogger(ContentCouponService.class);
 
 	@Autowired
 	private ContentCouponRepository contentCouponRepository;

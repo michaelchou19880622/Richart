@@ -12,7 +12,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +44,7 @@ public class InvoiceEventService {
     private ProductService productService;
 
     /** Logger */
-    private static Logger logger = Logger.getLogger(InvoiceEventService.class);
+    private static Logger logger = LogManager.getLogger(InvoiceEventService.class);
 
     @Transactional(rollbackFor=Exception.class, timeout = 300)
 	public Map<String, Object> validateInvoice(String mid, ContentResource resource, String campaignId) throws Exception{

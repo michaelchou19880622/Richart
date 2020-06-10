@@ -4,7 +4,8 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -17,7 +18,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class ExportToExcelForMid {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToExcelForMid.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForMid.class);
 	
 	/**
 	 * 匯出EXCEL

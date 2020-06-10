@@ -17,7 +17,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class MsgInteractiveMainService {
 	
 	private final Object lock = new Object();
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MsgInteractiveMainService.class);
+	private static Logger logger = LogManager.getLogger(MsgInteractiveMainService.class);
 	@Autowired
 	private MsgInteractiveMainRepository msgInteractiveMainRepository;
 

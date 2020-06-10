@@ -3,7 +3,8 @@ package com.bcs.core.record.akke.handler;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import akka.actor.UntypedActor;
 
@@ -42,7 +43,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class RecordHandlerWork  extends UntypedActor {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RecordHandlerWork.class);
+	private static Logger logger = LogManager.getLogger(RecordHandlerWork.class);
 
 	@Override
 	public void onReceive(Object recordMsgObj){

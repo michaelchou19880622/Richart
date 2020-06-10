@@ -7,23 +7,18 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+
 import javax.annotation.PreDestroy;
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bcs.core.db.entity.ShareCampaign;
-import com.bcs.core.db.entity.ShareCampaignClickTracing;
-import com.bcs.core.db.entity.ShareDonatorRecord;
-import com.bcs.core.db.entity.ShareUserRecord;
 import com.bcs.core.db.service.ShareCampaignClickTracingService;
 import com.bcs.core.db.service.ShareCampaignService;
 import com.bcs.core.db.service.ShareDonatorRecordService;
@@ -31,9 +26,6 @@ import com.bcs.core.db.service.ShareUserRecordService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richart.akka.service.LinePointPushAkkaService;
-import com.bcs.core.richart.api.model.LinePointPushModel;
-import com.bcs.core.richart.db.entity.LinePointMain;
-import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
 import com.bcs.core.richart.db.service.LinePointMainService;
 import com.bcs.core.richart.db.service.LinePointScheduledDetailService;
 
@@ -41,7 +33,7 @@ import com.bcs.core.richart.db.service.LinePointScheduledDetailService;
 public class LinePointPMSchedulerService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LinePointPMSchedulerService.class);
+	private static Logger logger = LogManager.getLogger(LinePointPMSchedulerService.class);
 	@Autowired
 	LinePointPushAkkaService linePointPushAkkaService;
 	@Autowired

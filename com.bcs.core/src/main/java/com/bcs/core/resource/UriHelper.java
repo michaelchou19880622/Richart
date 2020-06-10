@@ -4,7 +4,8 @@ import java.io.File;
 import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.enums.BCS_PAGE_TYPE;
 import com.bcs.core.enums.CONFIG_STR;
@@ -13,7 +14,7 @@ import com.bcs.core.utils.UrlUtil;
 
 public class UriHelper {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(UriHelper.class);
+	private static Logger logger = LogManager.getLogger(UriHelper.class);
 	
 	public static String bcsMPage = CoreConfigReader.getString(CONFIG_STR.M_PAGE);				// http://www.webcomm.com.tw
 

@@ -2,7 +2,9 @@ package com.bcs.web.ui.service;
 
 import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +20,7 @@ import com.bcs.core.exception.BcsNoticeException;
 @Service
 public class LinePointUIService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LinePointUIService.class);
+	private static Logger logger = LogManager.getLogger(LinePointUIService.class);
 	@Autowired
 	private LinePointMainService linePointMainService;
 	@Autowired

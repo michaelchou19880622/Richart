@@ -23,14 +23,15 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.resource.CoreConfigReader;
 
 public class HttpClientUtil {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(HttpClientUtil.class);
+	private static Logger logger = LogManager.getLogger(HttpClientUtil.class);
 	
     private static final Object lock = new Object();
     

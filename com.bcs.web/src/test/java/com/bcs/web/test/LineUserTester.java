@@ -1,6 +1,7 @@
 package com.bcs.web.test;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +15,7 @@ public class LineUserTester extends SpringJUnit4BaseTester {
 	LineUserService lineUserService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(LineUserTester.class);
+	private static Logger logger = LogManager.getLogger(LineUserTester.class);
 
 	@Test
 	public void createTestLine() throws Exception {

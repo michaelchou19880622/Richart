@@ -5,7 +5,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.utils.ErrorRecord;
@@ -17,7 +18,7 @@ import com.google.common.cache.LoadingCache;
 public class HttpSessionService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(HttpSessionService.class);
+	private static Logger logger = LogManager.getLogger(HttpSessionService.class);
 
 	protected LoadingCache<String, HttpSession> dataCache; // No Need Sync
 	

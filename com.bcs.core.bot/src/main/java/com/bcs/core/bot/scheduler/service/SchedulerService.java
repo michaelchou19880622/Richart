@@ -10,7 +10,8 @@ import java.util.UUID;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -46,7 +47,7 @@ public class SchedulerService {
 	private MsgMainService msgMainService;
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SchedulerService.class);
+	private static Logger logger = LogManager.getLogger(SchedulerService.class);
 
 	private SchedulerFactory sfb = new StdSchedulerFactory();
 	private Scheduler scheduler;

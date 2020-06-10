@@ -6,7 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,7 +40,7 @@ public class BCSIndexController extends BCSBaseController {
 	private MobileUserController mobileUserController;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSIndexController.class);
+	private static Logger logger = LogManager.getLogger(BCSIndexController.class);
 
 	@RequestMapping(method = RequestMethod.GET, value = "/login")
 	public String loginPage(

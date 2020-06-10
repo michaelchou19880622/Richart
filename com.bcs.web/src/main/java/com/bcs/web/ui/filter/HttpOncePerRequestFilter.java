@@ -9,13 +9,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class HttpOncePerRequestFilter extends OncePerRequestFilter{
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(HttpOncePerRequestFilter.class);
+	private static Logger logger = LogManager.getLogger(HttpOncePerRequestFilter.class);
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,

@@ -5,7 +5,8 @@ import java.text.SimpleDateFormat;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +67,7 @@ public class InitController {
 //	private MGMTaskService mgmTaskService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(InitController.class);
+	private static Logger logger = LogManager.getLogger(InitController.class);
 
 	public InitController(){
 		logger.info("Constructor InitController");

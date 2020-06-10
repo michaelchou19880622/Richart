@@ -3,7 +3,8 @@ package com.bcs.core.report.export;
 import java.io.FileOutputStream;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -21,7 +22,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class ExportToExcelForCouponReport {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToExcelForCouponReport.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForCouponReport.class);
 
 	@Autowired
 	private ContentCouponService contentCouponService;

@@ -2,7 +2,8 @@ package com.bcs.core.db.service;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,7 @@ import com.bcs.core.db.repository.SendGroupQueryRepository;
 @Service
 public class SendGroupQueryService {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SendGroupQueryService.class);
+	private static Logger logger = LogManager.getLogger(SendGroupQueryService.class);
 	
 	@Autowired
 	private SendGroupQueryRepository sendGroupQueryRepository;

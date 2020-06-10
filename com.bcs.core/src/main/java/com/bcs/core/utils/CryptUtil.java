@@ -7,11 +7,12 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CryptUtil {
     /** Logger */
-    private static Logger logger = Logger.getLogger(CryptUtil.class);
+    private static Logger logger = LogManager.getLogger(CryptUtil.class);
     
     public static final String AES = "AES";
     

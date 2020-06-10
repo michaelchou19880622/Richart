@@ -3,13 +3,10 @@ package com.bcs.core.bot.get.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import retrofit2.Response;
 
 import com.bcs.core.bot.api.service.LineAccessApiService;
 import com.bcs.core.bot.enums.SEND_TYPE;
@@ -23,6 +20,9 @@ import com.bcs.core.exception.BcsNoticeException;
 import com.bcs.core.log.util.SystemLogUtil;
 import com.bcs.core.utils.ErrorRecord;
 
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+
 @Service
 public class GettingMsgContentService {
 
@@ -31,7 +31,7 @@ public class GettingMsgContentService {
 	@Autowired
 	private UserLiveChatService userLiveChatService;
 	/** Logger */
-	private static Logger logger = Logger.getLogger(GettingMsgContentService.class);
+	private static Logger logger = LogManager.getLogger(GettingMsgContentService.class);
 	
 	public ContentResource getImageMessage(String ChannelId, String MID, String ApiType, String receiveMsgId) throws Exception{
 		return getImageMessage(ChannelId, MID, ApiType, receiveMsgId, 0);

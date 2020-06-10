@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class InvoiceService {
 	private InvoiceRepository invoiceRepository;
 	
     /** Logger */
-    private static Logger logger = Logger.getLogger(InvoiceService.class);
+    private static Logger logger = LogManager.getLogger(InvoiceService.class);
 
     public void save(Invoice invoice){
         invoiceRepository.save(invoice);

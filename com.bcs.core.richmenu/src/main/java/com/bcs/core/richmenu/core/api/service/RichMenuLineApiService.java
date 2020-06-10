@@ -18,7 +18,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ import com.linecorp.bot.model.richmenu.RichMenu;
 public class RichMenuLineApiService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuLineApiService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuLineApiService.class);
 	
 	public PostLineResponse callCreateRichMenuAPI(String channelId, RichMenu richMenu, int retryCount)
 			throws Exception {

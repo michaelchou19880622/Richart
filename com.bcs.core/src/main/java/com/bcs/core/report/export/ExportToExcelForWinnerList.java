@@ -5,7 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -25,7 +26,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class ExportToExcelForWinnerList {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToExcelForWinnerList.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForWinnerList.class);
 
 	@Autowired
 	private ContentGameService contentGameService;

@@ -9,7 +9,8 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.datasource.DelegatingDataSource;
 import org.springframework.util.ClassUtils;
 
@@ -19,7 +20,7 @@ import org.springframework.util.ClassUtils;
 public class QueryTimeoutConfiguredDataSource extends DelegatingDataSource {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(QueryTimeoutConfiguredDataSource.class);
+	private static Logger logger = LogManager.getLogger(QueryTimeoutConfiguredDataSource.class);
 
 	private int queryTimeout;
 	

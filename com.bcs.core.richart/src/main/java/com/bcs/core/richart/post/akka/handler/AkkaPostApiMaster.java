@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-import org.jcodec.common.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class AkkaPostApiMaster extends UntypedActor{
-	private static Logger logger = Logger.getLogger(AkkaPostApiMaster.class);
+	private static Logger logger = LogManager.getLogger(AkkaPostApiMaster.class);
 
 	@Override
 	public void onReceive(Object message) throws Exception {

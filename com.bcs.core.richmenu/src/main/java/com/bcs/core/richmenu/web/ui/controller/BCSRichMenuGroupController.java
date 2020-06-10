@@ -82,7 +82,7 @@ public class BCSRichMenuGroupController extends BCSBaseController {
 	
 
 //	/** Logger */
-//	private static Logger logger = Logger.getLogger(BCSRichMenuGroupController.class);	
+//	private static Logger logger = LogManager.getLogger(BCSRichMenuGroupController.class);	
 //	
 //	@Autowired
 //	RichMenuGroupService richMenuGroupService;

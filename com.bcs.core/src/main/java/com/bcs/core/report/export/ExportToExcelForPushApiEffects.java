@@ -7,7 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -27,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ExportToExcelForPushApiEffects {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToExcelForPushApiEffects.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForPushApiEffects.class);
 	
 	@Autowired
 	private PushMessageRecordService pushMessageRecordService;

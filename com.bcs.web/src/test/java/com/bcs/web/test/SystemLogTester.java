@@ -3,7 +3,8 @@ package com.bcs.web.test;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,7 +18,7 @@ public class SystemLogTester extends SpringJUnit4BaseTester {
 	AkkaCoreService akkaCoreService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SystemLogTester.class);
+	private static Logger logger = LogManager.getLogger(SystemLogTester.class);
 
 	@Test
 	public void systemLogMsgs() throws Exception {

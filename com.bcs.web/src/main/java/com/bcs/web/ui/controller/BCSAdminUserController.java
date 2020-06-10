@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,7 +46,7 @@ public class BCSAdminUserController extends BCSBaseController {
 	private AdminUserUIService adminUserUIService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSAdminUserController.class);
+	private static Logger logger = LogManager.getLogger(BCSAdminUserController.class);
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/market/adminUserCreatePage")
 	public String adminUserCreatePage(HttpServletRequest request, 

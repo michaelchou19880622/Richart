@@ -1,28 +1,14 @@
 package com.bcs.core.richart.scheduler.handler;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Query;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.bcs.core.db.entity.ShareCampaign;
-import com.bcs.core.db.entity.ShareCampaignClickTracing;
-import com.bcs.core.db.entity.ShareUserRecord;
 import com.bcs.core.db.service.ShareCampaignClickTracingService;
 import com.bcs.core.db.service.ShareCampaignService;
 import com.bcs.core.db.service.ShareUserRecordService;
-import com.bcs.core.richart.akka.service.LinePointPushAkkaService;
-import com.bcs.core.richart.api.model.LinePointPushModel;
-import com.bcs.core.richart.db.entity.LinePointMain;
-import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
 import com.bcs.core.richart.db.service.LinePointMainService;
 import com.bcs.core.richart.db.service.LinePointScheduledDetailService;
 //import com.bcs.core.richart.scheduler.service.MGMService;
@@ -39,7 +25,7 @@ public class MGMTask implements Job {
 	LinePointScheduledDetailService linePointScheduledDetailService = ApplicationContextProvider.getApplicationContext().getBean(LinePointScheduledDetailService.class);
 	//LinePointPushAkkaService linePointPushAkkaService = ApplicationContextProvider.getApplicationContext().getBean(LinePointPushAkkaService.class);
 	
-	private static Logger logger = Logger.getLogger(MGMTask.class);
+	private static Logger logger = LogManager.getLogger(MGMTask.class);
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {

@@ -6,7 +6,8 @@ import java.util.Random;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.richart.api.model.LogApiModel;
@@ -20,7 +21,7 @@ import akka.actor.ActorSystem;
 public class RichartAkkaService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichartAkkaService.class);
+	private static Logger logger = LogManager.getLogger(RichartAkkaService.class);
 	
 	private List<ActorRef> akkaPostApiMaster = new ArrayList<ActorRef>();
 	private List<ActorSystem> systemakkaPostApi = new ArrayList<ActorSystem>();

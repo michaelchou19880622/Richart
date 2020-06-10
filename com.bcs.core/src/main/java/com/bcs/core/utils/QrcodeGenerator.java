@@ -11,7 +11,8 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -25,7 +26,7 @@ public class QrcodeGenerator {
 	private static int DEFAULT_Size = 400;
 	private static String fileType = "png";
 	/** Logger */
-	private static Logger logger = Logger.getLogger(FileUtil.class);
+	private static Logger logger = LogManager.getLogger(FileUtil.class);
 
 	public static void generateQrcode(String inputStr, OutputStream stream)
 			throws Exception {

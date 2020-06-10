@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ import com.bcs.core.upload.ImportDataFromText;
 public class BusinessUIService {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BusinessUIService.class);
+	private static Logger logger = LogManager.getLogger(BusinessUIService.class);
 	
 	@Autowired
 	private BusinessService businessService;

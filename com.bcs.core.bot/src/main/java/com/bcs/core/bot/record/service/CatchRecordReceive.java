@@ -4,7 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +24,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class CatchRecordReceive extends CatchRecordAbstract {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(CatchRecordReceive.class);
+	private static Logger logger = LogManager.getLogger(CatchRecordReceive.class);
 
 	@Autowired
 	private MsgBotReceiveService msgBotReceiveService;

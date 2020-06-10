@@ -7,7 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import com.bcs.web.ui.model.UserInfoModel;
 @Service
 public class ActionUserCouponUIService {
 		
-	private static Logger logger = Logger.getLogger(ActionUserCouponUIService.class);
+	private static Logger logger = LogManager.getLogger(ActionUserCouponUIService.class);
 
 	@Autowired
 	private ActionUserCouponService actionUserCouponService;

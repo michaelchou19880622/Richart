@@ -2,7 +2,8 @@ package com.bcs.chatbot.test;
 
 import static org.junit.Assert.*;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import com.bcs.core.api.service.ChatBotApiService;
 import junit.framework.TestCase;
 
 public class SwitchIconTest extends TestCase{
-	private static Logger logger = Logger.getLogger(SwitchIconTest.class);
+	private static Logger logger = LogManager.getLogger(SwitchIconTest.class);
 	
 	@Autowired
 	private ChatBotApiService chatBotApiService;

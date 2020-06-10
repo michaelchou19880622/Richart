@@ -16,7 +16,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,7 @@ public class RichMenuContentService {
     EntityManager entityManager;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuContentService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuContentService.class);
 
 	private Timer flushTimer = new Timer();
 

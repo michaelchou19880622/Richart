@@ -9,7 +9,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,7 +52,7 @@ public class BCSScratchCardController {
 	private ContentCouponService contentCouponService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSScratchCardController.class);
+	private static Logger logger = LogManager.getLogger(BCSScratchCardController.class);
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/gameCreatePage/scratchCard")
 	public String ScratchCardCreatePage(HttpServletRequest request, HttpServletResponse response) {

@@ -4,7 +4,8 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -24,7 +25,7 @@ import com.bcs.core.utils.ErrorRecord;
 @Service
 public class ExportToExcelForLinePointPushApiEffects {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToExcelForLinePointPushApiEffects.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForLinePointPushApiEffects.class);
 
 	@Autowired
 	private LinePointMainService linePointMainService;

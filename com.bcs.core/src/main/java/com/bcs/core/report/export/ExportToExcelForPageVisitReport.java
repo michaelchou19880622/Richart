@@ -3,7 +3,8 @@ package com.bcs.core.report.export;
 import java.io.FileOutputStream;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -19,7 +20,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class ExportToExcelForPageVisitReport {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ExportToExcelForPageVisitReport.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForPageVisitReport.class);
 	@Autowired
 	private PageVisitReportService pageVisitReportService;
 	

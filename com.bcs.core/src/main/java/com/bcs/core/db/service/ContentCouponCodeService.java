@@ -7,7 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ public class ContentCouponCodeService {
 	public static final String COUPON_SYNC = "COUPON_SYNC";
 	public static final Integer pageSize = 1000;
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentCouponCodeService.class);
+	private static Logger logger = LogManager.getLogger(ContentCouponCodeService.class);
 
 	@Autowired
 	private ContentCouponCodeRepository contentCouponCodeRepository;

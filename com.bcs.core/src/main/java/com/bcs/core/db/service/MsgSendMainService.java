@@ -17,7 +17,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class MsgSendMainService {
 	/** Logger */
     private final Object lock = new Object();
-	private static Logger logger = Logger.getLogger(MsgSendMainService.class);
+	private static Logger logger = LogManager.getLogger(MsgSendMainService.class);
 	@Autowired
 	private MsgSendMainRepository msgSendMainRepository;
 	@Autowired

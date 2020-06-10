@@ -2,7 +2,8 @@ package com.bcs.web.test;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,7 +18,7 @@ public class RecordReportTester extends SpringJUnit4BaseTester {
 	RecordReportService recordReportService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RecordReportTester.class);
+	private static Logger logger = LogManager.getLogger(RecordReportTester.class);
 
 	@Test
 	public void saveByReferenceIdAndContentTypeAndDataTypeAndRecordTime() throws Exception {

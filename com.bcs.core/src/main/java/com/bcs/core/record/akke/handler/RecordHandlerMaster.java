@@ -1,6 +1,7 @@
 package com.bcs.core.record.akke.handler;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
@@ -12,7 +13,7 @@ import com.bcs.core.utils.ObjectUtil;
 public class RecordHandlerMaster extends UntypedActor {
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RecordHandlerMaster.class);
+	private static Logger logger = LogManager.getLogger(RecordHandlerMaster.class);
 
     private final ActorRef routerActor;
     

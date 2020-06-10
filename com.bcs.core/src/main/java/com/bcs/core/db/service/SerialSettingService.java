@@ -10,7 +10,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +35,7 @@ public class SerialSettingService {
 	public static final String SERIAL_SYNC = "SERIAL_SYNC";
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SerialSettingService.class);
+	private static Logger logger = LogManager.getLogger(SerialSettingService.class);
 
 	@Autowired
 	private SerialSettingRepository serialSettingRepository;

@@ -3,7 +3,8 @@ package com.bcs.web.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +19,7 @@ public class SendGroupQueryServiceTester extends SpringJUnit4BaseTester {
 	SendGroupQueryService sendGroupQueryService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(SendGroupQueryServiceTester.class);
+	private static Logger logger = LogManager.getLogger(SendGroupQueryServiceTester.class);
 
 	@Test
 	public void sendGroupQueryServiceSave() throws Exception {

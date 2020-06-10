@@ -12,7 +12,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ import com.bcs.core.utils.ChtCDNUtil;
 @Service
 public class ContentRewardCardUIService {
 
-	private static Logger logger = Logger.getLogger(ContentRewardCardUIService.class);
+	private static Logger logger = LogManager.getLogger(ContentRewardCardUIService.class);
 	
 	@Autowired
 	private ContentRewardCardService contentRewardCardService;

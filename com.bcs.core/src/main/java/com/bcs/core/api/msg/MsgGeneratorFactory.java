@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.api.msg.plugins.MsgGeneratorBcsCoupon;
 import com.bcs.core.api.msg.plugins.MsgGeneratorBcsInteractiveLink;
@@ -25,7 +26,7 @@ import com.linecorp.bot.model.message.Message;
 public class MsgGeneratorFactory {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MsgGeneratorFactory.class);
+	private static Logger logger = LogManager.getLogger(MsgGeneratorFactory.class);
 	
 	public static MsgGenerator createFromString(String type, String msgStr) throws Exception{
 		

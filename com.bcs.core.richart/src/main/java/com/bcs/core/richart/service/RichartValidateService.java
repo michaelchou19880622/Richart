@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class RichartValidateService {
 	private UserFieldSetService userFieldSetService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichartValidateService.class);
+	private static Logger logger = LogManager.getLogger(RichartValidateService.class);
 	
 	@Transactional(rollbackFor=Exception.class, timeout = 30)
 	public void bindedLineUser(UpdateStatusModel model) throws Exception{

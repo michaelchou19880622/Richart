@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import com.bcs.core.db.repository.ContentLinkTracingRepository;
 public class ContentLinkTracingService {
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentLinkTracingService.class);
+	private static Logger logger = LogManager.getLogger(ContentLinkTracingService.class);
 	
 	@Autowired
 	private ContentLinkTracingRepository contentLinkTracingRepository;

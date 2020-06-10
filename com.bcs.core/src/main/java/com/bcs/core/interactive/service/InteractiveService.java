@@ -13,7 +13,8 @@ import java.util.concurrent.ExecutionException;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class InteractiveService {
 	private final Object lock = new Object();
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(InteractiveService.class);
+	private static Logger logger = LogManager.getLogger(InteractiveService.class);
 	
 	@Autowired
 	private MsgInteractiveMainService msgInteractiveMainService;

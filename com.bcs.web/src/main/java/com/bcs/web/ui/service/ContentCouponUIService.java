@@ -8,7 +8,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ import com.bcs.core.utils.ChtCDNUtil;
 @Service
 public class ContentCouponUIService {
 
-	private static Logger logger = Logger.getLogger(ContentCouponUIService.class);
+	private static Logger logger = LogManager.getLogger(ContentCouponUIService.class);
 
 	@Autowired
 	private ContentCouponService contentCouponService;

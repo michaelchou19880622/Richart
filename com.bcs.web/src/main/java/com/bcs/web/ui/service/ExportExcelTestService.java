@@ -16,7 +16,8 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -84,7 +85,7 @@ public class ExportExcelTestService {
     private RecordReportService recordReportService;
 
     /** Logger */
-    private static Logger logger = Logger.getLogger(ExportExcelTestService.class);
+    private static Logger logger = LogManager.getLogger(ExportExcelTestService.class);
 
     public void exportExcel(String exportPath, String fileName, String sheetName, String startDate, String endDate,
             String linkUrl, String keyword) throws Exception {

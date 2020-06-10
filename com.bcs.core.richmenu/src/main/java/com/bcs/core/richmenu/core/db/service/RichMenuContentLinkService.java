@@ -8,7 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,7 @@ public class RichMenuContentLinkService {
     EntityManager entityManager;
     
 	/** Logger */
-	private static Logger logger = Logger.getLogger(RichMenuContentLinkService.class);
+	private static Logger logger = LogManager.getLogger(RichMenuContentLinkService.class);
 	
 	@Autowired
 	private RichMenuContentLinkRepository contentLinkRepository;

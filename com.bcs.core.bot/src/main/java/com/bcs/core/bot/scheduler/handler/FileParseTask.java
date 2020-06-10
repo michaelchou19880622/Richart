@@ -14,7 +14,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.quartz.Job;
@@ -37,7 +38,7 @@ import com.bcs.core.utils.RestfulUtil;
 
 public class FileParseTask implements Job {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(FileParseTask.class);
+	private static Logger logger = LogManager.getLogger(FileParseTask.class);
 	
 	PNPService PNPService = ApplicationContextProvider.getApplicationContext().getBean(PNPService.class);
 	

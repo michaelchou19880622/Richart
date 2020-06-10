@@ -20,7 +20,8 @@ import javax.persistence.Query;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class ContentReportService {
     EntityManager entityManager;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentReportService.class);
+	private static Logger logger = LogManager.getLogger(ContentReportService.class);
 	
 	private DecimalFormat df = new DecimalFormat(",###"); //將數字加入千分號
 	

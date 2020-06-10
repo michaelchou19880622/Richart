@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
@@ -19,7 +20,7 @@ public class ReceivingMsgHandlerMaster extends UntypedActor {
 	public static Date updateDate;
 
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ReceivingMsgHandlerMaster.class);
+	private static Logger logger = LogManager.getLogger(ReceivingMsgHandlerMaster.class);
 
     private final ActorRef routerEventTypeActor;
     private final ActorRef routerMsgReceiveActor;

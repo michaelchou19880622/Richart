@@ -6,7 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +40,7 @@ public class MobileUserController {
 	private MobileGameController mobileGameController;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(MobileUserController.class);
+	private static Logger logger = LogManager.getLogger(MobileUserController.class);
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/goIndex")
 	public void goIndex(HttpServletRequest request, HttpServletResponse response) throws IOException{

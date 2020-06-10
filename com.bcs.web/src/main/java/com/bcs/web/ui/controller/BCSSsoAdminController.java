@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ import com.bcs.web.m.controller.MobileUserController;
 @RequestMapping("/m")
 public class BCSSsoAdminController {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(BCSSsoAdminController.class);
+	private static Logger logger = LogManager.getLogger(BCSSsoAdminController.class);
 
 	@Autowired
 	private AdminUserService adminUserService;

@@ -6,7 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class ContentPrizeService {
 	private ActionUserCouponService actionUserCouponService;
 	
 	/** Logger */
-	private static Logger logger = Logger.getLogger(ContentPrizeService.class);
+	private static Logger logger = LogManager.getLogger(ContentPrizeService.class);
 
 	/**
 	 * 隨機抽選一個獎品
