@@ -126,9 +126,118 @@ public class FileUtil {
 		}
 	}
 
+	public static ContentResource uploadImageWithExtension(MultipartFile filePart, String fileUrl, String resourceType, String modifyUser) throws Exception {
+		String resourceId = null;
+		String resourceTitle = null;
+		Long resourceSize = 0L;
+		String contentType = null;
+		URL url = null;
+		URLConnection connection = null;
+
+		if (fileUrl == null) {
+			resourceTitle = filePart.getOriginalFilename();
+			resourceSize = filePart.getSize();
+			contentType = filePart.getContentType();
+
+			resourceId = UUID.randomUUID().toString().toLowerCase();
+		} else {
+			String proxyUrl = CoreConfigReader.getString(CONFIG_STR.RICHART_PROXY_URL.toString(), true);
+			log.info("proxyUrl = {}", proxyUrl);
+
+			url = new URL(fileUrl);
+			connection = (proxyUrl == null) ? url.openConnection() : url.openConnection(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl, 80)));
+
+			resourceTitle = url.getFile().substring(url.getFile().lastIndexOf('/') + 1);
+			resourceSize = Long.parseLong(connection.getHeaderField("Content-Length"));
+			contentType = connection.getHeaderField("Content-Type");
+
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(fileUrl.split("://")[1].getBytes());
+
+			resourceId = new BigInteger(1, md.digest()).toString(16);
+		}
+
+		log.info("resourceId: " + resourceId);
+		log.info("resourceTitle: " + resourceTitle);
+		log.info("resourceSize: " + resourceSize);
+		log.info("contentType: " + contentType);
+		
+		String fileName = filePart.getOriginalFilename();
+		log.info("fileName = {}", fileName);
+		
+		int lastIndexOfDot = fileName.lastIndexOf('.');
+		String fileExtension = null;
+
+		if (lastIndexOfDot > 0) {
+			fileExtension = fileName.substring(lastIndexOfDot + 1);
+		}
+
+		String filePath = CoreConfigReader.getString(CONFIG_STR.FilePath);
+		log.info("uploadFile:" + filePath + System.getProperty("file.separator") + resourceId);
+
+		BufferedOutputStream out = null;
+		BufferedInputStream in = null;
+
+		String errorMsg = "";
+		boolean isBcsNoticeException = false;
+		try {
+			File folder = new File(filePath);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			
+			File genfile = new File(filePath + System.getProperty("file.separator") + resourceId + "." + fileExtension);
+			if (!genfile.exists()) {
+				genfile.createNewFile();
+			}
+			out = new BufferedOutputStream(new FileOutputStream(genfile));
+			in = (fileUrl == null) ? new BufferedInputStream(filePart.getInputStream()) : new BufferedInputStream(connection.getInputStream());
+
+			return uploadImageWithExtension(filePath, out, in, genfile, resourceId, resourceTitle, resourceSize, resourceType, modifyUser, contentType, true, true, fileExtension);
+		} catch (Exception e) {
+			log.error(ErrorRecord.recordError(e));
+			if (e instanceof BcsNoticeException) {
+				isBcsNoticeException = true;
+			}
+			errorMsg = e.getMessage();
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+			if (out != null) {
+				out.close();
+			}
+			log.info("finally");
+		}
+
+		if (isBcsNoticeException) {
+			throw new BcsNoticeException(errorMsg);
+		} else {
+			throw new Exception(errorMsg);
+		}
+	}
+
 	private static void saveFileToDB(String filePath, String resourceId, Date date, String modifyUser) throws Exception {
 
 		File file = new File(filePath + System.getProperty("file.separator") + resourceId);
+
+		ContentResourceFile contentResourceFile = new ContentResourceFile(resourceId);
+
+		byte[] bFile = new byte[(int) file.length()];
+		FileInputStream fileInputStream = new FileInputStream(file);
+		fileInputStream.read(bFile);
+		fileInputStream.close();
+
+		contentResourceFile.setFileData(bFile);
+		contentResourceFile.setModifyTime(date);
+		contentResourceFile.setModifyUser(modifyUser);
+
+		ApplicationContextProvider.getApplicationContext().getBean(ContentResourceFileService.class).save(contentResourceFile);
+	}
+
+	private static void saveFileWithExtensionToDB(String filePath, String resourceId, Date date, String modifyUser, String extension) throws Exception {
+
+		File file = new File(filePath + System.getProperty("file.separator") + resourceId + "." + extension);
 
 		ContentResourceFile contentResourceFile = new ContentResourceFile(resourceId);
 
@@ -149,6 +258,25 @@ public class FileUtil {
 //		File file = new File(filePath + System.getProperty("file.separator") + resourceId);
 
 		ContentResourceFile contentResourceFile = new ContentResourceFile(resourceId);
+
+//        byte[] bFile = new byte[(int) file.length()];
+		byte[] bFile = IOUtils.toByteArray(in);
+//        FileInputStream fileInputStream = new FileInputStream(file);
+//        in.read(bFile);
+		in.close();
+
+		contentResourceFile.setFileData(bFile);
+		contentResourceFile.setModifyTime(date);
+		contentResourceFile.setModifyUser(modifyUser);
+
+		ApplicationContextProvider.getApplicationContext().getBean(ContentResourceFileService.class).save(contentResourceFile);
+	}
+
+	private static void saveFileWithExtensionToDB(BufferedInputStream in, String resourceId, Date date, String modifyUser, String extension) throws Exception {
+
+//		File file = new File(filePath + System.getProperty("file.separator") + resourceId);
+
+		ContentResourceFile contentResourceFile = new ContentResourceFile(resourceId + "." + extension);
 
 //        byte[] bFile = new byte[(int) file.length()];
 		byte[] bFile = IOUtils.toByteArray(in);
@@ -249,6 +377,55 @@ public class FileUtil {
 		} else {
 			if (saveToDb) {
 				saveFileToDB(filePath, resourceId, date, modifyUser);
+			}
+		}
+
+		return resource;
+	}
+
+	private static ContentResource uploadImageWithExtension(String filePath, BufferedOutputStream out, BufferedInputStream in, File genfile, String resourceId, String resourceTitle, Long resourceSize,
+			String resourceType, String modifyUser, String contentType, boolean saveToDb, boolean saveToDisk, String extension) throws Exception {
+
+		if (saveToDisk) {
+			org.apache.commons.io.IOUtils.copy(in, out);
+
+			if (in != null) {
+				in.close();
+			}
+			if (out != null) {
+				out.close();
+			}
+		}
+
+		Date date = new Date();
+
+		// Create Bean Data
+		ContentResource resource = new ContentResource();
+		resource.setResourceId(resourceId);
+		resource.setResourceTitle(resourceTitle);
+		resource.setResourceSize(resourceSize);
+		resource.setResourceType(resourceType);
+		resource.setModifyUser(modifyUser);
+		resource.setModifyTime(date);
+		resource.setContentType(contentType);
+		resource.setUseFlag(false);
+
+		if (ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType)) {
+
+			updateImageResource(genfile, resource);
+			resource.setResourcePreview(ContentResource.RESOURCE_TYPE_IMAGE);
+		} else {
+			log.error("Resource type isn't equal to IMAGE");
+			throw new Exception("Resource type isn't equal to IMAGE");
+		}
+
+		if (!saveToDisk) {
+			if (saveToDb) {
+				saveFileWithExtensionToDB(in, resourceId, date, modifyUser, extension);
+			}
+		} else {
+			if (saveToDb) {
+				saveFileWithExtensionToDB(filePath, resourceId, date, modifyUser, extension);
 			}
 		}
 

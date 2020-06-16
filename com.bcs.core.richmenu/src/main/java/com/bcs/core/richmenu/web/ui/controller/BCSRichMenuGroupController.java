@@ -9,22 +9,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.bcs.core.db.entity.ContentResource;
+import com.bcs.core.db.service.ContentResourceService;
 import com.bcs.core.db.service.SendGroupService;
+import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.utils.DataUtils;
 import com.bcs.core.web.ui.controller.BCSBaseController;
 import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
+
+
 @Slf4j
 @Controller
 @RequestMapping("/bcs")
 public class BCSRichMenuGroupController extends BCSBaseController {
+
+	@Autowired
+	private ContentResourceService contentResourceService;
 	
 	@Autowired
 	private SendGroupService sendGroupService;
@@ -76,13 +88,68 @@ public class BCSRichMenuGroupController extends BCSBaseController {
 	}
 	
 	
+	// uploadRichmenuImage
+	@CrossOrigin(origins = "*", maxAge = 3600)
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/uploadRichmenuImage")
+	@ResponseBody
+	public ResponseEntity<?> uploadRichmenuImage(HttpServletRequest request, HttpServletResponse response, 
+			@RequestParam("file") MultipartFile file) throws Exception {
+		log.info("uploadRichmenuImage");
+		
+		try {
+			
+			if (file != null) {
+				log.info("file.toString() = {}", file.toString());
+				log.info("file.getContentType = {}", file.getContentType());
+				log.info("file.getSize = {}", file.getSize());
+				log.info("file.getOriginalFilename = {}", file.getOriginalFilename());
+
+				String fileName = file.getOriginalFilename();
+				log.info("fileName = {}", fileName);
+				
+				int lastIndexOfDot = fileName.lastIndexOf('.');
+				String fileExtension = null;
+
+				if (lastIndexOfDot > 0) {
+					fileExtension = fileName.substring(lastIndexOfDot + 1);
+				}
+
+				ContentResource resource = contentResourceService.uploadRichmenuImage(file, ContentResource.RESOURCE_TYPE_IMAGE, null);
+				
+				if (resource != null) {
+					log.info("resource.getResourceId() = {}", resource.getResourceId());
+					
+					String bcswebUploadPath = CoreConfigReader.getString(CONFIG_STR.HPI_RICHMENU_UPLOAD_PATH.toString(), false, false);
+					log.info("bcswebUploadPath = {}", bcswebUploadPath);
+					
+					String finalImageUrl = bcswebUploadPath + resource.getResourceId() + "." + fileExtension;
+					log.info("finalImageUrl = {}", finalImageUrl);
+					
+					return new ResponseEntity<>(finalImageUrl, HttpStatus.OK);
+				}
+			}
+			return new ResponseEntity<>("Upload Richmenu Image Error", HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		} catch (Exception e) {
+
+			log.info("Exception : ", e);
+
+			if (e instanceof BcsNoticeException) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_IMPLEMENTED);
+			} else {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	}
+	
+	
 	
 	
 	
 	
 
 //	/** Logger */
-//	private static Logger logger = Logger.getLogger(BCSRichMenuGroupController.class);	
+//	private static Logger logger = LogManager.getLogger(BCSRichMenuGroupController.class);	
 //	
 //	@Autowired
 //	RichMenuGroupService richMenuGroupService;
