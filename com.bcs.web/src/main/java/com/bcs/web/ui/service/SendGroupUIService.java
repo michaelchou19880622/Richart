@@ -248,9 +248,9 @@ public class SendGroupUIService {
 				try {
 					curSaveIndex = 0;
 
-					for (int i = 0; i < existMids.size(); i++) {
-						String mid = existMids.get(i);
-
+		            int i = 0;
+		            List<UserEventSet> userEventSetList = new ArrayList<>();
+		            for (String mid : existMids) {
 						UserEventSet userEventSet = new UserEventSet();
 						userEventSet.setTarget(EVENT_TARGET_ACTION_TYPE.EVENT_SEND_GROUP.toString());
 						userEventSet.setAction(EVENT_TARGET_ACTION_TYPE.ACTION_UPLOAD_MID.toString());
@@ -259,11 +259,26 @@ public class SendGroupUIService {
 						userEventSet.setContent(fileName);
 						userEventSet.setSetTime(modifyTime);
 						userEventSet.setModifyUser(modifyUser);
+//						log.info("[ Save UserEventSet ] userEventSet : {}", userEventSet);
 
-						log.info("[ Save UserEventSet ] userEventSet : {}", userEventSet);
-
-						userEventSetService.save(userEventSet);
+		                /* 效能優化 ： 組裝userEventSetList , 一次儲存 */
+		                userEventSetList.add(userEventSet);
+		                i++;
+		                /* 每一千筆處理一次 */
+		                if (i % 1000 == 0) {
+		                    log.info("userEventSetList size:" + userEventSetList.size());
+//		                    log.info("userEventSetList:" + userEventSetList);
+		                	userEventSetService.save(userEventSetList);
+		                	userEventSetList.clear();
+		                }     						
 					}
+		            /* Update userEventSet */
+		            if (!userEventSetList.isEmpty()) {
+		                log.info("userEventSetList size:" + userEventSetList.size());
+//		                log.info("userEventSetList:" + userEventSetList);
+		            	userEventSetService.save(userEventSetList);
+		            	userEventSetList.clear();
+		            }      					
 
 					endTime = System.currentTimeMillis();
 					log.info("[ Save UserEventSet ] END TIME : {}", sdf.format(new Date(endTime)));
@@ -413,8 +428,9 @@ public class SendGroupUIService {
 				try {
 					curSaveIndex = 0;
 
-					for (int i = 0; i < existMids.size(); i++) {
-						String mid = existMids.get(i);
+		            int i = 0;
+		            List<UserEventSet> userEventSetList = new ArrayList<>();
+		            for (String mid : existMids) {
 
 						UserEventSet userEventSet = new UserEventSet();
 						userEventSet.setTarget(EVENT_TARGET_ACTION_TYPE.TARGET_RICHMENU_SEND_GROUP.toString());
@@ -425,10 +441,25 @@ public class SendGroupUIService {
 						userEventSet.setSetTime(modifyTime);
 						userEventSet.setModifyUser(modifyUser);
 
-						log.info("[ Save UserEventSet ] userEventSet : {}", userEventSet);
-
-						userEventSetService.save(userEventSet);
+//						log.info("[ Save UserEventSet ] userEventSet : {}", userEventSet);
+		                /* 效能優化 ： 組裝userEventSetList , 一次儲存 */
+		                userEventSetList.add(userEventSet);
+		                i++;
+		                /* 每一千筆處理一次 */
+		                if (i % 1000 == 0) {
+		                    log.info("userEventSetList size:" + userEventSetList.size());
+//		                    log.info("userEventSetList:" + userEventSetList);
+		                	userEventSetService.save(userEventSetList);
+		                	userEventSetList.clear();
+		                }     	
 					}
+		            /* Update userEventSet */
+		            if (!userEventSetList.isEmpty()) {
+		                log.info("userEventSetList size:" + userEventSetList.size());
+//		                log.info("userEventSetList:" + userEventSetList);
+		            	userEventSetService.save(userEventSetList);
+		            	userEventSetList.clear();
+		            }      					
 
 					endTime = System.currentTimeMillis();
 					log.info("[ Save UserEventSet ] END TIME : {}", sdf.format(new Date(endTime)));
@@ -505,7 +536,7 @@ public class SendGroupUIService {
 		log.info("[ RetrySave UserEventSet ] START TIME : {}", retryStartTime);
 
 		try {
-
+            //前面已經優化過, 理論上不應該timeout了.
 			for (int i = this.curSaveIndex; i < existMids.size(); i++) {
 				String mid = existMids.get(i);
 
