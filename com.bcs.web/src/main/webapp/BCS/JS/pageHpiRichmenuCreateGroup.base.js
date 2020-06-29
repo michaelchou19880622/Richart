@@ -358,6 +358,7 @@ $(function() {
 		}
 		
 		var GetQueryResultUrl = bcs.bcsContextPath;
+		var exportMidsUrl;
 		var postData;
 		
 		if (selectedGroupType == 'BINDSTATUS') {
@@ -376,6 +377,9 @@ $(function() {
 			postData = JSON.stringify(postData);
 		}
 
+
+		$('.LyMain').block($.BCS.blockMsgExportingMids);
+		
 		$.ajax({
 			type : "POST",
 			url : encodeURI(GetQueryResultUrl),
@@ -384,18 +388,41 @@ $(function() {
 			processData : false,
 			data : postData
 		}).success(function(response) {
-			console.info('response = ', response);
+//			console.info('response = ', response);
 			responseCount = (selectedGroupType == 'BINDSTATUS')? response : response.count;
+
+			if (selectedGroupType == 'BINDSTATUS') {
+				exportMidsUrl = encodeURI(bcs.bcsContextPath + '/market/exportToExcelForSendGroupWithBindingStatus?statusIndex=' + selectStatusValueIndex);
+			} else {
+				exportMidsUrl = encodeURI(bcs.bcsContextPath + '/market/exportToExcelForSendGroupWithoutLoadFile?tempId=' + response.tempId);
+			}
+//			console.info('exportMidsUrl = ', exportMidsUrl);
 			
 			if (responseCount > 0) {
-				var url = encodeURI(bcs.bcsContextPath + '/market/exportToExcelForSendGroupWithBindingStatus?statusIndex=' + selectStatusValueIndex);
-
-				var downloadReport = $('#downloadReport');
-				downloadReport.attr("src", url);
+				$.ajax({
+					type : "GET",
+					url : encodeURI(exportMidsUrl)
+				}).success(function(response) {
+					$('.LyMain').unblock();
+//					console.info('response = ', response);
+					
+					var loadfileUrl = encodeURI(bcs.bcsContextPath + '/market/loadFileToResponse?fileName=' + response);
+//					console.info('loadfileUrl = ', loadfileUrl);
+					
+					var downloadReport = $('#downloadReport');
+					downloadReport.attr("src", loadfileUrl);
+					
+				}).fail(function(response) {
+					console.info(response);
+					$.FailResponse(response);
+					$('.LyMain').unblock();
+				});
 			}
+
 		}).fail(function(response) {
 			console.info(response);
 			$.FailResponse(response);
+			$('.LyMain').unblock();
 		}).done(function() {
 		});
 	});
