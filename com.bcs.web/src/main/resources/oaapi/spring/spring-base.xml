@@ -90,7 +90,7 @@
 		<property name="dataSourceProperties">
 			<props>
 				<prop key="user">linebc</prop>
-				<prop key="password">1qaz@WSX</prop>v  
+				<prop key="password">1qaz@WSX</prop>
 				<prop key="serverName">10.6.5.82</prop>
 				<prop key="databaseName">RICHARTOADB</prop>
 				<prop key="portNumber">1433</prop>
