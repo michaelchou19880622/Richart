@@ -164,7 +164,10 @@ public enum CONFIG_STR {
 	LINE_RICH_MENU_GET_INFO_API("line.rich.menu.get.info.api"),
 	LINE_RICH_MENU_GET_INFO_LIST_API("line.rich.menu.get.info.list.api"),
 	LINE_RICH_MENU_GET_LINK_ID_OF_USER_API("line.rich.menu.get.link.id.of.user.api"),
-	LINE_RICH_MENU_DOWNLOAD_IMAGE_API("line.rich.menu.download.image.api")
+	LINE_RICH_MENU_DOWNLOAD_IMAGE_API("line.rich.menu.download.image.api"),
+	
+	// Hpi RichMenu
+	HPI_RICHMENU_UPLOAD_PATH("hpi.richmenu.upload.path"),
 	;
 
    private final String str;

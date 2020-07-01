@@ -43,6 +43,7 @@ import com.bcs.core.db.service.SendGroupService;
 import com.bcs.core.db.service.UserFieldSetService;
 import com.bcs.core.enums.DEFAULT_SEND_GROUP;
 import com.bcs.core.exception.BcsNoticeException;
+import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.DataUtils;
 import com.bcs.core.utils.ErrorRecord;
@@ -54,6 +55,7 @@ import com.bcs.core.web.ui.page.enums.BcsPageEnum;
 import com.bcs.web.aop.ControllerLog;
 import com.bcs.web.enums.BINDING_STATUS;
 import com.bcs.web.ui.service.ExportExcelUIService;
+import com.bcs.web.ui.service.LoadFileUIService;
 import com.bcs.web.ui.service.SendGroupUIService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -698,6 +700,83 @@ public class BCSSendGroupController extends BCSBaseController {
 		}
 	}
 	
+	@ControllerLog(description = "exportToExcelForSendGroupWithoutLoadFile")
+	@RequestMapping(method = RequestMethod.GET, value = "/market/exportToExcelForSendGroupWithoutLoadFile")
+	@ResponseBody
+	public ResponseEntity<?> exportToExcelForSendGroupWithoutLoadFile(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam String tempId) throws Exception {
+		logger.info("exportToExcelForSendGroupWithoutLoadFile");
+
+		SendGroup sendGroup = tempSendGroupMap.get(tempId);
+
+		if (sendGroup == null) {
+
+			throw new Exception("SendGroup Error");
+		}
+
+		Long groupId = sendGroup.getGroupId();
+		
+		String excelFileName = null;
+
+		// 行銷人員設定 群組
+		if (groupId == null) {
+			try {
+				List<String> mids = groupGenerateService.findMIDBySendGroupDetail(sendGroup.getSendGroupDetail());
+				logger.info("tempId1:" + tempId);
+				logger.info("mids1:" + mids.toString());
+
+				if (mids != null && mids.size() > 0) {
+
+					List<String> titles = new ArrayList<String>();
+					titles.add("MID");
+					List<List<String>> data = new ArrayList<List<String>>();
+					data.add(mids);
+
+					String title = "SendGroup";
+					if (StringUtils.isNotBlank(sendGroup.getGroupTitle())) {
+						title += ":" + sendGroup.getGroupTitle();
+					}
+
+					excelFileName = exportExcelUIService.exportMidResultToExcelWithoutLoadFile(request, response, "SendGroup", title, null, titles, data);
+				}
+			} catch (Exception e) {
+				logger.error(ErrorRecord.recordError(e));
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		// 預設群祖
+		else if (groupId < 0) {
+			try {
+				List<String> mids = new ArrayList<String>();
+	
+				int page = 0;
+				while (true) {
+					List<String> list = sendGroupService.queryDefaultGroup(groupId, page);
+					if (list != null && list.size() > 0) {
+						mids.addAll(list);
+						logger.info("queryDefaultGroup:" + list.size());
+					} else {
+						break;
+					}
+					page++;
+				}
+	
+				if (mids != null && mids.size() > 0) {
+	
+					List<String> titles = new ArrayList<String>();
+					titles.add("MID");
+					List<List<String>> data = new ArrayList<List<String>>();
+					data.add(mids);
+					excelFileName = exportExcelUIService.exportMidResultToExcelWithoutLoadFile(request, response, "SendGroup", DEFAULT_SEND_GROUP.getGroupByGroupId(groupId).getTitle(), null, titles, data);
+				}
+			} catch (Exception e) {
+				logger.error(ErrorRecord.recordError(e));
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+
+		return new ResponseEntity<>(excelFileName, HttpStatus.OK);
+	}
+	
 	/**
 	 * 取得條件結果
 	 * 
@@ -740,7 +819,7 @@ public class BCSSendGroupController extends BCSBaseController {
 	@ControllerLog(description = "exportToExcelForSendGroupWithBindingStatus")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/exportToExcelForSendGroupWithBindingStatus")
 	@ResponseBody
-	public void exportToExcelForSendGroupWithBindingStatus(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam int statusIndex) throws Exception {
+	public ResponseEntity<?> exportToExcelForSendGroupWithBindingStatus(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam int statusIndex) throws Exception {
 		logger.info("exportToExcelForSendGroupWithBindingStatus");
 
 		log.info("statusIndex = {}", statusIndex);
@@ -754,50 +833,39 @@ public class BCSSendGroupController extends BCSBaseController {
 			List<String> listMids = lineUserService.findMidsByStatus(listStatus);
 			log.info("listMids = {}", listMids);
 			
-//			if (listMids != null && listMids.size() > 0) {
+			List<String> titles = new ArrayList<String>();
+			titles.add("MID");
+			
+			List<List<String>> data = new ArrayList<List<String>>();
+			data.add(listMids);
 
-				List<String> titles = new ArrayList<String>();
-				titles.add("MID");
-				
-				List<List<String>> data = new ArrayList<List<String>>();
-				data.add(listMids);
+			String title = "用戶狀態 : " + BINDING_STATUS.getValueChByIndex(statusIndex);
 
-				String title = "用戶狀態 : " + BINDING_STATUS.getValueChByIndex(statusIndex);
+			String excelFileName = exportExcelUIService.exportMidResultToExcelWithoutLoadFile(request, response, "RichmenuSendGroup", title, null, titles, data);
 
-				exportExcelUIService.exportMidResultToExcel(request, response, "RichmenuSendGroup", title, null, titles, data);
-//			}
+			return new ResponseEntity<>(excelFileName, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));
-			throw new Exception("SendGroup Send Error");
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		
-			
-//		}
-//		// 預設群祖
-//		else if (groupId < 0) {
-//			List<String> mids = new ArrayList<String>();
-//
-//			int page = 0;
-//			while (true) {
-//				List<String> list = sendGroupService.queryDefaultGroup(groupId, page);
-//				if (list != null && list.size() > 0) {
-//					mids.addAll(list);
-//					logger.info("queryDefaultGroup:" + list.size());
-//				} else {
-//					break;
-//				}
-//				page++;
-//			}
-//
-//			if (mids != null && mids.size() > 0) {
-//
-//				List<String> titles = new ArrayList<String>();
-//				titles.add("MID");
-//				List<List<String>> data = new ArrayList<List<String>>();
-//				data.add(mids);
-//				exportExcelUIService.exportMidResultToExcel(request, response, "SendGroup", DEFAULT_SEND_GROUP.getGroupByGroupId(groupId).getTitle(), null, titles, data);
-//			}
-//		}
+	}
+	
+	@ControllerLog(description = "loadFileToResponse")
+	@RequestMapping(method = RequestMethod.GET, value = "/market/loadFileToResponse")
+	@ResponseBody
+	public void loadFileToResponse(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, 
+			@RequestParam String fileName) throws Exception {
+		logger.info("loadFileToResponse");
+
+		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+		log.info("filePath = {}", filePath);
+		log.info("fileName = {}", fileName);
+
+		try {
+			LoadFileUIService.loadFileToResponse(filePath, fileName, response);
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+			throw new Exception("loadFileToResponse Error");
+		}
 	}
 }

@@ -120,6 +120,19 @@ public class ContentResourceService {
 		return resource;
 	}
 	
+	
+	public ContentResource uploadRichmenuImage(MultipartFile filePart, String resourceType, String modifyUser) throws Exception {
+		ContentResource resource = FileUtil.uploadImageWithExtension(filePart, null, resourceType, modifyUser);
+		contentResourceRepository.save(resource);
+
+		if(resource != null){
+			dataCache.put(resource.getResourceId(), resource);
+		}
+		DataSyncUtil.settingReSync(RESOURCE_SYNC);
+		
+		return resource;
+	}
+	
 	public ContentResource uploadFile(MultipartFile filePart, String resourceType, String modifyUser, Boolean setReSync) throws Exception {
 		ContentResource resource = FileUtil.uploadFile(filePart, null, resourceType, modifyUser);
 		contentResourceRepository.save(resource);

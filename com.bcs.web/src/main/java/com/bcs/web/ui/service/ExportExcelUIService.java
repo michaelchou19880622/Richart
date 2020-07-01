@@ -105,4 +105,41 @@ public class ExportExcelUIService {
 			logger.error(ErrorRecord.recordError(e));
 		}
 	}
+	
+	public String exportMidResultToExcelWithoutLoadFile(HttpServletRequest request, HttpServletResponse response, String excelName, String title, String time, List<String> titles, List<List<String>> data) throws IOException{
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+		String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+		Date date = new Date();
+		String fileName = excelName + "_" + sdf.format(date) + ".xlsx";
+		try {
+			File folder = new File(filePath);
+			if(!folder.exists()){
+				folder.mkdirs();
+			}
+			
+			exportToExcelForMid.exportToExcel(filePath, fileName, excelName, title, time, titles, data);
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+		}
+		
+		if(titles != null){
+			try{
+				titles.clear();
+			} catch (Exception e) {
+				logger.error(ErrorRecord.recordError(e));
+			}
+		}
+		try{
+			for(List<String> list : data){
+				list.clear();
+			}
+			
+			data.clear();
+		} catch (Exception e) {
+			logger.error(ErrorRecord.recordError(e));
+		}
+		
+		return fileName;
+	}
 }

@@ -92,7 +92,8 @@ public class SendingMsgHandlerSend extends UntypedActor {
 						PushMessage pushMessage = new PushMessage(mid, messageList);
 						sendToBotModel.setPushMessage(pushMessage);
 						
-						String channelName = inprogressMids.get(mid) != null ? CONFIG_STR.InManualReplyButNotSendMsg.toString() : CONFIG_STR.AutoReply.toString();
+//						String channelName = inprogressMids.get(mid) != null ? CONFIG_STR.InManualReplyButNotSendMsg.toString() : CONFIG_STR.AutoReply.toString();
+						String channelName = CONFIG_STR.Default.toString();	
 						sendToBotModel.setChannelName(channelName);
 						
 						Response<BotApiResponse> response = LineAccessApiService.sendToLine(sendToBotModel);
@@ -168,7 +169,8 @@ public class SendingMsgHandlerSend extends UntypedActor {
 						PushMessage pushMessage = new PushMessage(mid, messageList);
 						sendToBotModel.setPushMessage(pushMessage);
 						
-						String channelName = inprogressMids.get(mid) != null ? CONFIG_STR.InManualReplyButNotSendMsg.toString() : CONFIG_STR.AutoReply.toString();
+//						String channelName = inprogressMids.get(mid) != null ? CONFIG_STR.InManualReplyButNotSendMsg.toString() : CONFIG_STR.AutoReply.toString();
+						String channelName = CONFIG_STR.Default.toString();	
 						sendToBotModel.setChannelName(channelName);
 							
 						Response<BotApiResponse> response= LineAccessApiService.sendToLine(sendToBotModel);

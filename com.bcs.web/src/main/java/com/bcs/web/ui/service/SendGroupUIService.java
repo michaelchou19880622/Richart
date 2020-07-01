@@ -72,7 +72,6 @@ public class SendGroupUIService {
 		log.info("saveFromUI : {}", sendGroup);
 
 		Long groupId = sendGroup.getGroupId();
-		log.info("1-1 groupId = {}", groupId);
 		
 		if (groupId != null && groupId < 0) {
 			throw new BcsNoticeException("預設群組無法修改");
@@ -85,7 +84,7 @@ public class SendGroupUIService {
 		sendGroup.setModifyTime(new Date());
 
 		List<SendGroupDetail> list = sendGroup.getSendGroupDetail();
-		log.info("list = {}", list);
+		log.debug("list = {}", list);
 		
 		sendGroup.setSendGroupDetail(new ArrayList<SendGroupDetail>());
 
@@ -102,11 +101,9 @@ public class SendGroupUIService {
 
 		// Save SendGroup Again With SendGroupDetail
 		sendGroupService.save(sendGroup);
-
-		log.info("1-2 groupId = {}", groupId);
 		
 		sendGroup = sendGroupService.findOne(sendGroup.getGroupId());
-		log.info("sendGroup = {}", sendGroup);
+		log.debug("sendGroup = {}", sendGroup);
 		
 		createSystemLog(action, sendGroup, sendGroup.getModifyUser(), sendGroup.getModifyTime(), sendGroup.getGroupId().toString());
 		
@@ -122,7 +119,7 @@ public class SendGroupUIService {
 	 */
 	@Transactional(rollbackFor = Exception.class, timeout = 30)
 	public void deleteFromUI(Long groupId, String adminUserAccount) throws BcsNoticeException {
-		log.info("deleteFromUI:" + groupId);
+		log.debug("deleteFromUI:" + groupId);
 		if (groupId < 0) {
 			throw new BcsNoticeException("預設群組無法刪除");
 		}
@@ -251,9 +248,9 @@ public class SendGroupUIService {
 				try {
 					curSaveIndex = 0;
 
-					for (int i = 0; i < existMids.size(); i++) {
-						String mid = existMids.get(i);
-
+		            int i = 0;
+		            List<UserEventSet> userEventSetList = new ArrayList<>();
+		            for (String mid : existMids) {
 						UserEventSet userEventSet = new UserEventSet();
 						userEventSet.setTarget(EVENT_TARGET_ACTION_TYPE.EVENT_SEND_GROUP.toString());
 						userEventSet.setAction(EVENT_TARGET_ACTION_TYPE.ACTION_UPLOAD_MID.toString());
@@ -262,11 +259,26 @@ public class SendGroupUIService {
 						userEventSet.setContent(fileName);
 						userEventSet.setSetTime(modifyTime);
 						userEventSet.setModifyUser(modifyUser);
+//						log.info("[ Save UserEventSet ] userEventSet : {}", userEventSet);
 
-						log.info("[ Save UserEventSet ] userEventSet : {}", userEventSet);
-
-						userEventSetService.save(userEventSet);
+		                /* 效能優化 ： 組裝userEventSetList , 一次儲存 */
+		                userEventSetList.add(userEventSet);
+		                i++;
+		                /* 每一千筆處理一次 */
+		                if (i % 1000 == 0) {
+		                    log.info("userEventSetList size:" + userEventSetList.size());
+//		                    log.info("userEventSetList:" + userEventSetList);
+		                	userEventSetService.save(userEventSetList);
+		                	userEventSetList.clear();
+		                }     						
 					}
+		            /* Update userEventSet */
+		            if (!userEventSetList.isEmpty()) {
+		                log.info("userEventSetList size:" + userEventSetList.size());
+//		                log.info("userEventSetList:" + userEventSetList);
+		            	userEventSetService.save(userEventSetList);
+		            	userEventSetList.clear();
+		            }      					
 
 					endTime = System.currentTimeMillis();
 					log.info("[ Save UserEventSet ] END TIME : {}", sdf.format(new Date(endTime)));
@@ -416,8 +428,9 @@ public class SendGroupUIService {
 				try {
 					curSaveIndex = 0;
 
-					for (int i = 0; i < existMids.size(); i++) {
-						String mid = existMids.get(i);
+		            int i = 0;
+		            List<UserEventSet> userEventSetList = new ArrayList<>();
+		            for (String mid : existMids) {
 
 						UserEventSet userEventSet = new UserEventSet();
 						userEventSet.setTarget(EVENT_TARGET_ACTION_TYPE.TARGET_RICHMENU_SEND_GROUP.toString());
@@ -428,10 +441,25 @@ public class SendGroupUIService {
 						userEventSet.setSetTime(modifyTime);
 						userEventSet.setModifyUser(modifyUser);
 
-						log.info("[ Save UserEventSet ] userEventSet : {}", userEventSet);
-
-						userEventSetService.save(userEventSet);
+//						log.info("[ Save UserEventSet ] userEventSet : {}", userEventSet);
+		                /* 效能優化 ： 組裝userEventSetList , 一次儲存 */
+		                userEventSetList.add(userEventSet);
+		                i++;
+		                /* 每一千筆處理一次 */
+		                if (i % 1000 == 0) {
+		                    log.info("userEventSetList size:" + userEventSetList.size());
+//		                    log.info("userEventSetList:" + userEventSetList);
+		                	userEventSetService.save(userEventSetList);
+		                	userEventSetList.clear();
+		                }     	
 					}
+		            /* Update userEventSet */
+		            if (!userEventSetList.isEmpty()) {
+		                log.info("userEventSetList size:" + userEventSetList.size());
+//		                log.info("userEventSetList:" + userEventSetList);
+		            	userEventSetService.save(userEventSetList);
+		            	userEventSetList.clear();
+		            }      					
 
 					endTime = System.currentTimeMillis();
 					log.info("[ Save UserEventSet ] END TIME : {}", sdf.format(new Date(endTime)));
@@ -508,7 +536,7 @@ public class SendGroupUIService {
 		log.info("[ RetrySave UserEventSet ] START TIME : {}", retryStartTime);
 
 		try {
-
+            //前面已經優化過, 理論上不應該timeout了.
 			for (int i = this.curSaveIndex; i < existMids.size(); i++) {
 				String mid = existMids.get(i);
 
