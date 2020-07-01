@@ -15,18 +15,10 @@
 				onMatch="ACCEPT"
 				onMismatch="DENY" />
 				
-			<!--輸出日誌的格式 -->
 			<PatternLayout>
 				<Pattern>%d{yyyyMMdd HH:mm:ss} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
 			</PatternLayout>
 		</console>
-
-		<!--檔案會打印出所有資訊，這個log每次執行程式會自動清空，由append屬性決定，這個也挺有用的，適合臨時測試用 -->
-<!-- 		<File name="log" fileName="log/test.log" append="false"> -->
-<!-- 			<PatternLayout> -->
-<!-- 				<Pattern>%d{yyyyMMdd HH:mm:ss} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern> -->
-<!-- 			</PatternLayout> -->
-<!-- 		</File> -->
 
 		<RollingFile name="RollingFileInfo"
 			fileName="/bcs/log/richart/test/test.bc.run.log"
@@ -41,45 +33,14 @@
 			</PatternLayout>
 			<Policies>
 				<OnStartupTriggeringPolicy />
-				<SizeBasedTriggeringPolicy size="100 MB" />
+				<SizeBasedTriggeringPolicy size="200 MB" />
 				<TimeBasedTriggeringPolicy />
 			</Policies>
 			
-			<!-- DefaultRolloverStrategy屬性如不設定，則預設為最多同一資料夾下7個檔案，這裡設定了20 -->
+			<!-- DefaultRolloverStrategy屬性如不設定，則預設為7個檔案，pattern需搭配 %i 使用 -->
 			<DefaultRolloverStrategy max="20" />
 			
 		</RollingFile>
-
-<!-- 		<RollingFile name="RollingFileWarn" -->
-<!-- 			fileName="${sys:user.home}/logs/warn.log" -->
-<!-- 			filePattern="${sys:user.home}/logs/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log"> -->
-<!-- 			<ThresholdFilter level="warn" onMatch="ACCEPT" -->
-<!-- 				onMismatch="DENY" /> -->
-<!-- 			<PatternLayout> -->
-<!-- 				<Pattern>%d{yyyyMMdd HH:mm:ss} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern> -->
-<!-- 			</PatternLayout> -->
-<!-- 			<Policies> -->
-<!-- 				<TimeBasedTriggeringPolicy /> -->
-<!-- 				<SizeBasedTriggeringPolicy size="100 MB" /> -->
-<!-- 			</Policies> -->
-
-			<!-- DefaultRolloverStrategy屬性如不設定，則預設為最多同一資料夾下7個檔案，這裡設定了20 -->
-<!-- 			<DefaultRolloverStrategy max="20" /> -->
-<!-- 		</RollingFile> -->
-
-<!-- 		<RollingFile name="RollingFileError" -->
-<!-- 			fileName="${sys:user.home}/logs/error.log" -->
-<!-- 			filePattern="${sys:user.home}/logs/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log"> -->
-<!-- 			<ThresholdFilter level="error" onMatch="ACCEPT" -->
-<!-- 				onMismatch="DENY" /> -->
-<!-- 			<PatternLayout> -->
-<!-- 				<Pattern>%d{yyyyMMdd HH:mm:ss} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern> -->
-<!-- 			</PatternLayout> -->
-<!-- 			<Policies> -->
-<!-- 				<TimeBasedTriggeringPolicy /> -->
-<!-- 				<SizeBasedTriggeringPolicy size="100 MB" /> -->
-<!-- 			</Policies> -->
-<!-- 		</RollingFile> -->
 	</appenders>
 
 	<!--然後定義logger，只有定義了logger並引入的appender，appender才會生效 -->
@@ -90,8 +51,6 @@
 		<root level="INFO">
 			<appender-ref ref="Console" />
 			<appender-ref ref="RollingFileInfo" />
-<!-- 			<appender-ref ref="RollingFileWarn" /> -->
-<!-- 			<appender-ref ref="RollingFileError" /> -->
 		</root>
 	</loggers>
 </configuration>

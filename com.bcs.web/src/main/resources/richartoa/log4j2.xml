@@ -21,8 +21,8 @@
 		</console>
 
 		<RollingFile name="RollingFileInfo"
-			fileName="/bcs/log/richart/test/test.bc.run.log"
-			filePattern="/bcs/log/richart/test/test.bc.run-%d{yyyy-MM-dd}-%i.log">
+			fileName="/bcs/log/richart/richartoa/richartoa.bc.run.log"
+			filePattern="/bcs/log/richart/richartoa/richartoa.bc.run-%d{yyyy-MM-dd}-%i.log">
 
 			<ThresholdFilter 
 				level="info" 
@@ -33,7 +33,7 @@
 			</PatternLayout>
 			<Policies>
 				<OnStartupTriggeringPolicy />
-				<SizeBasedTriggeringPolicy size="20 KB" />
+				<SizeBasedTriggeringPolicy size="200 MB" />
 				<TimeBasedTriggeringPolicy />
 			</Policies>
 			
