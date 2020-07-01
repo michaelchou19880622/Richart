@@ -2,8 +2,8 @@ package com.bcs.core.richart.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,7 @@ import com.bcs.core.db.repository.WinningLetterRepository;
 public class WinningLetterService {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(WinningLetterService.class);
+	private static Logger logger = LogManager.getLogger(WinningLetterService.class);
 
 	@Autowired
 	private WinningLetterRepository winningLetterRepository;

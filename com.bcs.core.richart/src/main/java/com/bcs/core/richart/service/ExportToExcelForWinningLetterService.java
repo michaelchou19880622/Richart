@@ -13,8 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +31,7 @@ import com.bcs.core.resource.CoreConfigReader;
 public class ExportToExcelForWinningLetterService {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(ExportToExcelForWinningLetterService.class);
+	private static Logger logger = LogManager.getLogger(ExportToExcelForWinningLetterService.class);
 
 	@Autowired
 	private WinningLetterRepository winningLetterRepository;

@@ -6,8 +6,8 @@ import java.util.Date;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -40,7 +40,7 @@ import akka.actor.UntypedActor;
 public class LinePointPushMessageActor extends UntypedActor {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(LinePointPushMessageActor.class);
+	private static Logger logger = LogManager.getLogger(LinePointPushMessageActor.class);
 
 	@Override
 	public void onReceive(Object object) throws Exception {

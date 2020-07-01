@@ -4,8 +4,8 @@ import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,7 +29,7 @@ import akka.actor.UntypedActor;
 public class PushMessageActor extends UntypedActor {
 	
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(PushMessageActor.class);
+	private static Logger logger = LogManager.getLogger(PushMessageActor.class);
 	
 	/* 因為欄位設定(nvarchar 1024)，暫定最多只取1000長度的data。 */
     public static final int MAX_DATA_LENGTH = 1000;

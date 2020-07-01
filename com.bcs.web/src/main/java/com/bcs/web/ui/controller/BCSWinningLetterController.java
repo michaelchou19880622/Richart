@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -61,7 +61,7 @@ public class BCSWinningLetterController extends BCSBaseController {
 	private static final String DEFAULT_PAGE_SIZE = "10";
 	
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(BCSWinningLetterController.class);
+	private static Logger logger = LogManager.getLogger(BCSWinningLetterController.class);
 
 	@Autowired
 	private WinningLetterService winningLetterService;

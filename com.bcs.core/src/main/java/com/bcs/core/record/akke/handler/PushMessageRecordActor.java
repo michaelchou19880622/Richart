@@ -1,7 +1,7 @@
 package com.bcs.core.record.akke.handler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.bcs.core.db.entity.PushMessageRecord;
 import com.bcs.core.db.service.PushMessageRecordService;
@@ -12,7 +12,7 @@ import akka.actor.UntypedActor;
 public class PushMessageRecordActor extends UntypedActor {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(PushMessageRecordActor.class);
+	private static Logger logger = LogManager.getLogger(PushMessageRecordActor.class);
 	
 	@Override
 	public void onReceive(Object object) throws Exception {

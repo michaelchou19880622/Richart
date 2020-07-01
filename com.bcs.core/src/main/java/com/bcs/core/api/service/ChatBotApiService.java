@@ -10,8 +10,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +27,7 @@ import com.bcs.core.utils.RestfulUtil;
 @Service
 public class ChatBotApiService {
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(ChatBotApiService.class);
+	private static Logger logger = LogManager.getLogger(ChatBotApiService.class);
 	
 	@Autowired
 	public LineProfileService lineProfileService;

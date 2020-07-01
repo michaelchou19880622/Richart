@@ -6,8 +6,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class LineProfileService {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(ChatBotApiService.class);
+	private static Logger logger = LogManager.getLogger(ChatBotApiService.class);
 
 	public ObjectNode callGetProfileAPI(String access_token) throws Exception{
 		Date start = new Date();

@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -62,7 +62,7 @@ import com.bcs.core.web.ui.page.enums.MobilePageEnum;
 public class MobileWinningLetterReplyController {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(MobileWinningLetterReplyController.class);
+	private static Logger logger = LogManager.getLogger(MobileWinningLetterReplyController.class);
 
 	@Autowired
 	private WinningLetterService winningLetterService;

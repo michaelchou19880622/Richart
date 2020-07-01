@@ -32,8 +32,8 @@ import org.openxmlformats.schemas.drawingml.x2006.main.CTPositiveSize2D;
 import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDrawing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +47,7 @@ import com.bcs.core.resource.CoreConfigReader;
 public class ServiceExportWinnerInfoToPDF {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(ServiceExportWinnerInfoToPDF.class);
+	private static Logger logger = LogManager.getLogger(ServiceExportWinnerInfoToPDF.class);
 
 	@Autowired
 	private WinningLetterRepository winningLetterRepository;

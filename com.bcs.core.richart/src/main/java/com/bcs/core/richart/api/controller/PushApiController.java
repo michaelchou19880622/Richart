@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,7 +39,7 @@ import akka.actor.ActorRef;
 public class PushApiController {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(PushApiController.class);
+	private static Logger logger = LogManager.getLogger(PushApiController.class);
 
 	@Autowired
 	private PNPService PNPService;

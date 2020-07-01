@@ -9,8 +9,8 @@
 //import javax.servlet.http.HttpServletResponse;
 //
 //import org.json.JSONArray;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+//import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.MediaType;
@@ -48,7 +48,7 @@
 //public class BCSRichMenuGroupControllerBackup extends BCSBaseController {
 //	
 //	/** Logger */
-//	private static Logger logger = LoggerFactory.getLogger(BCSRichMenuGroupControllerBackup.class);	
+//	private static Logger logger = LogManager.getLogger(BCSRichMenuGroupControllerBackup.class);	
 //	
 ////	@Autowired
 ////	RichMenuGroupService richMenuGroupService;

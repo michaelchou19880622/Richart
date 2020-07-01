@@ -10,8 +10,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class PushMessageTask implements Job {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(PushMessageTask.class);
+	private static Logger logger = LogManager.getLogger(PushMessageTask.class);
 	
 	/* 因為欄位設定(nvarchar 1024)，暫定最多只取1000長度的data。 */
     public static final int MAX_DATA_LENGTH = 1000;

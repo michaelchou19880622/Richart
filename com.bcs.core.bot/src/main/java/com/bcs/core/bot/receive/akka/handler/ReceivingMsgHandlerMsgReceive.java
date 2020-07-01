@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.bcs.core.api.service.LineProfileService;
 import com.bcs.core.api.service.model.LocationModel;
@@ -40,7 +40,7 @@ import akka.actor.UntypedActor;
 public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(ReceivingMsgHandlerMsgReceive.class);
+	private static Logger logger = LogManager.getLogger(ReceivingMsgHandlerMsgReceive.class);
 	
 	@Override
 	public void onReceive(Object message){

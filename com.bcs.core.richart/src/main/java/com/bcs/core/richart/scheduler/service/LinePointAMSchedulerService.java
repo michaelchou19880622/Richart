@@ -11,8 +11,8 @@ import javax.annotation.PreDestroy;
 
 import org.json.JSONArray;
 import org.quartz.SchedulerException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,7 @@ import com.bcs.core.richart.db.service.LinePointScheduledDetailService;
 public class LinePointAMSchedulerService {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(LinePointAMSchedulerService.class);
+	private static Logger logger = LogManager.getLogger(LinePointAMSchedulerService.class);
 
 	@Autowired
 	LinePointPushAkkaService linePointPushAkkaService;

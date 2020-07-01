@@ -1,8 +1,8 @@
 package com.bcs.core.bot.send.akka.handler;
 
 import org.json.JSONArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.bcs.core.api.service.model.PushApiModel;
 import com.bcs.core.bot.pnp.model.FtpTaskModel;
@@ -18,7 +18,7 @@ import akka.actor.UntypedActor;
 public class PNPMasterActor extends UntypedActor {
 	
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(PNPMasterActor.class);
+	private static Logger logger = LogManager.getLogger(PNPMasterActor.class);
 	
 	private final ActorRef pushMessageRouterActor;
 	private final ActorRef pushMessageRecordRouterActor;

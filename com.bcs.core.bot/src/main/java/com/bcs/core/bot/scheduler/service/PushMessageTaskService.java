@@ -12,8 +12,8 @@ import org.quartz.SchedulerFactory;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.api.service.model.PushApiModel;
@@ -26,7 +26,7 @@ import com.bcs.core.bot.scheduler.handler.PushMessageTask;
 public class PushMessageTaskService {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(PushMessageTaskService.class);
+	private static Logger logger = LogManager.getLogger(PushMessageTaskService.class);
 	
 	public void startTask(PushApiModel pushApiModel) throws SchedulerException {
 		logger.info("PushMessageTaskService - startTask");

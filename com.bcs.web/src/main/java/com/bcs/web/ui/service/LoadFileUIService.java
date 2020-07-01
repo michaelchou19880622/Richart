@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.utils.ErrorRecord;
@@ -22,7 +22,7 @@ import com.bcs.core.utils.ErrorRecord;
 public class LoadFileUIService {
 
 	/** Logger **/
-	private static Logger logger = LoggerFactory.getLogger(LoadFileUIService.class);
+	private static Logger logger = LogManager.getLogger(LoadFileUIService.class);
 	
 	public static void loadFileToResponse(String filePath, String fileName, HttpServletResponse response) throws IOException {
 
