@@ -34,8 +34,8 @@ public class LineTokenApiService {
 	}
 
 	public ObjectNode callVerifyAPI(Date start, String access_token, int retryCount) throws Exception{
-		log.info("===== callVerifyAPI =====");
-		log.debug("start = {}", start);
+//		log.info("===== callVerifyAPI =====");
+//		log.debug("start = {}", start);
 		log.debug("access_token = {}", access_token);
 
 		int status = 0;
@@ -60,10 +60,10 @@ public class LineTokenApiService {
 	
 			// execute Call
 			HttpResponse clientResponse = httpClient.execute(requestPost);
-			log.debug("clientResponse execute = {}", clientResponse);
+//			log.debug("clientResponse execute = {}", clientResponse);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
-			log.debug("clientResponse StatusCode = {}", status);
+//			log.debug("clientResponse StatusCode = {}", status);
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){
@@ -74,7 +74,7 @@ public class LineTokenApiService {
 			
 			requestPost.releaseConnection();
 
-			log.debug("=========================");
+//			log.debug("=========================");
 
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_VerifyApi, start, status, postMsg, status + "");
 			return (ObjectNode)(new ObjectMapper()).readTree(result);
@@ -99,7 +99,7 @@ public class LineTokenApiService {
 	}
 
 	public ObjectNode callRefreshingAPI(Date start, String client_id, String client_secret, int retryCount) throws Exception{
-		log.info("callRefreshingAPI");
+//		log.info("callRefreshingAPI");
 
 		int status = 0;
 		try{
@@ -127,7 +127,7 @@ public class LineTokenApiService {
 			HttpResponse clientResponse = httpClient.execute(requestPost);
 			
 			status = clientResponse.getStatusLine().getStatusCode();
-			log.debug("clientResponse StatusCode : " + status);
+//			log.debug("clientResponse StatusCode : " + status);
 	
 			String result = "";
 			if(clientResponse != null && clientResponse.getEntity() != null && clientResponse.getEntity().getContent() != null){

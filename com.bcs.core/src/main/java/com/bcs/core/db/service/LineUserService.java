@@ -60,12 +60,12 @@ public class LineUserService {
 	private UserTraceLogService userTraceLogService;
 	
 	public List<String> findMidByMidIn(List<String> mids) {
-		log.info("[findMidByMidIn] mids = {}", mids);
+//		log.info("[findMidByMidIn] mids = {}", mids);
 		return lineUserRepository.findMidByMidIn(mids);
 	}
 	
 	public List<String> findMidByMidInAndActive(List<String> mids) {
-		log.info("[findMidByMidInAndActive] mids = {}", mids);
+//		log.info("[findMidByMidInAndActive] mids = {}", mids);
 		return lineUserRepository.findMidByMidInAndActive(mids);
 	}
 	
@@ -77,7 +77,7 @@ public class LineUserService {
 //	}
 	
 	public LineUser findByMid(String mid) {
-		log.info("[findByMid] mid = {}", mid);
+//		log.info("[findByMid] mid = {}", mid);
 //		try {
 //			LineUser result = dataCache.get(mid);
 //			if(notNull(result)){
@@ -93,7 +93,7 @@ public class LineUserService {
 	}
 	
 	public LineUser findByMidAndCreateUnbind(String mid) {
-		log.info("[findByMidAndCreateUnbind] mid = {}", mid);
+//		log.info("[findByMidAndCreateUnbind] mid = {}", mid);
 		LineUser lineUser = findByMid(mid);
 		if(lineUser == null){
 			
@@ -126,7 +126,7 @@ public class LineUserService {
 	}
 	
 	public Boolean checkMIDAllActive(String mid) {
-		log.info("[checkMIDAllActive] mid = {}", mid);
+//		log.info("[checkMIDAllActive] mid = {}", mid);
 		
 		String result =  lineUserRepository.checkMIDAllActive(mid);
 		log.info("[checkMIDAllActive] result = {}", result);

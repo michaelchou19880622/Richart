@@ -367,7 +367,7 @@ public class BCSSendGroupController extends BCSBaseController {
 				sendGroupCondition.putPOJO(queryFieldId, sendGroupQueryProperty);
 			}
 			
-			log.info("sendGroupCondition = {}", DataUtils.toPrettyJsonUseJackson(sendGroupCondition));
+//			log.info("sendGroupCondition = {}", DataUtils.toPrettyJsonUseJackson(sendGroupCondition));
 
 			return new ResponseEntity<>(sendGroupCondition, HttpStatus.OK);
 		} catch (Exception e) {

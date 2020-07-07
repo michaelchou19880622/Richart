@@ -69,11 +69,11 @@ public class BCSResourceController extends BCSBaseController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/getResource/{resourceType}/")
 	public void getResource(@PathVariable String resourceType, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.info("getResource:resourceType:" + resourceType );
+//		logger.info("getResource:resourceType:" + resourceType );
 
 		try{
 			if(ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType)){
-				logger.info("response default image");
+//				logger.info("response default image");
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 			}
 		}
@@ -85,7 +85,7 @@ public class BCSResourceController extends BCSBaseController {
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 			}
 		}
-		logger.info("End === getResource:resourceType:" + resourceType );
+//		logger.info("End === getResource:resourceType:" + resourceType );
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/getResource/{resourceType}/{resourceId}")
@@ -103,7 +103,7 @@ public class BCSResourceController extends BCSBaseController {
 			}
 
 			if(ContentResource.RESOURCE_TYPE_IMAGE.equals(resourceType)){
-				logger.info("response default image");
+//				logger.info("response default image");
 				FileUtil.getFile(response, CoreConfigReader.getString("file.default.image.path"), CoreConfigReader.getString("file.default.image.title"), CoreConfigReader.getString("file.default.image.type"));
 				return;
 			}
@@ -172,21 +172,21 @@ public class BCSResourceController extends BCSBaseController {
 		logger.info("getLink:" + linkId );
 
 		String MID = request.getParameter("MID");
-		logger.info("getLink MID:" + MID);
+//		logger.info("getLink MID:" + MID);
 		String replace = request.getParameter("replace");
-		logger.info("getLink replace:" + replace);
+//		logger.info("getLink replace:" + replace);
 		String type = request.getParameter("type");
-		logger.info("getLink type:" + type);
+//		logger.info("getLink type:" + type);
 		String code = request.getParameter("code");
-		logger.info("getLink code:" + code);
+//		logger.info("getLink code:" + code);
 		String event = request.getParameter("event");
-		logger.info("getLink event:" + event);
+//		logger.info("getLink event:" + event);
 		String serialId = request.getParameter("serialId");
-		logger.info("getLink serialId:" + serialId);
+//		logger.info("getLink serialId:" + serialId);
 		String time = request.getParameter("time");
-		logger.info("getLink time:" + time);
+//		logger.info("getLink time:" + time);
 		String hash = request.getParameter("hash");
-		logger.info("getLink hash:" + hash);
+//		logger.info("getLink hash:" + hash);
 
 		if(StringUtils.isBlank(MID)){
 			MID = (String) request.getSession().getAttribute("MID");
