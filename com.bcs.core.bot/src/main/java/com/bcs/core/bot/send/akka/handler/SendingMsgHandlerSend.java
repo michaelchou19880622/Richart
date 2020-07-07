@@ -121,7 +121,7 @@ public class SendingMsgHandlerSend extends UntypedActor {
 					getSender().tell(success, getSelf());
 				}
 			}
-			logger.info("AsyncSendingModel End");
+//			logger.info("AsyncSendingModel End");
 		}
 		else if (message instanceof AsyncSendingModelError) {
 			AsyncSendingModelError msgs = (AsyncSendingModelError) message;
@@ -201,7 +201,7 @@ public class SendingMsgHandlerSend extends UntypedActor {
 	
 	private String checkStatus(Response<BotApiResponse> response, String recordStatus, String mid, Long msgId) throws Exception{
 
-		logger.info("status:" + response.code());
+		logger.info("SendingMsgHandlerSend checkStatus responseCode:" + response.code());
 		recordStatus += response.code() + "-";
 		
 		if(response.code() != 200){

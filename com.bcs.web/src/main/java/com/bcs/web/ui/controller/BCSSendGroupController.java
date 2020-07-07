@@ -132,7 +132,7 @@ public class BCSSendGroupController extends BCSBaseController {
 		List<SendGroup> list = sendGroupService.findAllByGroupTypeNull();
 		result.addAll(list);
 
-		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
+//		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 

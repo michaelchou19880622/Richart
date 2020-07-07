@@ -90,7 +90,7 @@ public class BCSResourceController extends BCSBaseController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/getResource/{resourceType}/{resourceId}")
 	public void getResource(@PathVariable String resourceType, @PathVariable String resourceId, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		logger.info("getResource:resourceType:" + resourceType + ":resourceId:" + resourceId);
+//		logger.info("getResource:resourceType:" + resourceType + ":resourceId:" + resourceId);
 
 		try{
 			ContentResource resource = contentResourceService.findOne(resourceId);
@@ -98,7 +98,7 @@ public class BCSResourceController extends BCSBaseController {
 //				FileUtil.getFile(response, resource); 20190419修改影片IOS及電腦無法撥放問題
 				MultipartFileSender.fromContentResource(resource).with(request).with(response).serveResource(resource.getContentType());
 				
-				logger.info("End === getResource:resourceType:" + resourceType + ":resourceId:" + resourceId);
+//				logger.info("End === getResource:resourceType:" + resourceType + ":resourceId:" + resourceId);
 				return;
 			}
 

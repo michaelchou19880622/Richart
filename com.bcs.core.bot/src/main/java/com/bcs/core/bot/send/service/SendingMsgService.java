@@ -101,7 +101,7 @@ public class SendingMsgService {
 	}
 
 	public void sendToLineAsync(String ChannelId, List<MsgGenerator> msgGenerators, List<MsgDetail> details, List<String> mids, API_TYPE apiType, Long updateMsgId) throws Exception {
-		logger.info("sendToLineAsync");
+//		logger.info("sendToLineAsync");
 		if (ChannelId == null) {
 			ChannelId = CONFIG_STR.Default.toString();
 		}
@@ -112,11 +112,11 @@ public class SendingMsgService {
 		} else {
 			msgs = new AsyncSendingModel(ChannelId, msgGenerators, mids, apiType);
 		}
-		logger.info("sendToLineAsync:Mids:" + mids.size());
+//		logger.info("sendToLineAsync:Mids:" + mids.size());
 
 		// Share Sending Action to Different Server
 		if (details != null) {
-			logger.info("sendToLineAsync start, time=" + new Date().getTime());
+//			logger.info("sendToLineAsync start, time=" + new Date().getTime());
 			boolean sendThis = CoreConfigReader.getBoolean(CONFIG_STR.BCS_API_CLUSTER_SEND_THIS.toString());
 			String url = CoreConfigReader.getString(CONFIG_STR.BCS_API_CLUSTER_SEND.toString());
 
@@ -142,7 +142,7 @@ public class SendingMsgService {
 					akkaBotService.sendingMsgs(msgs);
 				}
 			}
-			logger.info("sendToLineAsync stop, time=" + new Date().getTime());
+//			logger.info("sendToLineAsync stop, time=" + new Date().getTime());
 		} else {
 			logger.info("sendToLineAsync:This Server:Mids:" + mids.size());
 			akkaBotService.sendingMsgs(msgs);
