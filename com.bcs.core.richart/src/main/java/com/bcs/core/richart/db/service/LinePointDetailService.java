@@ -36,6 +36,10 @@ public class LinePointDetailService {
 		linePointDetailRepository.save(linePoint);
 	}
     
+	public void save(List<LinePointDetail> linePoint){
+		linePointDetailRepository.save(linePoint);
+	}
+	
 	public LinePointDetail findOne(Long msgId){
 		return linePointDetailRepository.findOne(msgId);
 	}

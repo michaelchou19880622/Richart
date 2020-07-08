@@ -2,6 +2,8 @@ package com.bcs.core.richart.post.akka.handler;
 
 import java.security.MessageDigest;
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONArray;
@@ -54,10 +56,10 @@ public class LinePointPushMessageActor extends UntypedActor {
 			logger.info("pushApiModel : {}", pushApiModel);
 			
 			Long eventId = pushApiModel.getEventId();
-			logger.info("eventId : {}", eventId);
+//			logger.info("eventId : {}", eventId);
 			
 			JSONArray uids = pushApiModel.getUid();
-			logger.info("uids : {}", uids);
+			logger.info("uids.length : {}", uids.length());
 
 			ObjectNode callRefreshingResult = LineAccessApiService.callVerifyAPIAndIssueToken(CONFIG_STR.Default.toString(), true);
 			logger.info("callRefreshingResult : {}", callRefreshingResult);
@@ -67,20 +69,21 @@ public class LinePointPushMessageActor extends UntypedActor {
 			String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true); // Richart.ChannelToken
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-			logger.info("headers : {}", headers);
+//			logger.info("headers : {}", headers);
 			
 			// initialize request body
 			JSONObject requestBody = new JSONObject();
 			String url = CoreConfigReader.getString(CONFIG_STR.LINE_POINT_MESSAGE_PUSH_URL.toString(), true); // https://api.line.me/pointConnect/v1/issue
-			logger.info("url : {}", url);
+//			logger.info("url : {}", url);
 			
 			String clientId = CoreConfigReader.getString(CONFIG_STR.LINE_POINT_API_CLIENT_ID.toString(), true); // 10052
-			logger.info("clientId : {}", clientId);
+//			logger.info("clientId : {}", clientId);
 			
 		    requestBody.put("clientId", clientId);
 			requestBody.put("amount", pushApiModel.getAmount());
-			logger.info("1-1 requestBody : {}", requestBody);
-			
+//			logger.info("1-1 requestBody : {}", requestBody);
+            List<LinePointDetail> detailList = new ArrayList<>();
+            
 			for(Integer i = 0; i < uids.length(); i++) {
 				// count examine
 				LinePointMain linePointMain = linePointMainRepository.findOne(eventId);
@@ -107,30 +110,30 @@ public class LinePointPushMessageActor extends UntypedActor {
 				
 				// memberId
 				requestBody.put("memberId", uids.get(i));
-				logger.info("1-2 requestBody : {}", requestBody);
+//				logger.info("1-2 requestBody : {}", requestBody);
 				
 				// orderKey
 				MessageDigest salt = MessageDigest.getInstance("SHA-256");
 				String hashStr = "" + uids.get(i) + (new Date()).getTime() + pushApiModel.getEventId();
-				logger.info("hashStr : {}", hashStr);
+//				logger.info("hashStr : {}", hashStr);
 				
 				String hash = DigestUtils.md5Hex(hashStr);
-				logger.info("hash : {}", hash);
+//				logger.info("hash : {}", hash);
 				
 			    salt.update(hash.toString().getBytes("UTF-8"));
 			    
 			    String orderKey = bytesToHex(salt.digest()).substring(0, 48);
-				logger.info("orderKey : {}", orderKey);
+//				logger.info("orderKey : {}", orderKey);
 			    
 			    requestBody.put("orderKey", orderKey);
-				logger.info("1-3 requestBody : {}", requestBody);
+//				logger.info("1-3 requestBody : {}", requestBody);
 
 			    // applicationTime
 			    Long applicationTime = System.currentTimeMillis();
-				logger.info("applicationTime : {}", applicationTime);
+//				logger.info("applicationTime : {}", applicationTime);
 			    
 			    requestBody.put("applicationTime", applicationTime);
-				logger.info("1-4 requestBody : {}", requestBody);
+//				logger.info("1-4 requestBody : {}", requestBody);
 			    
 				// HttpEntity by header and body
 				HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody.toString(), headers);
@@ -174,10 +177,22 @@ public class LinePointPushMessageActor extends UntypedActor {
 				detail.setOrderKey(orderKey);
 				detail.setApplicationTime(applicationTime);
 				detail.setSendTime(new Date());
-
-				logger.info("detail1: {}", detail.toString());
-				linePointDetailService.save(detail);
+//				logger.info("detail1: {}", detail.toString());
+				/* 效能優化 ： 組裝userEventSetList , 一次儲存 */
+				detailList.add(detail);
+				/* 安全措施 : 每一千筆處理一次 , 但是目前akka會先切成一次100筆*/
+				if ((i+1) % 1000 == 0) {
+					logger.info("detailList size:" + detailList.size());
+					linePointDetailService.save(detailList);
+					detailList.clear();
+				}                
 			}
+            /* Save remaining detailList */
+            if (!detailList.isEmpty()) {
+            	logger.info("detailList size:" + detailList.size());
+				linePointDetailService.save(detailList);
+				detailList.clear();
+            }        
 		}
 	}
 
