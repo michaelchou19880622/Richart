@@ -253,7 +253,7 @@ public class ContentCouponUIService {
 
 		List<Map<String, String>> dataMap = null;
 
-		if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType) || "application/vnd.ms-excel".equals(contentType)) {
+		if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType) || "application/vnd.ms-excel".equals(contentType) || "text/csv".equals(contentType)) {
 			dataMap = importDataFromExcel.importCSVDataKeyValueList(couponCodeListData.getInputStream());
 		}
 
@@ -289,7 +289,7 @@ public class ContentCouponUIService {
 
 		List<Map<String, String>> dataMapList = null;
 
-		if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType) || "application/vnd.ms-excel".equals(contentType)) {
+		if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType) || "application/vnd.ms-excel".equals(contentType) || "text/csv".equals(contentType)) {
 			dataMapList = importDataFromExcel.importCSVDataKeyValueList(couponCodeListData.getInputStream());
 		}
 
