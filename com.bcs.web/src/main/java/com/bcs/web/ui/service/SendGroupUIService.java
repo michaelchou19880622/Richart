@@ -170,7 +170,7 @@ public class SendGroupUIService {
 
 		Set<String> mids = null;
 		
-		if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType) || "application/vnd.ms-excel".equals(contentType)) {
+		if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType) || "application/vnd.ms-excel".equals(contentType) || "text/csv".equals(contentType)) {
 			mids = importMidFromExcel.importData(filePart.getInputStream());
 		} else if ("text/plain".equals(contentType)) {
 			mids = importMidFromText.importData(filePart.getInputStream());
@@ -350,7 +350,7 @@ public class SendGroupUIService {
 
 		Set<String> mids = null;
 		
-		if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType) || "application/vnd.ms-excel".equals(contentType)) {
+		if ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType) || "application/vnd.ms-excel".equals(contentType) || "text/csv".equals(contentType)) {
 			mids = importMidFromExcel.importData(filePart.getInputStream());
 		} else if ("text/plain".equals(contentType)) {
 			mids = importMidFromText.importData(filePart.getInputStream());
