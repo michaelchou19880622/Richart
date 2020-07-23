@@ -59,12 +59,46 @@ public class ContentLinkTracingUIService {
 			else{
 				tracingLink = new ContentLinkTracing();
 			}
-	
-			String linkId = saveLink(linkData, adminUserAccount, date);
+
+			logger.info("tracingLink = {}", tracingLink);
 			
-			String linkIdBinded = saveLink(linkBindedData, adminUserAccount, date);
+//			String linkId = saveLink(linkData, adminUserAccount, date);
+//			String linkIdBinded = saveLink(linkBindedData, adminUserAccount, date);
+//			String linkIdUnMobile = saveLink(linkUnMobileData, adminUserAccount, date);
 			
-			String linkIdUnMobile = saveLink(linkUnMobileData, adminUserAccount, date);
+			String linkId = tracingLink.getLinkId();
+			String linkIdBinded = tracingLink.getLinkIdBinded();
+			String linkIdUnMobile = tracingLink.getLinkIdUnMobile();
+			
+			logger.info("before save : linkId = {}", linkId);
+			logger.info("before save : linkIdBinded = {}", linkIdBinded);
+			logger.info("before save : linkIdUnMobile = {}", linkIdUnMobile);
+			
+			if (linkId == null) {
+				linkId = saveLink(linkData, adminUserAccount, date);
+			} else {
+				linkId = saveLinkWithCheckLinkId(linkId, linkData, adminUserAccount, date);
+			}
+
+			if (linkIdBinded == null) {
+				linkIdBinded = saveLink(linkBindedData, adminUserAccount, date);
+			} else {
+				linkIdBinded = saveLinkWithCheckLinkId(linkIdBinded, linkBindedData, adminUserAccount, date);
+			}
+			
+			if (linkIdUnMobile == null) {
+				linkIdUnMobile = saveLink(linkUnMobileData, adminUserAccount, date);
+			} else {
+				linkIdUnMobile = saveLinkWithCheckLinkId(linkIdUnMobile, linkUnMobileData, adminUserAccount, date);
+			}
+			
+			logger.info("after save : linkId = {}", linkId);
+			logger.info("after save : linkIdBinded = {}", linkIdBinded);
+			logger.info("after save : linkIdUnMobile = {}", linkIdUnMobile);
+			
+//			String linkId = saveLink(linkData, adminUserAccount, date);
+//			String linkIdBinded = saveLink(linkBindedData, adminUserAccount, date);
+//			String linkIdUnMobile = saveLink(linkUnMobileData, adminUserAccount, date);
 			
 			tracingLink.setLinkId(linkId);
 			tracingLink.setLinkIdBinded(linkIdBinded);
@@ -91,6 +125,44 @@ public class ContentLinkTracingUIService {
 		
 		ContentLink contentLink = new ContentLink();
 		contentLink.setLinkId(linkId);
+		contentLink.setLinkUrl(link.getLinkUriParams());
+		contentLink.setLinkTitle(link.getTextParams());
+		
+		List<String> linkTagList = new ArrayList<>();
+		
+		for (JsonNode linkTag : node.get("linkTagList")) {
+			linkTagList.add(linkTag.asText());
+		}
+		
+		contentLink.setLinkTag(contentFlagService.concat(linkTagList, 50));
+		contentLink.setModifyTime(date);
+		contentLink.setModifyUser(adminUserAccount);
+		contentLinkService.save(contentLink);
+		
+		// Save ContentFlag
+		contentFlagService.save(
+				linkId, 
+				ContentFlag.CONTENT_TYPE_LINK, 
+				linkTagList);
+		
+		return linkId;
+	}
+	
+	private String saveLinkWithCheckLinkId(String linkId, SendMsgDetailModel linkData, String adminUserAccount, Date date) throws Exception{
+
+		ObjectNode node = ObjectUtil.jsonStrToObjectNode(linkData.getDetailContent());
+
+		MsgGeneratorBcsLink link = new MsgGeneratorBcsLink(node);
+		
+		ContentLink contentLink = contentLinkService.findOne(linkId);
+		logger.info("contentLink = {}", contentLink);
+		
+		if (contentLink == null) {
+			contentLink = new ContentLink();
+			
+			linkId = UUID.randomUUID().toString().toLowerCase();
+			contentLink.setLinkId(linkId);
+		}
 		contentLink.setLinkUrl(link.getLinkUriParams());
 		contentLink.setLinkTitle(link.getTextParams());
 		

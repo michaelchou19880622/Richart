@@ -62,6 +62,12 @@ public interface RecordReportRepository extends EntityRepository<RecordReport, L
 	@Transactional(readOnly = true, timeout = 30)
 	@Query(value = "SELECT * "
 			+ "FROM BCS_RECORD_REPORT "
+			+ "WHERE REFERENCE_ID = ?1 AND INCREASE_ID = ?2 AND CONTENT_TYPE = ?3  AND RECORD_TIME >= ?4 AND RECORD_TIME < ?5", nativeQuery = true)
+	public List<RecordReport> findRecordReportListByRecordTimeAndRefIdAndLinkId(String linkId, String referenceId, String contentType, String startTimeStr, String endTimeStr);
+
+	@Transactional(readOnly = true, timeout = 30)
+	@Query(value = "SELECT * "
+			+ "FROM BCS_RECORD_REPORT "
 			+ "WHERE (REFERENCE_ID = ?1 OR INCREASE_ID = ?1) AND CONTENT_TYPE = ?2 AND DATA_TYPE = ?3 AND RECORD_TIME >= ?4 AND RECORD_TIME < ?5", nativeQuery = true)
 	public List<RecordReport> findRecordReportListByRecordTime(String referenceId, String contentType, String dataType, String startTimeStr, String endTimeStr);
 }

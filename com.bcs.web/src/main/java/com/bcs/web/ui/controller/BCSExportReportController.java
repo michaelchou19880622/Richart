@@ -177,6 +177,40 @@ public class BCSExportReportController extends BCSBaseController {
 
         LoadFileUIService.loadFileToResponse(filePath, fileName, response);
     }
+    
+    /**
+     * 匯出 Link Click Report EXCEL
+     */
+    @ControllerLog(description = "匯出 Link Click Report EXCEL")
+    @GetMapping("/edit/exportToExcelForLinkClickReportWithLinkId")
+    @ResponseBody
+    public void exportToExcelForLinkClickReportWithLinkId(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @CurrentUser CustomUser customUser,
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam String linkUrl,
+            @RequestParam String linkId
+    ) throws IOException {
+
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+        String filePath = CoreConfigReader.getString("file.path") + System.getProperty("file.separator") + "REPORT";
+        Date date = new Date();
+        String fileName = "LinkUrlClickReportList_" + sdf.format(date) + ".xlsx";
+        try {
+            File folder = new File(filePath);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            exportToExcelForLinkClickReport.exportToExcelForLinkClickReportWithLinkId(filePath, fileName, startDate, endDate, linkUrl, linkId);
+        } catch (Exception e) {
+            log.error(ErrorRecord.recordError(e));
+        }
+
+        LoadFileUIService.loadFileToResponse(filePath, fileName, response);
+    }
 
     /**
      * 匯出Page Visit Report EXCEL

@@ -3,6 +3,7 @@
  */
 $(function(){
 	var linkUrl = $.urlParam("linkUrl");
+	var linkId = $.urlParam("linkId");
 	
 	// 日期元件
 	$(".datepicker").datepicker({
@@ -55,8 +56,8 @@ $(function(){
 		var startDate = $('#reportStartDate').val();
 		var endDate = $('#reportEndDate').val();
 		
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForLinkClickReport?startDate=' + startDate + '&endDate=' + endDate + '&linkUrl=' + linkUrl;
-		
+//		var url =  bcs.bcsContextPath + '/edit/exportToExcelForLinkClickReport?startDate=' + startDate + '&endDate=' + endDate + '&linkUrl=' + linkUrl;
+		var url =  bcs.bcsContextPath + '/edit/exportToExcelForLinkClickReportWithLinkId?startDate=' + startDate + '&endDate=' + endDate + '&linkUrl=' + linkUrl + '&linkId=' + linkId;
 		var downloadReport = $('#downloadReport');
 		downloadReport.attr("src", url);
 	});
@@ -69,7 +70,7 @@ $(function(){
 		var startDate = $('#reportStartDate').val();
 		var endDate = $('#reportEndDate').val();
 		
-		var url =  bcs.bcsContextPath + '/edit/exportMidForLinkClickReport?startDate=' + startDate + '&endDate=' + endDate + '&linkUrl=' + linkUrl;
+		var url =  bcs.bcsContextPath + '/edit/exportMidForLinkClickReport?startDate=' + startDate + '&endDate=' + endDate + '&linkUrl=' + linkUrl + '&linkId=' + linkId;
 		
 		var downloadReport = $('#downloadReport');
 		downloadReport.attr("src", url);
@@ -100,7 +101,9 @@ $(function(){
 		$('.LyMain').block($.BCS.blockMsgRead);
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/admin/countLinkUrlList?startDate=' + startDate  + '&endDate=' + endDate + '&linkUrl=' + linkUrl
+//			url : bcs.bcsContextPath + '/admin/countLinkUrlList?startDate=' + startDate  + '&endDate=' + endDate + '&linkUrl=' + linkUrl
+			url : bcs.bcsContextPath + '/admin/countLinkUrlListWithLinkId?startDate=' + startDate  + '&endDate=' + endDate + '&linkUrl=' + linkUrl + '&linkId=' + linkId
+			
 		}).success(function(response){
 			$('.dataTemplate').remove();
 			$('#noDataTxt').remove();

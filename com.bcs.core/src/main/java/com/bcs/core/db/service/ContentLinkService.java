@@ -88,6 +88,10 @@ public class ContentLinkService {
   		return contentLinkRepository.findAllLinkUrlWithTracingIdByLikeTag(flag);
   	}
   	
+  	public List<Object[]> findAllTracingLinkByLikeTag(String linkTag){
+  		return contentLinkRepository.findAllTracingLinkByLikeTag(linkTag);
+  	}
+  	
   	public List<Object[]> findAllLinkUrlByLikeTitle(String title){
   		return contentLinkRepository.findAllLinkUrlByLikeTitle(title);
   	}
@@ -99,6 +103,10 @@ public class ContentLinkService {
   	public List<Object[]> findAllLinkUrlWithTracingIdByLikeTime(String startTime , String endTime){
   		return contentLinkRepository.findAllLinkUrlWithTracingIdByLikeTime(startTime, endTime);
   	}
+
+  	public List<Object[]> findAllTracingLinkByDateTime(String startTime , String endTime) {
+        return contentLinkRepository.findAllTracingLinkByDateTime(startTime, endTime);
+    }
   	
 	public List<Object[]> findAllLinkUrlForallUID(String linkUrl){
 		return contentLinkRepository.findAllLinkUrlForallUID(linkUrl);
@@ -111,6 +119,10 @@ public class ContentLinkService {
   	public List<Object[]> findAllWithTracingId() {
         return contentLinkRepository.findAllWithTracingId();
     }
+  	
+  	public List<Object[]> findAllTracingLink() {
+        return contentLinkRepository.findAllTracingLink();
+    }
 
   	public Page<ContentLink> findAll(Pageable pageable){
 		return contentLinkRepository.findAll(pageable);
@@ -118,6 +130,10 @@ public class ContentLinkService {
 
   	public List<ContentLink> findByLinkUrl(String linkUrl){
 		return contentLinkRepository.findByLinkUrl(linkUrl);
+  	}
+  	
+  	public List<ContentLink> findByLinkId(String linkId){
+		return contentLinkRepository.findByLinkId(linkId);
   	}
   	
   	public List<ContentLink> findByLinkIdIn(List<String> linkIds){
@@ -161,12 +177,20 @@ public class ContentLinkService {
 		return contentLinkRepository.countClickCountByLinkUrlAndTime(linkUrl, start, end , LinkId);
 	}
 	
+	public List<Object[]> countClickCountByLinkUrlAndLinkIdAndTime(String linkUrl, String start, String end , String LinkId){
+		return contentLinkRepository.countClickCountByLinkUrlAndLinkIdAndTime(linkUrl, start, end , LinkId);
+	}
+	
 	public List<Object[]> countClickCountByLinkUrl(String linkUrl){
 		return contentLinkRepository.countClickCountByLinkUrl(linkUrl);
 	}
 	
 	public List<Object[]> countClickCountByLinkUrl(String linkUrl, String start){
 		return contentLinkRepository.countClickCountByLinkUrl(linkUrl, start);
+	}
+	
+	public List<Object[]> countClickCountByLinkUrlAndLinkId(String linkUrl, String linkId, String start){
+		return contentLinkRepository.countClickCountByLinkUrlAndLinkId(linkUrl, linkId, start);
 	}
 	
 	public List<Object[]> countClickCountByLinkIdAndTime(String linkUrl, String start, String end){
@@ -183,5 +207,9 @@ public class ContentLinkService {
 	
 	public List<String> findClickMidByLinkUrlAndTime(String linkUrl, String start, String end){
 		return contentLinkRepository.findClickMidByLinkUrlAndTime(linkUrl, start, end);
+	}
+
+	public List<String> findClickMidByLinkUrlAndTimeAndLinkId(String linkUrl, String start, String end, String linkId){
+		return contentLinkRepository.findClickMidByLinkUrlAndTimeAndLinkId(linkUrl, start, end, linkId);
 	}
 }

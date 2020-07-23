@@ -74,4 +74,13 @@ public class LinkClickReportModel extends AbstractBcsEntity{
     public void setTracingLink(String tracingLink) {
         this.tracingLink = tracingLink;
     }
+    
+	public String toJsonString() {
+		try {
+	        return new com.fasterxml.jackson.databind.ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+	    } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
 }

@@ -74,11 +74,14 @@ $(function(){
 				
 				var linkUrl = encodeURIComponent(o.linkUrl);
 				console.info(linkUrl);
+
+				var linkId = o.linkId;
+				console.info(linkId);
 				
-				groupData.find('.totalCount a').attr('href', bcs.bcsContextPath +'/admin/reportLinkClickDetailPage?linkUrl=' + linkUrl)
+				groupData.find('.totalCount a').attr('href', bcs.bcsContextPath +'/admin/reportLinkClickDetailPage?linkUrl=' + linkUrl + '&linkId=' + linkId)
 				groupData.find('.totalCount a').html($.BCS.formatNumber(o.totalCount,0));
 				
-				groupData.find('.userCount a').attr('href', bcs.bcsContextPath +'/admin/reportLinkClickDetailPage?linkUrl=' + linkUrl)
+				groupData.find('.userCount a').attr('href', bcs.bcsContextPath +'/admin/reportLinkClickDetailPage?linkUrl=' + linkUrl + '&linkId=' + linkId)
 				groupData.find('.userCount a').html($.BCS.formatNumber(o.userCount,0));
 	
 				$('#tableBody').append(groupData);
@@ -97,7 +100,16 @@ $(function(){
 	templateBody = $('.dataTemplate').clone(true);
 	$('.dataTemplate').remove();
 	
-	loadDataFunc("");
+//	loadDataFunc("");
+	
+	var nowDate = moment(); //取得現在時間
+	var lastWeek = moment().dates(nowDate.dates() - 6); //取得前7天(上一週)的時間
+	$('#campaignStartTime').val(lastWeek.format('YYYY-MM-DD'));
+	$('#campaignEndTime').val(nowDate.format('YYYY-MM-DD'));
+
+	page = 0;
+	loadByTime = true;
+	loadDataByTime();
 	
 	
 	//選取日期元件
@@ -112,8 +124,14 @@ $(function(){
 	function loadDataByTime() {
 		var campaignStartTime =  moment($('#campaignStartTime').val(), "YYYY-MM-DD");
 		var campaignEndTime =  moment($('#campaignEndTime').val(), "YYYY-MM-DD");
+		console.info('campaignStartTime = ', campaignStartTime);
+		console.info('campaignEndTime = ', campaignEndTime);
+		
 		var startTime = $("#campaignStartTime").val();
 		var endTime = $("#campaignEndTime").val();
+		console.info('startTime = ', startTime);
+		console.info('endTime = ', endTime);
+		
 		//需要有日期
 		if(startTime == '' || endTime == ''){
 			alert('請輸入日期區間');
@@ -144,11 +162,14 @@ $(function(){
 					
 					var linkUrl = encodeURIComponent(o.linkUrl);
 					console.info(linkUrl);
+
+					var linkId = o.linkId;
+					console.info(linkId);
 					
-					groupData.find('.totalCount a').attr('href', bcs.bcsContextPath +'/admin/reportLinkClickDetailPage?linkUrl=' + linkUrl)
+					groupData.find('.totalCount a').attr('href', bcs.bcsContextPath +'/admin/reportLinkClickDetailPage?linkUrl=' + linkUrl + '&linkId=' + linkId)
 					groupData.find('.totalCount a').html($.BCS.formatNumber(o.totalCount,0));
 					
-					groupData.find('.userCount a').attr('href', bcs.bcsContextPath +'/admin/reportLinkClickDetailPage?linkUrl=' + linkUrl)
+					groupData.find('.userCount a').attr('href', bcs.bcsContextPath +'/admin/reportLinkClickDetailPage?linkUrl=' + linkUrl + '&linkId=' + linkId)
 					groupData.find('.userCount a').html($.BCS.formatNumber(o.userCount,0));
 		
 					$('#tableBody').append(groupData);

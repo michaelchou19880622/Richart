@@ -69,6 +69,42 @@ public class RecordReportService {
 		return recordReportRepository.save(record);
 	}
 	
+	public RecordReport saveByReferenceIdAndContentTypeAndDataTypeAndRecordTimeAndLinkID(String recordTimeStr, String referenceId, String contentType, String dataType, Long recordCount, String linkId) throws Exception{
+		logger.info("saveByReferenceIdAndContentTypeAndDataTypeAndRecordTimeAndLinkID");
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date recordTime = sdf.parse(recordTimeStr);
+		
+		Date now = new Date();
+		now = sdf.parse(sdf.format(now));
+		// Today Can not Record
+		if(recordTime.compareTo(now) >= 0){
+			return null;
+		}
+		
+		if(StringUtils.isBlank(referenceId)){
+			return null;
+		}
+		
+		if(StringUtils.isBlank(contentType)){
+			return null;
+		}
+		
+		if(StringUtils.isBlank(dataType)){
+			return null;
+		}
+		
+		RecordReport record =  new RecordReport();
+		record.setRecordTime(recordTime);
+		record.setIncreaseId(referenceId);
+		record.setReferenceId(linkId);
+		record.setContentType(contentType);
+		record.setDataType(dataType);
+		record.setRecordCount(recordCount);
+		
+		return recordReportRepository.save(record);
+	}
+	
 	public RecordReport findRecordReportByRecordTime(String referenceId, String contentType, String dataType, String recordTimeStr) throws ParseException{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date recordTime = sdf.parse(recordTimeStr);
@@ -145,6 +181,28 @@ public class RecordReportService {
 	 * Key : Time
 	 * 	Map : Key dataType
 	 * 				Value Count
+	 * @param referenceId
+	 * @param contentType
+	 * @param startTimeStr
+	 * @param endTimeStr
+	 * @return Map<String, Map<String, Long>>
+	 * @throws ParseException
+	 */
+	public Map<String, Map<String, Long>> findRecordReportListByContentTypeAndLinkId(String linkId, String referenceId, String contentType, String startTimeStr, String endTimeStr) throws ParseException{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.parse(startTimeStr);
+		sdf.parse(endTimeStr);
+		
+		List<RecordReport> list = recordReportRepository.findRecordReportListByRecordTimeAndRefIdAndLinkId(linkId, referenceId, contentType, startTimeStr, endTimeStr);
+		logger.info("list = {}", list);
+		
+		return parseDataToMapWithDataType(list);
+	}
+	
+	/**
+	 * Key : Time
+	 * 	Map : Key dataType
+	 * 				Value Count
 	 * 
 	 * @param referenceId
 	 * @param contentType
@@ -173,6 +231,8 @@ public class RecordReportService {
 			
 			map.put(record.getDataType(), record.getRecordCount());
 		}
+		
+		logger.info("parseDataToMapWithDataType : result = {}", result);
 		
 		return result;
 	}
