@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,73 +42,35 @@ public class ContentLinkTracingUIService {
 	}
 	
 	public Long generateTracingLink(Long tracingId, SendMsgDetailModel linkData, SendMsgDetailModel linkBindedData, SendMsgDetailModel linkUnMobileData, String adminUserAccount) throws Exception{
-		logger.info("generateTracingLink:" + linkData);
-
+		logger.debug("generateTracingLink:" + linkData);
 		String detailType = linkData.getDetailType();
 		if(MsgGenerator.MSG_TYPE_LINK.equals(detailType)){
-			
 			ContentLinkTracing tracingLink = null;
-			
 			Date date = new Date();
-			
+			String linkId = "";
+			String linkIdBinded = "";
+			String linkIdUnMobile = "";
 			if(tracingId != null){
 				tracingLink = contentLinkTracingService.findOne(tracingId);
 				if(tracingLink == null){
 					throw new BcsNoticeException("資料格式錯誤");
 				}
+				linkId = tracingLink.getLinkId();
+				linkIdBinded = tracingLink.getLinkIdBinded();
+				linkIdUnMobile = tracingLink.getLinkIdUnMobile();
 			}
 			else{
 				tracingLink = new ContentLinkTracing();
 			}
-
-			logger.info("tracingLink = {}", tracingLink);
-			
-//			String linkId = saveLink(linkData, adminUserAccount, date);
-//			String linkIdBinded = saveLink(linkBindedData, adminUserAccount, date);
-//			String linkIdUnMobile = saveLink(linkUnMobileData, adminUserAccount, date);
-			
-			String linkId = tracingLink.getLinkId();
-			String linkIdBinded = tracingLink.getLinkIdBinded();
-			String linkIdUnMobile = tracingLink.getLinkIdUnMobile();
-			
-			logger.info("before save : linkId = {}", linkId);
-			logger.info("before save : linkIdBinded = {}", linkIdBinded);
-			logger.info("before save : linkIdUnMobile = {}", linkIdUnMobile);
-			
-			if (linkId == null) {
-				linkId = saveLink(linkData, adminUserAccount, date);
-			} else {
-				linkId = saveLinkWithCheckLinkId(linkId, linkData, adminUserAccount, date);
-			}
-
-			if (linkIdBinded == null) {
-				linkIdBinded = saveLink(linkBindedData, adminUserAccount, date);
-			} else {
-				linkIdBinded = saveLinkWithCheckLinkId(linkIdBinded, linkBindedData, adminUserAccount, date);
-			}
-			
-			if (linkIdUnMobile == null) {
-				linkIdUnMobile = saveLink(linkUnMobileData, adminUserAccount, date);
-			} else {
-				linkIdUnMobile = saveLinkWithCheckLinkId(linkIdUnMobile, linkUnMobileData, adminUserAccount, date);
-			}
-			
-			logger.info("after save : linkId = {}", linkId);
-			logger.info("after save : linkIdBinded = {}", linkIdBinded);
-			logger.info("after save : linkIdUnMobile = {}", linkIdUnMobile);
-			
-//			String linkId = saveLink(linkData, adminUserAccount, date);
-//			String linkIdBinded = saveLink(linkBindedData, adminUserAccount, date);
-//			String linkIdUnMobile = saveLink(linkUnMobileData, adminUserAccount, date);
-			
+			linkId = saveLink(linkId, linkData, adminUserAccount, date);
+			linkIdBinded = saveLink(linkIdBinded, linkBindedData, adminUserAccount, date);
+			linkIdUnMobile = saveLink(linkIdUnMobile, linkUnMobileData, adminUserAccount, date);
 			tracingLink.setLinkId(linkId);
 			tracingLink.setLinkIdBinded(linkIdBinded);
 			tracingLink.setLinkIdUnMobile(linkIdUnMobile);
 			tracingLink.setModifyTime(date);
 			tracingLink.setModifyUser(adminUserAccount);
-			
 			contentLinkTracingService.save(tracingLink);
-			
 			return tracingLink.getTracingId();
 		}
 		else{
@@ -115,74 +78,29 @@ public class ContentLinkTracingUIService {
 		}
 	}
 	
-	private String saveLink(SendMsgDetailModel linkData, String adminUserAccount, Date date) throws Exception{
-
-		String linkId = UUID.randomUUID().toString().toLowerCase();
-		
+	private String saveLink(String linkId, SendMsgDetailModel linkData, String adminUserAccount, Date date) throws Exception{
 		ObjectNode node = ObjectUtil.jsonStrToObjectNode(linkData.getDetailContent());
-
 		MsgGeneratorBcsLink link = new MsgGeneratorBcsLink(node);
-		
 		ContentLink contentLink = new ContentLink();
+		if(StringUtils.isBlank(linkId)) {
+			linkId = UUID.randomUUID().toString().toLowerCase();
+		}
 		contentLink.setLinkId(linkId);
 		contentLink.setLinkUrl(link.getLinkUriParams());
 		contentLink.setLinkTitle(link.getTextParams());
-		
 		List<String> linkTagList = new ArrayList<>();
-		
 		for (JsonNode linkTag : node.get("linkTagList")) {
 			linkTagList.add(linkTag.asText());
 		}
-		
 		contentLink.setLinkTag(contentFlagService.concat(linkTagList, 50));
 		contentLink.setModifyTime(date);
 		contentLink.setModifyUser(adminUserAccount);
 		contentLinkService.save(contentLink);
-		
 		// Save ContentFlag
 		contentFlagService.save(
 				linkId, 
 				ContentFlag.CONTENT_TYPE_LINK, 
 				linkTagList);
-		
-		return linkId;
-	}
-	
-	private String saveLinkWithCheckLinkId(String linkId, SendMsgDetailModel linkData, String adminUserAccount, Date date) throws Exception{
-
-		ObjectNode node = ObjectUtil.jsonStrToObjectNode(linkData.getDetailContent());
-
-		MsgGeneratorBcsLink link = new MsgGeneratorBcsLink(node);
-		
-		ContentLink contentLink = contentLinkService.findOne(linkId);
-		logger.info("contentLink = {}", contentLink);
-		
-		if (contentLink == null) {
-			contentLink = new ContentLink();
-			
-			linkId = UUID.randomUUID().toString().toLowerCase();
-			contentLink.setLinkId(linkId);
-		}
-		contentLink.setLinkUrl(link.getLinkUriParams());
-		contentLink.setLinkTitle(link.getTextParams());
-		
-		List<String> linkTagList = new ArrayList<>();
-		
-		for (JsonNode linkTag : node.get("linkTagList")) {
-			linkTagList.add(linkTag.asText());
-		}
-		
-		contentLink.setLinkTag(contentFlagService.concat(linkTagList, 50));
-		contentLink.setModifyTime(date);
-		contentLink.setModifyUser(adminUserAccount);
-		contentLinkService.save(contentLink);
-		
-		// Save ContentFlag
-		contentFlagService.save(
-				linkId, 
-				ContentFlag.CONTENT_TYPE_LINK, 
-				linkTagList);
-		
 		return linkId;
 	}
 }
