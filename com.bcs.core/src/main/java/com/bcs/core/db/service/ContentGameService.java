@@ -183,7 +183,7 @@ public class ContentGameService {
 			gameModels.add(gameModel);
 		}
 
-		logger.info(gameModels);
+//		logger.info(gameModels);
 
 		return gameModels;
 	}
