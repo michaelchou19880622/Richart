@@ -90,6 +90,24 @@
             </properties>
         </profile>
         <profile>
+            <!-- Mac environment -->
+            <id>mac</id>
+            <properties>
+                <package.environment>mac</package.environment>
+                <rp.build.warname>Richart</rp.build.warname>
+                <maven.war.webxml>src/main/webapp/WEB-INF/web.xml</maven.war.webxml>
+            </properties>
+        </profile>
+        <profile>
+            <!-- Linux environment -->
+            <id>linux</id>
+            <properties>
+                <package.environment>linux</package.environment>
+                <rp.build.warname>Richart</rp.build.warname>
+                <maven.war.webxml>src/main/webapp/WEB-INF/web.xml</maven.war.webxml>
+            </properties>
+        </profile>
+        <profile>
             <id>local</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -107,6 +125,8 @@
                 <directory>${basedir}/src/main/resources</directory>
                 <excludes>
                     <exclude>test/</exclude>
+                    <exclude>mac/</exclude>
+                    <exclude>linux/</exclude>
                     <exclude>richartuat/</exclude>
                     <exclude>richartapi/</exclude>
                     <exclude>richartoa/</exclude>
