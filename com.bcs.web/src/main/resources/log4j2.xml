@@ -16,7 +16,7 @@
 				onMismatch="DENY" />
 				
 			<PatternLayout>
-				<Pattern>%d{yyyyMMdd HH:mm:ss.sss} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
+				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
 			</PatternLayout>
 		</console>
 
@@ -29,7 +29,7 @@
 				onMatch="ACCEPT"
 				onMismatch="DENY" />
 			<PatternLayout>
-				<Pattern>%d{yyyyMMdd HH:mm:ss.sss} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
+				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
 			</PatternLayout>
 			<Policies>
 				<OnStartupTriggeringPolicy />
