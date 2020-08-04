@@ -57,6 +57,10 @@ public class ContentCouponCodeService {
 		contentCouponCodeRepository.save(contentCouponCode);
 	}
 	
+	public void save(List<ContentCouponCode> contentCouponCode) {
+		contentCouponCodeRepository.save(contentCouponCode);
+	}
+	
 	public Integer findCouponCodeListNumber(String couponId){
 		return contentCouponCodeRepository.findCouponCodeListNumber(couponId);
 	}
