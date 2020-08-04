@@ -1,7 +1,7 @@
 package com.bcs.web.ui.service;
 
 import java.io.IOException;
-// import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -258,6 +258,9 @@ public class ContentCouponUIService {
 		}
 
 		String serialNumber = "SERIALNUMBER";
+		List<ContentCouponCode> contentCouponCodeList = new ArrayList<>();
+		
+		int i = 0;
 		if (dataMap != null && dataMap.size() > 0) {
 			for (Map<String, String> data : dataMap) {
 				if (!data.containsKey(serialNumber)) {
@@ -269,15 +272,41 @@ public class ContentCouponUIService {
 				contentCouponCode.setStatus(ContentCouponCode.COUPON_CODE_IS_NOT_USE);
 				contentCouponCode.setModifyTime(time);
 				contentCouponCode.setModifyUser(adminUserAccount);
+				
+				/* 效能優化 ： 組裝userEventSetList , 一次儲存 */
+				contentCouponCodeList.add(contentCouponCode);
+				/* 每一千筆處理一次 */
+				i++;
+				if (i % 1000 == 0) {
+					logger.info("contentCouponCodeList size:" + contentCouponCodeList.size());
+					try {
+						contentCouponCodeService.save(contentCouponCodeList);
+					} catch (Exception e) {
+						String error = ErrorRecord.recordError(e, false);
+						logger.error(error);
+						String duplicateKeyValueError = error.substring(error.indexOf("The duplicate key value is"));
+						String duplicateSerialNumberError = duplicateKeyValueError.substring(duplicateKeyValueError.indexOf(",")+1);
+						String duplicateFilterSerialNumberError = duplicateSerialNumberError.substring(0, duplicateSerialNumberError.indexOf(")"));
+						throw new BcsNoticeException("優惠券錯誤：錯誤的電子序號為" + duplicateFilterSerialNumberError + "，請重新上傳正確之檔案。");						
+					}					
+					contentCouponCodeList.clear();
+				}                
+			}
+            /* Save remaining detailList */
+            if (!contentCouponCodeList.isEmpty()) {
+				logger.info("contentCouponCodeList remain size:" + contentCouponCodeList.size());
 				try {
-					contentCouponCodeService.save(contentCouponCode);
+					contentCouponCodeService.save(contentCouponCodeList);
 				} catch (Exception e) {
 					String error = ErrorRecord.recordError(e, false);
-					logger.error(error);
-					throw new BcsNoticeException("優惠券錯誤：錯誤的電子序號為" + (String)data.get(serialNumber) + "，請重新上傳正確之檔案。");
-				}
-			}
-		}
+					String duplicateKeyValueError = error.substring(error.indexOf("The duplicate key value is"));
+					String duplicateSerialNumberError = duplicateKeyValueError.substring(duplicateKeyValueError.indexOf(",")+1);
+					String duplicateFilterSerialNumberError = duplicateSerialNumberError.substring(0, duplicateSerialNumberError.indexOf(")"));
+					throw new BcsNoticeException("優惠券錯誤：錯誤的電子序號為" + duplicateFilterSerialNumberError + "，請重新上傳正確之檔案。");						
+				}					
+				contentCouponCodeList.clear();
+            }        
+		}		
 	}
 
 	@SuppressWarnings("unused")
