@@ -247,7 +247,7 @@ public class RichMenuGroupGenerateRepository{
 		if(sendGroupDetails != null && sendGroupDetails.size() > 0){
 			String sqlString = 
 					"( "
-					+ " SELECT s.MID as SETMID"
+					+ " SELECT UPPER(LEFT(s.MID, 1)) + SUBSTRING(s.MID , 2, LEN(s.MID)) as SETMID"
 					+ " FROM BCS_USER_EVENT_SET s ";
 			
 			sqlString += " INNER JOIN BCS_LINE_USER k ON k.MID = s.MID ";
