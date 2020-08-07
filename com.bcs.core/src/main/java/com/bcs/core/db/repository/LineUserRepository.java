@@ -20,11 +20,9 @@ public interface LineUserRepository extends EntityRepository<LineUser, String>, 
 
 	@Transactional(readOnly = true, timeout = 30)
 	@Query("select x.mid from LineUser x where x.mid in ( ?1 )")
-//	@Query("select x.mid from LineUser x where x.mid in ?1") // MYSQL Difference
 	List<String> findMidByMidIn(List<String> mids);
 
 	@Query("select x.mid from LineUser x where x.mid in ( ?1 ) and (x.status = 'BINDED' or x.status = 'UNBIND')")
-//	@Query("select x.mid from LineUser x where x.mid in  ?1  and (x.status = 'BINDED' or x.status = 'UNBIND')")// MYSQL Difference
 	List<String> findMidByMidInAndActive(List<String> mids);
 
 	@Transactional(readOnly = true, timeout = 30)
@@ -37,13 +35,12 @@ public interface LineUserRepository extends EntityRepository<LineUser, String>, 
 	List<LineUser> findByStatus(String status);
 
 	@Transactional(readOnly = true, timeout = 30)
-	@Query("select x.mid from LineUser x where x.status in ( ?1 )")
-//	@Query("select x.mid from LineUser x where x.status in ?1") // MYSQL Difference
+	//Line USERID Regular Expression :「^U[0-9a-f]{32}$」
+    @Query("select CONCAT(UPPER(SUBSTRING(x.mid, 1, 1)) , SUBSTRING(x.mid , 2, 32)) from LineUser x where x.status in ( ?1 )")
 	Page<String> findMIDByStatus(String status, Pageable pageable);
 
 	@Transactional(readOnly = true, timeout = 30)
 	@Query("select x.mid from LineUser x where x.status in ( ?1 ) and x.mid = (?2)")
-//	@Query("select x.mid from LineUser x where x.status in ?1 and x.mid = (?2)") // MYSQL Difference
 	String checkMIDByStatus(String status, String mid);
 
 	@Transactional(readOnly = true, timeout = 30)
