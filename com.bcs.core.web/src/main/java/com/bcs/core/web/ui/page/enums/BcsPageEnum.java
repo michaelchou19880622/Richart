@@ -165,7 +165,11 @@ public enum BcsPageEnum {
     WinningLetterListPage("/BCS/Views/PageWinningLetterList"),
     WinningLetterReplyListPage("/BCS/Views/PageWinningLetterReplyList"),
     WinningLetterReplyPage("/BCS/Views/PageWinningLetterReply_ClickUpload"),
-    WinningLetterSignaturePage("/BCS/Views/PageWinningLetterSignature")
+    WinningLetterSignaturePage("/BCS/Views/PageWinningLetterSignature"),
+    
+	// Tag Management
+    TagListPage("/BCS/Views/PageTagList"),
+    TagReportPage("/BCS/Views/PageTagReport")
 	;
 
     private final String str;

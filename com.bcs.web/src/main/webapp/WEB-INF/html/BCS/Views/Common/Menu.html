@@ -319,6 +319,20 @@
 <!--                     </ul> -->
 <!--                 </li> -->
 
+
+                <!-- 標籤管理功能 -->
+                <li>
+                    <a href="" style="cursor: pointer;"><span>標籤管理</span></a>
+                    <ul class="MdNonDisp subMenu" style="display:none">
+                        <li th:classappend="${currentPage == 'PageTagList'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/admin/tagListPage}"><span>標籤列表</span></a>
+                        </li>
+                        <li th:classappend="${currentPage == 'PageTagReport'} ? 'ExSelected'">
+                        	<a th:href="@{/bcs/admin/tagReportPage}"><span>標籤報表</span></a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
         </nav>
     </div>
