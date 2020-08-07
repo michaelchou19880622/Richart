@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:th="http://www.thymeleaf.org"
+	th:with="jsList = ${{'/BCS/JS/pageTagUserTaggedInfo.base.js'}}">
+<head th:replace="/BCS/Views/Common/Head :: head ('Tag User Tagged Info Page', ${jsList})">
+</head>
+
+<body>
+	<header th:replace="/BCS/Views/Common/Header :: header"></header>
+
+	<div class="LyContents">
+		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageTagUserTaggedInfo')"></div>
+
+		<!-- Right Content -->
+		<div class="LyMain" role="main">
+			<form>
+				<section>
+					<header class="ContentHead">
+						<h3 class="CHTtl">用戶標籤</h3>
+					</header>
+					<div class="CHBtnSet">
+						<input class="searchInput_winningLetterName" id="keywordInput" type="text" placeholder="請輸入欲查詢之中獎回函名稱" maxlength="50" name="keywordInput" autocomplete="off">
+                       	<input class="btn_name_query" type="button" value="查詢"  style="cursor: pointer;">
+						<div class="CHLeft">
+							<ul>
+								<li class="CHLeftBtn" id="ActiveBtn_li">
+									<input class="ActiveBtn" type="button" value="生效" style="cursor: pointer;">
+								</li>
+								<li class="CHLeftBtn" id="DisableBtn_li">
+									<input class="DisableBtn" type="button" value="取消" style="cursor: pointer;">
+								</li>
+							</ul>
+						</div>
+						<div class="CHRight">
+							<input class="btn_export" style="cursor: pointer;" type="button" value="匯出EXCEL">
+						</div>
+					</div>
+					<div class="mainFrame">
+						<table border="1" id="tableBody">
+							<colgroup>
+								<col width="110"> <!-- 名稱 -->
+								<col width="70"> <!-- 狀態 -->
+								<col width="80"> <!-- 填寫人數 -->
+								<col width="120"> <!-- 中獎回函網址 -->
+								<col width="100"> <!-- 回覆到期時間 -->
+								<col width="100"> <!-- 建立時間 -->
+								<col width="100"> <!-- 建立人員 -->
+								<col width="100"> <!-- 修改時間 -->
+								<col width="100"> <!-- 修改人員 -->
+								<col width="90"> <!-- 複製/刪除 -->
+							</colgroup>
+							<tr>
+								<th>名稱</th>
+								<th>狀態</th>
+								<th>填寫人數</th>
+								<th>中獎回函網址</th>
+								<th>回覆到期時間</th>
+								<th>建立時間</th>
+								<th>建立人員</th>
+								<th>修改時間</th>
+								<th>修改人員</th>
+								<th>複製/刪除</th>
+							</tr>
+							<tr class="dataTemplate">
+								<td class="winningLetterName"><a href=""></a></td>
+								<td class="winningLetterStatus"><span></span> <br /> <span2></span2> <br2 /> <input class="btn_status" type="button" value="取消" style="cursor: pointer;"></td>
+								<td class="replyPeople"><a href=""></a></td>
+								<td><input class="btn_css" style="cursor: pointer;" type="button" value="網址"></td>
+								<td class="winningLetterEndTime"></td>
+								<td class="createTime"></td>
+								<td class="createUser"></td>
+								<td class="modifyTime"></td>
+								<td class="modifyUser"></td>
+								<td>
+									<input class="btn_copy" style="cursor: pointer;" type="button" value="複製"> 
+									<input class="btn_detele" style="cursor: pointer;" type="button" value="刪除">
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="CHBtnSet">
+	                    <div class="CHLeft">
+							<input id="btn_PreviousPage" type="button" value="<" style="cursor: pointer;">
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">第</label>
+	                        <label id="currentPageIndex" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label>
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">/</label>
+	                        <label id="totalPageSize" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label>
+	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">頁</label>
+	                        <input id="btn_NextPage" type="button" value=">" style="cursor: pointer;">
+	                    </div>
+	                    <div class="CHRight">
+	                    	<label style="padding: 0px 0px 0px 5px; font-weight: bold; color: black;">每頁顯示資料筆數</label>
+							<div class="optionPageSize">
+								<div class="optionLabelPageSize">10</div>
+								<select id="keywordSelector" class="optionSelectPageSize" name="">
+									<option value="5">5</option>
+									<option value="10" selected>10</option>
+									<option value="15">15</option>
+									<option value="20">20</option>
+								</select>
+							</div>
+	                    </div>
+					</div>
+				</section>
+			</form>
+
+			<!-- The Modal -->
+			<div class="model" id="myModel">
+
+				<!-- Modal content -->
+				<div class="model-content">
+					<a id="modelUrl" style="text-align: center;" href=""></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<input id="urlReferrer" type="hidden" th:value="${urlReferrer}" />
+	<input id="winninLetterTracingUrlPre" type="hidden" th:value="${winninLetterTracingUrlPre}" />
+</body>
+
+</html>

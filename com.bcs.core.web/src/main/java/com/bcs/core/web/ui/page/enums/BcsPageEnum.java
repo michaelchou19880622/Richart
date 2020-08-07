@@ -168,8 +168,12 @@ public enum BcsPageEnum {
     WinningLetterSignaturePage("/BCS/Views/PageWinningLetterSignature"),
     
 	// Tag Management
-    TagListPage("/BCS/Views/PageTagList"),
-    TagReportPage("/BCS/Views/PageTagReport")
+    TagListPage("/BCS/Views/PageTagList"), 							// 標籤列表
+    TagCreateAndEditPage("/BCS/Views/PageTagCreateAndEdit"), 		// 標籤建立/編輯
+    TagReportPage("/BCS/Views/PageTagReport"), 						// 標籤報表
+    TagReportDiagramPage("/BCS/Views/PageTagReportDiagram"), 		// 標籤人數 - 分析圖
+    TagReportTaggedListPage("/BCS/Views/PageTagReportTaggedList"), 	// 標籤人數 - 已貼標名單
+    TagUserTaggedInfoPage("/BCS/Views/PageTagUserTaggedInfo") 		// 用戶標籤
 	;
 
     private final String str;
