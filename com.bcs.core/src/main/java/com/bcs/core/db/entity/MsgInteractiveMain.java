@@ -115,6 +115,9 @@ public class MsgInteractiveMain extends AbstractBcsEntity {
 	@Column(name = "SERIAL_ID", columnDefinition="nvarchar(50)")
 	private String serialId;
 
+	@Column(name = "HAS_TAG", columnDefinition="char(1)")
+	private String hasTag;
+
 	public Long getiMsgId() {
 		return iMsgId;
 	}
@@ -234,4 +237,14 @@ public class MsgInteractiveMain extends AbstractBcsEntity {
 	public void setSerialId(String serialId) {
 		this.serialId = serialId;
 	}
+
+	public String getHasTag() {
+		return hasTag;
+	}
+
+	public void setHasTag(String hasTag) {
+		this.hasTag = hasTag;
+	}
+	
+	
 }

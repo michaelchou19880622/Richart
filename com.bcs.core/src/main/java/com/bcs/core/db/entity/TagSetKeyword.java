@@ -14,43 +14,34 @@ import com.bcs.core.json.CustomDateDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @Entity
-@Table(name = "BCS_TAG_SET_MESSAGE")
-public class TagSetMessage extends AbstractBcsEntity {
+@Table(name = "BCS_TAG_SET_KEYWORD")
+public class TagSetKeyword extends AbstractBcsEntity {
 
-	private static final long serialVersionUID = 317913090782877365L;
+	private static final long serialVersionUID = 4260031778674208289L;
 
-	public static final String TYPE_INTERSECTION = "INTERSECTION";
-	public static final String TYPE_UNION = "UNION";
-	public static final String TYPE_EXCLUDE = "EXCLUDE";
-	
 	/* 序列號 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
 
-	/* 發送訊息ID */
-	@Column(name = "MSG_SEND_MAIN_ID")
-	private Long msgSendMainId;
+	/* 自動回覆關鍵字ID */
+	@Column(name = "MSG_INTERACTIVE_ID")
+	private Long msgInteractiveId;
 
 	/* 標籤編號 */
 	@Column(name = "TAG_ID")
 	private Long tagId;
-
-	/* 建立人員 */
-	@Column(name = "SET_TYPE", columnDefinition = "nvarchar(20)")
-	private String setType;
 
 	/* 修改時間 */
 	@JsonDeserialize(using = CustomDateDeserializer.class)
 	@Column(name = "SET_TIME")
 	private Date setTime;
 
-	public TagSetMessage(Long id, Long msgSendMainId, Long tagId, String setType, Date setTime) {
+	public TagSetKeyword(Long id, Long msgInteractiveId, Long tagId, Date setTime) {
 		this.id = id;
-		this.msgSendMainId = msgSendMainId;
+		this.msgInteractiveId = msgInteractiveId;
 		this.tagId = tagId;
-		this.setType = setType;
 		this.setTime = setTime;
 	}
 
@@ -62,12 +53,12 @@ public class TagSetMessage extends AbstractBcsEntity {
 		this.id = id;
 	}
 
-	public Long getMsgSendMainId() {
-		return msgSendMainId;
+	public Long getMsgInteractiveId() {
+		return msgInteractiveId;
 	}
 
-	public void setMsgSendMainId(Long msgSendMainId) {
-		this.msgSendMainId = msgSendMainId;
+	public void setMsgInteractiveId(Long msgInteractiveId) {
+		this.msgInteractiveId = msgInteractiveId;
 	}
 
 	public Long getTagId() {
@@ -76,14 +67,6 @@ public class TagSetMessage extends AbstractBcsEntity {
 
 	public void setTagId(Long tagId) {
 		this.tagId = tagId;
-	}
-
-	public String getSetType() {
-		return setType;
-	}
-
-	public void setSetType(String setType) {
-		this.setType = setType;
 	}
 
 	public Date getSetTime() {
