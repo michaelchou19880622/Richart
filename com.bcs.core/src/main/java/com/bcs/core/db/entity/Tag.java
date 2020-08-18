@@ -47,7 +47,7 @@ public class Tag extends AbstractBcsEntity {
 
 	/* 修改時間 */
 	@JsonDeserialize(using = CustomDateDeserializer.class)
-	@Column(name = "MODIFY_TIME")
+	@Column(name = "MODIFY_TIME", columnDefinition = "default getdate()")
 	private Date modifyTime;
 
 	/* 修改人員 */
@@ -55,24 +55,12 @@ public class Tag extends AbstractBcsEntity {
 	private String modifyUser;
 
 	/* 狀態 */
-	@Column(name = "STATUS", columnDefinition = "tinyint", length = 1)
-	private Boolean status;
+	@Column(name = "STATUS", columnDefinition = "tinyint default 1", length = 1)
+	private Boolean status = Boolean.TRUE;
 
 	/* 標籤時效(生命週期) */
 	@Column(name = "VALID_DAY", columnDefinition = "smallint")
 	private Short validDay;
-
-	public Tag(Long id, String tagName, String tagDescription, Date createTime, String createUser, Date modifyTime, String modifyUser, Boolean status, Short validDay) {
-		this.id = id;
-		this.tagName = tagName;
-		this.tagDescription = tagDescription;
-		this.createTime = createTime;
-		this.createUser = createUser;
-		this.modifyTime = modifyTime;
-		this.modifyUser = modifyUser;
-		this.status = status;
-		this.validDay = validDay;
-	}
 
 	public Long getId() {
 		return id;
