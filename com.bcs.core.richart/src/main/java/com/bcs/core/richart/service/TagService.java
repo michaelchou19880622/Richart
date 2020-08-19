@@ -3,10 +3,13 @@ package com.bcs.core.richart.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.db.entity.Tag;
 import com.bcs.core.db.repository.TagRepository;
+import com.mysql.jdbc.Connection;
 
 @Service
 public class TagService {
@@ -54,5 +57,13 @@ public class TagService {
 		logger.info("[ findByName ] tag = {}", tag);
 		
 		return tag;
+	}
+	
+	public Page<Tag> findAllActive(Pageable pageable){
+		return tagRepository.findAllActive(pageable);
+	}
+	
+	public Page<Tag> findSearchResult(String search, Pageable pageable){
+		return tagRepository.findSearchResult(search, pageable);
 	}
 }
