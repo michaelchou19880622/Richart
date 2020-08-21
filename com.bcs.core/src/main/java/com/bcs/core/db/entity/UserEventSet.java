@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,7 +30,8 @@ public class UserEventSet extends AbstractBcsEntity{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(generator="increment_generator")
+	@GenericGenerator(name="increment_generator", strategy ="increment")	
 	@Column(name = "EVENT_ID")
 	private Long eventId;
 
