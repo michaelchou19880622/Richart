@@ -2,6 +2,7 @@ package com.bcs.web.ui.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -799,18 +800,19 @@ public class BCSLinkPageController extends BCSBaseController {
 	 * 匯出連結列表到Excel
 	 */
 	@ControllerLog(description="匯出連結列表到Excel-新版本")
-	@RequestMapping(method = RequestMethod.GET, value = "/edit/exportLinkClickReportListNew")
+	@RequestMapping(method = RequestMethod.POST, value = "/edit/exportLinkClickReportListNew")
 	@ResponseBody
 	public void exportLinkClickReportListNew(
 			HttpServletRequest request, 
 			HttpServletResponse response,
-			@CurrentUser CustomUser customUser) throws IOException {
-		String queryFlag = request.getParameter("queryFlag");
-		String startDate = request.getParameter("startDate");
-		String endDate = request.getParameter("endDate");
-		String dataStartDate = request.getParameter("dataStartDate");
-		String dataEndDate = request.getParameter("dataEndDate");
-		String orderBy = request.getParameter("orderBy");
+			@CurrentUser CustomUser customUser,
+			@RequestBody LinkClickReportSearchModel linkClickReportSearchModel) throws IOException {
+		String queryFlag = linkClickReportSearchModel.getQueryFlag() == null ? "" : new String(linkClickReportSearchModel.getQueryFlag().getBytes(StandardCharsets.UTF_8.name()), StandardCharsets.UTF_8.name());
+		String startDate = linkClickReportSearchModel.getStartDate();
+		String endDate = linkClickReportSearchModel.getEndDate();
+		String dataStartDate = linkClickReportSearchModel.getDataStartDate();
+		String dataEndDate = linkClickReportSearchModel.getDataEndDate();
+		String orderBy = linkClickReportSearchModel.getOrderBy();
 		logger.info("exportLinkClickReportListNew start, queryFlag=" + queryFlag + " startDate=" + startDate + " endDate=" + endDate + " dataStartDate=" + dataStartDate + " dataEndDate=" + dataEndDate + " orderBy=" + orderBy);
 		try {
 			Calendar calendar = Calendar.getInstance();
@@ -841,7 +843,7 @@ public class BCSLinkPageController extends BCSBaseController {
 				folder.mkdirs();
 			}
 			exportToExcelForLinkClickReport.exportLinkClickReportListNew(filePath, fileName, startDate, endDate, dataStartDate, dataEndDate, queryFlag, orderByID);
-			LoadFileUIService.loadFileToResponse(filePath, fileName, response);
+			LoadFileUIService.loadFileToResponse(filePath, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", response);
 			logger.info("exportLinkClickReportListNew end, queryFlag=" + queryFlag + " startDate=" + startDate + " endDate=" + endDate + " dataStartDate=" + dataStartDate + " dataEndDate=" + dataEndDate + " orderBy=" + orderBy + " filePaht=" + filePath + " fileName=" + fileName);
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));

@@ -25,7 +25,6 @@ public class LoadFileUIService {
 	private static Logger logger = LogManager.getLogger(LoadFileUIService.class);
 	
 	public static void loadFileToResponse(String filePath, String fileName, HttpServletResponse response) throws IOException {
-
 		InputStream inp = new FileInputStream(filePath + System.getProperty("file.separator") + fileName);
 		response.setContentType("application/download; charset=UTF-8");
 		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString()));
@@ -43,19 +42,35 @@ public class LoadFileUIService {
 			}
 		}
 	}
+	
+	public static void loadFileToResponse(String filePath, String fileName, String contentType, HttpServletResponse response) throws IOException{
+		InputStream inp = new FileInputStream(filePath + System.getProperty("file.separator") + fileName);
+		response.setContentType(contentType);
+		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+		response.setCharacterEncoding("UTF-8");
+		OutputStream outp = response.getOutputStream();
+		try {
+			logger.info("[loadFileToResponse], contentType=" + contentType);
+			IOUtils.copy(inp, outp);
+			response.flushBuffer();
+		} catch (IOException e) {
+			logger.error(ErrorRecord.recordError(e));
+			throw e;
+		} finally {
+			if(outp != null) {
+				outp.close();
+			}
+		}
+	}
 
 	public static void askDownloadFileToResponse(String srcFile, String destFile, HttpServletResponse response) throws IOException {
-
 		logger.info("srcFile = {}", srcFile);
 		logger.info("destFile = {}", destFile);
-		
 		InputStream inp = new FileInputStream(srcFile);
 		response.setContentType("application/download; charset=UTF-8");
 		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(destFile, StandardCharsets.UTF_8.toString()));
 		response.setCharacterEncoding("UTF-8");
-		
 		OutputStream outp = response.getOutputStream();
-		
 		try {
 			IOUtils.copy(inp, outp);
 			response.flushBuffer();
@@ -66,19 +81,15 @@ public class LoadFileUIService {
 			if (outp != null) {
 				outp.close();
 			}
-
 			if (inp != null) {
 				inp.close();
 			}
 			
 			File srcZipFile = new File(srcFile);
 			logger.info("srcZipFile = {}", srcZipFile);
-			
 			logger.info("srcZipFile.exists() = {}", srcZipFile.exists());
-			
 			if (srcZipFile.exists()) {
 				FileUtils.forceDelete(srcZipFile);
-				
 				logger.info("srcZipFile.exists() after delete = {}", srcZipFile.exists());
 			}
 		}
