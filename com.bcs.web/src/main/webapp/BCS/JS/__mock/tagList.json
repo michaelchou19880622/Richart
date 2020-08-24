@@ -1,0 +1,39 @@
+{
+  "content": [{
+      "id": 1,
+      "tagName": "名亮色",
+      "tagDescription": "紅色",
+      "createTime": 1585908076000,
+      "createUser": "admin",
+      "modifyTime": 1585908076000,
+      "modifyUser": "admin",
+      "status": true,
+      "validDay": 365
+    },
+    {
+      "id": 6,
+      "tagName": "標籤名稱測試20200818_new",
+      "tagDescription": "標籤說明測試20200818_new",
+      "createTime": 1597718467980,
+      "createUser": "michael",
+      "modifyTime": 1597719197221,
+      "modifyUser": "michael-new",
+      "status": true,
+      "validDay": 365
+    }
+  ],
+  "totalElements": 3,
+  "totalPages": 2,
+  "last": false,
+  "number": 0,
+  "size": 2,
+  "sort": [{
+    "direction": "ASC",
+    "property": "MODIFY_TIME",
+    "ignoreCase": false,
+    "nullHandling": "NATIVE",
+    "ascending": true
+  }],
+  "numberOfElements": 2,
+  "first": true
+}

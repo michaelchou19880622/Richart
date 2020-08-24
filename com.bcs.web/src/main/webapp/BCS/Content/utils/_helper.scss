@@ -1,0 +1,95 @@
+$space: 1rem !default;
+
+$spacer: (
+  0: 0,
+  1: $space * 0.5,
+  2: $space,
+  3: $space * 1.5,
+  4: $space * 2
+);
+// Margin
+//
+// 依據 space 列舉top、right、bottom、left
+@each $key, $value in $spacer {
+  .m-#{$key} {
+    margin: $value;
+  }
+  .mt-#{$key} {
+    margin-top: $value;
+  }
+  .mr-#{$key} {
+    margin-right: $value;
+  }
+  .mb-#{$key} {
+    margin-bottom: $value;
+  }
+  .ml-#{$key} {
+    margin-left: $value;
+  }
+}
+.m-auto {
+  margin: auto;
+}
+
+// Padding
+//
+// 依據 space 列舉top、right、bottom、left
+@each $key, $value in $spacer {
+  .p-#{$key} {
+    padding: $value;
+  }
+  .pt-#{$key} {
+    padding-top: $value;
+  }
+  .pr-#{$key} {
+    padding-right: $value;
+  }
+  .pb-#{$key} {
+    padding-bottom: $value;
+  }
+  .pl-#{$key} {
+    padding-left: $value;
+  }
+}
+@for $i from 1 to 5 {
+  .w#{$i*25} {
+    width: $i * 25%;
+  }
+}
+.hidden {
+  display: none;
+}
+.pointer {
+  cursor: pointer;
+}
+.border-none {
+  border: none !important;
+}
+.flex {
+  display: flex;
+}
+.flex-jc-spaceBetween {
+  justify-content: space-between;
+}
+.flex-align-center{
+  align-items: center;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.gray-1 {
+  color: #888;;
+}
+
+.ab-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.alert {
+  margin-bottom: 0 !important;
+  padding: 10px;
+}
