@@ -90,6 +90,9 @@ public class MsgSendMain extends AbstractBcsEntity {
 	@Column(name = "MODIFY_USER", columnDefinition="nvarchar(50)")
 	private String modifyUser;
 
+	@Column(name = "HAS_TAG", columnDefinition="char(1)")
+	private String hasTag;
+
 	public Long getMsgSendId() {
 		return msgSendId;
 	}
@@ -201,5 +204,14 @@ public class MsgSendMain extends AbstractBcsEntity {
 	public void setSerialId(String serialId) {
 		this.serialId = serialId;
 	}
+
+	public String getHasTag() {
+		return hasTag;
+	}
+
+	public void setHasTag(String hasTag) {
+		this.hasTag = hasTag;
+	}
+	
 	
 }

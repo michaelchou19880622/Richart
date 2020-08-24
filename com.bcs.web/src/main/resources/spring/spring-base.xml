@@ -50,12 +50,10 @@
 		</property>
 		<property name="jpaProperties">
 	        <props>
-            	<!-- <prop key="hibernate.dialect">org.hibernate.dialect.DB2400Dialect</prop> -->
-            	<prop key="hibernate.dialect">org.hibernate.dialect.SQLServer2008Dialect</prop>
-            	<!-- <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop> -->
+            	<prop key="hibernate.dialect">com.bcs.core.db.connection.SQlServer2008DialectExtended</prop>
             	<prop key="hibernate.show_sql">false</prop>
-            	<prop key="hibernate.format_sql">false</prop>
-            	<prop key="hibernate.hbm2ddl.auto">none</prop> <!-- none/update -->
+            	<prop key="hibernate.format_sql">true</prop>
+            	<prop key="hibernate.hbm2ddl.auto">none</prop>
             	<prop key="hibernate.jdbc.batch_size">50</prop>
             	<prop key="hibernate.order_inserts">true</prop>
 				<prop key="hibernate.order_updates">true</prop>
@@ -64,26 +62,32 @@
     </bean>
     
     <!-- ======= JDBC connection pool start ======= -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
+		<property name="dataSource" ref="dataSource"></property>  
+	</bean>  
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
 	    <constructor-arg ref="hikariConfig" />
 	</bean>
 	
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-		<property name="poolName" value="springHikariCP" />
+		<property name="poolName" value="RichartHikariCP" />
 		
 		<!-- 
 			jtds 只支援 JDBC3 而不支援 JDBC4，所以須設定 connectionTestQuery
 			若是支援 JDBC4 的 driver 則不須設定 connectionTestQuery
 		-->
-		<property name="connectionTestQuery" value="SELECT 1" />
-		<property name="dataSourceClassName" value="net.sourceforge.jtds.jdbcx.JtdsDataSource" />
+<!-- 		<property name="connectionTestQuery" value="SELECT 1" /> -->
+<!-- 		<property name="dataSourceClassName" value="net.sourceforge.jtds.jdbcx.JtdsDataSource" /> -->
+<!-- 		<property name="maximumPoolSize" value="50" /> -->
+		<property name="maxLifetime" value="240000" />
+		<property name="dataSourceClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDataSource" />
 		<property name="maximumPoolSize" value="50" />
 		<property name="dataSourceProperties">
 			<props>
-				<prop key="user">Taishin</prop>
+				<prop key="user">taishin</prop>
 				<prop key="password">Hpifive16890535</prop>
 				<prop key="serverName">20.48.11.175</prop>
-				<prop key="databaseName">Richart Customer Connect</prop>
+				<prop key="databaseName">richart_0807</prop>
 				<prop key="portNumber">1433</prop>
 			</props>
 		</property>

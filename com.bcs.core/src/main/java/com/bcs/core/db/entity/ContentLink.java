@@ -35,6 +35,9 @@ public class ContentLink extends AbstractBcsEntity{
 
 	@Column(name = "MODIFY_TIME")
 	private Date modifyTime;
+
+	@Column(name = "HAS_TAG", columnDefinition="char(1)")
+	private String hasTag;
 	
 	public ContentLink(){
 		
@@ -99,5 +102,14 @@ public class ContentLink extends AbstractBcsEntity{
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
+
+	public String getHasTag() {
+		return hasTag;
+	}
+
+	public void setHasTag(String hasTag) {
+		this.hasTag = hasTag;
+	}
+	
 	
 }
