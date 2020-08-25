@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
-	xmlns:th="http://www.thymeleaf.org"
-	th:with="jsList = ${{'/BCS/JS/pageTagList.base.js'}}">
+	xmlns:th="http://www.thymeleaf.org" th:with="jsList = ${{'/BCS/JS/pageTagList.base.js'}}">
+
 <head th:replace="/BCS/Views/Common/Head :: head ('Tag List Page', ${jsList})">
 </head>
+<link th:href="@{/BCS/Content/p_tag.css}" type="text/css" rel="stylesheet" />
 
 <body>
 	<header th:replace="/BCS/Views/Common/Header :: header"></header>
@@ -18,104 +19,102 @@
 					<header class="ContentHead">
 						<h3 class="CHTtl">標籤列表</h3>
 					</header>
-					<div class="CHBtnSet">
-						<input class="searchInput_winningLetterName" id="keywordInput" type="text" placeholder="請輸入欲查詢之中獎回函名稱" maxlength="50" name="keywordInput" autocomplete="off">
-                       	<input class="btn_name_query" type="button" value="查詢"  style="cursor: pointer;">
+					<div class="CHBtnSet mb-0">
+						<!-- 左側  -->
 						<div class="CHLeft">
-							<ul>
-								<li class="CHLeftBtn" id="ActiveBtn_li">
-									<input class="ActiveBtn" type="button" value="生效" style="cursor: pointer;">
-								</li>
-								<li class="CHLeftBtn" id="DisableBtn_li">
-									<input class="DisableBtn" type="button" value="取消" style="cursor: pointer;">
-								</li>
-							</ul>
+							<input class="tagSearch__input searchInput" type="text" placeholder="請輸入標籤" maxlength="50"/>
+							<input class="tagSearch__btn btn_name_query" type="button" value="查詢" style="cursor: pointer;"/>
 						</div>
-						<div class="CHRight">
-							<input class="btn_export" style="cursor: pointer;" type="button" value="匯出EXCEL">
+						<!-- 右側 -->
+						<div class="CHRight"><input class="btn_add addTagBtn" type="button" value="新增" style="cursor: pointer;">
 						</div>
 					</div>
+					<!-- 搜尋區塊 -->
+					<div class="mb-3">
+						<ul class="p-searchArea"></ul>
+					</div>
+					<!-- 表格顯示 -->
 					<div class="mainFrame">
-						<table border="1" id="tableBody">
+						<table border="1" id="tableBody" class="tagTable">
 							<colgroup>
-								<col width="110"> <!-- 名稱 -->
-								<col width="70"> <!-- 狀態 -->
-								<col width="80"> <!-- 填寫人數 -->
-								<col width="120"> <!-- 中獎回函網址 -->
-								<col width="100"> <!-- 回覆到期時間 -->
-								<col width="100"> <!-- 建立時間 -->
-								<col width="100"> <!-- 建立人員 -->
-								<col width="100"> <!-- 修改時間 -->
-								<col width="100"> <!-- 修改人員 -->
-								<col width="90"> <!-- 複製/刪除 -->
+								<col width="80">
+								<col width="130">
+								<col width="80">
+								<col width="100">
+								<col width="90">
 							</colgroup>
 							<tr>
-								<th>名稱</th>
-								<th>狀態</th>
-								<th>填寫人數</th>
-								<th>中獎回函網址</th>
-								<th>回覆到期時間</th>
-								<th>建立時間</th>
-								<th>建立人員</th>
-								<th>修改時間</th>
-								<th>修改人員</th>
-								<th>複製/刪除</th>
-							</tr>
-							<tr class="dataTemplate">
-								<td class="winningLetterName"><a href=""></a></td>
-								<td class="winningLetterStatus"><span></span> <br /> <span2></span2> <br2 /> <input class="btn_status" type="button" value="取消" style="cursor: pointer;"></td>
-								<td class="replyPeople"><a href=""></a></td>
-								<td><input class="btn_css" style="cursor: pointer;" type="button" value="網址"></td>
-								<td class="winningLetterEndTime"></td>
-								<td class="createTime"></td>
-								<td class="createUser"></td>
-								<td class="modifyTime"></td>
-								<td class="modifyUser"></td>
-								<td>
-									<input class="btn_copy" style="cursor: pointer;" type="button" value="複製"> 
-									<input class="btn_detele" style="cursor: pointer;" type="button" value="刪除">
-								</td>
+								<th>標籤</th>
+								<th>標籤說明</th>
+								<th>編修人員</th>
+								<th>編修時間</th>
+								<th>功能</th>
 							</tr>
 						</table>
+						<p class="tagTable--info" style="border: 1px solid #ededed; text-align: center; padding: 2rem">目前無標籤</p>
 					</div>
 					<div class="CHBtnSet">
-	                    <div class="CHLeft">
-							<input id="btn_PreviousPage" type="button" value="<" style="cursor: pointer;">
-	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">第</label>
-	                        <label id="currentPageIndex" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label>
-	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">/</label>
-	                        <label id="totalPageSize" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label>
-	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">頁</label>
-	                        <input id="btn_NextPage" type="button" value=">" style="cursor: pointer;">
-	                    </div>
-	                    <div class="CHRight">
-	                    	<label style="padding: 0px 0px 0px 5px; font-weight: bold; color: black;">每頁顯示資料筆數</label>
-							<div class="optionPageSize">
-								<div class="optionLabelPageSize">10</div>
-								<select id="keywordSelector" class="optionSelectPageSize" name="">
-									<option value="5">5</option>
-									<option value="10" selected>10</option>
-									<option value="15">15</option>
-									<option value="20">20</option>
-								</select>
-							</div>
-	                    </div>
+						<div class="CHLeft page">
+							<input id="btn_PreviousPage" class="page__icon" type="button" value="<">
+							<label class="page__text">第</label>
+							<label id="currentPageIndex" class="page__text">-</label>
+							<label class="page__text">/</label>
+							<label id="totalPageSize" class="page__text">-</label>
+							<label class="page__text">頁</label>
+							<input id="btn_NextPage" class="page__icon" type="button" value=">">
+						</div>
 					</div>
 				</section>
 			</form>
-
-			<!-- The Modal -->
-			<div class="model" id="myModel">
-
-				<!-- Modal content -->
-				<div class="model-content">
-					<a id="modelUrl" style="text-align: center;" href=""></a>
+			<!-- [Modal] 新增 / 編輯標籤 -->
+			<div id="popupCreateTags" class="overlay hidden">
+				<div class="popup">
+					<a class="close popupClose">&times;</a>
+					<div class="content mainFrame border-none">
+						<div class="p-card">
+							<h2>建立/編輯標籤</h2>
+							<div class="p-card__item">
+								<p>標籤名稱*<span class="p-card__item--comment">(最多20字)</span></p>
+								<input type="text" maxlength="20" class="w100">
+							</div>
+							<div class="p-card__item">
+								<p>生命週期*</p>
+								<label class="MdFRM02Check">
+									<input type="radio" name="life" value="no">無
+								</label>
+								<label class="MdFRM02Check">
+									<input type="radio" name="life" value="yea">有
+								</label>
+								<input type="number" min="1" max="365" class="w25">
+								<span>天</span>
+							</div>
+							<div class="p-card__item">
+								<p>標籤說明<span class="p-card__item--comment">(最多200字)</span></p>
+								<textarea cols="80" rows="8" maxlength="200" class="w100"></textarea>
+							</div>
+							<div class="mt-3">
+								<input class="btn btn-primary m-auto btn_save" type="button" value="新增" style="cursor: pointer; display:block">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
+			<!-- [Modal] 刪除 -->
+			<div id="deleteConfirmModal" class="overlay hidden">
+        <div class="rwModal m-auto">
+            <div class="rwModal__header bg-blue">訊息</div>
+            <div class="rwModal__content bg-default">
+                <p>是否刪除</p>
+            </div>
+            <div class="rwModal__footer">
+                <p class="modalCancel w50 bg-default pointer">取消</p>
+                <p class="deleteTagBtn w50 bg-blue pointer">確認</p>
+            </div>
+        </div>
+    </div>
+
 		</div>
 	</div>
-	<input id="urlReferrer" type="hidden" th:value="${urlReferrer}" />
-	<input id="winninLetterTracingUrlPre" type="hidden" th:value="${winninLetterTracingUrlPre}" />
 </body>
 
 </html>
