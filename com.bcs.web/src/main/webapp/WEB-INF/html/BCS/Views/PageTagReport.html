@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.springframework.org/security/tags"
-	xmlns:th="http://www.thymeleaf.org"
-	th:with="jsList = ${{'/BCS/JS/pageTagList.base.js'}}">
+	xmlns:th="http://www.thymeleaf.org" th:with="jsList = ${{'/BCS/JS/pageTagReport.base.js'}}">
+
 <head th:replace="/BCS/Views/Common/Head :: head ('Tag Report Page', ${jsList})">
 </head>
+<link th:href="@{/BCS/Content/plugins/font-awesone.min.css}" type="text/css" rel="stylesheet" />
+<link th:href="@{/BCS/Content/main.css}" type="text/css" rel="stylesheet" />
+<script th:src="@{/BCS/JS/lib/chart.js}"></script>
 
 <body>
 	<header th:replace="/BCS/Views/Common/Header :: header"></header>
 
 	<div class="LyContents">
 		<div th:replace="/BCS/Views/Common/Menu :: menu ('PageTagReport')"></div>
-
 		<!-- Right Content -->
 		<div class="LyMain" role="main">
 			<form>
@@ -19,103 +21,180 @@
 						<h3 class="CHTtl">標籤報表</h3>
 					</header>
 					<div class="CHBtnSet">
-						<input class="searchInput_winningLetterName" id="keywordInput" type="text" placeholder="請輸入欲查詢之中獎回函名稱" maxlength="50" name="keywordInput" autocomplete="off">
-                       	<input class="btn_name_query" type="button" value="查詢"  style="cursor: pointer;">
-						<div class="CHLeft">
-							<ul>
-								<li class="CHLeftBtn" id="ActiveBtn_li">
-									<input class="ActiveBtn" type="button" value="生效" style="cursor: pointer;">
-								</li>
-								<li class="CHLeftBtn" id="DisableBtn_li">
-									<input class="DisableBtn" type="button" value="取消" style="cursor: pointer;">
-								</li>
-							</ul>
+						<ul class="radioGroup" style="display: inline-block;">
+							<li data-datetype="year">年</li>
+							<li data-datetype="month" class="radioGroup--active">月</li>
+							<li data-datetype="day">日</li>
+						</ul>
+						<div class="dependsDateType" style="display: inline-block;">
+							<div data-dependstype="day" class="hidden">
+								<div class="option date">
+									<input type="text" class="datepicker" />
+								</div>
+								</span> - <span>
+									<div class="option date">
+										<input type="text" class="datepicker" />
+									</div>
+							</div>
+							<div data-dependstype="month">
+								<select class="selectDown p-1" style="min-width: 100px">
+									<option value="" selected>請選擇</option>
+									<option value="2020">2020</option>
+									<option value="2019">2019</option>
+								</select>
+							</div>
 						</div>
-						<div class="CHRight">
-							<input class="btn_export" style="cursor: pointer;" type="button" value="匯出EXCEL">
+						<input class="reportSearch__input searchInput" type="text" placeholder="標籤名稱" maxlength="50" style="width: 15%;">
+						<input class="reportSearch__btn btn_name_query pointer" type="button" value="查詢">
+					</div>
+					<!-- 搜尋區塊 -->
+					<div class="mb-3">
+						<ul class="p-searchArea"></ul>
+					</div>
+					<!-- 表格 -->
+					<div class="mainFrame">
+						<table border="1" id="mainReport">
+							<colgroup>
+								<col width="110">
+								<col width="70">
+								<col width="70">
+								<col width="70">
+								<col width="90">
+							</colgroup>
+							<tr>
+								<th>標籤</th>
+								<th>標籤人數</th>
+								<th>分析圖</th>
+								<th>已貼標名單</th>
+								<th>匯入貼標名單</th>
+							</tr>
+						</table>
+						<p id="mainReport--info" style="border: 1px solid #ededed; text-align: center; padding: 2rem">目前無標籤</p>
+					</div>
+					<div class="CHBtnSet">
+						<div class="CHLeft page">
+							<input id="btn_mainPreviousPage" class="page__icon" type="button" value="<">
+							<label class="page__text">第</label>
+							<label id="mainCurrentPage" class="page__text">-</label>
+							<label class="page__text">/</label>
+							<label id="totalPageSize" class="page__text">-</label>
+							<label class="page__text">頁</label>
+							<input id="btn_mainNextPage" class="page__icon" type="button" value=">">
 						</div>
 					</div>
+				</section>
+			</form>
+			<!-- 已貼標名單 / tagReportTaggedListPage-->
+			<div id="popupReportTagged" class="overlay hidden">
+				<div class="popup w75" style="max-width: 750px;">
+					<a class="close" id="reportTaggedClose">&times;</a>
+					<section class="mb-1">
+						<h2>標籤 - 保養品</h2>
+						<div class="bg-default pt-2 pl-2 pb-1">
+							<p class="mb-1">請選擇欲匯出的狀態</p>
+							<input type="checkbox" id="checkUid" checked disabled><label for="checkUid">UID</label>
+							<input type="checkbox" id="checkStatus"><label for="checkStatus">狀態</label>
+							<input type="checkbox" id="checkName"><label for="checkName">姓名</label>
+							<input type="checkbox" id="checkGendar"><label for="checkGendar">性別</label>
+							<input type="checkbox" id="checkBirthYear"><label for="checkBirthYear">生日(年)</label>
+							<input type="checkbox" id="checkBirthMonth"><label for="checkBirthMonth">生日(月)</label>
+							<input type="checkbox" id="checkTime"><label for="checkTime">貼標時間</label>
+							<input class="btn_export_pdf" type="button" value="匯出" style="cursor: pointer;">
+						</div>
+					</section>
+					<input class="searchInput" type="text" placeholder="標籤名稱" maxlength="50" style="width: 15%;">
+					<input class="btn_name_query" type="button" value="查詢">
 					<div class="mainFrame">
 						<table border="1" id="tableBody">
 							<colgroup>
-								<col width="110"> <!-- 名稱 -->
-								<col width="70"> <!-- 狀態 -->
-								<col width="80"> <!-- 填寫人數 -->
-								<col width="120"> <!-- 中獎回函網址 -->
-								<col width="100"> <!-- 回覆到期時間 -->
-								<col width="100"> <!-- 建立時間 -->
-								<col width="100"> <!-- 建立人員 -->
-								<col width="100"> <!-- 修改時間 -->
-								<col width="100"> <!-- 修改人員 -->
-								<col width="90"> <!-- 複製/刪除 -->
+								<col width="110">
+								<col width="70">
+								<col width="70">
+								<col width="70">
+								<col width="70">
+								<col width="70">
+								<col width="90">
 							</colgroup>
 							<tr>
-								<th>名稱</th>
+								<th>UID</th>
 								<th>狀態</th>
-								<th>填寫人數</th>
-								<th>中獎回函網址</th>
-								<th>回覆到期時間</th>
-								<th>建立時間</th>
-								<th>建立人員</th>
-								<th>修改時間</th>
-								<th>修改人員</th>
-								<th>複製/刪除</th>
+								<th>姓名</th>
+								<th>性別</th>
+								<th>生日(年)</th>
+								<th>生日(月)</th>
+								<th>貼標時間</th>
 							</tr>
-							<tr class="dataTemplate">
-								<td class="winningLetterName"><a href=""></a></td>
-								<td class="winningLetterStatus"><span></span> <br /> <span2></span2> <br2 /> <input class="btn_status" type="button" value="取消" style="cursor: pointer;"></td>
-								<td class="replyPeople"><a href=""></a></td>
-								<td><input class="btn_css" style="cursor: pointer;" type="button" value="網址"></td>
-								<td class="winningLetterEndTime"></td>
-								<td class="createTime"></td>
-								<td class="createUser"></td>
-								<td class="modifyTime"></td>
-								<td class="modifyUser"></td>
-								<td>
-									<input class="btn_copy" style="cursor: pointer;" type="button" value="複製"> 
-									<input class="btn_detele" style="cursor: pointer;" type="button" value="刪除">
-								</td>
+							<tr>
+								<td>UID</td>
+								<td>已綁定</td>
+								<td>XX</td>
+								<td>女</td>
+								<td>1989</td>
+								<td>09</td>
+								<td>2020/02/19</td>
+							</tr>
+							<tr>
+								<td>UID</td>
+								<td>已綁定</td>
+								<td>XX</td>
+								<td>女</td>
+								<td>1989</td>
+								<td>09</td>
+								<td>2020/02/19</td>
 							</tr>
 						</table>
 					</div>
 					<div class="CHBtnSet">
-	                    <div class="CHLeft">
-							<input id="btn_PreviousPage" type="button" value="<" style="cursor: pointer;">
-	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">第</label>
-	                        <label id="currentPageIndex" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label>
-	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">/</label>
-	                        <label id="totalPageSize" style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">-</label>
-	                        <label style="padding: 0px 5px 0px 5px; font-weight: bold; color: black;">頁</label>
-	                        <input id="btn_NextPage" type="button" value=">" style="cursor: pointer;">
-	                    </div>
-	                    <div class="CHRight">
-	                    	<label style="padding: 0px 0px 0px 5px; font-weight: bold; color: black;">每頁顯示資料筆數</label>
-							<div class="optionPageSize">
-								<div class="optionLabelPageSize">10</div>
-								<select id="keywordSelector" class="optionSelectPageSize" name="">
-									<option value="5">5</option>
-									<option value="10" selected>10</option>
-									<option value="15">15</option>
-									<option value="20">20</option>
-								</select>
-							</div>
-	                    </div>
+						<div class="CHLeft page">
+							<input class="page__icon" type="button" value="<">
+							<label class="page__text">第</label>
+							<label class="page__text">-</label>
+							<label class="page__text">/</label>
+							<label class="page__text">-</label>
+							<label class="page__text">頁</label>
+							<input class="page__icon" type="button" value=">">
+						</div>
 					</div>
-				</section>
-			</form>
-
-			<!-- The Modal -->
-			<div class="model" id="myModel">
-
-				<!-- Modal content -->
-				<div class="model-content">
-					<a id="modelUrl" style="text-align: center;" href=""></a>
+				</div>
+			</div>
+			<!-- 標籤人數 - 分析圖 / tagReportDiagramPage-->
+			<div id="popupReportDiagram" class="overlay hidden">
+				<div class="popup w75" style="max-width: 750px;">
+					<a class="close" id="reportDiagramClose">&times;</a>
+					<button class="btn_export_excel">匯出</button>
+					<canvas id="myChart"></canvas>
+					<div class="mainFrame">
+						<table border="1">
+							<colgroup>
+								<col width="70">
+								<col width="70">
+								<col width="70">
+								<col width="70">
+							</colgroup>
+							<tr>
+								<th>日期</th>
+								<th>標籤人數</th>
+								<th>已綁定</th>
+								<th>未綁定</th>
+							</tr>
+							<tr>
+								<td>2020/06/01</td>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+							</tr>
+							<tr>
+								<td>2020/06/02</td>
+								<td>300</td>
+								<td>300</td>
+								<td>300</td>
+							</tr>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<input id="urlReferrer" type="hidden" th:value="${urlReferrer}" />
-	<input id="winninLetterTracingUrlPre" type="hidden" th:value="${winninLetterTracingUrlPre}" />
 </body>
 
 </html>

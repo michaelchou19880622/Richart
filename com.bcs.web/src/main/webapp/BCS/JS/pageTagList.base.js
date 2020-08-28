@@ -140,10 +140,8 @@ const UICtrl = (function () {
 		 */
 		switchSelectorShowStatus: function (uiSeletctor, isShow) {
 			if (isShow) {
-				console.log(uiSeletctor)
 				document.querySelector(uiSeletctor).classList.remove('hidden')
 			} else {
-				console.log(uiSeletctor)
 				document.querySelector(uiSeletctor).classList.add('hidden')
 			}
 		},

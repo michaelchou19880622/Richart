@@ -1,0 +1,27 @@
+{
+  "content": [{
+      "id": 1,
+      "name": "花旗",
+      "count": 1015
+    },
+    {
+      "id": 3,
+      "name": "保養品",
+      "count": 5
+    }
+  ],
+  "totalElements": 2,
+  "totalPages": 1,
+  "last": false,
+  "number": 0,
+  "size": 2,
+  "sort": [{
+    "direction": "ASC",
+    "property": "NAME",
+    "ignoreCase": false,
+    "nullHandling": "NATIVE",
+    "ascending": true
+  }],
+  "numberOfElements": 2,
+  "first": true
+}
