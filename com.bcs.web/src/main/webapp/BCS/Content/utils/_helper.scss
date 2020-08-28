@@ -12,19 +12,19 @@ $spacer: (
 // 依據 space 列舉top、right、bottom、left
 @each $key, $value in $spacer {
   .m-#{$key} {
-    margin: $value;
+    margin: $value !important;
   }
   .mt-#{$key} {
-    margin-top: $value;
+    margin-top: $value !important;
   }
   .mr-#{$key} {
-    margin-right: $value;
+    margin-right: $value !important;
   }
   .mb-#{$key} {
-    margin-bottom: $value;
+    margin-bottom: $value !important;
   }
   .ml-#{$key} {
-    margin-left: $value;
+    margin-left: $value !important;
   }
 }
 .m-auto {
@@ -36,60 +36,46 @@ $spacer: (
 // 依據 space 列舉top、right、bottom、left
 @each $key, $value in $spacer {
   .p-#{$key} {
-    padding: $value;
+    padding: $value !important;
   }
   .pt-#{$key} {
-    padding-top: $value;
+    padding-top: $value !important;
   }
   .pr-#{$key} {
-    padding-right: $value;
+    padding-right: $value !important;
   }
   .pb-#{$key} {
-    padding-bottom: $value;
+    padding-bottom: $value !important;
   }
   .pl-#{$key} {
-    padding-left: $value;
+    padding-left: $value !important;
   }
 }
 @for $i from 1 to 5 {
   .w#{$i*25} {
-    width: $i * 25%;
+    width: $i * 25% !important;;
   }
 }
+// color
+$themes: (
+  'red': $red,
+  'green': #4CAF50,
+  'blue': #1B73A7,
+  'yellow': #FFC000,
+  'light-gray': gray,
+  'dark-gray': #646464,
+  'default': #eee
+);
+
+@each $key, $var in $themes {
+  .bg-#{$key} {
+    background-color: $var;
+  }
+}
+// other
 .hidden {
   display: none;
 }
 .pointer {
   cursor: pointer;
-}
-.border-none {
-  border: none !important;
-}
-.flex {
-  display: flex;
-}
-.flex-jc-spaceBetween {
-  justify-content: space-between;
-}
-.flex-align-center{
-  align-items: center;
-}
-
-.font-bold {
-  font-weight: bold;
-}
-
-.gray-1 {
-  color: #888;;
-}
-
-.ab-right {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-.alert {
-  margin-bottom: 0 !important;
-  padding: 10px;
 }

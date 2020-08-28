@@ -1,0 +1,18 @@
+.selectDown {
+  width: 85%;
+  -webkit-appearance: none;
+      -moz-appearance: none;
+          appearance: none;
+  background-image: url(../images/arrow.png);
+  background-repeat: no-repeat !important;
+  background-size: 16px !important;
+  background-position: 94% 50% !important;
+  color: #555 !important;
+  padding: 4px 0.4rem;
+  margin: 0;
+  outline: none;
+  line-height: normal;
+  border-radius: 4px;
+  font-size: 14px;
+  border: 1px solid #ced2db;
+}
