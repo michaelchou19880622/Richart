@@ -1,4 +1,53 @@
 $(function() {
+	
+	var device_os = getMobileOperatingSystem();
+		
+	/**
+	 * Determine the mobile operating system.
+	 * This function returns one of 'iOS', 'Android', 'Windows Phone', or 'unknown'.
+	 *
+	 * @returns {String}
+	 */
+	function getMobileOperatingSystem() {
+	  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+	      // Windows Phone must come first because its UA also contains "Android"
+	    if (/windows phone/i.test(userAgent)) {
+	        return "Windows Phone";
+	    }
+
+	    if (/android/i.test(userAgent)) {
+	        return "Android";
+	    }
+
+	    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+	    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+	        return "iOS";
+	    }
+
+	    return "unknown";
+	}
+	
+	if (device_os === "iOS" || device_os === "Windows Phone") {
+		// for ios
+		$('input[type="file"][name="filepond"][id="filepondFront"]').each(function() {
+		    $(this).replaceWith('<input id="filepondFront" name="filepond" style="display: none;" type="file" accept="image/*">');
+		});
+		
+		$('input[type="file"][name="filepond"][id="filepondBack"]').each(function() {
+		    $(this).replaceWith('<input id="filepondBack" name="filepond" style="display: none;" type="file" accept="image/*">');
+		});
+	} else if (device_os === "Android") {
+		// for Android
+		$('input[type="file"][name="filepond"][id="filepondFront"]').each(function() {
+		    $(this).replaceWith('<input id="filepondFront" name="filepond" style="display: none;" type="file" accept="image/*" capture>');
+		});
+		
+		$('input[type="file"][name="filepond"][id="filepondBack"]').each(function() {
+		    $(this).replaceWith('<input id="filepondBack" name="filepond" style="display: none;" type="file" accept="image/*" capture>');
+		});
+	}
+	
 	function getQueryString(key){
         var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
         var result = window.location.search.substr(1).match(reg);
