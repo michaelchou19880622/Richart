@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.SendGroup;
 import com.bcs.core.db.entity.SendGroupDetail;
 import com.bcs.core.db.entity.UserEventSet;
@@ -252,11 +253,24 @@ public class SendGroupUIService {
 		            int i = 0;
 		            List<UserEventSet> userEventSetList = new ArrayList<>();
 		            for (String mid : existMids) {
+            			
+		            	String tmpMid = mid;
+		            	
+		            	/* 檢查 mid 是否符合Line User ID Regular Expression 且開頭為小寫u? 如果符合，則將開頭的u轉為大寫U */
+		            	if (mid.matches("^u[0-9a-f]{32}$")) {
+	            			tmpMid = mid.substring(0, 1).toUpperCase() + mid.substring(1);
+
+//			            	/* 同步更新 BCS_LINE_USER 將錯誤格式的 MID 改成正確格式 ? */
+//			            	LineUser lineUser = lineUserService.findByMid(mid);
+//			            	lineUser.setMid(tmpMid);
+//			            	lineUserService.save(lineUser);
+		            	}
+		            	
 						UserEventSet userEventSet = new UserEventSet();
 						userEventSet.setTarget(EVENT_TARGET_ACTION_TYPE.EVENT_SEND_GROUP.toString());
 						userEventSet.setAction(EVENT_TARGET_ACTION_TYPE.ACTION_UPLOAD_MID.toString());
 						userEventSet.setReferenceId(referenceId);
-						userEventSet.setMid(mid);
+						userEventSet.setMid(tmpMid);
 						userEventSet.setContent(fileName);
 						userEventSet.setSetTime(modifyTime);
 						userEventSet.setModifyUser(modifyUser);
@@ -414,13 +428,26 @@ public class SendGroupUIService {
 
 		            int i = 0;
 		            List<UserEventSet> userEventSetList = new ArrayList<>();
+		            
 		            for (String mid : existMids) {
+            			
+		            	String tmpMid = mid;
+		            	
+		            	/* 檢查 mid 是否符合Line User ID Regular Expression 且開頭為小寫u? 如果符合，則將開頭的u轉為大寫U */
+		            	if (mid.matches("^u[0-9a-f]{32}$")) {
+	            			tmpMid = mid.substring(0, 1).toUpperCase() + mid.substring(1);
+
+//			            	/* 同步更新 BCS_LINE_USER 將錯誤格式的 MID 改成正確格式 ? */
+//			            	LineUser lineUser = lineUserService.findByMid(mid);
+//			            	lineUser.setMid(tmpMid);
+//			            	lineUserService.save(lineUser);
+		            	}
 
 						UserEventSet userEventSet = new UserEventSet();
 						userEventSet.setTarget(EVENT_TARGET_ACTION_TYPE.TARGET_RICHMENU_SEND_GROUP.toString());
 						userEventSet.setAction(EVENT_TARGET_ACTION_TYPE.ACTION_UPLOAD_RICHMENU_MID.toString());
 						userEventSet.setReferenceId(referenceId);
-						userEventSet.setMid(mid);
+						userEventSet.setMid(tmpMid);
 						userEventSet.setContent(fileName);
 						userEventSet.setSetTime(modifyTime);
 						userEventSet.setModifyUser(modifyUser);
