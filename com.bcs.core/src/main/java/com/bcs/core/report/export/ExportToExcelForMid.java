@@ -40,6 +40,8 @@ public class ExportToExcelForMid {
 			 * exportMidToExcel
 			 */
 			SXSSFSheet sheetLink = workbook.createSheet(excelName);
+			// 修正關鍵字無法匯出的問題, 會重複針對Row進行讀寫, 需將windowsSize設為unlimted
+			sheetLink.setRandomAccessWindowSize(-1);			
 			this.exportMidToExcel(workbook, sheetLink, title, time, titles, data);
 			
 			// Save
