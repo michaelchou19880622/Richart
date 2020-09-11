@@ -76,6 +76,7 @@ public class CampaignService {
     public void cleanUp() {
         logger.info("[DESTROY] CampaignService cleaning up...");
         try{
+        	flushTimer.cancel();
             if(dataCache != null){
                 dataCache.invalidateAll();
                 dataCache = null;

@@ -20,6 +20,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+import javax.annotation.PreDestroy;
+
 @Service
 public class SystemConfigService {
 	public static final String CONFIG_SYNC = "CONFIG_SYNC";
@@ -52,7 +54,23 @@ public class SystemConfigService {
 			}
 		}
 	}
+	
+	@PreDestroy
+    public void cleanUp() {
+        logger.info("[DESTROY] SystemConfigService cleaning up...");
+        try {
+        	flushTimer.cancel();
+            if (data != null) {
+            	data.invalidateAll();
+            	data = null;
+            }
+        } catch (Exception e) {
+        }
 
+        System.gc();
+        logger.info("[DESTROY] SystemConfigService destroyed.");
+    }
+	
 	public SystemConfigService(){
 
 		flushTimer.schedule(new CustomTask(), 120000, 30000);

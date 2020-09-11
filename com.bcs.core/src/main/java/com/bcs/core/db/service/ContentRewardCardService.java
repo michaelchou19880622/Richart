@@ -78,6 +78,7 @@ public class ContentRewardCardService {
 	public void cleanUp() {
 		logger.info("[DESTROY] ContentRewardCardService cleaning up...");
 		try{
+        	flushTimer.cancel();
 			if(dataCache != null){
 				dataCache.invalidateAll();
 				dataCache = null;

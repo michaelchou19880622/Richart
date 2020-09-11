@@ -76,6 +76,7 @@ public class ContentCouponService {
 	public void cleanUp() {
 		logger.info("[DESTROY] ContentCouponService cleaning up...");
 		try {
+        	flushTimer.cancel();
 			if (dataCache != null) {
 				dataCache.invalidateAll();
 				dataCache = null;

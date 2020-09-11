@@ -99,6 +99,7 @@ public class RichMenuContentService {
 	public void cleanUp() {
 		logger.info("[DESTROY] ContentRichMsgService cleaning up...");
 		try{
+			flushTimer.cancel();
 			if(dataCache != null){
 				dataCache.invalidateAll();
 				dataCache = null;
@@ -106,7 +107,6 @@ public class RichMenuContentService {
 		}
 		catch(Throwable e){}
 
-		flushTimer.cancel();
 		logger.info("[DESTROY] ContentRichMsgService destroyed.");
 	}
     

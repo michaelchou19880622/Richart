@@ -40,8 +40,9 @@ public class EntityManagerControlService {
 	
 	@PreDestroy
 	public void preDestroy(){
+		logger.info("[DESTROY] EntityManagerControlService flushTimer cleaning up...");
 		flushTimer.cancel();
-		logger.debug("[DESTROY] EntityManagerControlService flushTimer destroyed");
+		logger.debug("[DESTROY] EntityManagerControlService flushTimer destroyed.");
 	}
 	
 	public EntityManagerControlService(){

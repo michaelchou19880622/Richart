@@ -97,6 +97,7 @@ public class ContentResourceService {
 	public void cleanUp() {
 		logger.info("[DESTROY] ContentResourceService cleaning up...");
 		try{
+        	flushTimer.cancel();
 			if(dataCache != null){
 				dataCache.invalidateAll();
 				dataCache = null;

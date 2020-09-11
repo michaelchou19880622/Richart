@@ -120,6 +120,7 @@ public class InteractiveService {
 	@PreDestroy
 	public void cleanUp() {
 		logger.info("[DESTROY] InteractiveService cleaning up...");
+		
 		indexSetting.clear();
 		indexSetting = null;
 
@@ -141,6 +142,8 @@ public class InteractiveService {
 		interactiveDetails.clear();
 		interactiveDetails = null;
 		
+		flushTimer.cancel();
+				
 		System.gc();
 		logger.info("[DESTROY] InteractiveService destroyed.");
 	}

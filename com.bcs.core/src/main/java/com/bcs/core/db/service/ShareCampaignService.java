@@ -70,6 +70,7 @@ public class ShareCampaignService {
     public void cleanUp() {
         logger.info("[DESTROY] ShareCampaignService cleaning up...");
         try {
+    		flushTimer.cancel();
             if (dataCache != null) {
                 dataCache.invalidateAll();
                 dataCache = null;

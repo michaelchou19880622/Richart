@@ -89,13 +89,13 @@ public class RichMenuGroupService {
 	public void cleanUp() {
 		logger.info("[DESTROY] RichMenuGroupService cleaning up...");
 		try{
+			flushTimer.cancel();
 			if(dataCache != null){
 				dataCache.invalidateAll();
 				dataCache = null;
 			}
 		}
 		catch(Throwable e){}
-		flushTimer.cancel();
 		logger.info("[DESTROY] ContentRichMsgService destroyed.");
 	}
 

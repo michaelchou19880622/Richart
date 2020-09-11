@@ -73,7 +73,7 @@ public class CampaignFlowHandler {
 	
 	@PreDestroy
 	public void cleanUp() {
-		logger.info("[DESTROY] InteractiveHandler cleaning up...");
+		logger.info("[DESTROY] CampaignFlowHandler cleaning up...");
 		try{
 			if(camapaignFlowDataCache != null){
 				camapaignFlowDataCache.invalidateAll();
@@ -83,7 +83,7 @@ public class CampaignFlowHandler {
 		catch(Throwable e){}
 		
 		System.gc();
-		logger.info("[DESTROY] InteractiveHandler destroyed.");
+		logger.info("[DESTROY] CampaignFlowHandler destroyed.");
 	}
 		
 	/**
@@ -91,9 +91,8 @@ public class CampaignFlowHandler {
 	 * @return
 	 */
 	public List<MsgDetail> checkIsOnCampaign(String MID, MsgInteractiveMain main, List<MsgDetail> details){
-		logger.info("checkIsInteractive");
+		logger.info("checkIsOnCampaign");
 		if(MsgInteractiveMain.INTERACTIVE_TYPE_INTERACTIVE.equals(main.getInteractiveType())){
-			logger.info("Interactive Detail Record Step 1");
 			List<MsgDetail> list = new ArrayList<MsgDetail>();
 			for(MsgDetail detail : details){
 				if(MsgGeneratorExtend.MSG_TYPE_INTERACTIVE_LINK.equals(detail.getMsgType())){

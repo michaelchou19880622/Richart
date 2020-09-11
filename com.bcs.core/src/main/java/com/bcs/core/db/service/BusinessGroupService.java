@@ -79,6 +79,7 @@ public static final String BUSINESS_GROUP_SYNC = "BUSINESS_GROUP_SYNC";
     public void cleanUp() {
         logger.info("[DESTROY] BusinessGroupService cleaning up...");
         try{
+            flushTimer.cancel();
             if(dataCache != null){
                 dataCache.invalidateAll();
                 dataCache = null;

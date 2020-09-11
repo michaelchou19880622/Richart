@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -73,6 +74,23 @@ public class TurntableDetailService {
 		}
 	}
 	
+	@PreDestroy
+    public void cleanUp() {
+        logger.info("[DESTROY] TurntableDetailService cleaning up...");
+        try {
+        	flushTimer.cancel();
+            if (dataCache != null) {
+            	dataCache.invalidateAll();
+            	dataCache = null;
+            }
+        } catch (Exception e) {
+        }
+
+        System.gc();
+        logger.info("[DESTROY] TurntableDetailService destroyed.");
+    }	
+
+		
 	public TurntableDetailService(){
 
 		flushTimer.schedule(new CustomTask(), 120000, 30000);

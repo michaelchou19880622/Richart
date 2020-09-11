@@ -79,6 +79,7 @@ public static final String BUSINESS_SYNC = "BUSINESS_SYNC";
     public void cleanUp() {
         logger.info("[DESTROY] BusinessService cleaning up...");
         try{
+        	flushTimer.cancel();
             if(dataCache != null){
                 dataCache.invalidateAll();
                 dataCache = null;

@@ -82,6 +82,7 @@ public class ProductGroupService {
     public void cleanUp() {
         logger.info("[DESTROY] ProductGroupService cleaning up...");
         try{
+    		flushTimer.cancel();
             if(dataCache != null){
                 dataCache.invalidateAll();
                 dataCache = null;

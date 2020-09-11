@@ -71,6 +71,7 @@ public class MsgSendMainService {
 	
 	@PreDestroy
 	public void preDestroy(){
+		logger.debug("[DESTROY] MsgSendMainService flushTimer cleaning up...");
 		flushTimer.cancel();
 		logger.debug("[DESTROY] MsgSendMainService flushTimer destroyed");
 	}

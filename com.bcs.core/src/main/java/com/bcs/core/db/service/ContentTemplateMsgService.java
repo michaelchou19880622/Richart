@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.annotation.PreDestroy;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,6 +70,23 @@ public class ContentTemplateMsgService {
 			}
 		}
 	}
+	
+	@PreDestroy
+	public void cleanUp() {
+		logger.info("[DESTROY] ContentTemplateMsgService cleaning up...");
+		try{
+			flushTimer.cancel();
+			if(dataCache != null){
+				dataCache.invalidateAll();
+				dataCache = null;
+			}
+		}
+		catch(Exception e){}
+
+		System.gc();
+		logger.info("[DESTROY] ContentTemplateMsgService destroyed.");
+	}
+	
 
 	public ContentTemplateMsgService(){
 

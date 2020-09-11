@@ -69,14 +69,13 @@ public class MsgInteractiveMainService {
 	public void cleanUp() {
 		logger.debug("[DESTROY] MsgInteractiveMainService cleaning up...");
 		try{
+			flushTimer.cancel();
 			if(dataCache != null){
 				dataCache.invalidateAll();
 				dataCache = null;
 			}
 		}
 		catch(Throwable e){}
-		
-		flushTimer.cancel();
 		
 		System.gc();
 		logger.debug("[DESTROY] MsgInteractiveMainService destroyed.");

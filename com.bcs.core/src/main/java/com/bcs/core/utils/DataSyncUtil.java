@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -43,6 +44,13 @@ public class DataSyncUtil {
             }
         }
     }
+    
+	@PreDestroy
+    public void cleanUp() {
+        logger.info("[DESTROY] DataSyncUtil cleaning up...");
+       	flushTimer.cancel();
+        logger.info("[DESTROY] DataSyncUtil destroyed.");
+    }    
 	
 	public DataSyncUtil() {
 	    flushTimer.schedule(new CustomTask(), 120000, 300000);
