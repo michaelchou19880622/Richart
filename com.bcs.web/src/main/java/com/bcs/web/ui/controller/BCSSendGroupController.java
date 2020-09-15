@@ -299,6 +299,7 @@ public class BCSSendGroupController extends BCSBaseController {
 
 				SendGroup result = sendGroupUIService.saveFromUI(sendGroup, adminUserAccount);
 
+				logger.info("saveFromUI Success result : {}", result);
 				return new ResponseEntity<>(result, HttpStatus.OK);
 			} else {
 				throw new Exception("SendGroup Null");

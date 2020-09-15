@@ -174,8 +174,11 @@ $(function(){
 		    return;
 		}
 
+    	//遮蓋效果UI
+		$('.LyMain').block($.BCS.blockMsgSave); 
 		$.ajax({
 			type : "POST",
+			timeout : 1100000,
 			url : bcs.bcsContextPath + '/market/createSendGroup',
             cache: false,
             contentType: 'application/json',
@@ -188,7 +191,11 @@ $(function(){
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
+			$('.LyMain').unblock();			
+	 		window.location.replace(bcs.bcsContextPath + '/market/sendGroupListPage');
 		}).done(function(){
+			$('.LyMain').unblock();
+	 		window.location.replace(bcs.bcsContextPath + '/market/sendGroupListPage');
 		});
 	});
 	
@@ -428,6 +435,7 @@ $(function(){
     		$('.LyMain').block($.BCS.blockMsgUpload); 
     		$.ajax({
                 type: 'POST',
+				timeout : 1100000,
                 url: bcs.bcsContextPath + '/market/uploadMidSendGroup?event=sendGroup',
                 cache: false,
                 contentType: false,

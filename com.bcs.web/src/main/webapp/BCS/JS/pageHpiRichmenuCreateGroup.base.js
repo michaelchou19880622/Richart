@@ -275,6 +275,7 @@ $(function() {
 		
 		$.ajax({
 			type : "POST",
+			timeout : 1100000,
 			url : bcs.bcsContextPath + '/market/createSendGroup',
 			cache : false,
 			contentType : 'application/json',
@@ -289,8 +290,11 @@ $(function() {
 			console.info(response);
 			$.FailResponse(response);
 			$('.LyMain').unblock();
+	 		window.location.replace(bcs.bcsContextPath + '/edit/hpiRichMenuGroupListPage');
 		}).done(function() {
+			console.info('done');
 			$('.LyMain').unblock();
+	 		window.location.replace(bcs.bcsContextPath + '/edit/hpiRichMenuGroupListPage');
 		});
 	});
 
@@ -653,6 +657,7 @@ $(function() {
 			$('.LyMain').block($.BCS.blockMsgUpload);
 			$.ajax({
 				type : 'POST',
+				timeout : 1100000,
 				url : bcs.bcsContextPath + '/market/uploadRichmenuMidSendGroup',
 				cache : false,
 				contentType : false,
@@ -886,6 +891,7 @@ $(function() {
 			$.FailResponse(response);
 			$('.LyMain').unblock();
 		}).done(function() {
+			$('.LyMain').unblock();
 		});
 	};
 

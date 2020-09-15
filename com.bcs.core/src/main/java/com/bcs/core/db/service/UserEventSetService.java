@@ -24,6 +24,10 @@ public class UserEventSetService {
 		userEventSetRepository.save(userEventSetList);
 	}
 
+	public void flush(){
+		userEventSetRepository.flush();
+	}
+	
 	public Page<UserEventSet> findAll(Pageable pageable){
 		return userEventSetRepository.findAll(pageable);
 	}

@@ -166,9 +166,9 @@ public class GroupGenerateRepository{
 		if(StringUtils.isBlank(sqlString)){
 			throw new Exception("SQL Error : Blank");
 		}
-		
+		//TODO : 多群組匯出時，需要優化
 		Query query = entityManager.createNativeQuery(sqlString);
-		query.setHint("javax.persistence.query.timeout", 30000);
+		query.setHint("javax.persistence.query.timeout", 60000);
 		
 		for (int i = 0; i < sendGroupDetails.size(); i++) {
 			query.setParameter(2*i + 1, sendGroupDetails.get(i).getQueryField());
