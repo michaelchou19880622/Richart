@@ -144,32 +144,26 @@ public class MobileMGMViewController extends BCSBaseController {
 			}
 
 			mobilePageService.visitPageLog(MID, campaignId, "mgmPage");
-			// 從Azure CDN拿圖片
-//            String actionImgUrl = CoreConfigReader.getString(CONFIG_STR.MGM_ACTION_IMG_CDN_URL, true);
-//            String shareImgUrl = CoreConfigReader.getString(CONFIG_STR.MGM_SHARE_IMG_CDN_URL, true);
-//            String descriptionImgUrl = CoreConfigReader.getString(CONFIG_STR.MGM_DESCRIPTION_IMG_CDN_URL, true);
-//            
-//            if(StringUtils.isBlank(actionImgUrl) || StringUtils.isBlank(shareImgUrl) || StringUtils.isBlank(descriptionImgUrl)) {
-//          }       
 			
 			String actionImgUrl;
 			String shareImgUrl;
 			String descriptionImgUrl;
 			
-			boolean isSystemIdEqulDevelop = CoreConfigReader.getString(CONFIG_STR.SYSTEM_ID).equals("develop");
-			log.info("isSystemIdEqulDevelop = {}", isSystemIdEqulDevelop);
-
-			if (isSystemIdEqulDevelop) {
-				// Original
-	            actionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
-	            shareImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
-	            descriptionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
-			} else {
+			//移除判斷Develop/SIT 環境 使用原本的resource path，以免誤解
+//			boolean isSystemIdEqulDevelop = CoreConfigReader.getString(CONFIG_STR.SYSTEM_ID).equals("develop");
+//			log.info("isSystemIdEqulDevelop = {}", isSystemIdEqulDevelop);
+//
+//			if (isSystemIdEqulDevelop) {
+//				// Original
+//	            actionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
+//	            shareImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
+//	            descriptionImgUrl = UriHelper.getResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
+//			} else {
 				// CDN
 				actionImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getActionImgReferenceId());
 				shareImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getShareImgReferenceId());
 				descriptionImgUrl = UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, shareCampaign.getDescriptionImgReferenceId());
-			}
+//			}
 		
 			String actionImgUrlLink = shareCampaign.getActionImgUrl();
 			String descriptionImgUrlLink = shareCampaign.getDescriptionImgUrl();
