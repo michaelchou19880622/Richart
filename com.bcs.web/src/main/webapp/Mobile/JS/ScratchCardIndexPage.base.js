@@ -62,7 +62,7 @@
     var prizeCount = 0;
     var prizeImageId;
     var prizeName;
-    var scratchCardFrontImageId;
+    var scratchCardFrontImageURL;
     var stop = false;
     var hasStartGame = false;
     
@@ -98,7 +98,7 @@
 
             // set up this listener before calling setImages():
             scratchers[i].addEventListener('imagesloaded', onScratcherLoaded);
-            scratchers[i].setImages('../bcs/getResource/IMAGE/' + prizeImageId, '../bcs/getResource/IMAGE/' + scratchCardFrontImageId);
+            scratchers[i].setImages('../bcs/getResource/IMAGE/' + prizeImageId, scratchCardFrontImageURL);
         }
 
         // get notifications of this scratcher changing
@@ -127,13 +127,13 @@
                 type: 'GET',
                 url: '../m/Game/scratchCard/'+gameId,
     		}).success(function(response){
-    			$('.headerImage').find('img').attr('src', '../bcs/getResource/IMAGE/' + response.headerImageId);
-    			$('.footerImage').find('img').attr('src', '../bcs/getResource/IMAGE/' + response.footerImageId);
-    			$('.prizedetail').css('background', 'url(../bcs/getResource/IMAGE/' + response.scratchcardBackgroundImageId + ')');
-    			$('.sratchCard-bg').css('background', 'url(../bcs/getResource/IMAGE/' + response.scratchcardBackgroundImageId+ ')');
-    			$('#startGameButtonImage').attr('src', '../bcs/getResource/IMAGE/' + response.scratchcardStartButtonImageId)
+    			$('.headerImage').find('img').attr('src', response.headerImageURL);
+                $('.footerImage').find('img').attr('src', response.footerImageURL);                
+     			$('.prizedetail').css('background', 'url(' + response.scratchcardBackgroundImageURL + ')');
+    			$('.sratchCard-bg').css('background', 'url(' + response.scratchcardBackgroundImageURL + ')');
+   			$('#startGameButtonImage').attr('src', response.scratchcardStartButtonImageURL)
     			$('#startGameButtonImage').click(startGameEvent);
-    			scratchCardFrontImageId = response.scratchcardFrontImageId;    			
+    			scratchCardFrontImageURL = response.scratchcardFrontImageURL;    			
     		}).fail(function(response){
     			console.info(response);
     			$.FailResponse(response);

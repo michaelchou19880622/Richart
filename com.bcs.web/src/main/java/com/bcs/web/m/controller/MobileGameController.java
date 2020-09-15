@@ -43,6 +43,7 @@ import com.bcs.core.db.entity.ContentPrize;
 import com.bcs.core.db.service.ContentCouponService;
 import com.bcs.core.db.service.ContentGameService;
 import com.bcs.core.db.service.ContentPrizeService;
+import com.bcs.core.db.entity.ContentResource;
 import com.bcs.core.db.service.ScratchCardDetailService;
 import com.bcs.core.db.service.WinnerListService;
 import com.bcs.core.enums.CONFIG_STR;
@@ -197,6 +198,18 @@ public class MobileGameController {
 		try {
 			GameModel result = scratchCardDetailService.getScratchCard(gameId);
 			
+			result.setHeaderImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getHeaderImageId()));
+			result.setFooterImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getFooterImageId()));
+			result.setTurntableImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getTurntableImageId()));
+			result.setTurntableBackgroundImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getTurntableBackgroundImageId()));
+			result.setPointerImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getPointerImageId()));
+			result.setScratchcardBackgroundImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getScratchcardBackgroundImageId()));
+			logger.info("scratchcardBackgroundImageURL: {}", result.getScratchcardBackgroundImageURL());
+			result.setScratchcardFrontImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getScratchcardFrontImageId()));
+			result.setScratchcardStartButtonImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getScratchcardStartButtonImageId()));
+			result.setShareImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getShareImageId()));
+			result.setShareSmallImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, result.getShareSmallImageId()));
+
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error(ErrorRecord.recordError(e));

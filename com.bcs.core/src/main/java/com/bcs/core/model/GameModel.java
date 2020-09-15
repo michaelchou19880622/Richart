@@ -22,6 +22,17 @@ public class GameModel extends AbstractBcsEntity {
 	private String scratchcardBackgroundImageId;
 	private String scratchcardFrontImageId;
 	private String scratchcardStartButtonImageId;
+
+	private String headerImageURL;
+	private String footerImageURL;
+	
+	private String turntableImageURL;
+	private String turntableBackgroundImageURL;
+	private String pointerImageURL;
+	
+	private String scratchcardBackgroundImageURL;
+	private String scratchcardFrontImageURL;
+	private String scratchcardStartButtonImageURL;
 	
 	private List<PrizeModel> prizes;
 	private List<CouponModel> couponList;
@@ -34,6 +45,9 @@ public class GameModel extends AbstractBcsEntity {
 	private String shareMsg;
 	private String gameProcess;
 	private Integer gameLimitCount;
+
+	private String shareImageURL;
+	private String shareSmallImageURL;
 	
 	public String getGameId() {
 		return gameId;
@@ -77,6 +91,7 @@ public class GameModel extends AbstractBcsEntity {
 		this.footerImageId = footerImageId;
 	}
 	
+	
 	public String getTurntableImageId() {
 		return turntableImageId;
 	}
@@ -98,6 +113,7 @@ public class GameModel extends AbstractBcsEntity {
 		this.pointerImageId = pointerImageId;
 	}
 
+
 	public String getScratchcardBackgroundImageId() {
 		return scratchcardBackgroundImageId;
 	}
@@ -105,6 +121,7 @@ public class GameModel extends AbstractBcsEntity {
 		this.scratchcardBackgroundImageId = scratchcardBackgroundImageId;
 	}
 	
+
 	public String getScratchcardFrontImageId() {
 		return scratchcardFrontImageId;
 	}
@@ -118,6 +135,56 @@ public class GameModel extends AbstractBcsEntity {
 	public void setScratchcardStartButtonImageId(String scratchcardStartButtonImageId) {
 		this.scratchcardStartButtonImageId = scratchcardStartButtonImageId;
 	}
+	
+	
+	public String getHeaderImageURL() {
+		return headerImageURL;
+	}
+	public void setHeaderImageURL(String headerImageURL) {
+		this.headerImageURL = headerImageURL;
+	}	
+	public String getFooterImageURL() {
+		return footerImageURL;
+	}
+	public void setFooterImageURL(String footerImageURL) {
+		this.footerImageURL = footerImageURL;
+	}	
+	public String getTurntableImageURL() {
+		return turntableImageURL;
+	}
+	public void setTurntableImageURL(String turntableImageURL) {
+		this.turntableImageURL = turntableImageURL;
+	}	
+	public String getTurntableBackgroundImageURL() {
+		return turntableBackgroundImageURL;
+	}
+	public void setTurntableBackgroundImageURL(String turntableBackgroundImageURL) {
+		this.turntableBackgroundImageURL = turntableBackgroundImageURL;
+	}	
+	public String getPointerImageURL() {
+		return pointerImageURL;
+	}
+	public void setPointerImageURL(String pointerImageURL) {
+		this.pointerImageURL = pointerImageURL;
+	}		
+	public String getScratchcardBackgroundImageURL() {
+		return scratchcardBackgroundImageURL;
+	}
+	public void setScratchcardBackgroundImageURL(String scratchcardBackgroundImageURL) {
+		this.scratchcardBackgroundImageURL = scratchcardBackgroundImageURL;
+	}	
+	public String getScratchcardFrontImageURL() {
+		return scratchcardFrontImageURL;
+	}
+	public void setScratchcardFrontImageURL(String scratchcardFrontImageURL) {
+		this.scratchcardFrontImageURL = scratchcardFrontImageURL;
+	}
+	public String getScratchcardStartButtonImageURL() {
+		return scratchcardStartButtonImageURL;
+	}
+	public void setScratchcardStartButtonImageURL(String scratchcardStartButtonImageURL) {
+		this.scratchcardStartButtonImageURL = scratchcardStartButtonImageURL;
+	}	
 	
 	public List<CouponModel> getCouponList() {
 		return couponList;
@@ -183,4 +250,17 @@ public class GameModel extends AbstractBcsEntity {
 	public void setShareSmallImageId(String shareSmallImageId) {
 		this.shareSmallImageId = shareSmallImageId;
 	}
+	
+	public String getShareImageURL() {
+		return shareImageURL;
+	}
+	public void setShareImageURL(String shareImageURL) {
+		this.shareImageURL = shareImageURL;
+	}	
+	public String getShareSmallImageURL() {
+		return shareSmallImageURL;
+	}
+	public void setShareSmallImageURL(String shareSmallImageURL) {
+		this.shareSmallImageURL = shareSmallImageURL;
+	}	
 }
