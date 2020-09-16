@@ -13,6 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.bcs.core.db.service.LineUserService;
 import com.bcs.core.enums.BCS_PAGE_TYPE;
@@ -169,6 +172,13 @@ public class MobileUserController {
 		return MobilePageEnum.PageRedirect.toString();
 	}
 	
+	@RequestMapping(method = RequestMethod.GET, value = "/getCDNPath")
+	@ResponseBody
+	public ResponseEntity<?> getCDNPath(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		logger.info("getCDNPath : "+ UriHelper.getCdnURL());
+		return new ResponseEntity<>(UriHelper.getCdnURL(), HttpStatus.OK);
+	}	
 //	@RequestMapping(method = RequestMethod.GET, value = "/index")
 //	public String indexPage(HttpServletRequest request, HttpServletResponse response,
 //			Model model){

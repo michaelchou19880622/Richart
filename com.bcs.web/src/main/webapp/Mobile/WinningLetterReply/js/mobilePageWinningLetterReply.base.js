@@ -99,6 +99,8 @@ $(function() {
 	
 	var userId = "";
 
+	ajax_getCDNPath();	
+
 	function initializeApp() {
 		userId = liff.getContext().userId;
 	}
@@ -326,6 +328,24 @@ $(function() {
 	var resourceId_IdCardFront = null;
 	var resourceId_IdCardBack = null;
 	
+	function ajax_getCDNPath() {
+		$.ajax({
+				type : "GET",
+				url : encodeURI(bcs.mContextPath + "/getCDNPath"),
+	            cache: false,
+	            contentType: 'application/json',
+	            processData: false,
+		}).done(function(response) {
+				var cdnpath = response;
+			    var headLogoBgImage = cdnpath + 'Mobile/WinningLetterReply/image/HeaderLogo.jpg';
+				document.getElementsByClassName('pdfHeadLogo')[0].style.backgroundImage= 'url(' + headLogoBgImage + ')';
+			    var zoneBackBgImage = cdnpath + 'Mobile/WinningLetterReply/image/upload_back_2.png';
+				document.getElementById('imgZoneBack').style.backgroundImage= 'url(' + zoneBackBgImage + ')';
+			    var zoneFrontBgImage = cdnpath + 'Mobile/WinningLetterReply/image/upload_front_2.png';
+				document.getElementById('imgZoneFront').style.backgroundImage= 'url(' + zoneFrontBgImage + ')';
+		});
+	}
+
 	function ajax_updateWinnerIdCardFront() {
 //		var formData_front = new FormData();
 //		formData_front.append("filePart", imageSrcFront);

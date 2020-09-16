@@ -60,7 +60,7 @@
     var gameId = "";
     var prizeList = [];
     var prizeCount = 0;
-    var prizeImageId;
+    var prizeImageURL;
     var prizeName;
     var scratchCardFrontImageURL;
     var stop = false;
@@ -98,7 +98,7 @@
 
             // set up this listener before calling setImages():
             scratchers[i].addEventListener('imagesloaded', onScratcherLoaded);
-            scratchers[i].setImages('../bcs/getResource/IMAGE/' + prizeImageId, scratchCardFrontImageURL);
+            scratchers[i].setImages(prizeImageURL, scratchCardFrontImageURL);
         }
 
         // get notifications of this scratcher changing
@@ -173,10 +173,10 @@
 				
 				if(response){
 					drewCouponId = response.couponId
-	    			prizeImageId = response.couponImageId;
+	    			prizeImageURL = response.couponImageURL;
 	    			prizeName = response.couponTitle;
 	    			
-					$('.prizedetail').find('img').attr('src', '../bcs/getResource/IMAGE/' + prizeImageId);
+					$('.prizedetail').find('img').attr('src', prizeImageURL);
 					
 					initPage();
 					

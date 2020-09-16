@@ -120,7 +120,9 @@ public class UriHelper {
 	public static String getCdnResourceBcsLogoUri(){	
 		return cdnUrl_Https + resourceMobile + bcsLogo;
 	}
-	
+	public static String getCdnURL(){
+		return cdnUrl_Https;
+	}	
 	// Original Resource
 	public static String getResourceUri(String type, String id){
 		return getResourceUri(type, id, true);

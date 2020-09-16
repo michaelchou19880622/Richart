@@ -11,6 +11,8 @@ public class CouponModel extends AbstractBcsEntity {
 	private String couponTitle;
 	private String couponImageId;
 	private String couponListImageId;
+	private String couponImageURL;
+	private String couponListImageURL;
 	private String couponDescription;
 	private String couponUseDescription;
 	private String couponRuleDescription;
@@ -43,6 +45,20 @@ public class CouponModel extends AbstractBcsEntity {
 	}
 	public void setCouponListImageId(String couponListImageId) {
 		this.couponListImageId = couponListImageId;
+	}
+
+	public String getCouponImageURL() {
+		return couponImageURL;
+	}
+	public void setCouponImageURL(String couponImageURL) {
+		this.couponImageURL = couponImageURL;
+	}
+	
+	public String getCouponListImageURL() {
+		return couponListImageURL;
+	}
+	public void setCouponListImageURL(String couponListImageURL) {
+		this.couponListImageURL = couponListImageURL;
 	}
 	
 	public String getCouponDescription() {

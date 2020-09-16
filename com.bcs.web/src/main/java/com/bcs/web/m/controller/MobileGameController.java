@@ -240,6 +240,7 @@ public class MobileGameController {
 					drewCoupon.setCouponId(contentCoupon.getCouponId());
 					drewCoupon.setCouponTitle(contentCoupon.getCouponTitle());
 					drewCoupon.setCouponImageId(contentCoupon.getCouponImageId());
+					drewCoupon.setCouponImageURL(UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, contentCoupon.getCouponImageId()));
 					drewCoupon.setCouponDescription(contentCoupon.getCouponDescription());
 					drewCoupon.setCouponUseDescription(contentCoupon.getCouponUseDescription());
 					drewCoupon.setCouponRuleDescription(contentCoupon.getCouponRuleDescription());
