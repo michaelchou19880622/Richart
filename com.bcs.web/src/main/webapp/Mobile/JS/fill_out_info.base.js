@@ -10,6 +10,8 @@ $(function(){
 	
 	pageInit();
 	
+	ajax_getCDNPathAndReplaceImage();	
+
 	$('.check').click(function(){
 		window.location.reload();
 	});
@@ -83,6 +85,22 @@ $(function(){
 		$('.popup_btn a').css({'line-height': '40px', 'font-size': '10px'});
 	}
 	
+	function ajax_getCDNPathAndReplaceImage() {
+		$.ajax({
+				type : "GET",
+				url : '../m/getCDNPath',
+	            cache: false,
+	            contentType: 'application/json',
+	            processData: false,
+		}).done(function(response) {
+				var cdnpath = response;
+			    var bannerBgImage = cdnpath + 'Mobile/Coupon/images/dot_arr.png';
+				var bannerTitleClass = document.getElementsByClassName('coupon_banner_title')[0]
+				var img = bannerTitleClass.getElementsByTagName('img')[0]; 
+				img.src = bannerBgImage;
+		});
+	}
+
 	function getFormDetail(){
 		var userForm = {};
 		userForm.name = $('#name').val();

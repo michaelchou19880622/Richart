@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 
 import com.bcs.core.db.entity.ActionUserCoupon;
 import com.bcs.core.db.entity.ContentCoupon;
+import com.bcs.core.db.entity.ContentResource;
 import com.bcs.core.db.entity.WinnerList;
 import com.bcs.core.db.service.ContentCouponService;
 import com.bcs.core.db.service.GroupGenerateService;
@@ -131,7 +132,8 @@ public class MobileCouponService {
 			if((winnerList == null) && contentCoupon.getIsFillIn().equals(ContentCoupon.IS_COUPON_FILLIN_TRUE)){		
 				ContentCoupon coupon = contentCouponService.findOne(couponId);		
 				model.addAttribute("contentCoupon", coupon);
-				model.addAttribute("imageSource", "../bcs/getResource/IMAGE/" + coupon.getCouponImageId());
+				
+				model.addAttribute("imageSource", UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, coupon.getCouponImageId()));
 				model.addAttribute("couponStartUsingTime", coupon.getCouponStartUsingTime());
 				model.addAttribute("couponEndUsingTime", coupon.getCouponEndUsingTime());
 					

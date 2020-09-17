@@ -39,6 +39,7 @@ import com.bcs.core.db.entity.ActionUserRewardCard;
 import com.bcs.core.db.entity.ContentCoupon;
 import com.bcs.core.db.entity.ContentRewardCard;
 import com.bcs.core.db.entity.ContentRewardCardPoint;
+import com.bcs.core.db.entity.ContentResource;
 import com.bcs.core.db.service.ActionUserCouponService;
 import com.bcs.core.db.service.ActionUserRewardCardPointDetailService;
 import com.bcs.core.db.service.ActionUserRewardCardService;
@@ -200,7 +201,7 @@ public class MobileRewardCardViewController {
 
 		if (!contentRewardCard.getRewardCardBackGround().matches("stamp_con stamp_con_bg_color_[0-9]+")) {
 			model.addAttribute("rewardCardBackgroundImage",
-					"background-image: url(\"../bcs/getResource/IMAGE/" + contentRewardCard.getRewardCardBackGround()
+					"background-image: url(\"" + UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, contentRewardCard.getRewardCardBackGround())
 							+ "\"); background-repeat: no-repeat; background-size: 100% 100%;");
 		}
 
@@ -414,7 +415,7 @@ public class MobileRewardCardViewController {
 		Map<String, ContentCoupon> contentCoupons = mobileRewardCardService.getCouponListFromDB(sessionMID, rewardCardId, havePoint);
 		model.addAttribute("contentCoupons",contentCoupons.values());
 		if(!contentRewardCard.getRewardCardBackGround().matches("stamp_con stamp_con_bg_color_[0-9]+")) {
-			model.addAttribute("rewardCardBackgroundImage", "background-image: url(\"../bcs/getResource/IMAGE/" + contentRewardCard.getRewardCardBackGround() + "\"); background-repeat: no-repeat; background-size: 100% 100%;");
+			model.addAttribute("rewardCardBackgroundImage", "background-image: url(\"" + UriHelper.getCdnResourceUri(ContentResource.RESOURCE_TYPE_IMAGE, contentRewardCard.getRewardCardBackGround()) + "\"); background-repeat: no-repeat; background-size: 100% 100%;");
 		}
 
 		logger.info("rewardCardContentPage model:" + model);

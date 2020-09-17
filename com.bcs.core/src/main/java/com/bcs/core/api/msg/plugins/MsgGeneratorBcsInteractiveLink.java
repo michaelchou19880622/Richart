@@ -40,7 +40,7 @@ public class MsgGeneratorBcsInteractiveLink extends MsgGeneratorAbstract {
 
 	private void createMsgLink(MsgDetail detail) throws Exception{
 
-		String bcsLogoUri = UriHelper.getResourceBcsLogoUri();
+		String bcsLogoUri = UriHelper.getCdnResourceBcsLogoUri();
 		
 		String linkTextParams = "前往";
 

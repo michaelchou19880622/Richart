@@ -223,7 +223,7 @@ body {
     font-size: 28px;
     padding-left: 40px;
     font-weight: bold;
-    background: url(../images/note_icon2.png) 0 3px no-repeat;   
+/*    background: url(../images/note_icon2.png) 0 3px no-repeat;   */
 }
 .coupon_notes p {
     font-size: 24px;
@@ -299,7 +299,7 @@ body {
     position: relative;
 }
 .coupon_alert strong {
-    background: url(../images/coupon_used_icon.png) 59% 0 no-repeat;   
+/*    background: url(../images/coupon_used_icon.png) 59% 0 no-repeat;   */
     display: block;
     width: 450px;
     padding-top: 100px;

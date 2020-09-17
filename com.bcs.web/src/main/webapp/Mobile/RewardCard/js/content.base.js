@@ -157,6 +157,29 @@ $(function() {
 		}
 	};
 
+	
+	function ajax_getCDNPath() {
+		$.ajax({
+				type : "GET",
+				url : '../m/getCDNPath',
+	            cache: false,
+	            contentType: 'application/json',
+	            processData: false,
+		}).done(function(response) {
+
+				var cdnpath = response;
+				var bcsLogoBgImage = cdnpath + 'BCS/images/bcs_logo.png';
+				var thumClass = document.getElementsByClassName('thum')[0];
+				var img = thumClass.getElementsByTagName('img')[0];
+				img.src = bcsLogoBgImage;
+
+				var noteIconBgImage = cdnpath + 'Mobile/Coupon/images/note_icon2.png';
+			    document.getElementsByClassName('item2')[0].style.background = 'url(' + noteIconBgImage + ')' + '0 3px no-repeat';; 
+				document.getElementsByClassName('item2')[1].style.background = 'url(' + noteIconBgImage + ')' + '0 3px no-repeat';; 
+
+		});
+	}
+
 	var loadDataFunc = function() {
 		var rewardCardId = $.urlParam("referenceId");
 
@@ -251,6 +274,8 @@ $(function() {
 	$('.dataTemplate').remove();
 
 	loadDataFunc();
+	
+	ajax_getCDNPath();
 
 	stampListRender('stamp_list_render_area');
 	alertRewardCardResult();

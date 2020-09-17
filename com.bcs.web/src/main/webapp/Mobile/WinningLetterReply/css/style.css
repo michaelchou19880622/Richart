@@ -255,7 +255,7 @@ input:focus, textarea:focus {
 	text-align: center;
 	text-transform: uppercase;
 	opacity: 0.5;
-	background-image: url('../image/upload_front_2.png');
+/*	background-image: url('../image/upload_front_2.png'); */
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	-moz-background-size: 50% 50%;
@@ -276,7 +276,7 @@ input:focus, textarea:focus {
 	text-align: center;
 	text-transform: uppercase;
 	opacity: 0.5;
-	background-image: url('../image/upload_back_2.png');
+/*	background-image: url('../image/upload_back_2.png'); */
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	-moz-background-size: 50% 50%;
@@ -429,7 +429,7 @@ input.checkboxAddress {
 }
 
 .pdfHeadLogo {
-	background-image: url('../image/HeaderLogo.jpg');
+/*	background-image: url('../image/HeaderLogo.jpg'); */
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: 100%;

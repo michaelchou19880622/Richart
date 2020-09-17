@@ -109,7 +109,7 @@ public class UriHelper {
 		return cdnUrl_Https + pageBcs + resourceApi + type + "/" + id;
 	}
 	public static String getCdnResourceUri(String type, String id, boolean isSSL){
-		return getResourceUri(type, id, true);
+		return getCdnResourceUri(type, id);
 	}
 	public static String getCdnResourcePreviewUri(String type, String preview, String id){
 		return cdnUrl_Https + pageBcs + resourceApi + type + "/" + preview + "/" + id;
