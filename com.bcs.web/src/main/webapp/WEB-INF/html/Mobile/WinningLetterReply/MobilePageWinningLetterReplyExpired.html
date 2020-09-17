@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head></head>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"	
+	th:with="jsList = ${ {'/Mobile/WinningLetterReply/js/mobilePageWinningLetterReplyExpired.base.js'} }">
+<head th:replace="/BCS/Views/Common/HeadForWinningLetterReply :: head ('', ${jsList})"></head>
 
 <body
 	style="background-image: url('../../Mobile/images/winningLetterReplyExpiredBackground.jpg'); background-repeat: no-repeat; background-size: 100%;">
