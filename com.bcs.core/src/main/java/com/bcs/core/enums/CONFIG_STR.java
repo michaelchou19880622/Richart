@@ -3,6 +3,7 @@ package com.bcs.core.enums;
 public enum CONFIG_STR {
 	SYSTEM_START_DATE("system.start.date"),
 	SYSTEM_TYPE("bcs.system.type"),
+	SERVER_TYPE("server.type"),
 	
 	SYSTEM_ID("system.id"),
 	SYSTEM_TYPE_IS_API("system.is.api"),

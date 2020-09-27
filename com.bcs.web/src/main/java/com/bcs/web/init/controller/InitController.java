@@ -84,8 +84,13 @@ public class InitController {
 		}
 		
 		try {
-			logger.info("[init] SchedulerService loadScheduleFromDB");
-			schedulerService.loadScheduleFromDB();
+            /* BE */
+            if (CoreConfigReader.isBEServerType()) {
+            	logger.info("[init] SchedulerService loadScheduleFromDB");
+                schedulerService.loadScheduleFromDB();
+            } else {
+            	logger.info("[init] SchedulerService loadScheduleFromDB is Close!!");
+            }
 		} catch (Throwable e) {
 			logger.error(ErrorRecord.recordError(e));
 		}

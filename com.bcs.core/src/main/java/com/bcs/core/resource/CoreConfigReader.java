@@ -24,6 +24,30 @@ public class CoreConfigReader {
 		}
 		return false;
 	}
+
+	/**
+	 * 判斷是否為BE Server
+	 * @return
+	 */
+	public static boolean isBEServerType(){
+		String serverType = getString(CONFIG_STR.SERVER_TYPE);
+		if("BE".equalsIgnoreCase(serverType)){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 判斷是否為AP Server
+	 * @return
+	 */
+	public static boolean isAPerverType(){
+		String serverType = getString(CONFIG_STR.SERVER_TYPE);
+		if("AP".equalsIgnoreCase(serverType)){
+			return true;
+		}
+		return false;
+	}
 	
 	public static boolean isMainSystem() {
 		String isMainSystem = getString(CONFIG_STR.IS_MAIN_SYSTEM);
