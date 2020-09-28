@@ -152,10 +152,8 @@ public class ExecuteSendMsgTask {
 							break;
 						}
 						page++;
-						if(page % 80 == 0){
-							// delay 3 minutes
-							Thread.sleep(3*60*1000);
-						}
+			            //每個page更平緩的sleep
+			            Thread.sleep(3 * 1000L);             
 					}
 				}
 				
