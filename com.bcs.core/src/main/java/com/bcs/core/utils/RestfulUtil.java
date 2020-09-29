@@ -21,6 +21,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.bcs.core.enums.CONFIG_STR;
@@ -123,7 +124,12 @@ public class RestfulUtil {
 			
 			log.error(ErrorRecord.recordError(e));
 			throw e;
-		} catch (Exception e) {
+		} catch (HttpServerErrorException e) {
+			JSONObject errorMessage = new JSONObject(e.getResponseBodyAsString());
+        	log.info("HTTP server error detected, status=" + e.getStatusCode() + " , errorMessage=" + errorMessage.toString());
+            log.error(ErrorRecord.recordError(e));
+            throw e;
+        } catch (Exception e) {
 			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Request body = {}", httpEntity.getBody());
 			log.warn("[RestUtil execute] LINE PUSH MESSAGE : Exception = {}", e);
 			

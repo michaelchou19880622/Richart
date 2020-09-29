@@ -36,6 +36,11 @@ public class ObjectUtil {
 		return ObjectUtil.listStringToString(s);
 	}
 
+    /**
+     * Converter Object To Pretty Json Use Jackson
+     * @param obj Object
+     * @return Pretty Json
+     */
 	public static String objectToJsonStr(Object content) {
 	    try {
 	    	return (new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)).writeValueAsString(content);
@@ -44,6 +49,20 @@ public class ObjectUtil {
 		}
 	}
 
+    /**
+     * Converter Object To Raw Json Use Jackson
+     * @param obj Object
+     * @return Raw Json
+     */
+    public static String objectToRawJsonStr(Object content) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(content);
+        } catch (JsonProcessingException e) {
+            return content.getClass().getName() + '@' + Integer.toHexString(content.hashCode());
+        }
+    }    
+    
 	public static ObjectNode jsonStrToObjectNode(String jsonStr) throws JsonProcessingException, IOException {
 		return (ObjectNode)(new ObjectMapper()).readTree(jsonStr);
 	}

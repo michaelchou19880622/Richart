@@ -40,6 +40,8 @@ public enum CONFIG_STR {
 	LINE_GET_PROFILE_URL("line.get.profile.url"),
 	LINE_MESSAGE_REPLY_URL("line.message.reply.url"),
 	LINE_MESSAGE_PUSH_URL("line.message.push.url"),
+    LINE_MESSAGE_MULTICAST_URL("line.message.multicast.url"),
+    LINE_MESSAGE_BROADCAST_URL("line.message.broadcast.url"),
 	
 	LINE_POST_URL_BC("line.post.url.bc"),
 
