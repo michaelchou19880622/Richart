@@ -125,8 +125,7 @@ public class RestfulUtil {
 			log.error(ErrorRecord.recordError(e));
 			throw e;
 		} catch (HttpServerErrorException e) {
-			JSONObject errorMessage = new JSONObject(e.getResponseBodyAsString());
-        	log.info("HTTP server error detected, status=" + e.getStatusCode() + " , errorMessage=" + errorMessage.toString());
+        	log.info("HTTP server error detected, status=" + e.getStatusCode() + " , errorMessage=" + e.getResponseBodyAsString());
             log.error(ErrorRecord.recordError(e));
             throw e;
         } catch (Exception e) {
