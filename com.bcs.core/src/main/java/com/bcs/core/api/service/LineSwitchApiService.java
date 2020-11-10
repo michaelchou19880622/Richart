@@ -53,13 +53,13 @@ public class LineSwitchApiService {
 
 			logger.info("switchAPI response：" + responseObject);
 			SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_SwitcherSwitchApi, start, 200, responseObject.toString(), 200 + "");
+			return restfulUtil.getStatusCode();
 		} catch (Exception e) {
 			String error = ErrorRecord.recordError(e, false);
 			logger.error(error);
 			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_SwitcherSwitchApi, error, e.getMessage());
 			throw new BcsNoticeException(e.getMessage());
 		}
-		return "200";
 	}
 
 }
