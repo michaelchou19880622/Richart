@@ -138,23 +138,17 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 			String userStatus = LineUser.STATUS_UNBIND;
 			
 			if (lineUser != null) {
-
-				logger.info("BEFORE CHECK STATUS : lineUser = {}", lineUser);
-				
-				/* Check is lineUser's status equal to BLOCK?  */
-				if (lineUser.getStatus().equals(LineUser.STATUS_BLOCK)) {
-					String isBindedStatus = lineUser.getIsBinded();
-					logger.info("isBindedStatus = {}", isBindedStatus);
-					
-					lineUser.setStatus(isBindedStatus);
-					lineUserService.save(lineUser);
-					
-					lineUser = lineUserService.findByMid(MID);
-				}
-				
-				logger.info("AFTER CHECK STATUS : lineUser = {}", lineUser);
-				
 				userStatus = lineUser.getStatus();
+				
+                /* When receiving a message from a user whose status is Block, update the user status to be the same as the column "ISBINDED" */
+                /* Fix : 封鎖狀態的用戶傳送訊息會送到碩網的機器人 */
+                if (LineUser.STATUS_BLOCK.equals(userStatus)){
+                    logger.info("Process when datected user status is BLOCK, UID=" + MID + " userStatus=" + userStatus);
+                    userStatus = ( StringUtils.isBlank(lineUser.getIsBinded()) ? LineUser.STATUS_UNBIND : lineUser.getIsBinded() );
+                    lineUser.setStatus(userStatus);
+                    lineUserService.save(lineUser);
+                    logger.info("Update the user status, UID=" + MID + " userStatus=" + lineUser.getStatus());
+                }
 				
 				LineProfileService lineProfileService = ApplicationContextProvider.getApplicationContext().getBean(LineProfileService.class);
 

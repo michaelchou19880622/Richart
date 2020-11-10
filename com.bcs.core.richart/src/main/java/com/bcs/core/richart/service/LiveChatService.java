@@ -68,46 +68,38 @@ public class LiveChatService {
 		this.saveLiveChatReplyRecord(receivedMessage, userLiveChat.getId(), false);
 	}
 	
-	@Transactional
-	public void switchToManualReplyChannel(UserLiveChat userLiveChat,String message) throws Exception {
-		logger.info("[Switch] \"" + userLiveChat.getUID()  + "\" switch to ManualReply Channel.");
-		
-		Date now = new Date();
-		String UID = userLiveChat.getUID();
-		
-		userLiveChat.setStatus(UserLiveChat.IN_PROGRESS);
-		userLiveChat.setModifyTime(now);
-		
-		userLiveChatService.save(userLiveChat);
-		
-		String manualReplyChannelName = CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true);
-		
-		lineSwitchApiService.executeSwitch(CoreConfigReader.getString(manualReplyChannelName, "DestinationId", true), UID, "");	// 將使用者 switch 至真人客服的 channel
-		// messageProcessService.pushTextMsgAsync(UID,message,CONFIG_STR.ManualReply.toString());
-	}
+    @Transactional
+    public void switchToManualReplyChannel(UserLiveChat userLiveChat, String message) throws Exception{
+        logger.info("[Switch] \"" + userLiveChat.getUID() + "\" switch to ManualReply Channel.");
+        Date now = new Date();
+        String UID = userLiveChat.getUID();
+        userLiveChat.setStatus(UserLiveChat.IN_PROGRESS);
+        userLiveChat.setModifyTime(now);
+        String manualReplyChannelName = CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true);
+        String executeResult = lineSwitchApiService.executeSwitch(CoreConfigReader.getString(manualReplyChannelName, "DestinationId", true), UID, ""); // 將使用者 switch 至真人客服的 channel
+        // messageProcessService.pushTextMsgAsync(UID,message,CONFIG_STR.ManualReply.toString());
+        if (executeResult.equals("200")){
+            userLiveChatService.save(userLiveChat);
+        }
+    }
 	
-	@Transactional
-	public void switchToAutoReplyChannel(UserLiveChat userLiveChat, String message) throws Exception {
-		logger.info("[Switch] \"" + userLiveChat.getUID()  + "\" switch to AutoReply Channel.");
-		
-		String status = userLiveChat.getStatus();
-		
-		if(status.equals(UserLiveChat.IN_PROGRESS)){
-			String autoReplyChannelName = CoreConfigReader.getString(CONFIG_STR.AUTOREPLY_CHANNEL_NAME.toString(), true);
-			String UID = userLiveChat.getUID();
-			Date now = new Date();
-			
-			userLiveChat.setStatus(UserLiveChat.FINISH);
-			userLiveChat.setModifyTime(now);
-			
-			userLiveChatService.save(userLiveChat);
-			
-			lineSwitchApiService.executeSwitch(CoreConfigReader.getString(autoReplyChannelName, "DestinationId", true), UID, "");
-			
-			if(message != null)
-				messageProcessService.pushTextMsgAsyncWithServiceCode(UID, message, CONFIG_STR.AutoReply.toString());
-		}
-	}
+    @Transactional
+    public void switchToAutoReplyChannel(UserLiveChat userLiveChat, String message) throws Exception{
+        logger.info("[Switch] \"" + userLiveChat.getUID() + "\" switch to AutoReply Channel.");
+        String status = userLiveChat.getStatus();
+        if (status.equals(UserLiveChat.IN_PROGRESS)){
+            String autoReplyChannelName = CoreConfigReader.getString(CONFIG_STR.AUTOREPLY_CHANNEL_NAME.toString(), true);
+            String UID = userLiveChat.getUID();
+            Date now = new Date();
+            userLiveChat.setStatus(UserLiveChat.FINISH);
+            userLiveChat.setModifyTime(now);
+            String executeResult = lineSwitchApiService.executeSwitch(CoreConfigReader.getString(autoReplyChannelName, "DestinationId", true), UID, "");
+            if (executeResult.equals("200")){
+                userLiveChatService.save(userLiveChat);
+                if (message != null) messageProcessService.pushTextMsgAsyncWithServiceCode(UID, message, CONFIG_STR.AutoReply.toString());
+            }
+        }
+    }
 	
 	@Transactional
 	private void saveLiveChatReplyRecord(LiveChatReplyModel receivedMessage, Long userLiveChatId, Boolean isReplyComment) throws Exception  {

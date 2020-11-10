@@ -59,7 +59,7 @@ public class LineSwitchApiService {
 			SystemLogUtil.saveLogError(LOG_TARGET_ACTION_TYPE.TARGET_LineApi, LOG_TARGET_ACTION_TYPE.ACTION_SwitcherSwitchApi, error, e.getMessage());
 			throw new BcsNoticeException(e.getMessage());
 		}
-		return "";
+		return "200";
 	}
 
 }
