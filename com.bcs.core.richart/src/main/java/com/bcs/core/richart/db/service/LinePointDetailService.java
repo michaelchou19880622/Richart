@@ -1,11 +1,12 @@
 package com.bcs.core.richart.db.service;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.bcs.core.richart.db.entity.LinePointDetail;
 import com.bcs.core.richart.db.entity.LinePointMain;
 import com.bcs.core.richart.db.repository.LinePointDetailRepository;
-import com.bcs.core.richart.db.repository.LinePointMainRepository;
 
 @Service
 public class LinePointDetailService {
@@ -51,6 +51,29 @@ public class LinePointDetailService {
 	public List<LinePointDetail> findFail(Long linePointMainId){
 		return linePointDetailRepository.findByStatusAndLinePointMainId(LinePointDetail.STATUS_FAIL, linePointMainId);
 	}
+	
+	public Long getCount(Long linePointMainId) {
+	    return linePointDetailRepository.countByLinePointMainId(linePointMainId);
+	}
+    
+    public Long getCountByMainIdAndStatus(Long linePointMainId, String Status) {
+        return linePointDetailRepository.countByLinePointMainIdAndStatus(linePointMainId, Status);
+    }
+    
+    public Map<String, Long> getSuccessAndFailCountByLinePointMainId (Long linePointMainId) {
+        List<Object[]> result = linePointDetailRepository.getSuccessAndFailCountByLinePointMainId(linePointMainId);
+        Long failCount = 0L;
+        Long successCount = 0L;
+        Map<String, Long> map = new HashedMap<String, Long>();
+        if (result != null && result.size() != 0) {
+            Object[] objStatusCount = result.get(0);
+            failCount = Long.parseLong(objStatusCount[0].toString());
+            successCount = Long.parseLong(objStatusCount[1].toString());
+        }
+        map.put("fail", failCount);
+        map.put("success", successCount);
+        return map;
+    }
 		
 //	public LinePointDetail findBySerialId(String serialId){
 //		return linePointDetailRepository.findBySerialId(serialId);

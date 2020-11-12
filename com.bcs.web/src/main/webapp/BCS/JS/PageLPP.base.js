@@ -130,25 +130,17 @@ $(function(){
             contentType: 'application/json',
             processData: false,
             data: JSON.stringify(uids)
-		}).success(
-				
-			function(response){
+		}).success(function(response){
 			console.info(response);
 			alert('傳送成功');
+            $('.LyMain').unblock();
 			window.location.reload(); //重新整理頁面
-			}).fail(function(response){
-			 alert("fail");
-			console.info(response);
-			$.FailResponse(response);
-			$('.LyMain').unblock();
 		}).error(function(response){
-		    alert("error");
-			console.info(response);
-			
-		}).done(function(){
+            alert(response.responseText);
+            console.info('response = ', response);
 			$('.LyMain').unblock();
 		});
-	};
+    };
 
 	// 傳送
 	$('.btn_save').click(function(){

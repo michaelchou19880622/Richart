@@ -313,6 +313,12 @@ public class BCSLinePointController extends BCSBaseController {
 		logger.info("[pushLinePoint] eventId = {}", eventId);
 		
 		try {
+            LinePointMain linePointMain = linePointUIService.linePointMainFindOne(eventId);
+            logger.info("[pushLinePoint] linePointMain = {}", linePointMain);
+            if (uids.size() > (linePointMain.getTotalCount().intValue() - linePointMain.getSuccessfulCount().intValue())) {
+                return new ResponseEntity<>("上傳名單數量超過專案設定活動人數，請重新上傳名單，或選擇其他專案。", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            
 			JSONArray uid = new JSONArray();
 			
 			for (String u : uids) {
@@ -320,9 +326,6 @@ public class BCSLinePointController extends BCSBaseController {
 			}
 
 			logger.info("[pushLinePoint] JSONArray uid = {}", uid);
-			
-			LinePointMain linePointMain = linePointUIService.linePointMainFindOne(eventId);
-			logger.info("[pushLinePoint] linePointMain = {}", linePointMain);
 			
 			LinePointPushModel linePointPushModel = new LinePointPushModel();
 			linePointPushModel.setAmount(linePointMain.getAmount());

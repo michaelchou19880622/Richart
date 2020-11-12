@@ -1,40 +1,32 @@
 package com.bcs.core.richart.post.akka.handler;
 
 import java.security.MessageDigest;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.bcs.core.bot.api.service.LineAccessApiService;
+import com.bcs.core.enums.CONFIG_STR;
+import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richart.api.model.LinePointPushModel;
-import com.bcs.core.richart.api.model.LinePointResponseModel;
-import com.bcs.core.richart.scheduler.service.LinePointPushMessageTaskService;
 import com.bcs.core.richart.db.entity.LinePointDetail;
 import com.bcs.core.richart.db.entity.LinePointMain;
-import com.bcs.core.richart.db.entity.LinePointPushMessageRecord;
 import com.bcs.core.richart.db.repository.LinePointMainRepository;
 import com.bcs.core.richart.db.service.LinePointDetailService;
-import com.bcs.core.richart.db.service.LinePointPushMessageRecordService;
-import com.bcs.core.bot.api.service.LineAccessApiService;
-import com.bcs.core.bot.send.akka.handler.PushMessageActor;
-import com.bcs.core.enums.CONFIG_STR;
-import com.bcs.core.enums.LINE_HEADER;
-import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.RestfulUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import akka.actor.UntypedActor;
@@ -84,10 +76,11 @@ public class LinePointPushMessageActor extends UntypedActor {
 //			logger.info("1-1 requestBody : {}", requestBody);
             List<LinePointDetail> detailList = new ArrayList<>();
             
+            // count examine
+            LinePointMain linePointMain = linePointMainRepository.findOne(eventId);
+            logger.info("linePointMain = {}", linePointMain);
+            
 			for(Integer i = 0; i < uids.length(); i++) {
-				// count examine
-				LinePointMain linePointMain = linePointMainRepository.findOne(eventId);
-
 				// initialize detail
 				LinePointDetail detail = new LinePointDetail();
 				detail.setLinePointMainId(eventId);
@@ -96,9 +89,10 @@ public class LinePointPushMessageActor extends UntypedActor {
 				detail.setSource(pushApiModel.getSource());
 				
 				if(linePointMain.getSuccessfulCount() >= linePointMain.getTotalCount()) {
-					linePointMain.setFailedCount(linePointMain.getFailedCount() + 1);
-					linePointMain.setStatus(LinePointMain.STATUS_COMPLETE);
-					linePointMainRepository.save(linePointMain);
+//				    failCount = failCount + 1;
+//					linePointMain.setFailedCount(linePointMain.getFailedCount() + 1);
+//					linePointMain.setStatus(LinePointMain.STATUS_COMPLETE);
+//					linePointMainRepository.save(linePointMain);
 				
 					detail.setUid(uids.get(i).toString());
 					detail.setSendTime(new Date());
@@ -137,12 +131,13 @@ public class LinePointPushMessageActor extends UntypedActor {
 			    
 				// HttpEntity by header and body
 				HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody.toString(), headers);
-				logger.info("httpEntity : {}", httpEntity);
+				logger.info("{}. httpEntity : {}", i, httpEntity);
 				
 				RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.POST, url, httpEntity);
-				logger.info("restfulUtil.getStatusCode() : {}", restfulUtil.getStatusCode());
 				
 				// set detail
+				String descriptionString = "";
+				
 				try {
 					JSONObject responseObject = restfulUtil.execute();
 					logger.info("responseObject = {}", responseObject.toString());
@@ -153,7 +148,6 @@ public class LinePointPushMessageActor extends UntypedActor {
 					Integer Amount = responseObject.getInt("transactionAmount");					
 					Integer Balance = responseObject.getInt("balance");
 					
-					linePointMain.setSuccessfulCount(linePointMain.getSuccessfulCount() + 1);
 					if(linePointMain.getSuccessfulCount() >= linePointMain.getTotalCount()) {
 						linePointMain.setStatus(LinePointMain.STATUS_COMPLETE);
 					}
@@ -167,33 +161,52 @@ public class LinePointPushMessageActor extends UntypedActor {
 					detail.setDescription("");
 					detail.setStatus(LinePointDetail.STATUS_SUCCESS);
 				} catch (HttpClientErrorException e) {
-					linePointMain.setFailedCount(linePointMain.getFailedCount() + 1);
-					linePointMainRepository.save(linePointMain);
-					detail.setDescription(e.getResponseBodyAsString());
+					descriptionString = e.getResponseBodyAsString();
+					detail.setDescription((descriptionString.length() >= 200)? descriptionString.substring(0, 200) : descriptionString);
 					detail.setStatus(LinePointDetail.STATUS_FAIL);
+					
+				} catch (Exception ex) {
+                    descriptionString = ex.getMessage();
+                    detail.setDescription((descriptionString.length() >= 200)? descriptionString.substring(0, 200) : descriptionString);
+                    detail.setStatus(LinePointDetail.STATUS_FAIL);
 				}
-				
 				detail.setUid(uids.get(i).toString());
 				detail.setOrderKey(orderKey);
 				detail.setApplicationTime(applicationTime);
 				detail.setSendTime(new Date());
 //				logger.info("detail1: {}", detail.toString());
-				/* 效能優化 ： 組裝userEventSetList , 一次儲存 */
+				/* 效能優化 ： 組裝 detailList, 一次儲存 */
 				detailList.add(detail);
 				/* 安全措施 : 每一千筆處理一次 , 但是目前akka會先切成一次100筆*/
 				if ((i+1) % 1000 == 0) {
 					logger.info("detailList size:" + detailList.size());
 					linePointDetailService.save(detailList);
 					detailList.clear();
-				}                
+				}
 			}
             /* Save remaining detailList */
             if (!detailList.isEmpty()) {
             	logger.info("detailList size:" + detailList.size());
 				linePointDetailService.save(detailList);
 				detailList.clear();
-            }        
-		}
+            }
+//            Long successCount = linePointDetailService.getCountByMainIdAndStatus(linePointMain.getId(), LinePointDetail.STATUS_SUCCESS);
+//            logger.info("successCount = {}", successCount);
+//            Long failCount = linePointDetailService.getCountByMainIdAndStatus(linePointMain.getId(), LinePointDetail.STATUS_FAIL);
+//            logger.info("failCount = {}", failCount);
+            Map<String, Long> mapStatusCount = linePointDetailService.getSuccessAndFailCountByLinePointMainId(linePointMain.getId());
+            Long failCount = mapStatusCount.get("fail");
+            Long successCount = mapStatusCount.get("success");
+            logger.info("failCount = {}", failCount);
+            logger.info("successCount = {}", successCount);
+            linePointMain.setFailedCount(failCount);
+            linePointMain.setSuccessfulCount(successCount);
+            linePointMain.setModifyTime(new Date());
+            if (linePointMain.getSuccessfulCount() >= linePointMain.getTotalCount()) {
+                linePointMain.setStatus(LinePointMain.STATUS_COMPLETE);
+            }
+            linePointMainRepository.save(linePointMain);
+        }
 	}
 
 	private String bytesToHex(byte[] hash) {

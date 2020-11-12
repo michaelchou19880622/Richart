@@ -2,20 +2,35 @@ package com.bcs.core.richart.db.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bcs.core.richart.db.entity.LinePointDetail;
-import com.bcs.core.richart.db.entity.LinePointMain;
 import com.bcs.core.db.persistence.EntityRepository;
+import com.bcs.core.richart.db.entity.LinePointDetail;
 
 public interface LinePointDetailRepository extends EntityRepository<LinePointDetail, Long>{
 
     @Transactional(timeout = 30)
     @Query(value = "select x from LinePointDetail x where x.status = ?1 and x.linePointMainId = ?2 order by x.triggerTime desc")
 	public List<LinePointDetail> findByStatusAndLinePointMainId(String status, Long linePointMainId);
+
+    @Transactional(timeout = 300)
+    @Query(value = "select count(*) from LinePointDetail x where x.linePointMainId = ?1")
+    public Long countByLinePointMainId(Long linePointMainId);
+
+    @Transactional(timeout = 300)
+    @Query(value = "select count(*) from LinePointDetail x where x.linePointMainId = ?1 and x.status = ?2")
+    public Long countByLinePointMainIdAndStatus(Long linePointMainId, String status);
+    
+    @Transactional(timeout = 300)
+    @Query(value = "SELECT "
+                + "SUM(CASE WHEN STATUS = 'FAIL' THEN 1 ELSE 0 END) 'FAIL_COUNT', "
+                + "SUM(CASE WHEN STATUS = 'SUCCESS' THEN 1 ELSE 0 END) 'SUCCESS_COUNT' "
+                + "FROM BCS_LINE_POINT_DETAIL "
+                + "WHERE LINE_POINT_MAIN_ID = ?1 ", nativeQuery = true)
+    public List<Object[]> getSuccessAndFailCountByLinePointMainId(Long linePointMainId);
+    
+    
     
 //	public LinePointDetail findBySerialId(String serialId);
 //	
