@@ -16,7 +16,7 @@
             <form id="formContentCampaign">
                 <section>
                     <header class="ContentHead">
-                        <h3 th:text="${param.actionType == null || param.actionType[0] == 'Create' ? '建立新MGM活動' : '更改MGM活動'}" class="CHTtl"></h3>
+                        <h3 th:text="${param.actionType == null || param.actionType[0] == 'Create' ? '建立MGM活動' : param.actionType[0] == 'Copy' ? '複製MGM活動' : '編輯MGM活動'}" class="CHTtl"></h3>
                         <p class="CHDesc">請輸入MGM活動內容。</p>
                     </header>
                     <div class="CHBtnSet">

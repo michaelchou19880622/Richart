@@ -177,11 +177,15 @@ public class MobileMgmClickTracingController extends BCSBaseController {
 			Boolean friendFlag = Boolean.valueOf(resultMap.get("friendFlag"));
 			log.info("uid = {}, friendFlag = {}", uid, friendFlag);
 
-			if (StringUtils.isNotBlank(uid)) {
-				LineUser lineUser = lineUserService.findByMidAndCreateUnbind(uid);
-				log.info("findByMidAndCreateUnbind lineUser = {}", lineUser);
+			if (StringUtils.isBlank(uid)) {
+			    log.error("UID is blank");
+	            String linkUrl = UriHelper.bcsMPage;
+	            response.sendRedirect(linkUrl);
+	            return;
 			}
-
+            LineUser lineUser = lineUserService.findByMidAndCreateUnbind(uid);
+            log.info("findByMidAndCreateUnbind lineUser = {}", lineUser);
+			
 			ShareCampaignClickTracing clickTracing = shareCampaignClickTracingService.findByUidAndShareUserRecordId(uid, shareUserRecord.getShareUserRecordId());
 			log.info("clickTracing = {}", clickTracing);
 			

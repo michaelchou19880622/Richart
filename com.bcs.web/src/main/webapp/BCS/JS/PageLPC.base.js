@@ -44,7 +44,7 @@ $(function() {
                 window.location.replace(bcs.bcsContextPath + '/market/linePointListPage');
             }).fail(function(response) {
             console.info(response);
-            $.FailResponse(response);
+            alert(response.responseText);
         })
     });
 });

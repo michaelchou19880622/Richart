@@ -85,6 +85,19 @@ public class LinePointMainService {
 		return linePointMainRepository.findByStatus(status);
 	}
 	
+	public List<LinePointMain> findAutoTypeNotUsed(){
+        return linePointMainRepository.findAutoTypeNotUsed();
+    }
+    
+    public Boolean checkSerialIdDuplicated(String serialId){
+        List<LinePointMain> linePointMains = linePointMainRepository.findAllBySerialId(serialId);
+        
+        if (linePointMains != null && linePointMains.size() > 0) {
+            return true;
+        }
+        return false;
+    }
+	
 	
 //	@SuppressWarnings("unchecked")
 //	public Map<LinePointSendMain, List<LinePointSend>> queryGetLinePointSendMainAll(){

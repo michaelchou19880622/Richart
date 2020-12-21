@@ -21,7 +21,7 @@ $(function(){
 	var isEditable = $('#isEditable').val();
 	console.info('isEditable', isEditable);
 	
-    if (isEditable == 'false') {
+    if (isEditable == 'false' && actionType != 'Copy') {
         $('#campaignTimeNotification').show();
         $('#shareTimesNotification').show();
         $('#judgementNotification').show();
@@ -488,7 +488,7 @@ $(function(){
 				console.info(response);
 				$.FailResponse(response);
 			}).done(function(){
-				getAutoLinePointMainList(linePointSerialId, linePointShow);
+				getAutoLinePointMainListNotUsed(linePointSerialId, linePointShow);
 			});
 
 			if(actionType == "Read"){
@@ -507,11 +507,11 @@ $(function(){
 			// From Create Page
 			$('input[name="judgement"]')[0].checked = true;
 			$('input[name="autoSendPoint"]')[0].checked = true;
-			getAutoLinePointMainList(linePointSerialId, linePointShow);
+			getAutoLinePointMainListNotUsed(linePointSerialId, linePointShow);
 		}
 	};
 
-	var getAutoLinePointMainList = function(linePointSerialId, linePointShow){
+	var getAutoLinePointMainListNotUsed = function(linePointSerialId, linePointShow){
 		console.info("linePointShow:", linePointShow);
 		// linePointShow
 		if(linePointShow){
@@ -524,9 +524,17 @@ $(function(){
 		var selectedValue = "";
 		console.info("linePointSerialId", linePointSerialId);
 		
+        var getAutoLinePointMainListNotUsedUrl = '/market/getAutoLinePointMainListNotUsed';
+        
+        if (actionType == 'Edit') {
+            getAutoLinePointMainListNotUsedUrl += '?serialId=' + linePointSerialId
+        }
+        
+        console.info("getAutoLinePointMainListNotUsedUrl = ", getAutoLinePointMainListNotUsedUrl);
+        
 		$.ajax({
 			type : "GET",
-			url : bcs.bcsContextPath + '/market/getAutoLinePointMainList'
+			url : bcs.bcsContextPath + getAutoLinePointMainListNotUsedUrl
 		}).success(function(response){
 //			console.info('getLinePointList response:' + JSON.stringify(response));
 

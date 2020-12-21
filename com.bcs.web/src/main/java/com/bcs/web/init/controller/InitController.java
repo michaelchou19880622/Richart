@@ -1,7 +1,5 @@
 package com.bcs.web.init.controller;
 
-import java.text.SimpleDateFormat;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -13,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.bcs.core.bot.record.service.CatchRecordReceive;
 import com.bcs.core.bot.scheduler.service.LiveChatTaskService;
-import com.bcs.core.bot.scheduler.service.PushMessageTaskService;
 import com.bcs.core.bot.scheduler.service.SchedulerService;
-import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.interactive.service.InteractiveService;
 import com.bcs.core.record.service.CatchHandleMsgReceiveTimeout;
 import com.bcs.core.record.service.CatchRecordBinded;
@@ -23,11 +19,8 @@ import com.bcs.core.record.service.CatchRecordOpAddReceive;
 import com.bcs.core.record.service.CatchRecordOpBlockedReceive;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richart.scheduler.service.LinePointAMSchedulerService;
-import com.bcs.core.richart.scheduler.service.LinePointPMSchedulerService;
-import com.bcs.core.richart.scheduler.service.MGMTaskService;
 import com.bcs.core.utils.DataSyncUtil;
 import com.bcs.core.utils.ErrorRecord;
-import com.bcs.core.enums.CONFIG_STR;
 
 @Controller
 @RequestMapping("/init")
@@ -144,8 +137,14 @@ public class InitController {
 		
 		// LinePoint AM Push flow
 		try {
-			logger.info("[init] LinePointAMSchedulerService startCircle");
-			linePointAMSchedulerService.startCircle();
+		    /* BE */
+            if (CoreConfigReader.isBEServerType() && CoreConfigReader.isMainSystem()) {
+                logger.info("[init] LinePointAMSchedulerService startCircle");
+                linePointAMSchedulerService.startCircle();
+            } else {
+                logger.info("[init] LinePointAMSchedulerService is Close!!");
+            }
+		    
 		} catch (Throwable e) {
 			logger.error(ErrorRecord.recordError(e));
 		}

@@ -23,7 +23,7 @@ $(function(){
 					var groupData = templateBody.clone(true); //增加一行
 					console.info(groupData);
 					groupData.find('.uid').html(o.uid);
-					groupData.find('.status').html(o.status);	
+					groupData.find('.status').html((o.status != 'SENDED') ? o.status : 'SENT');	
 					if(o.modifyTime){
 						groupData.find('.modifyTime').html(moment(o.modifyTime).format('YYYY-MM-DD HH:mm:ss'));
 					}else{

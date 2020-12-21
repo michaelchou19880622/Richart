@@ -12,6 +12,7 @@ import javax.annotation.PreDestroy;
 import org.json.JSONArray;
 import org.quartz.SchedulerException;
 import org.apache.logging.log4j.Logger;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -150,25 +151,21 @@ public class LinePointAMSchedulerService {
 	public void destroy() {
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(true);
-			logger.debug(" LinePointAMSchedulerService cancel....");
+			logger.info(" LinePointAMSchedulerService cancel....");
 		}
 		if (scheduler != null && !scheduler.isShutdown()) {
-			logger.debug(" LinePointAMSchedulerService shutdown....");
+			logger.info(" LinePointAMSchedulerService shutdown....");
 			scheduler.shutdown();
 		}
 	}
 
 	public void pushScheduledLinePoint() {
-		logger.debug("----------------------------------------");
-		
 		// get undoneUser
 		List<ShareUserRecord> list_ShareUserRecord_undone = shareUserRecordService.findLatelyUndoneUsers();
-		logger.debug("list_ShareUserRecord_undone.size() = {}", list_ShareUserRecord_undone.size());
-		logger.debug("list_ShareUserRecord_undone = {}", list_ShareUserRecord_undone);
 
 		for (int i = 0; i < list_ShareUserRecord_undone.size(); i++) {
 			ShareUserRecord shareUserRecord = list_ShareUserRecord_undone.get(i);
-			logger.debug("No.{} shareUserRecord = {}", (i + 1), shareUserRecord);
+//			logger.info("No.{} shareUserRecord = {}", (i + 1), shareUserRecord);
 
 			// get autoSendPoint & judgment
 			ShareCampaign shareCampaign = shareCampaignService.findOne(shareUserRecord.getCampaignId());
@@ -214,36 +211,42 @@ public class LinePointAMSchedulerService {
 						continue;
 					}
 					
-					if (currentCumulativeCount == shareCampaign.getShareTimes()) {
-						Date date = new Date();
-						
-						logger.debug("任務已完成!");
-						logger.debug("完成時間 : {}", date);
-						logger.debug("活動任務 : {}", shareCampaign.getCampaignId());
-						logger.debug("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
-						
-						shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
-						shareUserRecord.setDoneTime(date);
-						shareUserRecordService.save(shareUserRecord);
-					} 
-					
-					// autoSendPoint
-					logger.debug("是否自動發點: {}", autoSendPoint);
-					if (autoSendPoint) {
-						// linePointMain.status = scheduled
-						String linePointSerialId = shareCampaign.getLinePointSerialId();
-						LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
-						linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
-						linePointMainService.save(linePointMain);
+					if (currentCumulativeCount >= shareCampaign.getShareTimes()) {
+					    if (shareUserRecord.getCompleteStatus().equals(ShareUserRecord.COMPLETE_STATUS_UNDONE)) {
+    						Date date = new Date();
+    						
+    						logger.info("任務已完成!");
+    						logger.info("完成時間 : {}", date);
+    						logger.info("活動任務 : {}", shareCampaign.getCampaignId());
+    						logger.info("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
+    						
+    						shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+    						shareUserRecord.setDoneTime(date);
+    						shareUserRecordService.save(shareUserRecord);
+                        }
+	                    
+	                    // autoSendPoint
+	                    logger.debug("是否自動發點: {}", autoSendPoint);
+	                    if (autoSendPoint) {
+	                        // linePointMain.status = scheduled
+	                        String linePointSerialId = shareCampaign.getLinePointSerialId();
+	                        LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+	                        linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+	                        linePointMainService.save(linePointMain);
 
-						// linePointScheduledDetail.status = waiting
-						LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
-						linePointScheduledDetail.setUid(shareUserRecord.getUid());
-						linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
-						linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
-						linePointScheduledDetail.setModifyTime(new Date());
-						linePointScheduledDetailService.save(linePointScheduledDetail);
-					}
+	                        // 調整先檢查是否有同樣linePointMainId和Uid的，如果有就不要再寫了，避免重複。
+	                        List<LinePointScheduledDetail> linePointScheduledDetails = linePointScheduledDetailService.findByLinePointMainIdAndUid(linePointMain.getId(), shareUserRecord.getUid());
+	                        if (CollectionUtils.isEmpty(linePointScheduledDetails)) {
+	                            // linePointScheduledDetail.status = waiting
+	                            LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+	                            linePointScheduledDetail.setUid(shareUserRecord.getUid());
+	                            linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+	                            linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+	                            linePointScheduledDetail.setModifyTime(new Date());
+	                            linePointScheduledDetailService.save(linePointScheduledDetail);
+	                        }
+	                    }
+					} 
 					
 				} else {
 					// Set stateJudgment depend on judgment type.
@@ -295,17 +298,19 @@ public class LinePointAMSchedulerService {
 								continue;
 							}
 							
-							if (currentCumulativeCount == shareCampaign.getShareTimes()) {
-								Date date = new Date();
-								
-								logger.debug("任務已完成!");
-								logger.debug("完成時間 : {}", date);
-								logger.debug("活動任務 : {}", shareCampaign.getCampaignId());
-								logger.debug("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
-								
-								shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
-								shareUserRecord.setDoneTime(date);
-								shareUserRecordService.save(shareUserRecord);
+							if (currentCumulativeCount >= shareCampaign.getShareTimes()) {
+							    if (shareUserRecord.getCompleteStatus().equals(ShareUserRecord.COMPLETE_STATUS_UNDONE)) {
+    								Date date = new Date();
+    								
+    								logger.debug("任務已完成!");
+    								logger.debug("完成時間 : {}", date);
+    								logger.debug("活動任務 : {}", shareCampaign.getCampaignId());
+    								logger.debug("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
+    								
+    								shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+    								shareUserRecord.setDoneTime(date);
+    								shareUserRecordService.save(shareUserRecord);
+							    }
 							}
 
 							// autoSendPoint
@@ -317,15 +322,18 @@ public class LinePointAMSchedulerService {
 								linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
 								linePointMainService.save(linePointMain);
 
-								// linePointScheduledDetail.status = waiting
-								LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
-								linePointScheduledDetail.setUid(shareUserRecord.getUid());
-								linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
-								linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
-								linePointScheduledDetail.setModifyTime(new Date());
-								linePointScheduledDetailService.save(linePointScheduledDetail);
+		                        // 調整先檢查是否有同樣linePointMainId和Uid的，如果有就不要再寫了，避免重複。
+		                        List<LinePointScheduledDetail> linePointScheduledDetails = linePointScheduledDetailService.findByLinePointMainIdAndUid(linePointMain.getId(), shareUserRecord.getUid());
+		                        if (CollectionUtils.isEmpty(linePointScheduledDetails)) {
+		                            // linePointScheduledDetail.status = waiting
+		                            LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+		                            linePointScheduledDetail.setUid(shareUserRecord.getUid());
+		                            linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+		                            linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+		                            linePointScheduledDetail.setModifyTime(new Date());
+		                            linePointScheduledDetailService.save(linePointScheduledDetail);
+		                        }
 							}
-							
 						} else { // 被分享者UID貢獻紀錄已存在
 							
 							// 判斷被分享者UID的貢獻紀錄是否小於兩筆? ( 因為最多只能有兩筆 : 一筆的為綁定活動的貢獻、另一筆為加好友活動的貢獻 )
@@ -333,10 +341,8 @@ public class LinePointAMSchedulerService {
 							// 1. 如果之前已經貢獻過加好友的活動，可以再貢獻其他人分享的綁定活動。
 							// 2. 如果之前已經貢獻過綁定的活動，則無法再貢獻其他人分享的加好友活動。
 							if (currentDonators.size() < 2) { 
-								
 								// 如果只有一筆，則判斷之前貢獻紀錄的狀態是否為"FOLLOW(加好友)" ?
 								if (currentDonators.get(0).getDonateLevel().equals("FOLLOW")) {
-									
 									// 判斷活動判定條件是否為"BINDED(綁定)"? 是的話就再新增一筆(BINDED 綁定的貢獻)
 									if (judgment.equals(ShareCampaign.JUDGEMENT_BINDED)) {
 										ShareDonatorRecord shareDonatorRecord = new ShareDonatorRecord();
@@ -354,41 +360,45 @@ public class LinePointAMSchedulerService {
 											continue;
 										}
 										
-										if (currentCumulativeCount == shareCampaign.getShareTimes()) {
-											Date date = new Date();
-											
-											logger.debug("任務已完成!");
-											logger.debug("完成時間 : {}", date);
-											logger.debug("活動任務 : {}", shareCampaign.getCampaignId());
-											logger.debug("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
-											
-											shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
-											shareUserRecord.setDoneTime(date);
-											shareUserRecordService.save(shareUserRecord);
-										}
+										if (currentCumulativeCount >= shareCampaign.getShareTimes()) {
+										    if (shareUserRecord.getCompleteStatus().equals(ShareUserRecord.COMPLETE_STATUS_UNDONE)) {
+    											Date date = new Date();
+    											
+    											logger.debug("任務已完成!");
+    											logger.debug("完成時間 : {}", date);
+    											logger.debug("活動任務 : {}", shareCampaign.getCampaignId());
+    											logger.debug("分享紀錄 : {}", shareUserRecord.getShareUserRecordId());
+    											
+    											shareUserRecord.setCompleteStatus(ShareUserRecord.COMPLETE_STATUS_DONE);
+    											shareUserRecord.setDoneTime(date);
+    											shareUserRecordService.save(shareUserRecord);
+										    }
 
-										// autoSendPoint
-										logger.debug("是否自動發點: {}", autoSendPoint);
-										if (autoSendPoint) {
-											// linePointMain.status = scheduled
-											String linePointSerialId = shareCampaign.getLinePointSerialId();
-											LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
-											linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
-											linePointMainService.save(linePointMain);
+	                                        // autoSendPoint
+	                                        logger.debug("是否自動發點: {}", autoSendPoint);
+	                                        if (autoSendPoint) {
+	                                            // linePointMain.status = scheduled
+	                                            String linePointSerialId = shareCampaign.getLinePointSerialId();
+	                                            LinePointMain linePointMain = linePointMainService.findBySerialId(linePointSerialId);
+	                                            linePointMain.setStatus(LinePointMain.STATUS_SCHEDULED);
+	                                            linePointMainService.save(linePointMain);
 
-											// linePointScheduledDetail.status = waiting
-											LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
-											linePointScheduledDetail.setUid(shareUserRecord.getUid());
-											linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
-											linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
-											linePointScheduledDetail.setModifyTime(new Date());
-											linePointScheduledDetailService.save(linePointScheduledDetail);
+	                                            // 調整先檢查是否有同樣linePointMainId和Uid的，如果有就不要再寫了，避免重複。
+	                                            List<LinePointScheduledDetail> linePointScheduledDetails = linePointScheduledDetailService.findByLinePointMainIdAndUid(linePointMain.getId(), shareUserRecord.getUid());
+	                                            if (CollectionUtils.isEmpty(linePointScheduledDetails)) {
+	                                                // linePointScheduledDetail.status = waiting
+	                                                LinePointScheduledDetail linePointScheduledDetail = new LinePointScheduledDetail();
+	                                                linePointScheduledDetail.setUid(shareUserRecord.getUid());
+	                                                linePointScheduledDetail.setLinePointMainId(linePointMain.getId());
+	                                                linePointScheduledDetail.setStatus(LinePointScheduledDetail.STATUS_WAITING);
+	                                                linePointScheduledDetail.setModifyTime(new Date());
+	                                                linePointScheduledDetailService.save(linePointScheduledDetail);
+	                                            }
+	                                        }
 										}
 									}
 								}
 							}
-							
-							logger.debug("被分享者 {} 已無法再貢獻。", beSharedUid);
 						}
 					}
 				}
@@ -404,7 +414,6 @@ public class LinePointAMSchedulerService {
 		for (int i = 0; i < list_LinePointMain.size(); i++) {
 			
 			LinePointMain linePointMain = list_LinePointMain.get(i);
-			logger.debug("No.{} linePointMain = {}", i, linePointMain);
 
 			// linePointMain.status = idle
 			linePointMain.setStatus(LinePointMain.STATUS_IDLE);
@@ -412,35 +421,30 @@ public class LinePointAMSchedulerService {
 
 			// find linePointScheduledDetail.mainId = mainId
 			List<LinePointScheduledDetail> details = linePointScheduledDetailService.findByLinePointMainId(linePointMain.getId());
-			logger.debug("details: {}", details);
 
 			JSONArray uid = new JSONArray();
-			logger.debug("uid: {}", uid);
-			
 			for (LinePointScheduledDetail detail : details) {
 				// 這邊應該判定 發過點就不發了
 				if (LinePointScheduledDetail.STATUS_WAITING.equals(detail.getStatus())) {
 					uid.put(detail.getUid());
+	                detail.setStatus(LinePointScheduledDetail.STATUS_SENDED);
+	                detail.setModifyTime(new Date());
+	                linePointScheduledDetailService.save(detail);
 				}
-				
-				detail.setStatus(LinePointScheduledDetail.STATUS_SENDED);
-				detail.setModifyTime(new Date());
-				linePointScheduledDetailService.save(detail);
 			}
-
-			logger.debug("Ready to tell akka to send LinePoint");
-			// push to AkkaService
-			LinePointPushModel linePointPushModel = new LinePointPushModel();
-			linePointPushModel.setAmount(linePointMain.getAmount());
-			linePointPushModel.setUid(uid);
-			linePointPushModel.setEventId(linePointMain.getId());
-			linePointPushModel.setSource(LinePointPushModel.SOURCE_TYPE_MGM);
-			linePointPushModel.setSendTimeType(LinePointPushModel.SEND_TYPE_IMMEDIATE);
-			linePointPushModel.setTriggerTime(new Date());
-
-			logger.debug("linePointPushModel = {}", linePointPushModel);
-			
-			linePointPushAkkaService.tell(linePointPushModel);
+            
+            // 增加判斷如果uid數量不為空，才表示有要發送的uid，再tell akka發送line point，否則就不需要通知。
+            if(uid.length() > 0){
+                // push to AkkaService
+                LinePointPushModel linePointPushModel = new LinePointPushModel();
+                linePointPushModel.setAmount(linePointMain.getAmount());
+                linePointPushModel.setUid(uid);
+                linePointPushModel.setEventId(linePointMain.getId());
+                linePointPushModel.setSource(LinePointPushModel.SOURCE_TYPE_MGM);
+                linePointPushModel.setSendTimeType(LinePointPushModel.SEND_TYPE_IMMEDIATE);
+                linePointPushModel.setTriggerTime(new Date());
+                linePointPushAkkaService.tell(linePointPushModel);
+            }
 		}
 	}
 }

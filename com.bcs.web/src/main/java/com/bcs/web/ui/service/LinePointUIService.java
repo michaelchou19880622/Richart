@@ -47,6 +47,9 @@ public class LinePointUIService {
 	public List<LinePointMain> linePointMainFindAuto(){
 		return linePointMainService.findAuto();
 	}
+    public List<LinePointMain> linePointMainFindAutoNotUsed(){
+        return linePointMainService.findAutoTypeNotUsed();
+    }
 	public List<LinePointMain> linePointMainFindAuto(String searchText){
 		return linePointMainService.findAuto(searchText);
 	}

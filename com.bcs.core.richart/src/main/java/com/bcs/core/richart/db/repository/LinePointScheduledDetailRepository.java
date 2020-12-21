@@ -2,20 +2,21 @@ package com.bcs.core.richart.db.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bcs.core.richart.db.entity.LinePointDetail;
-import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
 import com.bcs.core.db.persistence.EntityRepository;
+import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
 
 public interface LinePointScheduledDetailRepository extends EntityRepository<LinePointScheduledDetail, Long>{
 
 	@Transactional(timeout = 30)
 	@Query(value="select x from LinePointScheduledDetail x where x.linePointMainId = ?1 order by x.modifyTime desc")
 	public List<LinePointScheduledDetail> findByLinePointMainId(long linePointMainId);
+
+    @Transactional(timeout = 30)
+    @Query(value="select x from LinePointScheduledDetail x where x.linePointMainId = ?1 and x.uid = ?2 order by x.modifyTime desc")
+    public List<LinePointScheduledDetail> findByLinePointMainIdAndUid(Long linePointMainId, String uid);
 	
 	//public List<LinePointScheduledDetail> findByStatus(String status);
 //	public LinePointDetail findBySerialId(String serialId);

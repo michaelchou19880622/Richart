@@ -12,6 +12,8 @@ public interface LinePointMainRepository extends EntityRepository<LinePointMain,
 	
 	@Transactional(timeout = 30)
 	public LinePointMain findBySerialId(String serialId);
+    @Transactional(timeout = 30)
+    public List<LinePointMain> findAllBySerialId(String serialId);
 	@Transactional(timeout = 30)
 	public List<LinePointMain> findByStatus(String status);
     
@@ -38,4 +40,14 @@ public interface LinePointMainRepository extends EntityRepository<LinePointMain,
     @Transactional(timeout = 30)
     @Query(value = "select x from LinePointMain x where x.status <> 'COMPLETE' and x.sendType = ?1 order by x.modifyTime desc")
 	public List<LinePointMain> findUndoneBySendType(String sendType);
+    
+    // find all linePoint with send type = Auto and not used.
+    @Transactional(timeout = 30)
+    @Query(value = " SELECT blpm.* FROM BCS_LINE_POINT_MAIN blpm " + 
+                    " LEFT JOIN BCS_SHARE_CAMPAIGN bsc ON bsc.LINE_POINT_SERIAL_ID = blpm.SERIAL_ID " + 
+                    " WHERE bsc.LINE_POINT_SERIAL_ID IS NULL ORDER BY blpm.MODIFY_TIME DESC", nativeQuery = true)    
+    public List<LinePointMain> findAutoTypeNotUsed();
+    
+    
+    
 }

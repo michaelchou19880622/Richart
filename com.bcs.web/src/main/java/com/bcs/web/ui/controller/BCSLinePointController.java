@@ -33,6 +33,7 @@ import com.bcs.core.richart.api.model.LinePointPushModel;
 import com.bcs.core.richart.db.entity.LinePointDetail;
 import com.bcs.core.richart.db.entity.LinePointMain;
 import com.bcs.core.richart.db.entity.LinePointScheduledDetail;
+import com.bcs.core.richart.db.service.LinePointMainService;
 import com.bcs.core.richart.service.ExportToExcelForLinePointPushApiEffects;
 import com.bcs.core.utils.ErrorRecord;
 import com.bcs.core.utils.ObjectUtil;
@@ -58,6 +59,8 @@ public class BCSLinePointController extends BCSBaseController {
 	private LinePointPushAkkaService linePointPushAkkaService;
 	@Autowired
 	private ExportToExcelForLinePointPushApiEffects exportToExcelForLinePointPushApiEffects;
+    @Autowired
+    private LinePointMainService linePointMainService;
 	
 	@ControllerLog(description = "建立 Line Point 活動")
 	@RequestMapping(method = RequestMethod.GET, value = "/market/linePointCreatePage")
@@ -109,6 +112,13 @@ public class BCSLinePointController extends BCSBaseController {
 		logger.info("createLinePointMain");
 		try {
 			if (linePointMain != null) {
+			    // 先檢查serialId是否有重複
+	            Boolean isSerialIdDuplicated = linePointMainService.checkSerialIdDuplicated(linePointMain.getSerialId());
+	            if (isSerialIdDuplicated) {
+	                logger.info("isSerialIdDuplicated = {}, serialId = {}", isSerialIdDuplicated, linePointMain.getSerialId());
+	                return new ResponseEntity<>("活動代碼重複，請重新設定！", HttpStatus.INTERNAL_SERVER_ERROR);
+	            }
+			    
 				String adminUserAccount = customUser.getAccount();
 				LinePointMain result = linePointUIService.saveLinePointMainFromUI(linePointMain, adminUserAccount);
 				return new ResponseEntity<>(result, HttpStatus.OK);
@@ -161,6 +171,19 @@ public class BCSLinePointController extends BCSBaseController {
 		logger.info("result:" + ObjectUtil.objectToJsonStr(result));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
+    
+    @ControllerLog(description = "Get Auto Line Point Main List Not Used")
+    @RequestMapping(method = RequestMethod.GET, value = "/market/getAutoLinePointMainListNotUsed")
+    @ResponseBody
+    public ResponseEntity<?> getAutoLinePointMainListNotUsed(HttpServletRequest request, HttpServletResponse response, @CurrentUser CustomUser customUser, @RequestParam(required = false) String serialId) throws IOException{
+        logger.info("[getAutoLinePointMainListNotUsed]");
+        List<LinePointMain> list = linePointUIService.linePointMainFindAutoNotUsed();
+        if(StringUtils.isNotBlank(serialId)){
+            LinePointMain linePointMain = linePointMainService.findBySerialId(serialId);
+            list.add(linePointMain);
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 	
 	//----
 	@ControllerLog(description = "Get All Line Point Main")

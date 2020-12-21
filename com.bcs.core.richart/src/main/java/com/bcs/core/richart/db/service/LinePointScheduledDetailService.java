@@ -44,6 +44,10 @@ public class LinePointScheduledDetailService {
 	public List<LinePointScheduledDetail> findAll(Long mainId){
 		return linePointScheduledDetailRepository.findByLinePointMainId(mainId);
 	}	
+    
+    public List<LinePointScheduledDetail> findByLinePointMainIdAndUid(Long linePointMainId, String uid){
+        return linePointScheduledDetailRepository.findByLinePointMainIdAndUid(linePointMainId, uid);
+    }
 	
 //	public LinePointDetail findBySerialId(String serialId){
 //		return linePointDetailRepository.findBySerialId(serialId);
