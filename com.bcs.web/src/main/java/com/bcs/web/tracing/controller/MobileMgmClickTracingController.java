@@ -179,7 +179,7 @@ public class MobileMgmClickTracingController extends BCSBaseController {
 
 			if (StringUtils.isBlank(uid)) {
 			    log.error("UID is blank");
-	            String linkUrl = UriHelper.bcsMPage;
+	            String linkUrl = UriHelper.getMgmRedirectPage(UriHelper.bcsMPage, "發生錯誤，請重新點選。");
 	            response.sendRedirect(linkUrl);
 	            return;
 			}
