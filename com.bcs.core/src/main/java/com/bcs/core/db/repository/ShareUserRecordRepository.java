@@ -61,7 +61,7 @@ public interface ShareUserRecordRepository extends EntityRepository<ShareUserRec
 		            	+ "and SUR.CAMPAIGN_ID = ?3 "
 		            + "order by "
 			            + "SUR.SHARE_USER_RECORD_ID, "
-			            + "SCCT.SHARED_TIME", nativeQuery = true)
+			            + "SCCT.MODIFY_TIME ASC", nativeQuery = true)
     List<Object[]> findByModifyTimeAndCampaignId_for_follow_binded(Date start, Date end, String campaignId);
     
     @Transactional(readOnly = true, timeout = 30)
