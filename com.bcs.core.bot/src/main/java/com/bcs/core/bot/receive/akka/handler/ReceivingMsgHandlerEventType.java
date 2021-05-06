@@ -40,6 +40,7 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 				int count = 0;
 				Date start = original.getStart();
 				for (MsgBotReceive msg : list) {
+					logger.info("MsgBotReceive = {}", msg);
 					
 					ReceivingMsgHandlerMaster.taskCount.addAndGet(1L);
 					
@@ -55,7 +56,6 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 					logger.debug("ReceivingMsgHandlerEventType apiType :"+apiType);
 					
 					String referenceId = "";
-					
 					
 					if (channelName.equals(CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true))) {
 						logger.debug("ReceivingMsgHandlerEventType  CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true) :"

@@ -13,11 +13,14 @@ import java.util.TimerTask;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.bcs.core.api.service.LineTokenApiService;
 import com.bcs.core.bot.api.model.SendToBotModel;
 import com.bcs.core.bot.enums.SEND_TYPE;
+import com.bcs.core.bot.receive.service.MessageTransmitService;
 import com.bcs.core.db.entity.SystemConfig;
 import com.bcs.core.db.entity.SystemLog;
 import com.bcs.core.db.service.SystemConfigService;
@@ -44,9 +47,11 @@ import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-@Slf4j
 @Service
 public class LineAccessApiService {
+
+	private static Logger log = LogManager.getLogger(LineAccessApiService.class);
+	
 	public static final String LINE_API_SYNC = "LINE_API_SYNC";
 
 	private Timer flushTimer = new Timer();

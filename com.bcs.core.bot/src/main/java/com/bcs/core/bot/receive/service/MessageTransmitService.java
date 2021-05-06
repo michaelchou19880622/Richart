@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -12,14 +13,19 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.bcs.core.bot.akka.service.AkkaGatewayService;
-import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.api.msg.MsgGenerator;
 import com.bcs.core.api.service.ChatBotApiService;
 import com.bcs.core.api.service.LiveChatApiService;
 import com.bcs.core.api.service.model.LocationModel;
+import com.bcs.core.bot.akka.service.AkkaGatewayService;
+import com.bcs.core.bot.api.model.SendToBotModel;
+import com.bcs.core.bot.api.service.LineAccessApiService;
+import com.bcs.core.bot.db.entity.MsgBotReceive;
+import com.bcs.core.bot.enums.SEND_TYPE;
 import com.bcs.core.db.entity.MsgDetail;
 import com.bcs.core.db.entity.UserLiveChat;
 import com.bcs.core.db.service.UserLiveChatService;
@@ -27,6 +33,11 @@ import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.enums.LIVE_CHAT_WORDING;
 import com.bcs.core.smartrobot.service.SwitchIconService;
 import com.bcs.core.utils.LiveChatWordingUtil;
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.message.Sender;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.response.BotApiResponse;
 
 @Service
 public class MessageTransmitService {
@@ -198,5 +209,54 @@ public class MessageTransmitService {
 			result.put(-3L, messageList);
 			return result;
 		}
+	}
+	
+	/* 模擬春樹 API */
+	public void transmitToSpringTreeBOT(String uid, String replyToken, String message) throws Exception {
+		logger.info("uid = {}, message = {}", uid, message);
+		
+		/* 設定 request headers */
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
+		/* 模擬打 pushMessage 發送訊息給用戶 */
+		Sender sender = switchIconService.generateSenderModel(CONFIG_STR.Default.toString());
+		logger.info("sender = {}", sender);
+		
+		if (message.equals("切換角色為Brown")) {
+			sender = switchIconService.generateSenderModel("SprintTreeRole_Brown"); 
+			message = "Hi 你好，我是Brown!";
+		} else if (message.equals("切換角色為Cony")){
+			sender = switchIconService.generateSenderModel("SprintTreeRole_Cony"); 
+			message = "Hi 你好，我是Cony!";
+		} else if (message.equals("結束活動")){
+			message = "你已經主動結束七夕活動，謝謝。";
+		}else {
+			return;
+		}
+		
+		String channelName  = sender.getName();
+		logger.info("channelName = {}", channelName);
+		
+		TextMessage textMesage;
+		
+		if (StringUtils.isNoneBlank(sender.getName()) && StringUtils.isNoneBlank(sender.getIconUrl())) {
+			textMesage = new TextMessage(message, sender);
+		} else {
+			textMesage = new TextMessage(message);
+		}
+		logger.info("textMesage = {}", textMesage);
+		
+		PushMessage pushMessage = new PushMessage(uid, textMesage);
+		logger.info("pushMessage = {}", pushMessage);
+
+		SendToBotModel sendToBotModel = new SendToBotModel();
+		sendToBotModel.setChannelId(CONFIG_STR.Default.toString());
+		sendToBotModel.setChannelName(StringUtils.isBlank(channelName)? CONFIG_STR.Default.toString() : channelName);
+		sendToBotModel.setSendType(SEND_TYPE.PUSH_MSG);
+		sendToBotModel.setPushMessage(pushMessage);
+		logger.info("sendToBotModel = {}", sendToBotModel);
+		
+		LineAccessApiService.sendToLineWithServiceCode(sendToBotModel);
 	}
 }

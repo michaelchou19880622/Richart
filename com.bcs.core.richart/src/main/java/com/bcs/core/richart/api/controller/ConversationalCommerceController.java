@@ -1,5 +1,7 @@
 package com.bcs.core.richart.api.controller;
 
+import java.util.Date;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.bcs.core.api.service.LineProfileService;
 import com.bcs.core.bot.db.entity.BotReplyRecord;
 import com.bcs.core.bot.db.service.BotReplyRecordService;
+import com.bcs.core.db.entity.SpringTreeCampaignFlow;
+import com.bcs.core.db.service.SpringTreeCampaignFlowService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.enums.LINE_HEADER;
 import com.bcs.core.resource.CoreConfigReader;
@@ -45,6 +49,8 @@ public class ConversationalCommerceController {
 	private SwitchIconService switchIconService; 
 	@Autowired
 	private LineProfileService lineProfileService;
+	@Autowired
+	private SpringTreeCampaignFlowService springTreeCampaignFlowService;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/pushMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> pushMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
@@ -280,4 +286,114 @@ public class ConversationalCommerceController {
 				return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + e.getMessage() + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/pushMessageForSpringTreeTest", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<?> pushMessageTest(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
+        log.info("Requestbody : {}", requestBodyString);
+        
+        try {
+            if(request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
+                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"missing headers\"}", HttpStatus.BAD_REQUEST);
+            }
+            
+            String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+            log.info("authorization : {}", authorization);
+            
+            if(authorization.split("Basic ").length != 2) {
+                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid authorization format\"}", HttpStatus.UNAUTHORIZED);
+            }
+            
+            String token = authorization.split("Basic ")[1];
+            log.info("token : {}", token);
+            
+            String secret = CoreConfigReader.getString(CONFIG_STR.AES_SECRET_KEY, true);
+            log.info("secret : {}", secret);
+            
+            String iv = CoreConfigReader.getString(CONFIG_STR.AES_INITIALIZATION_VECTOR, true);
+            log.info("iv : {}", iv);
+            
+            String originalToken = CoreConfigReader.getString(CONFIG_STR.API_ORIGINAL_TOKEN, true);
+            log.info("originalToken : {}", originalToken);
+            
+            String decryptedToken = CryptUtil.Decrypt(CryptUtil.AES, token, secret, iv);
+            log.info("decryptedToken : {}", decryptedToken);
+            
+            if(!decryptedToken.equals(originalToken)) {
+                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
+            }
+            
+            JSONObject requestBody = new JSONObject(requestBodyString);
+            log.info("requestBody : {}", requestBody);
+            
+            String url = CoreConfigReader.getString(CONFIG_STR.LINE_MESSAGE_PUSH_URL.toString());
+            log.info("url : {}", url);
+            
+            String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
+            log.info("accessToken : {}", accessToken);
+            
+            /* 設定 request headers */
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+            log.info("headers : {}", headers);
+            
+            switchIconService.appendSender(CONFIG_STR.AutoReply.toString(), requestBody);
+            
+            /* 將 headers 跟 body 塞進 HttpEntity 中 */
+            HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody.toString(), headers);
+            
+            RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.POST, url, httpEntity);
+            
+            JSONObject jsonObjectResult = restfulUtil.execute();
+            log.info("RestfulUtil execute result = {}", jsonObjectResult);
+            
+            return new ResponseEntity<>("{\"error\": \"false\", \"message\": \"success\"}", HttpStatus.OK);
+        } catch(Exception e) {
+            log.info("Exception = {}", e);
+            
+            if(e instanceof BadPaddingException || e instanceof IllegalBlockSizeException || e instanceof IllegalArgumentException) {
+                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
+            } else if(e instanceof HttpClientErrorException) {
+                
+                String responseMessage = ((HttpClientErrorException) e).getResponseBodyAsString();
+                log.info("responseMessage = {}", responseMessage);
+                
+                HttpStatus responseStatusCode = ((HttpClientErrorException) e).getStatusCode();
+                log.info("responseStatusCode = {}", responseStatusCode);
+                
+                if(responseMessage.contains("{\"message\"")) {
+                    JSONObject responseMessageObject = new JSONObject(responseMessage);
+                    String message = responseMessageObject.getString("message");
+                    
+                    return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + message + "\"}", HttpStatus.BAD_REQUEST);
+                } else {
+                    return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + e.getMessage() + "\"}", responseStatusCode);
+                }
+            } else if(e instanceof JSONException) {
+                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"The request body has 1 error(s)\"}", HttpStatus.BAD_REQUEST);
+            } else {
+                String errorMsg = e.getMessage();
+                
+                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + errorMsg + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/closeSpringTreeCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<?> closeSpringTreeCampaign(HttpServletRequest request, HttpServletResponse response, @RequestParam String uid) {
+        log.info("uid : {}", uid);
+        
+        try {
+        	SpringTreeCampaignFlow springTreeCampaignFlow = springTreeCampaignFlowService.findByUid(uid);
+        	springTreeCampaignFlow.setModifyTime(new Date());
+			springTreeCampaignFlow.setStatus(SpringTreeCampaignFlow.STATUS_FINISHED);
+			springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
+            
+            return new ResponseEntity<>("{\"error\": \"false\", \"message\": \"success\"}", HttpStatus.OK);
+        } catch(Exception e) {
+            log.info("Exception = {}", e);
+			String errorMsg = e.getMessage();
+			return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + errorMsg + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -27,6 +27,7 @@ import com.bcs.core.receive.model.ReceivedModelOriginal;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richmenu.core.api.service.RichMenuReceivingApiService;
 import com.bcs.core.utils.ErrorRecord;
+import com.bcs.core.utils.ObjectUtil;
 
 
 @Controller
@@ -45,7 +46,7 @@ public class LineBotApiController {
 	public void lineBotApiReceiving(@RequestBody String receivingMsg, @PathVariable String ChannelId, @PathVariable String ChannelName,HttpServletRequest request, HttpServletResponse response) {
 		logger.debug("-------lineBotApiReceiving-------");
 		Date start = new Date();
-		logger.debug("receivingMsg:" + receivingMsg);
+		logger.info("receivingMsg = {}", receivingMsg);
 		
 		try{
 			// RichMenu
@@ -62,6 +63,7 @@ public class LineBotApiController {
 				boolean validate = SignatureValidationHelper.signatureValidation(receivingMsg, ChannelName, channelSignature);
 				if(!validate){
 					// Validate Fail
+					logger.info("Signature Validate Fail");
 					response.setStatus(470);
 					SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBotApi, LOG_TARGET_ACTION_TYPE.ACTION_Receive, start, 470, receivingMsg, "470");
 					return;

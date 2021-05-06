@@ -154,7 +154,9 @@ public class ContentTemplateMsgService {
 			if(result != null && result.get(templateId) != null){
 				return result;
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			logger.info("Exception = {}", e);
+		}
 		
     	String queryString = 
     			"SELECT BCS_CONTENT_TEMPLATE.TEMPLATE_ID, "

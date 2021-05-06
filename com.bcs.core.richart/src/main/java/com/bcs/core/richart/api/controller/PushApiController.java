@@ -108,4 +108,69 @@ public class PushApiController {
 			return new ResponseEntity<>("{\"result\": 0, \"msg\": \"" + e.getMessage() + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/message/send", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> sendMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
+		try {
+			logger.info("-------------------- sendMessage --------------------");
+
+			logger.info("[sendMessage] Request body: {}", requestBodyString);
+
+			pushApiModel = new PushApiModel();
+
+			PushApiRequestValidator.validateForSpringTree(requestBodyString, pushApiModel);
+			logger.info("[pushMessage] pushApiModel = {}", pushApiModel);
+
+			if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
+				return new ResponseEntity<>("{\"result\": 0, \"msg\": \"Missing 'Authorization' header.\"}", HttpStatus.BAD_REQUEST);
+			} else {
+				String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+				logger.info("[pushMessage] authorization = {}", authorization);
+
+				if (authorization.split("key=").length != 2) {
+					return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"Invalid 'Authorization' format.\"}", HttpStatus.UNAUTHORIZED);
+				}
+
+				String token = authorization.split("key=")[1];
+				logger.info("[pushMessage] token = {}", token);
+
+				String secret = CoreConfigReader.getString(CONFIG_STR.AES_SECRET_KEY, true);
+				logger.info("[pushMessage] secret = {}", secret);
+
+				String iv = CoreConfigReader.getString(CONFIG_STR.AES_INITIALIZATION_VECTOR, true);
+				logger.info("[pushMessage] iv = {}", iv);
+
+				String originalToken = CoreConfigReader.getString(CONFIG_STR.API_ORIGINAL_TOKEN, true);
+				logger.info("[pushMessage] originalToken = {}", originalToken);
+				
+				String descryptedToken = CryptUtil.Decrypt(CryptUtil.AES, token, secret, iv);
+				logger.info("[pushMessage] descryptedToken = {}", descryptedToken);
+				
+				String encryptedToken = CryptUtil.Encrypt(CryptUtil.AES, "ThisIsAPushMessageApi", secret, iv);
+				logger.info("[pushMessage] DEBUG CHECK : ThisIsAPushMessageApi >> encryptedToken = {}", encryptedToken);
+
+				if (!descryptedToken.equals(originalToken)) {
+					return new ResponseEntity<>("{\"result\": 0, \"msg\": \"Invalid token.\"}", HttpStatus.UNAUTHORIZED);
+				}
+			}
+
+			PNPService.tell(pushApiModel);
+
+			return new ResponseEntity<>("{\"result\": 1, \"msg\": \"Success.\"}", HttpStatus.OK);
+		} catch (Exception e) {
+
+			logger.error("[pushMessage] Exception = {}", e);
+			
+			if (e instanceof IllegalArgumentException) {
+				return new ResponseEntity<>("{\"result\": 0, \"msg\": \"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
+			}
+			else if (e instanceof BadPaddingException || e instanceof IllegalBlockSizeException) {
+				return new ResponseEntity<>("{\"result\": 0, \"msg\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
+			}
+
+			return new ResponseEntity<>("{\"result\": 0, \"msg\": \"" + e.getMessage() + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

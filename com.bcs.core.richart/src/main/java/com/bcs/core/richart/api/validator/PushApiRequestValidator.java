@@ -86,4 +86,44 @@ public class PushApiRequestValidator {
 		
 		return;
 	}
+	
+
+	public static void validateForSpringTree(String requestBodyString, PushApiModel pushApiModel) throws IllegalArgumentException, ParseException {
+		JSONArray uids = null;
+		JSONArray messageList = null;
+		JSONObject requestBody = new JSONObject(requestBodyString);
+		
+		if(!requestBody.has("uid"))
+			throw new IllegalArgumentException("Parameter 'uid' is required.");
+		else {
+			String uid = requestBody.get("uid").toString();
+			
+			if(uid.trim().charAt(0) != '[')
+				throw new IllegalArgumentException("Parameter 'uid' must be an array.");
+			
+			uids = new JSONArray(uid);
+			
+			if(uids.length() == 0)
+				throw new IllegalArgumentException("Parameter 'uid' cannot be empty.");
+		}
+		
+		if(!requestBody.has("messages"))
+			throw new IllegalArgumentException("Parameter 'messages' is required.");
+		else {
+			String messages = requestBody.get("messages").toString();
+			
+			if(messages.trim().charAt(0) != '[')
+				throw new IllegalArgumentException("Parameter 'messages' must be an array.");
+			
+			messageList = new JSONArray(messages);
+			
+			if(messageList.length() == 0)
+				throw new IllegalArgumentException("Parameter 'messages' cannot be empty.");
+		}
+		
+		pushApiModel.setUid(uids);
+		pushApiModel.setMessages(messageList);
+		
+		return;
+	}
 }

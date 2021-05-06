@@ -11,7 +11,7 @@
 		<console name="Console" target="SYSTEM_OUT">
 			<!--控制檯只輸出level及以上級別的資訊（onMatch），其他的直接拒絕（onMismatch） -->
 			<ThresholdFilter 
-				level="info" 
+				level="INFO" 
 				onMatch="ACCEPT"
 				onMismatch="DENY" />
 				
