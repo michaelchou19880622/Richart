@@ -160,7 +160,9 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					springTreeCampaignFlow.setStatus(SpringTreeCampaignFlow.STATUS_INPROGRESS);
 					springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
 				}
-			} else if (springTreeCampaignFlow.getStatus().equals(SpringTreeCampaignFlow.STATUS_INPROGRESS)) {
+			}
+			
+			if (springTreeCampaignFlow.getStatus().equals(SpringTreeCampaignFlow.STATUS_INPROGRESS)){
 				logger.info("用戶正在春樹七夕活動流程中！, uid = {}, status = {}", springTreeCampaignFlow.getUid(), springTreeCampaignFlow.getStatus());
 				
 				if (MsgBotReceive.EVENT_TYPE_POSTBACK.equals(content.getEventType())) {
@@ -170,7 +172,26 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 				// 將用戶訊息全部轉發給春樹
 				ApplicationContextProvider.getApplicationContext().getBean(MessageTransmitService.class).transmitToSpringTreeBOT(MID, replyToken, text);
 				return -99L;
-			} 
+			}
+			
+//			else if (springTreeCampaignFlow.getStatus().equals(SpringTreeCampaignFlow.STATUS_FINISHED)) {
+//				// 判斷是否為春樹七夕活動關鍵字？
+//				if (KEYWORD_SPRINGTREE_CAMPAIGN_START.equals(text)) {
+//					springTreeCampaignFlow.setModifyTime(new Date());
+//					springTreeCampaignFlow.setStatus(SpringTreeCampaignFlow.STATUS_INPROGRESS);
+//					springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
+//				}
+//			} else if (springTreeCampaignFlow.getStatus().equals(SpringTreeCampaignFlow.STATUS_INPROGRESS)) {
+//				logger.info("用戶正在春樹七夕活動流程中！, uid = {}, status = {}", springTreeCampaignFlow.getUid(), springTreeCampaignFlow.getStatus());
+//				
+//				if (MsgBotReceive.EVENT_TYPE_POSTBACK.equals(content.getEventType())) {
+//					text = content.getPostbackData();
+//				}
+//				
+//				// 將用戶訊息全部轉發給春樹
+//				ApplicationContextProvider.getApplicationContext().getBean(MessageTransmitService.class).transmitToSpringTreeBOT(MID, replyToken, text);
+//				return -99L;
+//			} 
 			
 			logger.debug("=== Check is line user exist? ===");
 			LineUser lineUser = lineUserService.findByMidAndCreateUnbind(MID);

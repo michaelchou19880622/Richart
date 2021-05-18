@@ -287,20 +287,20 @@ public class ConversationalCommerceController {
 		}
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/pushMessageForSpringTreeTest", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/st/sendMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> pushMessageTest(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
         log.info("Requestbody : {}", requestBodyString);
         
         try {
             if(request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"missing headers\"}", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("{\"result\": \"Missing header 'Authorization'\"}", HttpStatus.BAD_REQUEST);
             }
             
             String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
             log.info("authorization : {}", authorization);
             
             if(authorization.split("Basic ").length != 2) {
-                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid authorization format\"}", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("{\"result\": \"Invalid Authorization format\"}", HttpStatus.BAD_REQUEST);
             }
             
             String token = authorization.split("Basic ")[1];
@@ -319,7 +319,7 @@ public class ConversationalCommerceController {
             log.info("decryptedToken : {}", decryptedToken);
             
             if(!decryptedToken.equals(originalToken)) {
-                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("{\"result\": \"Invalid Authorization\"}", HttpStatus.BAD_REQUEST);
             }
             
             JSONObject requestBody = new JSONObject(requestBodyString);
@@ -347,12 +347,12 @@ public class ConversationalCommerceController {
             JSONObject jsonObjectResult = restfulUtil.execute();
             log.info("RestfulUtil execute result = {}", jsonObjectResult);
             
-            return new ResponseEntity<>("{\"error\": \"false\", \"message\": \"success\"}", HttpStatus.OK);
+            return new ResponseEntity<>("{\"result\": \"Success\"}", HttpStatus.OK);
         } catch(Exception e) {
             log.info("Exception = {}", e);
             
             if(e instanceof BadPaddingException || e instanceof IllegalBlockSizeException || e instanceof IllegalArgumentException) {
-                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"invalid token\"}", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("{\"result\": \"Invalid Authorization\"}", HttpStatus.BAD_REQUEST);
             } else if(e instanceof HttpClientErrorException) {
                 
                 String responseMessage = ((HttpClientErrorException) e).getResponseBodyAsString();
@@ -365,21 +365,20 @@ public class ConversationalCommerceController {
                     JSONObject responseMessageObject = new JSONObject(responseMessage);
                     String message = responseMessageObject.getString("message");
                     
-                    return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + message + "\"}", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("{\"result\": \"" + message + "\"}", HttpStatus.BAD_REQUEST);
                 } else {
-                    return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + e.getMessage() + "\"}", responseStatusCode);
+                    return new ResponseEntity<>("{\"result\": \"" + e.getMessage() + "\"}", responseStatusCode);
                 }
             } else if(e instanceof JSONException) {
-                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"The request body has 1 error(s)\"}", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("{\"result\": \"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
             } else {
                 String errorMsg = e.getMessage();
-                
-                return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + errorMsg + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>("{\"result\": \"" + errorMsg + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/closeSpringTreeCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/st/closeCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> closeSpringTreeCampaign(HttpServletRequest request, HttpServletResponse response, @RequestParam String uid) {
         log.info("uid : {}", uid);
         
@@ -389,11 +388,11 @@ public class ConversationalCommerceController {
 			springTreeCampaignFlow.setStatus(SpringTreeCampaignFlow.STATUS_FINISHED);
 			springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
             
-            return new ResponseEntity<>("{\"error\": \"false\", \"message\": \"success\"}", HttpStatus.OK);
+            return new ResponseEntity<>("{\"result\": \"success\"}", HttpStatus.OK);
         } catch(Exception e) {
             log.info("Exception = {}", e);
 			String errorMsg = e.getMessage();
-			return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + errorMsg + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>("{\"result\": \"" + errorMsg + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
