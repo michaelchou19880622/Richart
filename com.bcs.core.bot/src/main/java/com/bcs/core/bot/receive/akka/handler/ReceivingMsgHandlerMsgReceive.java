@@ -45,6 +45,8 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 	/** Logger **/
 	private static Logger logger = LogManager.getLogger(ReceivingMsgHandlerMsgReceive.class);
 	
+	final static String KEYWORD_SPRINGTREE_CAMPAIGN_START = "春樹七夕活動測試";
+	
 	@Override
 	public void onReceive(Object message){
 		logger.debug("-------Get Message Save-------");
@@ -137,13 +139,12 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 		logger.debug("replyToken:" + replyToken);
 		
 		try {
-			// 檢查用戶是否處於春樹七夕活動流程中？
+			// Step 1 : call 春樹 api 檢查用戶狀態
 			
-			final String KEYWORD_SPRINGTREE_CAMPAIGN_START = "春樹七夕活動測試";
-			
+			// Step 2 : 檢查用戶是否處於春樹七夕活動流程中？ ( 資料表：SPRINGTREE_CAMPAIGN_FLOW )
 			SpringTreeCampaignFlow springTreeCampaignFlow = springTreeCampaignFlowService.findByUid(MID);
 			if (springTreeCampaignFlow == null) {
-				// 判斷是否為春樹七夕活動關鍵字？
+				// Step 3 : 判斷是否為春樹七夕活動關鍵字？
 				if (KEYWORD_SPRINGTREE_CAMPAIGN_START.equals(text)) {
 					Date curDate = new Date();
 					springTreeCampaignFlow = new SpringTreeCampaignFlow();
@@ -154,7 +155,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 					springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
 				}
 			} else if (springTreeCampaignFlow.getStatus().equals(SpringTreeCampaignFlow.STATUS_FINISHED)) {
-				// 判斷是否為春樹七夕活動關鍵字？
+				// Step 3 : 判斷是否為春樹七夕活動關鍵字？
 				if (KEYWORD_SPRINGTREE_CAMPAIGN_START.equals(text)) {
 					springTreeCampaignFlow.setModifyTime(new Date());
 					springTreeCampaignFlow.setStatus(SpringTreeCampaignFlow.STATUS_INPROGRESS);
