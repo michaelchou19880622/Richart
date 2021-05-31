@@ -60,19 +60,34 @@ $(function(){
 		var gameTr = $(this).closest(".gameTrTemplate");
 		var selectedGameId = gameTr.find('.gameId').val();
 		var selectedGameType = gameTr.find('.gameType').html();
-		window.location.href=bcs.bcsContextPath + '/edit/gameCreatePage/' + selectedGameType + '?gameId=' + selectedGameId + '&actionType=Copy';
+		var url = bcs.bcsContextPath + '/edit/gameCreatePage/' + selectedGameType + '?gameId=' + selectedGameId + '&actionType=Copy';
+		if ($.BCS.validateURL(url)) {
+			window.location.href=encodeURI(url);
+		} else {
+			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+		}
 	});
 	
 	$('.btn_winner_list').click(function(e) {
 		var gameTr = $(this).closest(".gameTrTemplate");
 		var selectedGameId = gameTr.find('.gameId').val();
-		window.location.href=bcs.bcsContextPath + '/edit/winnerListPage?gameId=' + selectedGameId;
+		var url = bcs.bcsContextPath + '/edit/winnerListPage?gameId=' + selectedGameId;
+		if ($.BCS.validateURL(url)) {
+			window.location.href=encodeURI(url);
+		} else {
+			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+		}
 	});
 	
 	$('.btn_prize_list').click(function(e) {
 		var gameTr = $(this).closest(".gameTrTemplate");
 		var selectedGameId = gameTr.find('.gameId').val();
-		window.location.href=bcs.bcsContextPath + '/edit/prizeListPage?gameId=' + selectedGameId;
+		var url = bcs.bcsContextPath + '/edit/prizeListPage?gameId=' + selectedGameId;
+		if ($.BCS.validateURL(url)) {
+			window.location.href=encodeURI(url);
+		} else {
+			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+		}
 	});
 	
 	$('.btn_gen_qrcode').click(function(){

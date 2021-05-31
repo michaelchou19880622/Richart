@@ -703,19 +703,19 @@ $(function(){
 		$('#richMenuName').keyup(function() {
 			var txtLength = $(this).val().length;
 			var richMsgUrlTxtTr = $(this).closest("tr");
-			richMsgUrlTxtTr.find(".MdTxtInputCount").html(txtLength + "/300");
+			richMsgUrlTxtTr.find(".MdTxtInputCount").text(txtLength + "/300");
 		});
 		
 		$('#richMenuTitle').keyup(function() {
 			var txtLength = $(this).val().length;
 			var richMsgUrlTxtTr = $(this).closest("tr");
-			richMsgUrlTxtTr.find(".MdTxtInputCount").html(txtLength + "/14");
+			richMsgUrlTxtTr.find(".MdTxtInputCount").text(txtLength + "/14");
 		});
 		
 		$(".richMsgLinkTxt").keyup(function(e) {
 			var txtLength = $(this).val().length;
 			var richMsgUrlTxtTr = $(this).closest("tr");
-			richMsgUrlTxtTr.find(".MdTxtInputCount").html(txtLength + "/100");
+			richMsgUrlTxtTr.find(".MdTxtInputCount").text(txtLength + "/100");
 		});
 	};
 	

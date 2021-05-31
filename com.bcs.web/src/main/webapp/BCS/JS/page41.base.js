@@ -148,7 +148,7 @@ $(function(){
 			appendBody.css('display', '');
 		    
 		    appendBody.find('.COUPON_ID').val(couponId);
-		    appendBody.find('img').attr('src', bcs.bcsContextPath + "/getResource/IMAGE/" + response.couponListImageId);
+		    appendBody.find('img').attr('src', encodeURI(bcs.bcsContextPath + "/getResource/IMAGE/" + response.couponListImageId));
 		    appendBody.find('.COUPON_DESCRIPTION').text(response.couponDescription);
 		    appendBody.find('.mdCMN07HeadTtl01').text('優惠劵：' + response.couponTitle);
 		    
@@ -595,11 +595,11 @@ $(function(){
 	
 	//樣板主標題隨輸入改變
 	$('#rewardCardMainTitle').change(function(){
-		$('.rewardCardMainTitle').html($('#rewardCardMainTitle').val());
+		$('.rewardCardMainTitle').text($('#rewardCardMainTitle').val());
 	});
 	//樣板副標題隨輸入改變
 	$('#rewardCardSubTitle').change(function(){
-		$('.rewardCardSubTitle').html($('#rewardCardSubTitle').val());
+		$('.rewardCardSubTitle').text($('#rewardCardSubTitle').val());
 	});
 	
 	// 有效期限

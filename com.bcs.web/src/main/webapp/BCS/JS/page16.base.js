@@ -48,7 +48,7 @@ $(function(){
 			var txtLength = $(this).val().length;
 			var txtInputCountTd = $(this).closest("td");
 			var maxLength = $(this).attr("maxlength")
-			txtInputCountTd.find(".MdTxtNotice01").html(txtLength + "/" + maxLength);
+			txtInputCountTd.find(".MdTxtNotice01").text(txtLength + "/" + maxLength);
 		});
 		$(".txtInputCount").trigger("keyup");
 	}

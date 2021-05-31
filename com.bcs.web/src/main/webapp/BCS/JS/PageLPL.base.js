@@ -121,7 +121,12 @@ $(function() {
 
     $('.btn_save').click(function() {
     	var searchText = $('#searchText').val();
-        window.location.replace(bcs.bcsContextPath + '/market/linePointListPage?searchText=' + searchText);
+		var url = bcs.bcsContextPath + '/market/linePointListPage?searchText=' + searchText;
+		if ($.BCS.validateURL(url)) {
+			window.location.replace(encodeURI(url));
+		} else {
+			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+		}
     });
     
     // do Delete

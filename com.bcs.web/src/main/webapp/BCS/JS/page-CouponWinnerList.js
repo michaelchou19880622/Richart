@@ -144,7 +144,12 @@ $(function(){
 		var startDate = $('#recoredStartDate').val();
 		var endDate = $('#recordEndDate').val();
 		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerListByCouponId?couponId=' + couponId + '&startDate=' + startDate + '&endDate=' + endDate+'&pageIndex='+pageIndex;
-		window.open(url,"_blank",  WINDOW_DEIMENSIONS);
+		
+		if ($.BCS.validateURL(url)) {
+			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);
+		} else {
+			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+		}
 	});
 	
 	$('.exportAllToExcel').click(function(){
@@ -152,7 +157,12 @@ $(function(){
 		var startDate = $('#recoredStartDate').val();
 		var endDate = $('#recordEndDate').val();
 		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerListByCouponId?couponId=' + couponId + '&startDate=' + startDate + '&endDate=' + endDate;
-		window.open(url,"_blank",  WINDOW_DEIMENSIONS);
+		
+		if ($.BCS.validateURL(url)) {
+			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);
+		} else {
+			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+		}
 	});
 	
 	$('.RightBtn').click(function(){

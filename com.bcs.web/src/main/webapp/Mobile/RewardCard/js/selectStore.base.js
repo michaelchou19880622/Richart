@@ -47,10 +47,10 @@ $(function(){
 			console.info(response);
 			var str = "";
 			if(response && response.status == 501){
-				str = "<br>[" + response.responseText + "]";
+				str = "\n[" + response.responseText + "]";
 			}
 			$('.wrapper').unblock();
-			$('.popup_text').html('優惠劵使用失敗' + str);
+ 			document.getElementById('popup_text').innerText='優惠劵使用失敗' + str;
 			$('.popup_box').css('margin-top', '150%');
 			$('.cancel').css('display', 'none');
 			$('.confirm').css('display', 'none');

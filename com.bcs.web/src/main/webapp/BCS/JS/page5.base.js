@@ -118,7 +118,12 @@ $(function(){
 		$('.btn_copy').click(function(e) {
 			var richMsgTr = $(this).closest(".richMsgTrTemplate");
 			var selectedRichId = richMsgTr.find('.richMsgId').val();
-			window.location.replace(bcs.bcsContextPath + '/edit/richMsgCreatePage?richId=' + selectedRichId + '&actionType=Copy');
+			var url = bcs.bcsContextPath + '/edit/richMsgCreatePage?richId=' + selectedRichId + '&actionType=Copy';
+			if ($.BCS.validateURL(url)) {
+				window.location.replace(encodeURI(url));
+			} else {
+				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			}
 		});
 	}
 

@@ -36,8 +36,13 @@ $(function(){
 			
 			var richMsgTr = $(this).closest(".richMsgTrTemplate");
 			var richId = richMsgTr.find('.richId').val();
-			
-			window.location.replace(bcs.bcsContextPath + '/edit/richMenuCreatePage?richId=' + richId + '&groupId=' + groupId + '&actionType=Copy');
+			var url = bcs.bcsContextPath + '/edit/richMenuCreatePage?richId=' + richId + '&groupId=' + groupId + '&actionType=Copy';
+		
+			if ($.BCS.validateURL(url)) {
+				window.location.replace(encodeURI(url));
+			} else {
+				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			}
 		});
 		
 	}
@@ -50,7 +55,12 @@ $(function(){
 			url : bcs.bcsContextPath + '/edit/updateRichMenuSendGroupByRichMenuGroupId?richMenuGroupId=' + groupId
 		}).success(function(response){
 			alert("聯繫成功！");
-			window.location.replace(bcs.bcsContextPath + '/edit/richMenuMemberListPage?groupId=' + groupId);
+			var url = bcs.bcsContextPath + '/edit/richMenuMemberListPage?groupId=' + groupId;
+			if ($.BCS.validateURL(url)) {
+				window.location.replace(encodeURI(url));
+			} else {
+				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			}
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
