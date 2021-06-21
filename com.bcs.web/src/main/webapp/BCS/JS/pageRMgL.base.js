@@ -44,8 +44,7 @@ $(function() {
 
         //var postData = {};
         //postData.richMenuGroupName = groupName;
-        console.info('richMenuGroupName', richMenuGroupName);
-		var url = bcs.bcsContextPath + '/edit/richMenuGroupListPage?richMenuGroupName=' + richMenuGroupName;
+		var url = bcs.bcsContextPath + '/edit/richMenuGroupListPage?richMenuGroupName=' + $.BCS.escapeHtml(richMenuGroupName);
 		if ($.BCS.validateURL(url)) {
 			window.location.replace(encodeURI(url));
 		} else {

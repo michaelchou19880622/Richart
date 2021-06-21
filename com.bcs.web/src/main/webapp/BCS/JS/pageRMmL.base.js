@@ -36,7 +36,7 @@ $(function(){
 			
 			var richMsgTr = $(this).closest(".richMsgTrTemplate");
 			var richId = richMsgTr.find('.richId').val();
-			var url = bcs.bcsContextPath + '/edit/richMenuCreatePage?richId=' + richId + '&groupId=' + groupId + '&actionType=Copy';
+			var url = bcs.bcsContextPath + '/edit/richMenuCreatePage?richId=' + $.BCS.escapeHtml(richId) + '&groupId=' + groupId + '&actionType=Copy';
 		
 			if ($.BCS.validateURL(url)) {
 				window.location.replace(encodeURI(url));

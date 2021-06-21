@@ -79,7 +79,7 @@ $(function(){
 			var reportData = $(this).closest("tr");
 			var richId = reportData.find('.richId').val();
 			var reportMsgSendId = reportData.find('.reportMsgSendId').val();
-			var url = 'reportCreatePage?richId=' + richId + '&reportMsgSendId=' + reportMsgSendId + '&actionType=Create';
+			var url = 'reportCreatePage?richId=' + $.BCS.escapeHtml(richId) + '&reportMsgSendId=' + $.BCS.escapeHtml(reportMsgSendId) + '&actionType=Create';
 			if ($.BCS.validateURL(url)) {
 				window.location.replace(encodeURI(url));
 			} else {
@@ -91,7 +91,7 @@ $(function(){
 		$('.edit').click(function(){
 			var reportData = $(this).closest("tr");
 			var reportId = reportData.find('.reportId').val();
-			var url = 'reportCreatePage?reportId=' + reportId + '&actionType=Edit';
+			var url = 'reportCreatePage?reportId=' + $.BCS.escapeHtml(reportId) + '&actionType=Edit';
 		
 			if ($.BCS.validateURL(url)) {
 				window.location.replace(encodeURI(url));
@@ -108,7 +108,7 @@ $(function(){
 			var reportId = reportData.find('.reportId').val();
 			$.ajax({
 				type : "DELETE",
-				url : bcs.bcsContextPath + '/admin/deletePushReport?reportId=' + reportId
+				url : bcs.bcsContextPath + '/admin/deletePushReport?reportId=' + $.BCS.escapeHtml(reportId)
 			}).success(function(response){
 				alert("刪除成功！");
 				loadDataFunc();

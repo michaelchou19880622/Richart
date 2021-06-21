@@ -67,11 +67,12 @@ $(function(){
 			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
 		}
 	});
-	
+
 	$('.btn_winner_list').click(function(e) {
 		var gameTr = $(this).closest(".gameTrTemplate");
 		var selectedGameId = gameTr.find('.gameId').val();
-		var url = bcs.bcsContextPath + '/edit/winnerListPage?gameId=' + selectedGameId;
+		var url = bcs.bcsContextPath + '/edit/winnerListPage?gameId=' + $.BCS.escapeHtml(selectedGameId)
+
 		if ($.BCS.validateURL(url)) {
 			window.location.href=encodeURI(url);
 		} else {
@@ -82,7 +83,7 @@ $(function(){
 	$('.btn_prize_list').click(function(e) {
 		var gameTr = $(this).closest(".gameTrTemplate");
 		var selectedGameId = gameTr.find('.gameId').val();
-		var url = bcs.bcsContextPath + '/edit/prizeListPage?gameId=' + selectedGameId;
+		var url = bcs.bcsContextPath + '/edit/prizeListPage?gameId=' + $.BCS.escapeHtml(selectedGameId);
 		if ($.BCS.validateURL(url)) {
 			window.location.href=encodeURI(url);
 		} else {

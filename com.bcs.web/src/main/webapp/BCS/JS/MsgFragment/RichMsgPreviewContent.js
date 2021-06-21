@@ -38,7 +38,7 @@ $(function(){
 			appendHtml += '<p style="font-size: larger; word-break:break-all; ">' + richUrlTxts[i] + '</p>' 
 						+ '<a href="' + url + '" target="_blank" style="color: #3665dd; font-size: larger; word-break:break-all; ">' + urlTxt + '</a>';
 		}
-		content.find('.previewContent').append(appendHtml);
+		content.find('.previewContent')[0].innerHTML = appendHtml;
 	}
 	
 	//產生圖片預覽的內容
@@ -83,7 +83,6 @@ $(function(){
 				+ (multiEndX[i] / 3) + ', ' + (multiEndY[i] / 3) + '" href="' + url + '" target="_blank" >';
 		}
 		
-		//影像地圖
-		content.find('map').append(appendHtml); 
+		content.find('map')[0].innerHTML = appendHtml;
 	}
 });

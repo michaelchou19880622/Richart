@@ -154,8 +154,14 @@ $(function(){
 		    
 		    appendBody.find('.MdBtn03Delete').click(deleteMsgContentEvent);
 		    
-		    $('#' + sessionStorage.getItem('prizeTrId') + ' .MsgPlace').append(appendBody);
-		    $('#' + sessionStorage.getItem('prizeTrId') + ' .TypeMsgSolid').hide();
+		    var selectedPrizeTrId = sessionStorage.getItem('prizeTrId');
+			if (selectedPrizeTrId != null) {
+				var prizeTrMsgPlace = document.querySelector('#' + selectedPrizeTrId + ' .MsgPlace');
+				var prizeTrTypeMsgSolid = document.querySelector('#' + selectedPrizeTrId + ' .TypeMsgSolid');
+			    $(prizeTrMsgPlace).append(appendBody);
+			    $(prizeTrTypeMsgSolid).hide();
+			}
+		    
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);

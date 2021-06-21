@@ -181,9 +181,12 @@ $(function(){
 	});
 	
 	$('.exportPageToExcel').click(function(){
+		if(!validateTimeRange()){
+			return false;
+		}
 		var startDate = $('#recoredStartDate').val();
 		var endDate = $('#recordEndDate').val();
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardRecord?rewardCardId=' + rewardCardId + '&startDate=' + startDate + '&endDate=' + endDate +'&pageIndex='+pageIndex;
+		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardRecord?rewardCardId=' + $.BCS.escapeHtml(rewardCardId) + '&startDate=' + startDate + '&endDate=' + endDate +'&pageIndex='+pageIndex;
 		
 		if ($.BCS.validateURL(url)) {
 			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);
@@ -193,10 +196,12 @@ $(function(){
 	});
 	
 	$('.exportAllToExcel').click(function(){
-		var couponId = $.urlParam("couponId");
+		if(!validateTimeRange()){
+			return false;
+		}
 		var startDate = $('#recoredStartDate').val();
 		var endDate = $('#recordEndDate').val();
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardRecord?rewardCardId=' + rewardCardId + '&startDate=' + startDate+ '&endDate=' + endDate;
+		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardRecord?rewardCardId=' + $.BCS.escapeHtml(rewardCardId) + '&startDate=' + startDate+ '&endDate=' + endDate;
 		if ($.BCS.validateURL(url)) {
 			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);
 		} else {

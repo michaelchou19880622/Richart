@@ -118,7 +118,7 @@ $(function(){
 		$('.btn_copy').click(function(e) {
 			var richMsgTr = $(this).closest(".richMsgTrTemplate");
 			var selectedRichId = richMsgTr.find('.richMsgId').val();
-			var url = bcs.bcsContextPath + '/edit/richMsgCreatePage?richId=' + selectedRichId + '&actionType=Copy';
+			var url = bcs.bcsContextPath + '/edit/richMsgCreatePage?richId=' + $.BCS.escapeHtml(selectedRichId) + '&actionType=Copy';
 			if ($.BCS.validateURL(url)) {
 				window.location.replace(encodeURI(url));
 			} else {

@@ -23,7 +23,7 @@ $(document).ready(function() {
                 $(".coupon_alert > strong").css("background", backgroundCSS);
 
 				var kvBgImage = cdnpath + 'Mobile/Coupon/images/kv.png';
-				var kvClass = document.getElementsByClassName('kv')[0];
+				var kvClass = document.getElementsByClassName('old_kv')[0];
 				var img = kvClass.getElementsByTagName('img')[0];
 				img.src = kvBgImage;
 		});

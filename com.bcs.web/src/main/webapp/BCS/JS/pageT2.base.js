@@ -103,7 +103,7 @@ $(function(){
 	$('.btn_copy').click(function(e) {
 		var templateMsgTr = $(this).closest(".templateMsgTrTemplate");
 		var selectedTemplateId = templateMsgTr.find('.templateMsgId').val();
-		var url = bcs.bcsContextPath + '/edit/templateMsgCreatePage?templateId=' + selectedTemplateId + '&actionType=Copy';
+		var url = bcs.bcsContextPath + '/edit/templateMsgCreatePage?templateId=' + $.BCS.escapeHtml(selectedTemplateId) + '&actionType=Copy';
 		if ($.BCS.validateURL(url)) {
 			window.location.replace(encodeURI(url));
 		} else {

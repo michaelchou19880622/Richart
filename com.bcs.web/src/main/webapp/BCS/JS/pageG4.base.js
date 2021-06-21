@@ -254,11 +254,15 @@ $(function(){
     	position: { my: "top", at: "top", of: window  }
     });
 	$('.exportPageToExcel').click(function(){
+		if(!validateTimeRange()){
+			return false;
+		}
+		
 		var startDate = $('#winnerListStartDate').val();
 		var endDate = $('#winnerListEndDate').val();
 		
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerList?gameId=' + gameId + '&startDate=' + startDate + '&endDate=' + endDate+'&pageIndex='+pageIndex;
-		(couponPrizeId !== null)? url += '&couponPrizeId=' + couponPrizeId:null;
+		var url = bcs.bcsContextPath + '/edit/exportToExcelForWinnerList?gameId=' + $.BCS.escapeHtml(gameId) + '&startDate=' + startDate + '&endDate=' + endDate + '&pageIndex=' + pageIndex;
+//		(couponPrizeId !== null)? url += '&couponPrizeId=' + couponPrizeId:null;
 		
 		if ($.BCS.validateURL(url)) {
 			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);
@@ -267,11 +271,15 @@ $(function(){
 		}
 	})
 	$('.exportAllToExcel').click(function(){
+		if(!validateTimeRange()){
+			return false;
+		}
+		
 		var startDate = $('#winnerListStartDate').val();
 		var endDate = $('#winnerListEndDate').val();
 		
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerList?gameId=' + gameId  + '&startDate=' + startDate + '&endDate=' + endDate;
-		(couponPrizeId !== null)? url += '&couponPrizeId=' + couponPrizeId:null;
+		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerList?gameId=' + $.BCS.escapeHtml(gameId)  + '&startDate=' + startDate + '&endDate=' + endDate;
+//		(couponPrizeId !== null)? url += '&couponPrizeId=' + couponPrizeId:null;
 		
 		if ($.BCS.validateURL(url)) {
 			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);

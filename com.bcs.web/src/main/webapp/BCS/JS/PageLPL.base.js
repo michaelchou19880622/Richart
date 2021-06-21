@@ -30,7 +30,7 @@ $(function() {
 	var getListData = function(name, url){
 		if(searchText != null && searchText != ""){
 			url += 'Search/' + searchText;
-			console.info("url:", url);
+//			console.info("url:", url);
 		}
 		
         $.ajax({
@@ -41,10 +41,10 @@ $(function() {
 			addTab(name);
 			var templateTable = originalTable.clone(true);
 			
-            console.info("response:", response);
+//            console.info("response:", response);
             $.each(response, function(i, o) {
                 var templateTr = originalTr.clone(true); //增加一行
-                console.info("templateTr:", templateTr);
+//                console.info("templateTr:", templateTr);
                 // templateTr.find('.campaignCode a').attr('href', bcs.bcsContextPath + '/getAllLinePointMainList?campaignCode=' + o.campaignCode);
                 templateTr.find('.campaignCode').html(o.serialId);
                 templateTr.find('.campaignName').html(o.title);
@@ -121,7 +121,7 @@ $(function() {
 
     $('.btn_save').click(function() {
     	var searchText = $('#searchText').val();
-		var url = bcs.bcsContextPath + '/market/linePointListPage?searchText=' + searchText;
+		var url = bcs.bcsContextPath + '/market/linePointListPage?searchText=' + $.BCS.escapeHtml(searchText);
 		if ($.BCS.validateURL(url)) {
 			window.location.replace(encodeURI(url));
 		} else {

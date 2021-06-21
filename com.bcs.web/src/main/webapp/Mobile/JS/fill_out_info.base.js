@@ -47,7 +47,7 @@ $(function(){
 	            success: function(response) {
 	            	$.LoadingOverlay("hide");
 
-				var url = '../m/getCoupon?counponId=' + COUPONID;
+				var url = '../m/getCoupon?counponId=' + $.BCS.escapeHtml(COUPONID);
 				if ($.BCS.validateURL(url)) {
 					location.href = encodeURI(url);
 				} else {

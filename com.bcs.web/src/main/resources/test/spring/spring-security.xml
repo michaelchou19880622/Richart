@@ -21,7 +21,7 @@
 		<!-- Fix Missing Content Security Policy Issues 20210605 (Start) -->
 		<intercept-url pattern="/bcs/getLink/**" access="permitAll"/>
     	<intercept-url pattern="/Mobile/**" access="permitAll"/>
-    	<intercept-url pattern="/api/**" access="permitAll"
+    	<intercept-url pattern="/api/**" access="permitAll"/>
 		<intercept-url pattern="/webjars/**" access="permitAll"/>
 		<intercept-url pattern="/line/**" access="permitAll"/>
 		<intercept-url pattern="/BCS/**" access="permitAll"/>

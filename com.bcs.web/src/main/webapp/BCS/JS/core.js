@@ -299,9 +299,12 @@ $(function(){
 		$('textarea').each(function(id, obj) {if ($(obj).attr('placeholder') == $(obj).text()) {$(obj).text($(obj).attr('placeholder'))}});
 	})
 	
+	$.BCS.sanitizer = function sanitizer(s) {
+		return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+	}
+	
 	$.BCS.validateURL = function(surl) {
 		var parsedUrl = parseURL(surl);
-		console.info('parsedUrl = ', parsedUrl);
 		var urlHostname = parsedUrl.hostname.trim();
 		if (urlHostname == '') {
 			return true;
@@ -316,9 +319,9 @@ $(function(){
 
 	function parseURL(url) {
 		var a = document.createElement('a');
-		a.href = url;
+		a.setAttribute('href', encodeURI(url));
 		return {
-			source: url,
+			source: encodeURI(url),
 			protocol: a.protocol.replace(':', ''),
 			hostname: a.hostname,
 			host: a.host,
