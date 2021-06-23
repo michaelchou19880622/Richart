@@ -148,14 +148,21 @@ $(function(){
 			appendBody.css('display', '');
 
 		    appendBody.find('.COUPON_ID').val(couponId);
-		    appendBody.find('img').attr('src', bcs.bcsContextPath + "/getResource/IMAGE/" + response.couponListImageId);
+		    appendBody.find('img').attr('src', encodeURI(bcs.bcsContextPath + "/getResource/IMAGE/" + response.couponListImageId));
 		    appendBody.find('.COUPON_DESCRIPTION').text(response.couponDescription);
 		    appendBody.find('.mdCMN07HeadTtl01').text('優惠劵：' + response.couponTitle);
 		    
 		    appendBody.find('.MdBtn03Delete').click(deleteMsgContentEvent);
 		    
-		    $('#' + sessionStorage.getItem('prizeTrId') + ' .MsgPlace').append(appendBody);
-		    $('#' + sessionStorage.getItem('prizeTrId') + ' .TypeMsgSolid').hide();
+		    var selectedPrizeTrId = sessionStorage.getItem('prizeTrId');
+			if (selectedPrizeTrId != null) {
+				selectedPrizeTrId = $.BCS.escapeHtml(selectedPrizeTrId);
+				var prizeTrMsgPlace = document.querySelector('#' + selectedPrizeTrId + ' .MsgPlace');
+				var prizeTrTypeMsgSolid = document.querySelector('#' + selectedPrizeTrId + ' .TypeMsgSolid');
+			    $(prizeTrMsgPlace).append(appendBody);
+			    $(prizeTrTypeMsgSolid).hide();
+			}
+		    
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);

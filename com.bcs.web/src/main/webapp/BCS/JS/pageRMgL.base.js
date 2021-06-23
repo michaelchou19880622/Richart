@@ -44,8 +44,12 @@ $(function() {
 
         //var postData = {};
         //postData.richMenuGroupName = groupName;
-        console.info('richMenuGroupName', richMenuGroupName);
-        window.location.replace(bcs.bcsContextPath + '/edit/richMenuGroupListPage?richMenuGroupName=' + richMenuGroupName);
+		var url = bcs.bcsContextPath + '/edit/richMenuGroupListPage?richMenuGroupName=' + $.BCS.escapeHtml(richMenuGroupName);
+		if ($.BCS.validateURL(url)) {
+			window.location.replace(encodeURI(url));
+		} else {
+			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+		}
 //
 //        $.ajax({
 //            type: "POST",

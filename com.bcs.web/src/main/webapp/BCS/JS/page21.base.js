@@ -105,7 +105,7 @@ $(function(){
 		console.info("startDate", startDate);
 		console.info("endDate", endDate);
 		var n = parseInt((new Date(endDate) - new Date(startDate)) / 86400000);
-		$('.MdTxtNotice01').html("顯示以下來源的" + (n+1) + "天資料 " + startDate + "~" + endDate);
+		$('.MdTxtNotice01').text("顯示以下來源的" + (n+1) + "天資料 " + startDate + "~" + endDate);
 		$('.LyMain').block($.BCS.blockMsgRead);
 		$.ajax({
 			type : "GET",

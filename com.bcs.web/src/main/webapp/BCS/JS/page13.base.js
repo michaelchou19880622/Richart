@@ -424,7 +424,7 @@ $(function(){
 	$('.inputKeyup').keyup(function() {
 		var txtLength = $(this).val().length;
 		var richMsgUrlTxtTr = $(this).closest("td");
-		richMsgUrlTxtTr.find(".MdTxtInputCount").html(txtLength + "/" + richMsgUrlTxtTr.find(".MdTxtInputCount").attr('limit'));
+		richMsgUrlTxtTr.find(".MdTxtInputCount").text(txtLength + "/" + richMsgUrlTxtTr.find(".MdTxtInputCount").attr('limit'));
 	});
 	
 	var createKeywordBody = function(keywordSetting){

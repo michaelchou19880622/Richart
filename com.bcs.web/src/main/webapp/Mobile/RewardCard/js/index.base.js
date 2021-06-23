@@ -40,10 +40,10 @@ $(function(){
 			console.info(response);
 			var str = "";
 			if(response && response.status == 501){
-				str = "<br>[" + response.responseText + "]";
+				str = "\n[" + response.responseText + "]";
 			}
 			$('.wrapper').unblock();
-			$('.popup_text').html('集點卡領取失敗' + str);
+			document.getElementById('popup_text').innerText='集點卡領取失敗' + str;
 			$('.cancel').css('display', 'none');
 			$('.confirm').css('display', 'none');
 			$('.check').css('display', '');
@@ -88,10 +88,10 @@ $(function(){
 				console.info(response);
 				var str = "";
 				if(response && response.status == 501){
-					str = "<br>[" + response.responseText + "]";
+					str = "\n[" + response.responseText + "]";
 				}
 				$('.wrapper').unblock();
-				$('.popup_text').html('集點卡領取失敗' + str);
+				document.getElementById('popup_text').innerText='集點卡領取失敗' + str;
 				$('.cancel').css('display', 'none');
 				$('.confirm').css('display', 'none');
 				$('.check').css('display', '');
@@ -140,10 +140,10 @@ $(function(){
 			console.info(response);
 			var str = "";
 			if(response && response.status == 501){
-				str = "<br>[" + response.responseText + "]";
+				str = "\n[" + response.responseText + "]";
 			}
 			$('.wrapper').unblock();
-			$('.popup_text').html('集點卡錯誤失敗' + str);
+ 			document.getElementById('popup_text').innerText='集點卡錯誤失敗' + str;
 			$('.cancel').css('display', 'none');
 			$('.confirm').css('display', 'none');
 			$('.check').css('display', '');

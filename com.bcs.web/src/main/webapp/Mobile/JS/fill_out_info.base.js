@@ -46,16 +46,22 @@ $(function(){
 				data : JSON.stringify(userForm),
 	            success: function(response) {
 	            	$.LoadingOverlay("hide");
-	            	location.href = '../m/getCoupon?counponId=' + COUPONID;
+
+				var url = '../m/getCoupon?counponId=' + $.BCS.escapeHtml(COUPONID);
+				if ($.BCS.validateURL(url)) {
+					location.href = encodeURI(url);
+				} else {
+					alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+				}
 	          	},
 	          	error: function(response) {
 	          		$.LoadingOverlay("hide");
 	          		var str = "";
 	          		if(response && response.status == 501){
-	    				str = "<br>[" + response.responseText + "]";
+	    				str = "\n[" + response.responseText + "]";
 	    			}
 	          		$('.wrapper').unblock();
-	    			$('.popup_text').html('使用者資訊送出失敗' + str);
+ 					document.getElementById('popup_text').innerText='使用者資訊送出失敗' + str;
 	    			$('.popup_box').css('margin-top', '80%').mousemove();
 	    			$('.cancel').css('display', 'none');
 	    			$('.confirm').css('display', 'none');

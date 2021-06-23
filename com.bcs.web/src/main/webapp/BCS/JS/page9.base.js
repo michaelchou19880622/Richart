@@ -100,8 +100,6 @@ $(function(){
 			mid : lineAccount
 		};
 		
-		console.info('postData', postData);
-				
 		switch (actionType) {
 		case 'adminCreate':
 			if (!confirm('請確認是否建立')) {

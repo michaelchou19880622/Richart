@@ -35,7 +35,14 @@ $(function(){
 	$('.btn_winner_list').click(function(e) {
 		var prizeTr = $(this).closest(".prizeTrTemplate");
 		var selectedPrizeId = prizeTr.find('.couponPrizeId').val();
-		window.location.replace(bcs.bcsContextPath + '/edit/winnerListPage?gameId=' + gameId + '&couponPrizeId=' + selectedPrizeId);
+		var url = bcs.bcsContextPath + '/edit/winnerListPage?gameId=' + gameId + '&couponPrizeId=' + selectedPrizeId;
+		
+		if ($.BCS.validateURL(url)) {
+			window.location.replace(encodeURI(url));
+		} else {
+			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+		}
+		
 	});
 	
 	var initPage = function(){

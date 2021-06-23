@@ -79,14 +79,25 @@ $(function(){
 			var reportData = $(this).closest("tr");
 			var richId = reportData.find('.richId').val();
 			var reportMsgSendId = reportData.find('.reportMsgSendId').val();
-	 		window.location.replace('reportCreatePage?richId=' + richId + '&reportMsgSendId=' + reportMsgSendId + '&actionType=Create');
+			var url = 'reportCreatePage?richId=' + $.BCS.escapeHtml(richId) + '&reportMsgSendId=' + $.BCS.escapeHtml(reportMsgSendId) + '&actionType=Create';
+			if ($.BCS.validateURL(url)) {
+				window.location.replace(encodeURI(url));
+			} else {
+				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			}
 		});
 		
 		//設定編輯按鈕
 		$('.edit').click(function(){
 			var reportData = $(this).closest("tr");
 			var reportId = reportData.find('.reportId').val();
-	 		window.location.replace('reportCreatePage?reportId=' + reportId + '&actionType=Edit');
+			var url = 'reportCreatePage?reportId=' + $.BCS.escapeHtml(reportId) + '&actionType=Edit';
+		
+			if ($.BCS.validateURL(url)) {
+				window.location.replace(encodeURI(url));
+			} else {
+				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			}
 		});
 		
 		//設定刪除按鈕
@@ -97,7 +108,7 @@ $(function(){
 			var reportId = reportData.find('.reportId').val();
 			$.ajax({
 				type : "DELETE",
-				url : bcs.bcsContextPath + '/admin/deletePushReport?reportId=' + reportId
+				url : bcs.bcsContextPath + '/admin/deletePushReport?reportId=' + $.BCS.escapeHtml(reportId)
 			}).success(function(response){
 				alert("刪除成功！");
 				loadDataFunc();
@@ -261,7 +272,7 @@ $(function(){
 		var endDate = $('#pushReportEndDate').val();
 		
 		var n = parseInt((new Date(endDate) - new Date(startDate)) / 86400000);
-		$('.MdTxtNotice01').html("顯示以下來源的" + (n+1) + "天資料 " + startDate + "~" + endDate);
+		$('.MdTxtNotice01').text("顯示以下來源的" + (n+1) + "天資料 " + startDate + "~" + endDate);
 		
 		$.ajax({
 			type : "GET",

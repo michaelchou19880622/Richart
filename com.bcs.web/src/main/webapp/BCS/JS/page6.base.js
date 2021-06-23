@@ -369,13 +369,13 @@ $(function(){
 		$('#richMsgTitle').keyup(function() {
 			var txtLength = $(this).val().length;
 			var richMsgUrlTxtTr = $(this).closest("tr");
-			richMsgUrlTxtTr.find(".MdTxtInputCount").html(txtLength + "/100");
+			richMsgUrlTxtTr.find(".MdTxtInputCount").text(txtLength + "/100");
 		});
 		
 		$(".richMsgLinkTxt").keyup(function(e) {
 			var txtLength = $(this).val().length;
 			var richMsgUrlTxtTr = $(this).closest("tr");
-			richMsgUrlTxtTr.find(".MdTxtInputCount").html(txtLength + "/100");
+			richMsgUrlTxtTr.find(".MdTxtInputCount").text(txtLength + "/100");
 		});
 	};
 	

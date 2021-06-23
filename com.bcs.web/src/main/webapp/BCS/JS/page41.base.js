@@ -148,15 +148,24 @@ $(function(){
 			appendBody.css('display', '');
 		    
 		    appendBody.find('.COUPON_ID').val(couponId);
-		    appendBody.find('img').attr('src', bcs.bcsContextPath + "/getResource/IMAGE/" + response.couponListImageId);
+			
+			var url = bcs.bcsContextPath + "/getResource/IMAGE/" + response.couponListImageId;
+			if ($.BCS.validateURL(url)) {
+				appendBody.find('img').attr('src', encodeURI(url));
+			} else {
+				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			}
 		    appendBody.find('.COUPON_DESCRIPTION').text(response.couponDescription);
 		    appendBody.find('.mdCMN07HeadTtl01').text('優惠劵：' + response.couponTitle);
 		    
 		    appendBody.find('.MdBtn03Delete').click(deleteMsgContentEvent);
-		    
 		    var couponSeleteId = sessionStorage.getItem('couponSeleteId');
-		    $('#' + couponSeleteId + ' .MsgPlace').append(appendBody);
-		    $('#' + couponSeleteId + ' .TypeMsgSolid').hide();
+			if (couponSeleteId != null) {
+				var couponMsgPlace = document.querySelector('#' + couponSeleteId + ' .MsgPlace');
+				var couponTypeMsgSolid = document.querySelector('#' + couponSeleteId + ' .TypeMsgSolid');
+				$(couponMsgPlace).append(appendBody);
+			    $(couponTypeMsgSolid).hide();
+			}
 		}).fail(function(response){
 			console.info(response);
 			$.FailResponse(response);
@@ -595,11 +604,11 @@ $(function(){
 	
 	//樣板主標題隨輸入改變
 	$('#rewardCardMainTitle').change(function(){
-		$('.rewardCardMainTitle').html($('#rewardCardMainTitle').val());
+		$('.rewardCardMainTitle').text($('#rewardCardMainTitle').val());
 	});
 	//樣板副標題隨輸入改變
 	$('#rewardCardSubTitle').change(function(){
-		$('.rewardCardSubTitle').html($('#rewardCardSubTitle').val());
+		$('.rewardCardSubTitle').text($('#rewardCardSubTitle').val());
 	});
 	
 	// 有效期限

@@ -273,7 +273,7 @@ $(function(){
 	$('#keywordInput').keyup(function() {
 		var txtLength = $(this).val().length;
 		var richMsgUrlTxtTr = $(this).closest("td");
-		richMsgUrlTxtTr.find(".MdTxtInputCount").html(txtLength + "/30");
+		richMsgUrlTxtTr.find(".MdTxtInputCount").text(txtLength + "/30");
 	});
 	
 	var createKeywordBody = function(keywordSetting){
