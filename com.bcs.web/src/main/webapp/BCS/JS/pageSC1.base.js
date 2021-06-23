@@ -156,6 +156,7 @@ $(function(){
 		    
 		    var selectedPrizeTrId = sessionStorage.getItem('prizeTrId');
 			if (selectedPrizeTrId != null) {
+				selectedPrizeTrId = $.BCS.escapeHtml(selectedPrizeTrId);
 				var prizeTrMsgPlace = document.querySelector('#' + selectedPrizeTrId + ' .MsgPlace');
 				var prizeTrTypeMsgSolid = document.querySelector('#' + selectedPrizeTrId + ' .TypeMsgSolid');
 			    $(prizeTrMsgPlace).append(appendBody);
