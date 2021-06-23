@@ -8,9 +8,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import akka.actor.UntypedActor;
-
-import com.bcs.core.api.service.LineUserStatusService;
 import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.bot.db.service.MsgBotReceiveService;
 import com.bcs.core.bot.send.service.SendingMsgService;
@@ -23,6 +20,8 @@ import com.bcs.core.record.service.CatchRecordOpAddReceive;
 import com.bcs.core.record.service.CatchRecordOpBlockedReceive;
 import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.ErrorRecord;
+
+import akka.actor.UntypedActor;
 
 public class ReceivingMsgHandlerMsgReceiveOp extends UntypedActor {
 
@@ -124,6 +123,8 @@ public class ReceivingMsgHandlerMsgReceiveOp extends UntypedActor {
 //				//call ricart api通知user已封鎖
 //                lineUserStatusService.callLineUserStatusAPI(MID, LineUser.STATUS_BLOCK, time.getTime());
 			}
+			
+			// for 七夕活動 : call 春數 api ( {domain}/chatbot/eventHandler )
 
 			try {
 				// Save Record

@@ -91,6 +91,7 @@ public enum CONFIG_STR {
 	SSO_LOGIN_RUL("sso.login.url"),
 	
 	API_ORIGINAL_TOKEN("api.original.token"),
+	API_CVDCAMPAIGN_TOKEN("api.cvdcampaign.token"),
 	AES_SECRET_KEY("aes.secret.key"),
 	AES_INITIALIZATION_VECTOR("aes.initialization.vector"),
 

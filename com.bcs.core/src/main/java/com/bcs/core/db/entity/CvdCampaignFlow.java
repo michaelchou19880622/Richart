@@ -1,7 +1,5 @@
 package com.bcs.core.db.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,8 +11,8 @@ import javax.persistence.Table;
 import com.bcs.core.json.AbstractBcsEntity;
 
 @Entity
-@Table(name = "SPRINGTREE_CAMPAIGN_FLOW", indexes = { @Index(name = "INDEX_ID", columnList = "ID") })
-public class SpringTreeCampaignFlow extends AbstractBcsEntity {
+@Table(name = "CVD_CAMPAIGN_FLOW", indexes = { @Index(name = "INDEX_ID", columnList = "ID") })
+public class CvdCampaignFlow extends AbstractBcsEntity {
 	private static final long serialVersionUID = 1L;
 
 	public static final String STATUS_INPROGRESS = "INPROGRESS";
@@ -22,16 +20,11 @@ public class SpringTreeCampaignFlow extends AbstractBcsEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
 	private Long id;
 
 	@Column(name = "UID", columnDefinition = "nvarchar(50)")
 	private String uid;
-
-	@Column(name = "CREATE_TIME")
-	private Date createTime;
-
-	@Column(name = "MODIFY_TIME")
-	private Date modifyTime;
 
 	@Column(name = "STATUS", columnDefinition = "nvarchar(20)")
 	private String status;
@@ -52,22 +45,6 @@ public class SpringTreeCampaignFlow extends AbstractBcsEntity {
 		this.uid = uid;
 	}
 
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	public Date getModifyTime() {
-		return modifyTime;
-	}
-
-	public void setModifyTime(Date modifyTime) {
-		this.modifyTime = modifyTime;
-	}
-
 	public String getStatus() {
 		return status;
 	}
@@ -78,7 +55,6 @@ public class SpringTreeCampaignFlow extends AbstractBcsEntity {
 
 	@Override
 	public String toString() {
-		return "SpringTreeCampaignFlow [id=" + id + ", uid=" + uid + ", createTime=" + createTime + ", modifyTime=" + modifyTime + ", status=" + status + "]";
+		return "SpringTreeCampaignFlow [id=" + id + ", uid=" + uid + ", status=" + status + "]";
 	}
-
 }

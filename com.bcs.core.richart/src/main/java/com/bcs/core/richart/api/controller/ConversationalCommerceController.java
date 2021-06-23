@@ -1,7 +1,5 @@
 package com.bcs.core.richart.api.controller;
 
-import java.util.Date;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,15 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.bcs.core.api.service.LineProfileService;
-import com.bcs.core.bot.db.entity.BotReplyRecord;
-import com.bcs.core.bot.db.service.BotReplyRecordService;
-import com.bcs.core.db.entity.SpringTreeCampaignFlow;
-import com.bcs.core.db.service.SpringTreeCampaignFlowService;
+import com.bcs.core.db.service.CvdCampaignFlowService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.enums.LINE_HEADER;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.smartrobot.service.SwitchIconService;
-import com.bcs.core.spring.ApplicationContextProvider;
 import com.bcs.core.utils.CryptUtil;
 import com.bcs.core.utils.DataUtils;
 import com.bcs.core.utils.RestfulUtil;
@@ -50,7 +44,7 @@ public class ConversationalCommerceController {
 	@Autowired
 	private LineProfileService lineProfileService;
 	@Autowired
-	private SpringTreeCampaignFlowService springTreeCampaignFlowService;
+	private CvdCampaignFlowService springTreeCampaignFlowService;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/pushMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> pushMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
@@ -284,262 +278,6 @@ public class ConversationalCommerceController {
 				return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"Invalid UID.\"}", HttpStatus.BAD_REQUEST);
 			} else
 				return new ResponseEntity<>("{\"error\": \"true\", \"message\": \"" + e.getMessage() + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@RequestMapping(method = RequestMethod.POST, value = "/st/pushMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> stPushMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
-		try {
-			if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-				return new ResponseEntity<>("{\"result\": \"Missing header 'Authorization'\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-			log.info("authorization : {}", authorization);
-
-			if (StringUtils.isBlank(authorization)) {
-				return new ResponseEntity<>("{\"result\": \"Parameter 'authorization' is required\"}", HttpStatus.BAD_REQUEST);
-			} else if (authorization.split("key=").length != 2) {
-				return new ResponseEntity<>("{\"result\": \"Invalid Authorization format\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			String token = authorization.split("key=")[1];
-			log.info("authorization key : {}", token);
-
-			String secret = CoreConfigReader.getString(CONFIG_STR.AES_SECRET_KEY, true);
-			log.info("secret : {}", secret);
-
-			String iv = CoreConfigReader.getString(CONFIG_STR.AES_INITIALIZATION_VECTOR, true);
-			log.info("iv : {}", iv);
-
-			String originalToken = CoreConfigReader.getString(CONFIG_STR.API_ORIGINAL_TOKEN, true);
-			log.info("originalToken : {}", originalToken);
-
-			String decryptedToken = CryptUtil.Decrypt(CryptUtil.AES, token, secret, iv);
-			log.info("decryptedToken : {}", decryptedToken);
-
-			if (!decryptedToken.equals(originalToken)) {
-				return new ResponseEntity<>("{\"result\": \"Invalid Authorization\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			if (StringUtils.isBlank(requestBodyString)) {
-				return new ResponseEntity<>("{\"result\": \"Request body is required\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			JSONObject requestBody = new JSONObject(requestBodyString);
-			log.info("requestBody : {}", requestBody);
-
-			String url = CoreConfigReader.getString(CONFIG_STR.LINE_MESSAGE_PUSH_URL.toString());
-			log.info("url : {}", url);
-
-			String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
-			log.info("accessToken : {}", accessToken);
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-			log.info("headers : {}", headers);
-
-			HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody.toString(), headers);
-
-			RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.POST, url, httpEntity);
-
-			JSONObject jsonObjectResult = restfulUtil.execute();
-			log.info("RestfulUtil execute result = {}", jsonObjectResult);
-
-			return new ResponseEntity<>("{\"result\": \"Success\"}", HttpStatus.OK);
-		} catch (Exception e) {
-			log.info("Exception = {}", e);
-
-			if (e instanceof BadPaddingException || e instanceof IllegalBlockSizeException || e instanceof IllegalArgumentException) {
-				return new ResponseEntity<>("{\"result\": \"Invalid Authorization\"}", HttpStatus.BAD_REQUEST);
-			} else if (e instanceof HttpClientErrorException) {
-
-				String responseMessage = ((HttpClientErrorException) e).getResponseBodyAsString();
-				log.info("responseMessage = {}", responseMessage);
-
-				if (responseMessage.contains("{\"message\"")) {
-					JSONObject responseMessageObject = new JSONObject(responseMessage);
-					String message = responseMessageObject.getString("message");
-
-					return new ResponseEntity<>("{\"result\": \"" + message + "\"}", HttpStatus.BAD_REQUEST);
-				} else {
-					return new ResponseEntity<>("{\"result\": \"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
-				}
-			} else if (e instanceof JSONException) {
-				return new ResponseEntity<>("{\"result\": \"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
-			} else {
-				String errorMsg = e.getMessage();
-				return new ResponseEntity<>("{\"result\": \"" + errorMsg + "\"}", HttpStatus.BAD_REQUEST);
-			}
-		}
-	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/st/replyMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> stReplyMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
-		try {
-			if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-				return new ResponseEntity<>("{\"result\": \"Missing header 'Authorization'\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-			log.info("authorization : {}", authorization);
-
-			if (StringUtils.isBlank(authorization)) {
-				return new ResponseEntity<>("{\"result\": \"Parameter 'authorization' is required\"}", HttpStatus.BAD_REQUEST);
-			} else if (authorization.split("key=").length != 2) {
-				return new ResponseEntity<>("{\"result\": \"Invalid Authorization format\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			String token = authorization.split("key=")[1];
-			log.info("authorization key : {}", token);
-
-			String secret = CoreConfigReader.getString(CONFIG_STR.AES_SECRET_KEY, true);
-			log.info("secret : {}", secret);
-
-			String iv = CoreConfigReader.getString(CONFIG_STR.AES_INITIALIZATION_VECTOR, true);
-			log.info("iv : {}", iv);
-
-			String originalToken = CoreConfigReader.getString(CONFIG_STR.API_ORIGINAL_TOKEN, true);
-			log.info("originalToken : {}", originalToken);
-
-			String decryptedToken = CryptUtil.Decrypt(CryptUtil.AES, token, secret, iv);
-			log.info("decryptedToken : {}", decryptedToken);
-
-			if (!decryptedToken.equals(originalToken)) {
-				return new ResponseEntity<>("{\"result\": \"Invalid Authorization\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			if (StringUtils.isBlank(requestBodyString)) {
-				return new ResponseEntity<>("{\"result\": \"Request body is required\"}", HttpStatus.BAD_REQUEST);
-			}
-			
-			JSONObject requestBody = new JSONObject(requestBodyString);
-			log.info("requestBody : {}", requestBody);
-
-			String replyToken = requestBody.getString("replyToken");
-			log.info("replyToken = {}", replyToken);
-
-			if (StringUtils.isBlank(replyToken)) {
-				return new ResponseEntity<>("{\"result\": \"Parameter 'replyToken' is required\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			String url = CoreConfigReader.getString(CONFIG_STR.LINE_MESSAGE_REPLY_URL.toString());
-			log.info("url : {}", url);
-
-			String accessToken = CoreConfigReader.getString(CONFIG_STR.Default.toString(), CONFIG_STR.ChannelToken.toString(), true);
-			log.info("accessToken : {}", accessToken);
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-			log.info("headers : {}", headers);
-
-			HttpEntity<String> httpEntity = new HttpEntity<String>(requestBody.toString(), headers);
-
-			RestfulUtil restfulUtil = new RestfulUtil(HttpMethod.POST, url, httpEntity);
-
-			JSONObject jsonObjectResult = restfulUtil.execute();
-			log.info("RestfulUtil execute result = {}", jsonObjectResult);
-
-			return new ResponseEntity<>("{\"result\": \"Success\"}", HttpStatus.OK);
-		} catch (Exception e) {
-			log.info("Exception = {}", e);
-
-			if (e instanceof BadPaddingException || e instanceof IllegalBlockSizeException || e instanceof IllegalArgumentException) {
-				return new ResponseEntity<>("{\"result\": \"Invalid Authorization\"}", HttpStatus.BAD_REQUEST);
-			} else if (e instanceof HttpClientErrorException) {
-
-				String responseMessage = ((HttpClientErrorException) e).getResponseBodyAsString();
-				log.info("responseMessage = {}", responseMessage);
-
-				if (responseMessage.contains("{\"message\"")) {
-					JSONObject responseMessageObject = new JSONObject(responseMessage);
-					String message = responseMessageObject.getString("message");
-
-					return new ResponseEntity<>("{\"result\": \"" + message + "\"}", HttpStatus.BAD_REQUEST);
-				} else {
-					return new ResponseEntity<>("{\"result\": \"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
-				}
-			} else if (e instanceof JSONException) {
-				return new ResponseEntity<>("{\"result\": \"" + e.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
-			} else {
-				String errorMsg = e.getMessage();
-				return new ResponseEntity<>("{\"result\": \"" + errorMsg + "\"}", HttpStatus.BAD_REQUEST);
-			}
-		}
-	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/st/startCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> stStartCampaign(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
-		try {
-			if (StringUtils.isBlank(requestBodyString)) {
-				return new ResponseEntity<>("{\"result\": \"Request body is required\"}", HttpStatus.BAD_REQUEST);
-			}
-			
-			JSONObject requestBody = new JSONObject(requestBodyString);
-			log.info("requestBody : {}", requestBody);
-
-			String uid = requestBody.getString("uid");
-			log.info("uid = {}", uid);
-
-			if (StringUtils.isBlank(uid)) {
-				return new ResponseEntity<>("{\"result\": \"Parameter 'uid' is required\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			SpringTreeCampaignFlow springTreeCampaignFlow = springTreeCampaignFlowService.findByUid(uid);
-
-			Date date = new Date();
-
-			if (springTreeCampaignFlow == null) {
-				springTreeCampaignFlow = new SpringTreeCampaignFlow();
-				springTreeCampaignFlow.setUid(uid);
-				springTreeCampaignFlow.setCreateTime(date);
-			}
-
-			springTreeCampaignFlow.setModifyTime(date);
-			springTreeCampaignFlow.setStatus(SpringTreeCampaignFlow.STATUS_INPROGRESS);
-			springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
-
-			return new ResponseEntity<>("{\"result\": \"success\"}", HttpStatus.OK);
-		} catch (Exception e) {
-			log.info("Exception = {}", e);
-			return new ResponseEntity<>("{\"result\": \"fail\"}", HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/st/finishCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> stFinishCampaign(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
-		try {
-			if (StringUtils.isBlank(requestBodyString)) {
-				return new ResponseEntity<>("{\"result\": \"Request body is required\"}", HttpStatus.BAD_REQUEST);
-			}
-			
-			JSONObject requestBody = new JSONObject(requestBodyString);
-			log.info("requestBody : {}", requestBody);
-
-			String uid = requestBody.getString("uid");
-			log.info("uid = {}", uid);
-
-			if (StringUtils.isBlank(uid)) {
-				return new ResponseEntity<>("{\"result\": \"Parameter 'uid' is required\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			SpringTreeCampaignFlow springTreeCampaignFlow = springTreeCampaignFlowService.findByUid(uid);
-
-			if (springTreeCampaignFlow == null) {
-				log.info("Can not find the user record.");
-				return new ResponseEntity<>("{\"result\": \"fail\"}", HttpStatus.BAD_REQUEST);
-			}
-
-			springTreeCampaignFlow.setModifyTime(new Date());
-			springTreeCampaignFlow.setStatus(SpringTreeCampaignFlow.STATUS_FINISHED);
-			springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
-
-			return new ResponseEntity<>("{\"result\": \"success\"}", HttpStatus.OK);
-		} catch (Exception e) {
-			log.info("Exception = {}", e);
-			return new ResponseEntity<>("{\"result\": \"fail\"}", HttpStatus.BAD_REQUEST);
 		}
 	}
 }
