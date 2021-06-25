@@ -172,6 +172,10 @@ public enum CONFIG_STR {
 	
 	// Hpi RichMenu
 	HPI_RICHMENU_UPLOAD_PATH("hpi.richmenu.upload.path"),
+	
+	// SpringTrees Chatbot API URL
+	SPRINGTREES_API_URL_CHATBOT_CHECKSTATUS("springtrees.api.url.chatbot.checkstatus"),
+	SPRINGTREES_API_URL_CHATBOT_EVENTHANDLER("springtrees.api.url.chatbot.eventhandler")
 	;
 
    private final String str;

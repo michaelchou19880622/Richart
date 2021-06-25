@@ -7,12 +7,17 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 
+import com.bcs.core.api.service.SpringTreesChatBotService;
 import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.bot.db.service.MsgBotReceiveService;
 import com.bcs.core.bot.send.service.SendingMsgService;
+import com.bcs.core.db.entity.CvdCampaignFlow;
 import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.MsgDetail;
+import com.bcs.core.db.service.CvdCampaignFlowService;
 import com.bcs.core.db.service.LineUserService;
 import com.bcs.core.enums.LOG_TARGET_ACTION_TYPE;
 import com.bcs.core.interactive.service.InteractiveService;
@@ -27,7 +32,7 @@ public class ReceivingMsgHandlerMsgReceiveOp extends UntypedActor {
 
 	/** Logger */
 	private static Logger logger = LogManager.getLogger(ReceivingMsgHandlerMsgReceiveOp.class);
-
+	
 	@Override
 	public void onReceive(Object message) {
 		logger.info("-------Get Operation Save-------");
@@ -84,7 +89,6 @@ public class ReceivingMsgHandlerMsgReceiveOp extends UntypedActor {
 			}
 			// 封鎖好友
 			else if (MsgBotReceive.EVENT_TYPE_UNFOLLOW.equals(receive.getEventType())) {
-//				LineUserStatusService lineUserStatusService = ApplicationContextProvider.getApplicationContext().getBean(LineUserStatusService.class);
 				LineUserService lineUserService = ApplicationContextProvider.getApplicationContext().getBean(LineUserService.class);
 				
 				LineUser lineUser = lineUserService.findByMid(receive.getSourceId());
@@ -120,13 +124,15 @@ public class ReceivingMsgHandlerMsgReceiveOp extends UntypedActor {
 
 					lineUserService.saveLog(user, user.getMid(), LOG_TARGET_ACTION_TYPE.ACTION_Block, user.getMid());
 				}
-//				//call ricart api通知user已封鎖
-//                lineUserStatusService.callLineUserStatusAPI(MID, LineUser.STATUS_BLOCK, time.getTime());
 			}
-			
-			// for 七夕活動 : call 春數 api ( {domain}/chatbot/eventHandler )
 
 			try {
+				CvdCampaignFlowService cvdCampaignFlowService = ApplicationContextProvider.getApplicationContext().getBean(CvdCampaignFlowService.class);
+				CvdCampaignFlow cvdCampaignFlow = cvdCampaignFlowService.findByUid(MID);
+				if (cvdCampaignFlow != null && cvdCampaignFlow.getStatus().equals(CvdCampaignFlow.STATUS_INPROGRESS)) {
+					ApplicationContextProvider.getApplicationContext().getBean(SpringTreesChatBotService.class).eventHandler(map.get("ReceivingMsg").toString());
+				}
+				
 				// Save Record
 				ApplicationContextProvider.getApplicationContext().getBean(MsgBotReceiveService.class).bulkPersist(receive);
 			} catch (Exception e) {
@@ -151,17 +157,13 @@ public class ReceivingMsgHandlerMsgReceiveOp extends UntypedActor {
 
 		InteractiveService interactiveService = ApplicationContextProvider.getApplicationContext().getBean(InteractiveService.class);
 
-		logger.info("ChannelId:" + ChannelId);
-		logger.info("ApiType:" + ApiType);
 		String MID = content.getSourceId();
-		logger.info("MID:" + MID);
 		try {
 			// 新增好友
 			if (MsgBotReceive.EVENT_TYPE_FOLLOW.equals(content.getEventType())) {
 
 				// 取得 關鍵字回應 設定
 				Long iMsgId = interactiveService.getWelcomeResponse();
-				logger.info("Get Welcome iMsgId:" + iMsgId);
 
 				if (iMsgId != null) {
 					String replyToken = content.getReplyToken();

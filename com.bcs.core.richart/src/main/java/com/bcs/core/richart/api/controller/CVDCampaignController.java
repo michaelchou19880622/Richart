@@ -31,17 +31,17 @@ import com.bcs.core.utils.CryptUtil;
 import com.bcs.core.utils.RestfulUtil;
 
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/api/st") /* 'st' is short of SpringTrees */
 public class CVDCampaignController {
 
     /** Logger */
     private static Logger logger = LogManager.getLogger(CVDCampaignController.class);
 	
 	@Autowired
-	private CvdCampaignFlowService springTreeCampaignFlowService;
+	private CvdCampaignFlowService cvdCampaignFlowService;
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/cvd/pushMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> cvdPushMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
+	@RequestMapping(method = RequestMethod.POST, value = "/pushMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> pushMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
 		try {
 			if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
 				return new ResponseEntity<>("{\"result\": \"Missing header 'Authorization'\"}", HttpStatus.BAD_REQUEST);
@@ -70,9 +70,6 @@ public class CVDCampaignController {
 
 			String decryptedToken = CryptUtil.Decrypt(CryptUtil.AES, token, secret, iv);
 			logger.info("decryptedToken : {}", decryptedToken);
-
-//			String encryptedToken2 = CryptUtil.Encrypt(CryptUtil.AES, "CVDCampaignToken", secret, iv);
-//			logger.info("encryptedToken2 : CVDCampaignToken >> encryptedToken = {}", encryptedToken2);
 
 			if (!decryptedToken.equals(originalToken)) {
 				return new ResponseEntity<>("{\"result\": \"Invalid Authorization\"}", HttpStatus.BAD_REQUEST);
@@ -131,8 +128,8 @@ public class CVDCampaignController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/cvd/replyMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> cvdReplyMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
+	@RequestMapping(method = RequestMethod.POST, value = "/replyMessage", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> replyMessage(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
 		try {
 			if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
 				return new ResponseEntity<>("{\"result\": \"Missing header 'Authorization'\"}", HttpStatus.BAD_REQUEST);
@@ -226,8 +223,8 @@ public class CVDCampaignController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/cvd/startCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> cvdStartCampaign(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
+	@RequestMapping(method = RequestMethod.POST, value = "/startCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> startCampaign(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
 		try {
 			if (StringUtils.isBlank(requestBodyString)) {
 				return new ResponseEntity<>("{\"result\": \"Request body is required\"}", HttpStatus.BAD_REQUEST);
@@ -243,7 +240,7 @@ public class CVDCampaignController {
 				return new ResponseEntity<>("{\"result\": \"Parameter 'uid' is required\"}", HttpStatus.BAD_REQUEST);
 			}
 
-			CvdCampaignFlow springTreeCampaignFlow = springTreeCampaignFlowService.findByUid(uid);
+			CvdCampaignFlow springTreeCampaignFlow = cvdCampaignFlowService.findByUid(uid);
 
 			if (springTreeCampaignFlow == null) {
 				springTreeCampaignFlow = new CvdCampaignFlow();
@@ -251,17 +248,17 @@ public class CVDCampaignController {
 			}
 
 			springTreeCampaignFlow.setStatus(CvdCampaignFlow.STATUS_INPROGRESS);
-			springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
+			springTreeCampaignFlow = cvdCampaignFlowService.save(springTreeCampaignFlow);
 
-			return new ResponseEntity<>("{\"result\": \"success\"}", HttpStatus.OK);
+			return new ResponseEntity<>("{\"result\": \"Success\"}", HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Exception = {}", e);
-			return new ResponseEntity<>("{\"result\": \"fail\"}", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("{\"result\": \"Fail\"}", HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/cvd/finishCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> cvdFinishCampaign(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
+	@RequestMapping(method = RequestMethod.POST, value = "/finishCampaign", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> finishCampaign(HttpServletRequest request, HttpServletResponse response, @RequestBody String requestBodyString) {
 		try {
 			if (StringUtils.isBlank(requestBodyString)) {
 				return new ResponseEntity<>("{\"result\": \"Request body is required\"}", HttpStatus.BAD_REQUEST);
@@ -277,20 +274,20 @@ public class CVDCampaignController {
 				return new ResponseEntity<>("{\"result\": \"Parameter 'uid' is required\"}", HttpStatus.BAD_REQUEST);
 			}
 
-			CvdCampaignFlow springTreeCampaignFlow = springTreeCampaignFlowService.findByUid(uid);
+			CvdCampaignFlow springTreeCampaignFlow = cvdCampaignFlowService.findByUid(uid);
 
 			if (springTreeCampaignFlow == null) {
 				logger.info("Can not find the user record.");
-				return new ResponseEntity<>("{\"result\": \"fail\"}", HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>("{\"result\": \"Can not find the user record.\"}", HttpStatus.BAD_REQUEST);
 			}
 
 			springTreeCampaignFlow.setStatus(CvdCampaignFlow.STATUS_FINISHED);
-			springTreeCampaignFlow = springTreeCampaignFlowService.save(springTreeCampaignFlow);
+			springTreeCampaignFlow = cvdCampaignFlowService.save(springTreeCampaignFlow);
 
-			return new ResponseEntity<>("{\"result\": \"success\"}", HttpStatus.OK);
+			return new ResponseEntity<>("{\"result\": \"Success\"}", HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Exception = {}", e);
-			return new ResponseEntity<>("{\"result\": \"fail\"}", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("{\"result\": \"Fail\"}", HttpStatus.BAD_REQUEST);
 		}
 	}
 }

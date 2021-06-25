@@ -46,17 +46,8 @@ public class LineBotApiController {
 	public void lineBotApiReceiving(@RequestBody String receivingMsg, @PathVariable String ChannelId, @PathVariable String ChannelName,HttpServletRequest request, HttpServletResponse response) {
 		logger.debug("-------lineBotApiReceiving-------");
 		Date start = new Date();
-		logger.info("receivingMsg = {}", receivingMsg);
 		
 		try{
-			// RichMenu
-//			if(richMenuReceivingApiService.richMenuMsgValidate(receivingMsg)) {
-//				logger.info("-------RichMenu Receiving Success-------");
-//				response.setStatus(200);
-//				SystemLogUtil.timeCheck(LOG_TARGET_ACTION_TYPE.TARGET_LineBotApi, LOG_TARGET_ACTION_TYPE.ACTION_Receive, start, 200, receivingMsg, "200");				
-//				return;
-//			}
-			
 			String channelSignature = request.getHeader(LINE_HEADER.HEADER_BOT_ChannelSignature.toString());
 			
 			if(CoreConfigReader.getBoolean(CONFIG_STR.SYSTEM_CHECK_SIGNATURE.toString())) {

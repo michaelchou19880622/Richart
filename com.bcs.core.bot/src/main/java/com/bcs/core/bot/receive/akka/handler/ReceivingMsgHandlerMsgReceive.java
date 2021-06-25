@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.bcs.core.api.service.LineProfileService;
+import com.bcs.core.api.service.SpringTreesChatBotService;
 import com.bcs.core.api.service.model.LocationModel;
 import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.bot.db.service.MsgBotReceiveService;
@@ -25,10 +26,10 @@ import com.bcs.core.db.entity.LineUser;
 import com.bcs.core.db.entity.MsgDetail;
 import com.bcs.core.db.entity.MsgInteractiveMain;
 import com.bcs.core.db.entity.UserLiveChat;
+import com.bcs.core.db.service.CvdCampaignFlowService;
 import com.bcs.core.db.service.LineUserService;
 import com.bcs.core.db.service.MsgInteractiveMainService;
 import com.bcs.core.db.service.RichMenuService;
-import com.bcs.core.db.service.CvdCampaignFlowService;
 import com.bcs.core.db.service.UserLiveChatService;
 import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.interactive.model.CampaignFlowData;
@@ -107,7 +108,7 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 	 * @param ApiType
 	 * @return iMsgId
 	 */
-	public static Long handleMsgReceive(MsgBotReceive content, String ChannelId, String ChannelName, String ApiType){
+	public static Long handleMsgReceive(MsgBotReceive content, String ChannelId, String ChannelName, String ApiType, String ReceivingMsg){
 		logger.debug("handleMsgReceive");
 		
 		LineUserService lineUserService = ApplicationContextProvider.getApplicationContext().getBean(LineUserService.class);
@@ -138,34 +139,10 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 		logger.debug("replyToken:" + replyToken);
 		
 		try {
-			// Step 1 : call 春樹 api 檢查用戶狀態
-			
 			CvdCampaignFlow cvdCampaignFlow = cvdCampaignFlowService.findByUid(MID);
-			if (cvdCampaignFlow == null) {
-				// Step 3 : 判斷是否為春樹七夕活動關鍵字？
-				if (KEYWORD_SPRINGTREE_CAMPAIGN_START.equals(text)) {
-					cvdCampaignFlow = new CvdCampaignFlow();
-					cvdCampaignFlow.setUid(MID);
-					cvdCampaignFlow.setStatus(CvdCampaignFlow.STATUS_INPROGRESS);
-					cvdCampaignFlow = cvdCampaignFlowService.save(cvdCampaignFlow);
-				}
-			} else if (cvdCampaignFlow.getStatus().equals(CvdCampaignFlow.STATUS_FINISHED)) {
-				// Step 3 : 判斷是否為春樹七夕活動關鍵字？
-				if (KEYWORD_SPRINGTREE_CAMPAIGN_START.equals(text)) {
-					cvdCampaignFlow.setStatus(CvdCampaignFlow.STATUS_INPROGRESS);
-					cvdCampaignFlow = cvdCampaignFlowService.save(cvdCampaignFlow);
-				}
-			}
 			
-			if (cvdCampaignFlow.getStatus().equals(CvdCampaignFlow.STATUS_INPROGRESS)){
-				logger.info("用戶正在春樹七夕活動流程中！, uid = {}, status = {}", cvdCampaignFlow.getUid(), cvdCampaignFlow.getStatus());
-				
-				if (MsgBotReceive.EVENT_TYPE_POSTBACK.equals(content.getEventType())) {
-					text = content.getPostbackData();
-				}
-				
-				// 將用戶訊息全部轉發給春樹
-				ApplicationContextProvider.getApplicationContext().getBean(MessageTransmitService.class).transmitToSpringTreeBOT(MID, replyToken, text);
+			if (cvdCampaignFlow != null && cvdCampaignFlow.getStatus().equals(CvdCampaignFlow.STATUS_INPROGRESS)){
+				ApplicationContextProvider.getApplicationContext().getBean(SpringTreesChatBotService.class).eventHandler(ReceivingMsg);
 				return -99L;
 			}
 			

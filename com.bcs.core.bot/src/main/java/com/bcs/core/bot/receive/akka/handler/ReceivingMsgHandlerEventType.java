@@ -40,7 +40,6 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 				int count = 0;
 				Date start = original.getStart();
 				for (MsgBotReceive msg : list) {
-					logger.info("MsgBotReceive = {}", msg);
 					
 					ReceivingMsgHandlerMaster.taskCount.addAndGet(1L);
 					
@@ -58,27 +57,15 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 					String referenceId = "";
 					
 					if (channelName.equals(CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true))) {
-						logger.debug("ReceivingMsgHandlerEventType  CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true) :"
-					                 +CoreConfigReader.getString(CONFIG_STR.MANUALREPLY_CHANNEL_NAME.toString(), true));
 						if(MsgBotReceive.EVENT_TYPE_MESSAGE.equals(eventType)) {
-							logger.debug("ReceivingMsgHandlerEventType  real man !!!!!!!!!!");
 							/* 將訊息傳送至真人客服 */
 							ReceivingMsgHandlerMsgReceive.trasmitToCustomerService(msg, channelId, channelName, apiType);
-							
-							/*Map<String, Object> map = new HashMap<String, Object>();
-							map.put("Target", eventType);
-							map.put("Content", msg);
-							map.put("ChannelId", channelId);
-							map.put("ApiType", apiType);
-							// map.put("iMsgId", iMsgId);
-							getSender().tell(map, getSelf());*/
 						} else {
-							logger.debug("ReceivingMsgHandlerEventType  Other message type!!!!!!!!!!");
 							/* Other message type */
 						}
 					} else if (MsgBotReceive.EVENT_TYPE_MESSAGE.equals(eventType) || MsgBotReceive.EVENT_TYPE_POSTBACK.equals(eventType)) {
 						logger.debug("-------Get Message-------");
-						Long iMsgId = ReceivingMsgHandlerMsgReceive.handleMsgReceive(msg, channelId, channelName, apiType);
+						Long iMsgId = ReceivingMsgHandlerMsgReceive.handleMsgReceive(msg, channelId, channelName, apiType, original.getReceivingMsg());
 						
 						referenceId = msg.getMsgId();
 						
@@ -101,6 +88,7 @@ public class ReceivingMsgHandlerEventType extends UntypedActor {
 						map.put("ChannelId", channelId);
 						map.put("ApiType", apiType);
 						map.put("iMsgId", iMsgId);
+						map.put("ReceivingMsg", original.getReceivingMsg());
 						getSender().tell(map, getSelf());
 					} else {
 						// Unknown eventType
