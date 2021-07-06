@@ -16,29 +16,29 @@
 				onMismatch="DENY" />
 				
 			<PatternLayout>
-				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
+				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} [%20.20t] %-5p [%-5L] %-35.35C{1} %-25.25M - %m%n</Pattern>
 			</PatternLayout>
 		</console>
 
 		<RollingFile name="RollingFileInfo"
-			fileName="/bcs/log/richart/test/test.bc.run.log"
-			filePattern="/bcs/log/richart/test/test.bc.run-%d{yyyy-MM-dd}-%i.log">
+			fileName="./bcs/log/richart/test/test.bc.run.log"
+			filePattern="./bcs/log/richart/test/test.bc.run-%d{yyyy-MM-dd}-%i.log">
 
 			<ThresholdFilter 
 				level="info" 
 				onMatch="ACCEPT"
 				onMismatch="DENY" />
 			<PatternLayout>
-				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
+				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} [%20.20t] %-5p [%-5L] %-35.35C{1} %-25.25M - %m%n</Pattern>
 			</PatternLayout>
 			<Policies>
 				<OnStartupTriggeringPolicy />
-				<SizeBasedTriggeringPolicy size="20 KB" />
+				<SizeBasedTriggeringPolicy size="100 MB" />
 				<TimeBasedTriggeringPolicy />
 			</Policies>
 			
 			<!-- DefaultRolloverStrategy屬性如不設定，則預設為7個檔案，pattern需搭配 %i 使用 -->
-			<DefaultRolloverStrategy max="20" />
+			<DefaultRolloverStrategy max="40" />
 			
 		</RollingFile>
 	</appenders>

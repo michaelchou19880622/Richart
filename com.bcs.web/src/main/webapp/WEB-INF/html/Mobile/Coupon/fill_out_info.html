@@ -29,8 +29,8 @@
 			</div>
 			<div class="coupon_banner_title">
 				<p th:text="${contentCoupon.couponTitle}"></p>
-				<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"> <input
-					id="couponId" type="hidden" th:value="${contentCoupon.couponId}" />
+				<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"> 
+				<span id="couponId" style="display: none" th:value="${contentCoupon.couponId}" ></span>
 			</div>
 			<div class="coupon_banner_desc">
 				<p th:text="${contentCoupon.couponDescription}"></p>

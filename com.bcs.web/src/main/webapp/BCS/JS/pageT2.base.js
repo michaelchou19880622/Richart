@@ -22,8 +22,8 @@ $(function(){
 				content = "";
 				
 				var valueObj = response[key];
-				console.info('key templateId: ', key);
-				console.info('valueObj : ', valueObj);
+//				console.info('key templateId: ', key);
+//				console.info('valueObj : ', valueObj);
 				
 				var templateType = valueObj[4];
 				if(templateType == 'confirm'){
@@ -56,7 +56,7 @@ $(function(){
 					content += ("訊息內容 : '" + valueObj[0] + "'");
 				}
 				
-				templateMsgTr.find('.templateMsgId').val(key);
+				templateMsgTr.find('.templateMsgId').text(key);
 				templateMsgTr.find('.templateMsgTitle').html(content);
 				templateMsgTr.find('.templateMsgImgTitle a').attr('href', bcs.bcsContextPath + '/edit/templateMsgCreatePage?templateId=' + key + '&actionType=Edit');
 				templateMsgTr.find('.templateMsgType').html(templateType);
@@ -86,7 +86,7 @@ $(function(){
 		if (!deleteConfirm) return; //點擊取消
 		
 		var templateMsgTr = $(this).closest(".templateMsgTrTemplate");
-		var selectedTemplateId = templateMsgTr.find('.templateMsgId').val();
+		var selectedTemplateId = templateMsgTr.find('.templateMsgId').text();
 		$.ajax({
 			type : "DELETE",
 			url : bcs.bcsContextPath + '/admin/deleteTemplateMsg/' + selectedTemplateId
@@ -102,12 +102,17 @@ $(function(){
 	
 	$('.btn_copy').click(function(e) {
 		var templateMsgTr = $(this).closest(".templateMsgTrTemplate");
-		var selectedTemplateId = templateMsgTr.find('.templateMsgId').val();
-		var url = bcs.bcsContextPath + '/edit/templateMsgCreatePage?templateId=' + $.BCS.escapeHtml(selectedTemplateId) + '&actionType=Copy';
-		if ($.BCS.validateURL(url)) {
-			window.location.replace(encodeURI(url));
+		var selectedTemplateId = templateMsgTr.find('.templateMsgId').text();
+		
+		if (selectedTemplateId != null) {
+			var url = bcs.bcsContextPath + '/edit/templateMsgCreatePage?templateId=' + $.BCS.escapeHtml(selectedTemplateId) + '&actionType=Copy';
+			if ($.BCS.validateURL(url)) {
+				window.location.replace(encodeURI(url));
+			} else {
+				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			}
 		} else {
-			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			alert('Template ID is null.');
 		}
 	});
 	

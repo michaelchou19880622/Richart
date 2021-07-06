@@ -16,7 +16,7 @@ $(function(){
 			var prizeTr;
 			for(var i = 0;i<response.length;i++){				
 				prizeTr = prizeTrTemplate.clone(true);
-				prizeTr.find('.couponPrizeId').val(response[i].couponId);
+				prizeTr.find('.couponPrizeId').text(response[i].couponId);
 				prizeTr.find('.name').html(response[i].couponTitle);
 				prizeTr.find('.prizeQuantity').text((response[i].couponGetLimitNumber === null || response[i].couponGetLimitNumber === 0) ? '無限制' : response[i].couponGetLimitNumber);
 				prizeTr.find('.acceptedCount').text(response[i].couponGetNumber);
@@ -34,15 +34,17 @@ $(function(){
 	
 	$('.btn_winner_list').click(function(e) {
 		var prizeTr = $(this).closest(".prizeTrTemplate");
-		var selectedPrizeId = prizeTr.find('.couponPrizeId').val();
-		var url = bcs.bcsContextPath + '/edit/winnerListPage?gameId=' + gameId + '&couponPrizeId=' + selectedPrizeId;
-		
-		if ($.BCS.validateURL(url)) {
-			window.location.replace(encodeURI(url));
+		var selectedPrizeId = prizeTr.find('.couponPrizeId').text();
+		if (selectedPrizeId != null) {
+			var url = bcs.bcsContextPath + '/edit/winnerListPage?gameId=' + gameId + '&couponPrizeId=' + $.BCS.escapeHtml(selectedPrizeId);
+			if ($.BCS.validateURL(url)) {
+				window.location.replace(encodeURI(url));
+			} else {
+				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			}
 		} else {
-			alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+			alert('Price ID is null.');
 		}
-		
 	});
 	
 	var initPage = function(){

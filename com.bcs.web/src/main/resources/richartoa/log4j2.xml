@@ -16,7 +16,7 @@
 				onMismatch="DENY" />
 				
 			<PatternLayout>
-				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
+				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} [%20.20t] %-5p [%-5L] %-35.35C{1} %-25.25M - %m%n</Pattern>
 			</PatternLayout>
 		</console>
 
@@ -29,16 +29,16 @@
 				onMatch="ACCEPT"
 				onMismatch="DENY" />
 			<PatternLayout>
-				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} %-5p [%-4L] %-35.35C{1} %-25M [%-20t] - %m%n</Pattern>
+				<Pattern>%d{yyyyMMdd HH:mm:ss.SSS} [%20.20t] %-5p [%-5L] %-35.35C{1} %-25.25M - %m%n</Pattern>
 			</PatternLayout>
 			<Policies>
 				<OnStartupTriggeringPolicy />
-				<SizeBasedTriggeringPolicy size="200 MB" />
+				<SizeBasedTriggeringPolicy size="100 MB" />
 				<TimeBasedTriggeringPolicy />
 			</Policies>
 			
 			<!-- DefaultRolloverStrategy屬性如不設定，則預設為7個檔案，pattern需搭配 %i 使用 -->
-			<DefaultRolloverStrategy max="20" />
+			<DefaultRolloverStrategy max="40" />
 			
 		</RollingFile>
 	</appenders>

@@ -8,6 +8,9 @@ $(function(){
 	var pageIndex = 1;
 	var maxPageNum = 0;
 	
+	var startDate;
+	var endDate;
+	
 	var getMaxPageNum = function(startDate, endDate, cb){
 		var url = bcs.bcsContextPath + '/edit/getRewardCardRecordMaxPage?rewardCardId='+rewardCardId;
 		
@@ -61,10 +64,11 @@ $(function(){
 				
 				var startTime = new moment($('#recordListTable').find('.pointGetTime:first').html(), "YYYY-MM-DD");
 				var endTime = new moment($('#recordListTable').find('.pointGetTime:last').html(), "YYYY-MM-DD");
-				console.info("startTime");
+				
+				startDate = startTime.format('YYYY-MM-DD');
+				endDate = endTime.format('YYYY-MM-DD');
 				$('#recoredStartDate').val(startTime.format('YYYY-MM-DD'));
 				$('#recordEndDate').val(endTime.format('YYYY-MM-DD'));
-				console.info("recoredStartDate",$('#recoredStartDate'));
 			}
 			
 			if($('#recoredStartDate').val()==="" || $('#recordEndDate').val()===""){
@@ -84,8 +88,19 @@ $(function(){
 		if(!validateTimeRange()){
 			return false;
 		}
-		var startDate = $('#recoredStartDate').val();
-		var endDate = $('#recordEndDate').val();
+		
+		startDate = $('#recoredStartDate').val();
+		endDate = $('#recordEndDate').val();
+		
+        if (isNaN(Date.parse(startDate))) {
+			alert("'StartDate' is not a valid date format.");
+			return false;
+        }
+
+        if (isNaN(Date.parse(endDate))) {
+			alert("'EndDate' is not a valid date format.");
+			return false;
+        }
 
 		$('.LyMain').block($.BCS.blockMsgRead);
 		$('#recordListTable').find('.recordTrTemplate').remove();
@@ -134,7 +149,6 @@ $(function(){
 	});
 	
 	var validateTimeRange = function(){
-
 		var startDate = moment($('#recoredStartDate').val(), "YYYY-MM-DD");
 		var endDate = moment($('#recordEndDate').val(), "YYYY-MM-DD");
 		
@@ -184,8 +198,7 @@ $(function(){
 		if(!validateTimeRange()){
 			return false;
 		}
-		var startDate = $('#recoredStartDate').val();
-		var endDate = $('#recordEndDate').val();
+		
 		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardRecord?rewardCardId=' + $.BCS.escapeHtml(rewardCardId) + '&startDate=' + startDate + '&endDate=' + endDate +'&pageIndex='+pageIndex;
 		
 		if ($.BCS.validateURL(url)) {
@@ -195,13 +208,13 @@ $(function(){
 		}
 	});
 	
+	
+	
 	$('.exportAllToExcel').click(function(){
 		if(!validateTimeRange()){
 			return false;
 		}
-		var startDate = $('#recoredStartDate').val();
-		var endDate = $('#recordEndDate').val();
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardRecord?rewardCardId=' + $.BCS.escapeHtml(rewardCardId) + '&startDate=' + startDate+ '&endDate=' + endDate;
+		var url =  bcs.bcsContextPath + '/edit/exportToExcelForRewardRecord?rewardCardId=' + $.BCS.escapeHtml(rewardCardId) + '&startDate=' + $.BCS.escapeHtml(startDate)+ '&endDate=' + $.BCS.escapeHtml(endDate);
 		if ($.BCS.validateURL(url)) {
 			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);
 		} else {

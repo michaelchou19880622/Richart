@@ -1,7 +1,5 @@
 package com.bcs.core.api.service;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -26,6 +24,8 @@ public class SpringTreesChatBotService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
+		ReceivingMsg = ReceivingMsg.replace("events", "event_data");
+		
 		JSONObject requestBody = new JSONObject(ReceivingMsg);
 		logger.info("requestBody = {}", requestBody);
 		

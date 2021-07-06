@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.bcs.core.bot.record.service.CatchRecordReceive;
 import com.bcs.core.bot.scheduler.service.LiveChatTaskService;
 import com.bcs.core.bot.scheduler.service.SchedulerService;
+import com.bcs.core.enums.CONFIG_STR;
 import com.bcs.core.interactive.service.InteractiveService;
 import com.bcs.core.record.service.CatchHandleMsgReceiveTimeout;
 import com.bcs.core.record.service.CatchRecordBinded;
@@ -19,6 +20,7 @@ import com.bcs.core.record.service.CatchRecordOpAddReceive;
 import com.bcs.core.record.service.CatchRecordOpBlockedReceive;
 import com.bcs.core.resource.CoreConfigReader;
 import com.bcs.core.richart.scheduler.service.LinePointAMSchedulerService;
+import com.bcs.core.utils.CryptUtil;
 import com.bcs.core.utils.DataSyncUtil;
 import com.bcs.core.utils.ErrorRecord;
 
@@ -68,6 +70,26 @@ public class InitController {
 	
 	@PostConstruct
 	public void init(){
+		try {
+			String secret = CoreConfigReader.getString(CONFIG_STR.AES_SECRET_KEY, true);
+			logger.info("secret : {}", secret);
+
+			String iv = "1123581321345589";
+			logger.info("iv : {}", iv);
+
+			String originalToken = CoreConfigReader.getString(CONFIG_STR.API_CVDCAMPAIGN_TOKEN, true);
+			logger.info("originalToken : {}", originalToken);
+			
+			String encryptedToken = CryptUtil.Encrypt(CryptUtil.AES, "CVDCampaignToken", secret, iv);
+			logger.info("encryptedToken : {}", encryptedToken);
+
+			String decryptedToken = CryptUtil.Decrypt(CryptUtil.AES, encryptedToken, secret, iv);
+			logger.info("decryptedToken : {}", decryptedToken);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 
 		try {
 			logger.info("[init] DataSyncUtil registerServer");

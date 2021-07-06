@@ -44,7 +44,7 @@ $(function(){
 		//設定詳細按鈕
 		$('.detail').click(function(){
 			var reportData = $(this).closest("tr");
-			var reportId = reportData.find('.reportId').val();
+			var reportId = reportData.find('.reportId').text();
 			
 			$.ajax({
 				type : "GET",
@@ -90,13 +90,16 @@ $(function(){
 		//設定編輯按鈕
 		$('.edit').click(function(){
 			var reportData = $(this).closest("tr");
-			var reportId = reportData.find('.reportId').val();
-			var url = 'reportCreatePage?reportId=' + $.BCS.escapeHtml(reportId) + '&actionType=Edit';
-		
-			if ($.BCS.validateURL(url)) {
-				window.location.replace(encodeURI(url));
+			var reportId = reportData.find('.reportId').text();
+			if (reportId != null) {
+				var url = 'reportCreatePage?reportId=' + $.BCS.escapeHtml(reportId) + '&actionType=Edit';
+				if ($.BCS.validateURL(url)) {
+					window.location.replace(encodeURI(url));
+				} else {
+					alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+				}
 			} else {
-				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+				alert('Report ID is null');
 			}
 		});
 		
@@ -105,7 +108,7 @@ $(function(){
 			if (!confirm("請確認是否刪除？")) return false; //點擊取消
 			
 			var reportData = $(this).closest("tr");
-			var reportId = reportData.find('.reportId').val();
+			var reportId = reportData.find('.reportId').text();
 			$.ajax({
 				type : "DELETE",
 				url : bcs.bcsContextPath + '/admin/deletePushReport?reportId=' + $.BCS.escapeHtml(reportId)
@@ -209,7 +212,7 @@ $(function(){
 		$('.dataTemplate').remove();
 		
 		var nowDate = moment(); //取得現在時間
-		var lastWeek = moment().dates(nowDate.dates() - 6); //取得前7天(上一週)的時間
+		var lastWeek = moment().date(nowDate.date() - 6); //取得前7天(上一週)的時間
 		
 		$('#pushReportStartDate').val(lastWeek.format('YYYY-MM-DD'));
 		$('#pushReportEndDate').val(nowDate.format('YYYY-MM-DD'));
@@ -320,7 +323,8 @@ $(function(){
 					});
 
 					data.find('.reportMsgSendId').val(multiData[0][11]);
-					data.find('.reportId').val(multiData[0][10]);
+					data.find('.reportId').text(multiData[0][10]);
+					
 					data.find('.richId').val(valueObj[12]);
 					for (var j=1; j<count; j++) {
 						var multiDataTr = multiDataTemplate.clone(true);
@@ -337,7 +341,7 @@ $(function(){
 							}
 						});
 
-						multiDataTr.find('.reportId').val(multiData[j][2]);
+						multiDataTr.find('.reportId').text(multiData[j][2]);
 						multiDataTr.find('.reportMsgSendId').val(multiData[j][3]);
 						data.append(multiDataTr);
 					}
@@ -357,7 +361,7 @@ $(function(){
 						}
 					});
 					data.find('.reportMsgSendId').val(valueObj[13]);
-					data.find('.reportId').val(valueObj[10]);
+					data.find('.reportId').text(valueObj[10]);
 					data.find('.richId').val(valueObj[12]);
 					if (valueObj[12] == null || valueObj[12] == "" ) {
 						data.find('.pushTxt').html(valueObj[3]);

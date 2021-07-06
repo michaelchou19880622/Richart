@@ -19,9 +19,9 @@ $(function(){
 				var richMsgTr = richMsgTrTemplate.clone(true);
 
 				var valueObj = response[key];
-				console.info('valueObj', valueObj);
+//				console.info('valueObj', valueObj);
 
-				richMsgTr.find('.richMsgId').val(key);
+				richMsgTr.find('.richMsgId').text(key);
 				richMsgTr.find('.richMsgTitle').html(valueObj[0]);
 				richMsgTr.find('.richMsgImgTitle img').attr('richId', key);
 				richMsgTr.find('.richMsgImgTitle img').attr('src', bcs.bcsContextPath + "/getResource/IMAGE/" + valueObj[4]);
@@ -101,7 +101,7 @@ $(function(){
 			if (!deleteConfirm) return; //點擊取消
 			
 			var richMsgTr = $(this).closest(".richMsgTrTemplate");
-			var selectedRichId = richMsgTr.find('.richMsgId').val();
+			var selectedRichId = richMsgTr.find('.richMsgId').text();
 			$.ajax({
 				type : "DELETE",
 				url : bcs.bcsContextPath + '/admin/deleteRichMsg/' + selectedRichId
@@ -117,12 +117,16 @@ $(function(){
 		
 		$('.btn_copy').click(function(e) {
 			var richMsgTr = $(this).closest(".richMsgTrTemplate");
-			var selectedRichId = richMsgTr.find('.richMsgId').val();
-			var url = bcs.bcsContextPath + '/edit/richMsgCreatePage?richId=' + $.BCS.escapeHtml(selectedRichId) + '&actionType=Copy';
-			if ($.BCS.validateURL(url)) {
-				window.location.replace(encodeURI(url));
+			var selectedRichId = richMsgTr.find('.richMsgId').text();
+			if (selectedRichId != null) {
+				var url = bcs.bcsContextPath + '/edit/richMsgCreatePage?richId=' + $.BCS.escapeHtml(selectedRichId) + '&actionType=Copy';
+				if ($.BCS.validateURL(url)) {
+					window.location.replace(encodeURI(url));
+				} else {
+					alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+				}
 			} else {
-				alert('An attempt was made to open a webpage of foreign domain. No allowed!');
+				alert('Rich ID is null.');
 			}
 		});
 	}

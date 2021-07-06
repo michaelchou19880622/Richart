@@ -6,6 +6,9 @@ $(function(){
 	var rewardCardId;
 	var pageIndex = 1;
 	var maxPageNum = 0;
+	
+	var startDate;
+	var endDate;
 
 	
 	var getMaxPageNum = function(cb){
@@ -74,8 +77,18 @@ $(function(){
 		if(!validateTimeRange()){
 			return false;
 		}
-		var startDate = $('#recoredStartDate').val();
-		var endDate = $('#recordEndDate').val();
+		startDate = $('#recoredStartDate').val();
+		endDate = $('#recordEndDate').val();
+		
+        if (isNaN(Date.parse(startDate))) {
+			alert("'StartDate' is not a valid date format.");
+			return false;
+        }
+
+        if (isNaN(Date.parse(endDate))) {
+			alert("'EndDate' is not a valid date format.");
+			return false;
+        }
 
 		$('.LyMain').block($.BCS.blockMsgRead);
 		$('#recordListTable').find('.recordTrTemplate').remove();
@@ -144,9 +157,8 @@ $(function(){
 			return false;
 		}
 		var couponId = $.urlParam("couponId");
-		var startDate = $('#recoredStartDate').val();
-		var endDate = $('#recordEndDate').val();
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerListByCouponId?couponId=' + $.BCS.escapeHtml(couponId) + '&startDate=' + startDate + '&endDate=' + endDate+'&pageIndex='+pageIndex;
+		
+		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerListByCouponId?couponId=' + $.BCS.escapeHtml(couponId) + '&startDate=' + $.BCS.escapeHtml(startDate) + '&endDate=' + $.BCS.escapeHtml(endDate) + '&pageIndex=' + pageIndex;
 		
 		if ($.BCS.validateURL(url)) {
 			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);
@@ -160,9 +172,8 @@ $(function(){
 			return false;
 		}
 		var couponId = $.urlParam("couponId");
-		var startDate = $('#recoredStartDate').val();
-		var endDate = $('#recordEndDate').val();
-		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerListByCouponId?couponId=' + $.BCS.escapeHtml(couponId) + '&startDate=' + startDate + '&endDate=' + endDate;
+
+		var url =  bcs.bcsContextPath + '/edit/exportToExcelForWinnerListByCouponId?couponId=' + $.BCS.escapeHtml(couponId) + '&startDate=' + $.BCS.escapeHtml(startDate) + '&endDate=' + $.BCS.escapeHtml(endDate);
 		
 		if ($.BCS.validateURL(url)) {
 			window.open(encodeURI(url), "_blank", WINDOW_DEIMENSIONS);

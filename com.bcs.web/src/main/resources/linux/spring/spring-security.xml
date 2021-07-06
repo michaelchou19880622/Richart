@@ -21,7 +21,7 @@
 	<http pattern="/bcs/getResource/**" security="none"/>
 	<http pattern="/bcs/getLink/**" security="none"/>
     
-	<http auto-config="true">
+	<http>
 		<intercept-url pattern="/init/**" access="permitAll"/>
 		<!-- Mobile Controller -->
 		<intercept-url pattern="/m/**" access="permitAll"/>
