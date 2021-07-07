@@ -9,6 +9,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.bcs.core.api.service.LineProfileService;
 import com.bcs.core.api.service.SpringTreesChatBotService;
@@ -18,6 +20,7 @@ import com.bcs.core.bot.db.service.MsgBotReceiveService;
 import com.bcs.core.bot.get.service.GettingMsgContentService;
 import com.bcs.core.bot.receive.service.LiveChatProcessService;
 import com.bcs.core.bot.receive.service.MessageTransmitService;
+import com.bcs.core.bot.receive.utils.MsgBotReceiveParser;
 import com.bcs.core.bot.record.service.CatchRecordReceive;
 import com.bcs.core.bot.send.service.SendingMsgService;
 import com.bcs.core.db.entity.ContentResource;
@@ -44,8 +47,6 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 
 	/** Logger **/
 	private static Logger logger = LogManager.getLogger(ReceivingMsgHandlerMsgReceive.class);
-	
-	final static String KEYWORD_SPRINGTREE_CAMPAIGN_START = "春樹七夕活動測試";
 	
 	@Override
 	public void onReceive(Object message){
@@ -141,8 +142,14 @@ public class ReceivingMsgHandlerMsgReceive extends UntypedActor {
 		try {
 			CvdCampaignFlow cvdCampaignFlow = cvdCampaignFlowService.findByUid(MID);
 			
-			if (cvdCampaignFlow != null && cvdCampaignFlow.getStatus().equals(CvdCampaignFlow.STATUS_INPROGRESS)){
-				ApplicationContextProvider.getApplicationContext().getBean(SpringTreesChatBotService.class).eventHandler(ReceivingMsg);
+			if (cvdCampaignFlow != null && cvdCampaignFlow.getStatus().equals(CvdCampaignFlow.STATUS_INPROGRESS)) {
+				List<JSONObject> list = MsgBotReceiveParser.parseMessageForEventHandler(ReceivingMsg);
+				logger.info("list = {}", list);
+
+				for (JSONObject jsonObj : list) {
+					logger.info("jsonObjEvent = {}", jsonObj);
+					ApplicationContextProvider.getApplicationContext().getBean(SpringTreesChatBotService.class).eventHandler(jsonObj.toString());
+				}
 				return -99L;
 			}
 			

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import com.bcs.core.api.service.SpringTreesChatBotService;
 import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.bot.db.service.MsgBotReceiveService;
+import com.bcs.core.bot.receive.utils.MsgBotReceiveParser;
 import com.bcs.core.bot.send.service.SendingMsgService;
 import com.bcs.core.db.entity.CvdCampaignFlow;
 import com.bcs.core.db.entity.LineUser;
@@ -130,7 +131,14 @@ public class ReceivingMsgHandlerMsgReceiveOp extends UntypedActor {
 				CvdCampaignFlowService cvdCampaignFlowService = ApplicationContextProvider.getApplicationContext().getBean(CvdCampaignFlowService.class);
 				CvdCampaignFlow cvdCampaignFlow = cvdCampaignFlowService.findByUid(MID);
 				if (cvdCampaignFlow != null && cvdCampaignFlow.getStatus().equals(CvdCampaignFlow.STATUS_INPROGRESS)) {
-					ApplicationContextProvider.getApplicationContext().getBean(SpringTreesChatBotService.class).eventHandler(map.get("ReceivingMsg").toString());
+
+					List<JSONObject> list = MsgBotReceiveParser.parseMessageForEventHandler(map.get("ReceivingMsg").toString());
+					logger.info("list = {}", list);
+
+					for (JSONObject jsonObj : list) {
+						logger.info("jsonObjEvent = {}", jsonObj);
+						ApplicationContextProvider.getApplicationContext().getBean(SpringTreesChatBotService.class).eventHandler(jsonObj.toString());
+					}
 				}
 				
 				// Save Record

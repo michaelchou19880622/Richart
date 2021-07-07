@@ -3,10 +3,13 @@ package com.bcs.core.bot.receive.utils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 
 import com.bcs.core.bot.db.entity.MsgBotReceive;
 import com.bcs.core.utils.ErrorRecord;
@@ -178,5 +181,25 @@ public class MsgBotReceiveParser {
 		}
 		
 		return msgReceives;
+	}
+
+	public static List<JSONObject> parseMessageForEventHandler(String receiveMsg){
+		List<JSONObject> eventList = new ArrayList<JSONObject>();
+		
+		try {
+			JsonNode events = new ObjectMapper().readTree(receiveMsg).get("events");
+			if (events != null && events.isArray()) {
+				for (JsonNode msg : events) {
+					JSONObject jsonObj = new JSONObject(msg.toString());
+					JSONObject event_data = new JSONObject();
+					event_data.put("event_data", jsonObj);
+					eventList.add(event_data);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Exception = {}", e);
+		}
+		
+		return eventList;
 	}
 }
